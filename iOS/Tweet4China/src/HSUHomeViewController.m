@@ -29,13 +29,10 @@
 {
     [super viewDidAppear:animated];
     
-    [(HSUHomeDataSource *)self.dataSource authenticate];
-    return;
-    
-    if (self.dataSource.count == 0) {
+    [(HSUHomeDataSource *)self.dataSource authenticateWithSuccess:^(id responseObj) {
         [self.refreshControl beginRefreshing];
         [self.dataSource refresh];
-    }
+    } failure:nil];
 }
 
 #pragma mark - dataSource delegate

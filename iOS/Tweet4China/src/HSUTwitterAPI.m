@@ -10,6 +10,8 @@
 #import <Accounts/Accounts.h>
 #import <Social/Social.h>
 
+id RemoveFuckingNull(id rootObject);
+
 static NSString * const url_search_tweets = @"https://api.twitter.com/1.1/search/tweets.json";
 
 static NSString * const url_users_search = @"https://api.twitter.com/1.1/users/search.json";
@@ -117,7 +119,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     return self.account != nil;
 }
 
-- (void)authorize
+- (void)authorizeWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     if (!self.accountStore) {
         self.accountStore = [[ACAccountStore alloc] init];
@@ -137,15 +139,20 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  [self.accountStore accountsWithAccountType:twitterAccountType];
                  if (twitterAccounts.count) {
                      self.account = twitterAccounts[0];
+                     success(self.account);
                  }
+             } else {
+                 failure(nil);
              }
          }];
+    } else {
+        failure(nil);
     }
 }
 
 - (NSString *)myScreenName
 {
-    return self.account.identifier;
+    return self.account.username;
 }
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
@@ -155,41 +162,46 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_statuses_home_timeline
-              parameters:@{@"max_id": maxID}
+              parameters:maxID ? @{@"max_id": maxID} : nil
                  success:success failure:failure];
 }
 - (void)getHomeTimelineSinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     [self sendGETWithUrl:url_statuses_home_timeline
-              parameters:@{@"since_id": sinceID}
+              parameters:sinceID ? @{@"since_id": sinceID} : nil
                  success:success failure:failure];
 }
 - (void)getMentionsTimelineSinceID:(NSString *)sinceID maxID:(NSString *)maxID count:(NSUInteger)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (maxID) params[@"max_id"] = maxID;
+    if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_metions_timeline
-              parameters:@{@"since_id": sinceID, @"max_id": maxID, @"count": @(count)}
+              parameters:params
                  success:success failure:failure];
 }
 - (void)getUserTimelineWithScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_statuses_user_timeline
-              parameters:@{@"screen_name": screenName}
+              parameters:screenName ? @{@"screen_name": screenName} : nil
                  success:success failure:failure];
 }
 - (void)getDirectMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_direct_messages
-              parameters:@{@"since_id": sinceID}
+              parameters:sinceID ? @{@"since_id": sinceID} : nil
                  success:success failure:failure];
 }
 - (void)getDetailsForStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_statuses_show
-              parameters:@{@"id": statusID}
+              parameters:statusID ? @{@"id": statusID} : nil
                  success:success failure:failure];
 }
 - (void)lookupUsers:(NSArray *)users success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
+    if (!users.count) return;
     [self sendGETWithUrl:url_users_lookup
               parameters:@{@"screen_name": [users componentsJoinedByString:@","]}
                  success:success failure:failure];
@@ -317,10 +329,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                                                                        error:nil];
                     if ([responseObj isKindOfClass:[NSArray class]] ||
                         [responseObj isKindOfClass:[NSDictionary class]]) {
-                        dispatch_sync(GCDMainThread, ^{
-                            success(responseObj);
-                        });
-                        return;
+                        success(RemoveFuckingNull(responseObj));
                     }
                 } else {
                     [self dealWithError:error errTitle:@"Some problems with your network"];
@@ -343,3 +352,37 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 
 @end
+
+id RemoveFuckingNull(id rootObject) {
+    if ([rootObject isKindOfClass:[NSDictionary class]]) {
+        NSMutableDictionary *sanitizedDictionary = [NSMutableDictionary dictionaryWithDictionary:rootObject];
+        [rootObject enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+            id sanitized = removeNull(obj);
+            if (!sanitized) {
+                [sanitizedDictionary setObject:@"" forKey:key];
+            } else {
+                [sanitizedDictionary setObject:sanitized forKey:key];
+            }
+        }];
+        return [NSMutableDictionary dictionaryWithDictionary:sanitizedDictionary];
+    }
+    
+    if ([rootObject isKindOfClass:[NSArray class]]) {
+        NSMutableArray *sanitizedArray = [NSMutableArray arrayWithArray:rootObject];
+        [rootObject enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            id sanitized = removeNull(obj);
+            if (!sanitized) {
+                [sanitizedArray replaceObjectAtIndex:[sanitizedArray indexOfObject:obj] withObject:@""];
+            } else {
+                [sanitizedArray replaceObjectAtIndex:[sanitizedArray indexOfObject:obj] withObject:sanitized];
+            }
+        }];
+        return [NSMutableArray arrayWithArray:sanitizedArray];
+    }
+    
+    if ([rootObject isKindOfClass:[NSNull class]]) {
+        return (id)nil;
+    } else {
+        return rootObject;
+    }
+}

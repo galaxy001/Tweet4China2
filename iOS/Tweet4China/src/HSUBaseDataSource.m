@@ -26,12 +26,12 @@
     return self;
 }
 
-- (void)authenticate
+- (void)authenticateWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     if (!TWENGINE.isAuthorized) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TWENGINE authorize];
+        [TWENGINE authorizeWithSuccess:success failure:failure];
     } else {
         id userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey];
         if (!userSettings) {

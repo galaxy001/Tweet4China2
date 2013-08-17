@@ -189,7 +189,7 @@
             [alertView show];
             
             confirmBnt.action = ^{
-                [TWENGINE authorize];
+                [TWENGINE authorizeWithSuccess:nil failure:nil];
             };
 
         } else {

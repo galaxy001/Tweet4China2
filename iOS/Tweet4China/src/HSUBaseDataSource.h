@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "HSUTwitterAPI.h"
 
 #define kRequestDataCountViaWifi 200
 #define kRequestDataCountViaWWAN 20
@@ -40,7 +41,7 @@
 - (void)saveCache;
 + (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce;
 + (NSString *)cacheKey;
-- (void)authenticate;
+- (void)authenticateWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)removeCellData:(HSUTableCellData *)cellData;
 
 @end

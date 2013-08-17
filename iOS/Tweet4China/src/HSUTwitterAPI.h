@@ -16,7 +16,7 @@ typedef void (^HSUTwitterAPIFailureBlock)(NSError *error);
 
 + (instancetype)shared;
 - (BOOL)isAuthorized;
-- (void)authorize;
+- (void)authorizeWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (NSString *)myScreenName;
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
