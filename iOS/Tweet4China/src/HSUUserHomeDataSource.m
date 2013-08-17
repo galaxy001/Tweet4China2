@@ -10,24 +10,26 @@
 
 @implementation HSUUserHomeDataSource
 
-- (id)fetchRefreshData
+- (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    id result = [TWENGINE getTimelineForUser:self.screenName isID:NO count:self.requestCount];
-    if ([result isKindOfClass:[NSArray class]]) {
-        NSDictionary *tweet = [result lastObject];
+    [TWENGINE getHomeTimelineSinceID:nil count:self.requestCount success:^(id responseObj) {
+        NSDictionary *tweet = [responseObj lastObject];
         self.lastStatsuID = tweet[@"id_str"];
-    }
-    return result;
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
-- (id)fetchMoreData
+- (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    id result = [TWENGINE getTimelineForUser:self.screenName isID:NO count:self.requestCount sinceID:nil maxID:self.lastStatsuID];
-    if (![result isKindOfClass:[NSArray class]]) {
-        NSDictionary *tweet = [result lastObject];
+    [TWENGINE getHomeTimelineWithMaxID:self.lastStatsuID count:self.requestCount success:^(id responseObj) {
+        NSDictionary *tweet = [responseObj lastObject];
         self.lastStatsuID = tweet[@"id_str"];
-    }
-    return result;
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
 - (void)saveCache

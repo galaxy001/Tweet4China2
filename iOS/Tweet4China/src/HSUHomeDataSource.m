@@ -15,44 +15,43 @@
 #ifdef AUTHOR_jason
     return;
 #endif
-    dispatch_async(GCDBackgroundThread, ^{
-        @autoreleasepool {
-            NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
-            if (!latestIdStr) {
-                latestIdStr = @"1";
-            }
-            id result = [TWENGINE getHomeTimelineSinceID:latestIdStr count:1];
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    if (![result isKindOfClass:[NSError class]]) {
-                        NSArray *tweets = result;
-                        NSString *lastIdStr = tweets.lastObject[@"id_str"];
-                        if (lastIdStr) { // updated
-                            [viewController dataSourceDidFindUnread:nil];
-                        }
-                    } else {
-                        
-                    }
-                }
-            });
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
+    if (!latestIdStr) {
+        latestIdStr = @"1";
+    }
+    [TWENGINE getHomeTimelineSinceID:latestIdStr count:1 success:^(id responseObj) {
+        NSArray *tweets = responseObj;
+        NSString *lastIdStr = tweets.lastObject[@"id_str"];
+        if (lastIdStr) { // updated
+            [viewController dataSourceDidFindUnread:nil];
         }
-    });
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
-- (id)fetchRefreshData
+- (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    return [TWENGINE getHomeTimelineSinceID:latestIdStr count:self.requestCount];
+    [TWENGINE getHomeTimelineSinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
-- (id)fetchMoreData
+- (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
-    return [TWENGINE getHomeTimelineMaxId:lastStatusId count:self.requestCount];
+    [TWENGINE getHomeTimelineWithMaxID:lastStatusId count:self.requestCount success:^(id responseObj) {
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
 -(void)saveCache

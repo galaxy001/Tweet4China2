@@ -341,27 +341,27 @@
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
     dispatch_async(GCDBackgroundThread, ^{
-        id result = [TWENGINE getFriendsMoreThanID];
-        if ([result isKindOfClass:[NSArray class]]) {
-            friends = result;
+        [TWENGINE getFriendsWithSuccess:^(id responseObj) {
+            friends = responseObj;
             [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self filterSuggestions];
-            });
-        }
+            [self filterSuggestions];
+        } failure:^(NSError *error) {
+            
+        }];
     });
 
     dispatch_async(GCDBackgroundThread, ^{
-        id result = [TWENGINE getTrends];
-        if ([result isKindOfClass:[NSArray class]] && [result count]) {
-            trends = result[0][@"trends"];
+        [TWENGINE getTrendsWithSuccess:^(id responseObj) {
+            trends = responseObj[0][@"trends"];
             [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self filterSuggestions];
             });
-        }
+        } failure:^(NSError *error) {
+            
+        }];
     });
 }
 
@@ -446,43 +446,40 @@
     if (contentTV.text == nil) return;
     NSString *status = contentTV.text;
     NSString *briefMessage = [NSString stringWithFormat:@"Message sent: %@", [contentTV.text substringToIndex:MIN(20, contentTV.text.length)]];
-    dispatch_async(GCDBackgroundThread, ^{
-        //save draft
-        NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
-        NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location];
-        
-        NSError *err = [[HSUDraftManager shared] sendDraft:draft];
-        if (err) {
-            [[HSUDraftManager shared] activeDraft:draft];
-            RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-            RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:@"Drafts"];
-            draftsItem.action = ^{
-                [[HSUDraftManager shared] presentDraftsViewController];
-            };
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet not sent"
-                                                            message:@"There was an issue when sending your Tweets. It has been saved to your drafts. Please try again later."
-                                                   cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
-            dispatch_async(GCDMainThread, ^{
-                [alert show];
-            });
-        } else {
-            [[HSUDraftManager shared] removeDraft:draft];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sent" message:briefMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-            dispatch_async(GCDMainThread, ^{
-                [alert show];
-            });
-        }
-    });
+    //save draft
+    NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
+    NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location];
+    
+    [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
+        [[HSUDraftManager shared] removeDraft:draft];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sent" message:briefMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        dispatch_async(GCDMainThread, ^{
+            [alert show];
+        });
+    } failure:^(NSError *error) {
+        [[HSUDraftManager shared] activeDraft:draft];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+        RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:@"Drafts"];
+        draftsItem.action = ^{
+            [[HSUDraftManager shared] presentDraftsViewController];
+        };
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet not sent"
+                                                        message:@"There was an issue when sending your Tweets. It has been saved to your drafts. Please try again later."
+                                               cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
+        dispatch_async(GCDMainThread, ^{
+            [alert show];
+        });
+    }];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString *newText = [contentTV.text stringByReplacingCharactersInRange:range withString:text];
-    return ([TWENGINE twitterTextLength:newText] <= 140);
+    return ([TwitterText tweetLength:newText] <= 140);
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
-    NSUInteger wordLen = [TWENGINE twitterTextLength:contentTV.text];
+    NSUInteger wordLen = [TwitterText tweetLength:contentTV.text];
     if (wordLen > 0) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {

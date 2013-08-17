@@ -258,23 +258,15 @@
 {
     [message removeObjectForKey:@"failed"];
     [self.tableView reloadData];
-    dispatch_async(GCDBackgroundThread, ^{
-        id result = [TWENGINE sendDirectMessage:message[@"text"] toUser:message[@"recipient_screen_name"] isID:NO];
-        __weak __typeof(&*self)weakSelf = self;
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([TWENGINE dealWithError:result errTitle:@"Failed to send message"]) {
-                    [message setValuesForKeysWithDictionary:result];
-                    [message removeObjectForKey:@"sending"];
-                    [strongSelf.tableView reloadData];
-                } else {
-                    message[@"failed"] = @(YES);
-                    [strongSelf.tableView reloadData];
-                }
-            }
-        });
-    });
+    [TWENGINE sendDirectMessage:message[@"text"] toUser:message[@"recipient_screen_name"] success:^(id responseObj) {
+        [message setValuesForKeysWithDictionary:responseObj];
+        [message removeObjectForKey:@"sending"];
+        [self.tableView reloadData];
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Failed to send message"];
+        message[@"failed"] = @(YES);
+        [self.tableView reloadData];
+    }];
 }
 
 @end

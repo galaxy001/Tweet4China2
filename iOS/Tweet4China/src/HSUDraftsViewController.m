@@ -127,9 +127,11 @@
 {
     for (HSUTableCellData *cellData in self.dataSource.allData) {
         NSDictionary *draft = cellData.rawData;
-        dispatch_async(GCDBackgroundThread, ^{
-            [[HSUDraftManager shared] sendDraft:draft];
-        });
+        [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
+            
+        } failure:^(NSError *error) {
+            
+        }];
     }
     [self dismissViewControllerAnimated:YES completion:nil];
 }

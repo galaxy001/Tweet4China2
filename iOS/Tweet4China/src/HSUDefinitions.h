@@ -26,6 +26,8 @@
 #import "Reachability.h"
 #import "HSUBaseViewController.h"
 #import "HSUTwitterEngine.h"
+#import "HSUTwitterAPI.h"
+#import "TwitterText.h"
 #import "NSString+Additions.h"
 #import "HSUAppDelegate.h"
 
@@ -74,7 +76,7 @@ _Pragma("clang diagnostic pop") \
 #define kGrayColor [UIColor grayColor]
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
-#define TWENGINE [HSUTwitterEngine engine]
+#define TWENGINE [HSUTwitterAPI shared]
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]

@@ -10,9 +10,13 @@
 
 @implementation HSUFollowingDataSource
 
--(id)fetchData
+-(void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    return [TWENGINE getFollowingSinceId:self.nextCursor forUserScreenName:self.screenName];
+    [TWENGINE getFollowersSinceId:self.nextCursor forUserScreenName:self.screenName success:^(id responseObj) {
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
 @end

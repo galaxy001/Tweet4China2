@@ -62,21 +62,14 @@
     NSDictionary *rawData = cellData.rawData;
     NSString *id_str = rawData[@"id_str"];
     
-    __weak __typeof(&*self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
-        NSError *error = [TWENGINE retweet:id_str];
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([TWENGINE dealWithError:error errTitle:@"Retweet failed"]) {
-                    NSMutableDictionary *newRawData = [rawData mutableCopy];
-                    newRawData[@"retweeted"] = [NSNumber numberWithBool:YES];
-                    cellData.rawData = newRawData;
-                    [strongSelf.dataSource saveCache];
-                }
-            }
-        });
-    });
+    [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
+        NSMutableDictionary *newRawData = [rawData mutableCopy];
+        newRawData[@"retweeted"] = [NSNumber numberWithBool:YES];
+        cellData.rawData = newRawData;
+        [self.dataSource saveCache];
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Retweet failed"];
+    }];
 }
 
 - (void)favorite:(HSUTableCellData *)cellData {
@@ -84,21 +77,14 @@
     NSString *id_str = rawData[@"id_str"];
     BOOL favorited = [rawData[@"favorited"] boolValue];
     
-    __weak __typeof(&*self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
-        NSError *error = [TWENGINE markTweet:id_str asFavorite:!favorited];
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"]) {
-                    NSMutableDictionary *newRawData = [rawData mutableCopy];
-                    newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
-                    cellData.rawData = newRawData;
-                    [strongSelf.dataSource saveCache];
-                }
-            }
-        });
-    });
+    [TWENGINE markStatus:id_str success:^(id responseObj) {
+        NSMutableDictionary *newRawData = [rawData mutableCopy];
+        newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
+        cellData.rawData = newRawData;
+        [self.dataSource saveCache];
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"];
+    }];
 }
 
 - (void)delete:(HSUTableCellData *)cellData
@@ -112,20 +98,13 @@
         NSDictionary *rawData = cellData.rawData;
         NSString *id_str = rawData[@"id_str"];
         
-        dispatch_async(GCDBackgroundThread, ^{
-            NSError *error = [TWENGINE destroyTweet:id_str];
-            __weak __typeof(&*self)weakSelf = self;
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:error errTitle:@"Delete tweet failed"]) {
-                        [strongSelf.dataSource removeCellData:cellData];
-                        [strongSelf.dataSource saveCache];
-                        [strongSelf.tableView reloadData];
-                    }
-                }
-            });
-        });
+        [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+            [self.dataSource removeCellData:cellData];
+            [self.dataSource saveCache];
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Delete tweet failed"];
+        }];
     };
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];
     [actionSheet showInView:self.view.window];

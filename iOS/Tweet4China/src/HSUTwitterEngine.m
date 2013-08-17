@@ -10,6 +10,8 @@
 #import "OAuthConsumer.h"
 #import "TwitterText.h"
 #import "OAMutableURLRequest.h"
+#import <Accounts/Accounts.h>
+#import <Twitter/Twitter.h>
 
 @implementation HSUTwitterEngine
 
@@ -46,7 +48,131 @@
 }
 
 - (void)auth {
-    [self showOAuthLoginControllerFromViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+    static ACAccountStore *store;
+    store = [[ACAccountStore alloc] init]; // Long-lived
+    ACAccountType *twitterType = [store accountTypeWithAccountTypeIdentifier:ACAccountTypeIdentifierTwitter];
+    [store requestAccessToAccountsWithType:twitterType options:nil completion:^(BOOL granted, NSError *error) {
+        if(granted) {
+            NSArray *twitterAccounts = [store accountsWithAccountType:twitterType];
+            
+            if (twitterAccounts.count) {
+                ACAccount *account = [twitterAccounts objectAtIndex:0];
+                [[NSUserDefaults standardUserDefaults] setValue:account.identifier forKey:@"twitter_access_token"];
+                [[NSUserDefaults standardUserDefaults] setValue:account.username forKey:@"twitter_screen_name"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                
+                NSURL *url = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/home_timeline.json"];
+                static SLRequest *twReq;
+                twReq = [SLRequest requestForServiceType:SLServiceTypeTwitter requestMethod:SLRequestMethodGET URL:url parameters:nil];
+                twReq.account = account;
+                [twReq performRequestWithHandler:^(NSData *responseData, NSHTTPURLResponse *urlResponse, NSError *error) {
+                    
+                    // If there was an error making the request, display a message to the user
+                    if(error != nil) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter Error"
+                                                                        message:@"There was an error talking to Twitter. Please try again later."
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                        [alert show];
+                        return;
+                    }
+                    
+                    // Parse the JSON response
+                    NSError *jsonError = nil;
+                    id resp = [NSJSONSerialization JSONObjectWithData:responseData
+                                                              options:0
+                                                                error:&jsonError];
+                    
+                    // If there was an error decoding the JSON, display a message to the user
+                    if(jsonError != nil) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter Error"
+                                                                        message:@"Twitter is not acting properly right now. Please try again later."
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                        [alert show];
+                        return;
+                    }
+                    
+                    NSString *screenName = [resp objectForKey:@"screen_name"];
+                    NSString *fullName = [resp objectForKey:@"name"];
+                    NSString *location = [resp objectForKey:@"location"];
+                }];
+                return ;
+                
+                static TWRequest *req;
+                req = [[TWRequest alloc] initWithURL:url
+                                          parameters:nil
+                                       requestMethod:TWRequestMethodGET];
+                
+                // Important: attach the user's Twitter ACAccount object to the request
+                req.account = account;
+                
+                [req performRequestWithHandler:^(NSData *responseData,
+                                                 NSHTTPURLResponse *urlResponse,
+                                                 NSError *error) {
+                    
+                    // If there was an error making the request, display a message to the user
+                    if(error != nil) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter Error"
+                                                                        message:@"There was an error talking to Twitter. Please try again later."
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                        [alert show];
+                        return;
+                    }
+                    
+                    // Parse the JSON response
+                    NSError *jsonError = nil;
+                    id resp = [NSJSONSerialization JSONObjectWithData:responseData
+                                                              options:0
+                                                                error:&jsonError];
+                    
+                    // If there was an error decoding the JSON, display a message to the user
+                    if(jsonError != nil) {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Twitter Error"
+                                                                        message:@"Twitter is not acting properly right now. Please try again later."
+                                                                       delegate:nil
+                                                              cancelButtonTitle:@"OK"
+                                                              otherButtonTitles:nil];
+                        [alert show];
+                        return;
+                    }
+                    
+                    NSString *screenName = [resp objectForKey:@"screen_name"];
+                    NSString *fullName = [resp objectForKey:@"name"];
+                    NSString *location = [resp objectForKey:@"location"];
+                    
+                    // Make sure to perform our operation back on the main thread
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        // Do something with the fetched data
+                    });
+                }];
+                
+                
+                
+                
+                
+                return ;
+            }
+        }
+        [self showOAuthLoginControllerFromViewController:[UIApplication sharedApplication].keyWindow.rootViewController];
+    }];
+}
+
+- (void)loadAccessToken
+{
+    NSString *key = [[NSUserDefaults standardUserDefaults] valueForKey:@"twitter_access_token"];
+    OAToken *accessToken = [OAToken token];
+    accessToken.key = key;
+    self.accessToken = accessToken;
+    self.loggedInUsername = [[NSUserDefaults standardUserDefaults] valueForKey:@"twitter_screen_name"];
+    if (!self.accessToken) {
+        [super loadAccessToken];
+    }
 }
 
 - (BOOL)dealWithError:(NSError *)error errTitle:(NSString *)errTitle {
@@ -63,7 +189,7 @@
             [alertView show];
             
             confirmBnt.action = ^{
-                [TWENGINE auth];
+                [TWENGINE authorize];
             };
 
         } else {

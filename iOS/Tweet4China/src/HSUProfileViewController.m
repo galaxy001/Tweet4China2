@@ -61,24 +61,17 @@
 {
     [super viewDidAppear:animated];
     
-    dispatch_async(GCDBackgroundThread, ^{
-        id result = [TWENGINE lookupUsers:@[self.screenName] areIDs:NO];
-        __weak __typeof(&*self)weakSelf = self;
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([result isKindOfClass:[NSArray class]]) {
-                    NSArray *profiles = result;
-                    if (profiles.count) {
-                        [strongSelf.profileView setupWithProfile:profiles[0]];
-                        strongSelf.profile = profiles[0];
-                        [[NSUserDefaults standardUserDefaults] setObject:strongSelf.profile forKey:kUserProfile_DBKey];
-                        [[NSUserDefaults standardUserDefaults] synchronize];
-                    }
-                }
-            }
-        });
-    });
+    [TWENGINE lookupUsers:@[self.screenName] success:^(id responseObj) {
+        NSArray *profiles = responseObj;
+        if (profiles.count) {
+            [self.profileView setupWithProfile:profiles[0]];
+            self.profile = profiles[0];
+            [[NSUserDefaults standardUserDefaults] setObject:self.profile forKey:kUserProfile_DBKey];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -139,59 +132,40 @@
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
         RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:@"Unblock"];
         unblockItem.action = ^{
-            dispatch_async(GCDBackgroundThread, ^{
-                id result = [TWENGINE unblock:self.screenName];
-                __weak __typeof(&*self)weakSelf = self;
-                dispatch_sync(GCDMainThread, ^{
-                    @autoreleasepool {
-                        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                        if ([TWENGINE dealWithError:result errTitle:@"Unblock failed"]) {
-                            NSMutableDictionary *profile = strongSelf.profile.mutableCopy;
-                            profile[@"blocked"] = @(NO);
-                            profile[@"following"] = @(NO);
-                            strongSelf.profile = profile;
-                            [strongSelf.profileView setupWithProfile:profile];
-                        }
-                    }
-                });
-            });
+            [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
+                NSMutableDictionary *profile = self.profile.mutableCopy;
+                profile[@"blocked"] = @(NO);
+                profile[@"following"] = @(NO);
+                self.profile = profile;
+                [self.profileView setupWithProfile:profile];
+            } failure:^(NSError *error) {
+                [TWENGINE dealWithError:error errTitle:@"Unblock failed"];
+            }];
         };
         UIActionSheet *blockActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:unblockItem otherButtonItems:nil, nil];
         [blockActionSheet showInView:[UIApplication sharedApplication].keyWindow];
     } else if ([self.profile[@"following"] boolValue]) {
-        dispatch_async(GCDBackgroundThread, ^{
-            id result = [TWENGINE unfollowUser:self.screenName isID:NO];
-            __weak __typeof(&*self)weakSelf = self;
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Unfollow failed"]) {
-                        NSMutableDictionary *profile = strongSelf.profile.mutableCopy;
-                        profile[@"following"] = @(NO);
-                        strongSelf.profile = profile;
-                        [strongSelf.profileView setupWithProfile:profile];
-                    }
-                    followButton.enabled = YES;
-                }
-            });
-        });
+        [TWENGINE unFollowUser:self.screenName success:^(id responseObj) {
+            NSMutableDictionary *profile = self.profile.mutableCopy;
+            profile[@"following"] = @(NO);
+            self.profile = profile;
+            [self.profileView setupWithProfile:profile];
+            followButton.enabled = YES;
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Unfollow failed"];
+            followButton.enabled = YES;
+        }];
     } else {
-        dispatch_async(GCDBackgroundThread, ^{
-            id result = [TWENGINE followUser:self.screenName isID:NO];
-            __weak __typeof(&*self)weakSelf = self;
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Follow failed"]) {
-                        NSMutableDictionary *profile = strongSelf.profile.mutableCopy;
-                        profile[@"following"] = @(YES);
-                        strongSelf.profile = profile;
-                        [strongSelf.profileView setupWithProfile:profile];
-                    }
-                    followButton.enabled = YES;
-                }
-            });
-        });
+        [TWENGINE followUser:self.screenName success:^(id responseObj) {
+            NSMutableDictionary *profile = self.profile.mutableCopy;
+            profile[@"following"] = @(YES);
+            self.profile = profile;
+            [self.profileView setupWithProfile:profile];
+            followButton.enabled = YES;
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Follow failed"];
+            followButton.enabled = YES;
+        }];
     }
 }
 
@@ -244,14 +218,11 @@
     
     RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:@"Report spam"];
     reportSpamItem.action = ^{
-        dispatch_async(GCDBackgroundThread, ^{
-            id result = [TWENGINE reportUserAsSpam:self.screenName isID:NO];
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    [TWENGINE dealWithError:result errTitle:@"Report spam failed"];
-                }
-            });
-        });
+        [TWENGINE reportUserAsSpam:self.screenName success:^(id responseObj) {
+            
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Report spam failed"];
+        }];
     };
     [actionSheet addButtonItem:reportSpamItem];
     count ++;
@@ -259,43 +230,29 @@
     if ([self.profile[@"blocked"] boolValue]) {
         RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:@"Unblock"];
         unblockItem.action = ^{
-            dispatch_async(GCDBackgroundThread, ^{
-                id result = [TWENGINE unblock:self.screenName];
-                __weak __typeof(&*self)weakSelf = self;
-                dispatch_sync(GCDMainThread, ^{
-                    @autoreleasepool {
-                        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                        if ([TWENGINE dealWithError:result errTitle:@"Unblock failed"]) {
-                            NSMutableDictionary *profile = strongSelf.profile.mutableCopy;
-                            profile[@"blocked"] = @(NO);
-                            profile[@"following"] = @(NO);
-                            strongSelf.profile = profile;
-                            [strongSelf.profileView setupWithProfile:profile];
-                        }
-                    }
-                });
-            });
+            [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
+                NSMutableDictionary *profile = self.profile.mutableCopy;
+                profile[@"blocked"] = @(NO);
+                profile[@"following"] = @(NO);
+                self.profile = profile;
+                [self.profileView setupWithProfile:profile];
+            } failure:^(NSError *error) {
+                [TWENGINE dealWithError:error errTitle:@"Unblock failed"];
+            }];
         };
         [actionSheet addButtonItem:unblockItem];
     } else {
         RIButtonItem *blockItem = [RIButtonItem itemWithLabel:@"Block"];
         blockItem.action = ^{
-            dispatch_async(GCDBackgroundThread, ^{
-                id result = [TWENGINE block:self.screenName];
-                __weak __typeof(&*self)weakSelf = self;
-                dispatch_sync(GCDMainThread, ^{
-                    @autoreleasepool {
-                        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                        if ([TWENGINE dealWithError:result errTitle:@"Block failed"]) {
-                            NSMutableDictionary *profile = strongSelf.profile.mutableCopy;
-                            profile[@"blocked"] = @(YES);
-                            profile[@"following"] = @(NO);
-                            strongSelf.profile = profile;
-                            [strongSelf.profileView setupWithProfile:profile];
-                        }
-                    }
-                });
-            });
+            [TWENGINE blockUser:self.screenName success:^(id responseObj) {
+                NSMutableDictionary *profile = self.profile.mutableCopy;
+                profile[@"blocked"] = @(YES);
+                profile[@"following"] = @(NO);
+                self.profile = profile;
+                [self.profileView setupWithProfile:profile];
+            } failure:^(NSError *error) {
+                [TWENGINE dealWithError:error errTitle:@"Block failed"];
+            }];
         };
         [actionSheet addButtonItem:blockItem];
     }

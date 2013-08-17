@@ -28,7 +28,11 @@
     notification_post_with_object(kNNDeleteConversation, self.conversation);
     dispatch_async(GCDBackgroundThread, ^{
         for (NSDictionary *message in self.conversation[@"messages"]) {
-            [TWENGINE deleteDirectMessage:message[@"id_str"]];
+            [TWENGINE deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
+                
+            } failure:^(NSError *error) {
+                
+            }];
         }
     });
 }

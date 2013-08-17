@@ -31,7 +31,7 @@
     if (!TWENGINE.isAuthorized) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TWENGINE auth];
+        [TWENGINE authorize];
     } else {
         id userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey];
         if (!userSettings) {
@@ -40,12 +40,13 @@
             [loadingAlert addSubview:spinner];
             spinner.frame = ccr(125, 50, 30, 30);
             [loadingAlert show];
-            userSettings = [TWENGINE getUserSettings];
-            if ([TWENGINE dealWithError:userSettings errTitle:@"Fetch account info failed"]) {
-                [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:kUserSettings_DBKey];
+            [TWENGINE getUserSettingsWithSuccess:^(id responseObj) {
+                [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 [loadingAlert dismissWithClickedButtonIndex:-1 animated:YES];
-            }
+            } failure:^(NSError *error) {
+                [TWENGINE dealWithError:error errTitle:@"Fetch account info failed"];
+            }];
         }
     }
 }

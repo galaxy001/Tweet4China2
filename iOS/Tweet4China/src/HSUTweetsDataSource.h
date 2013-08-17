@@ -12,7 +12,7 @@
 
 @property (nonatomic, copy) NSString *screenName;
 
-- (id)fetchRefreshData;
-- (id)fetchMoreData;
+- (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 @end

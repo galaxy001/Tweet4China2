@@ -17,11 +17,11 @@
 - (void)layoutSubviews
 {
     if (!logo) {
-        logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_title_logo"]];
-        [self addSubview:logo];
+//        logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_title_logo_duck"]];
+//        [self addSubview:logo];
         [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar"] forBarMetrics:UIBarMetricsDefault];
     }
-    logo.frame = CGRectMake(self.bounds.size.width/2-logo.bounds.size.width/2, 10, logo.bounds.size.width, logo.bounds.size.height);
+//    logo.frame = CGRectMake(self.bounds.size.width/2-logo.bounds.size.width/2, 10, logo.bounds.size.width, logo.bounds.size.height);
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {

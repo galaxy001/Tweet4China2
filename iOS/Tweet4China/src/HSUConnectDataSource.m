@@ -16,112 +16,84 @@
 #ifdef AUTHOR_jason
     return;
 #endif
-    dispatch_async(GCDBackgroundThread, ^{
-        @autoreleasepool {
-            NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
-            if (!latestIdStr) {
-                latestIdStr = @"1";
-            }
-            id result = [TWENGINE getMentionsTimelineWithCount:1 sinceID:latestIdStr maxID:nil];
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    if (![result isKindOfClass:[NSError class]]) {
-                        NSArray *tweets = result;
-                        NSString *lastIdStr = tweets.lastObject[@"id_str"];
-                        if (lastIdStr) { // updated
-                            [viewController dataSourceDidFindUnread:nil];
-                        }
-                    } else {
-                        
-                    }
-                }
-            });
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
+    if (!latestIdStr) {
+        latestIdStr = @"1";
+    }
+    [TWENGINE getMentionsTimelineSinceID:latestIdStr maxID:nil count:1 success:^(id responseObj) {
+        NSArray *tweets = responseObj;
+        NSString *lastIdStr = tweets.lastObject[@"id_str"];
+        if (lastIdStr) { // updated
+            [viewController dataSourceDidFindUnread:nil];
         }
-    });
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)refresh
 {
     [super refresh];
     
-    __weak __typeof(&*self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
-        __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-        @autoreleasepool {
-            NSString *latestIdStr = [strongSelf rawDataAtIndex:0][@"id_str"];
-            if (!latestIdStr) {
-                latestIdStr = @"1";
+    NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
+    if (!latestIdStr) {
+        latestIdStr = @"1";
+    }
+    [TWENGINE getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
+        NSArray *tweets = responseObj;
+        if (tweets.count) {
+            for (int i=tweets.count-1; i>=0; i--) {
+                HSUTableCellData *cellData =
+                [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
+                [self.data insertObject:cellData atIndex:0];
             }
-            id result = [TWENGINE getMentionsTimelineWithCount:self.requestCount sinceID:latestIdStr maxID:nil];
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Load failed"]) {
-                        NSArray *tweets = result;
-                        if (tweets.count) {
-                            for (int i=tweets.count-1; i>=0; i--) {
-                                HSUTableCellData *cellData =
-                                    [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
-                                [strongSelf.data insertObject:cellData atIndex:0];
-                            }
-                            
-                            HSUTableCellData *lastCellData = strongSelf.data.lastObject;
-                            if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
-                                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
-                                loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
-                                loadMoreCellData.dataType = kDataType_LoadMore;
-                                [strongSelf.data addObject:loadMoreCellData];
-                            }
-                            
-                            [strongSelf saveCache];
-                            [strongSelf.delegate preprocessDataSourceForRender:self];
-                        }
-                        [strongSelf.delegate dataSource:strongSelf didFinishRefreshWithError:nil];
-                        strongSelf.loadingCount --;
-                    }
-                }
-            });
+            
+            HSUTableCellData *lastCellData = self.data.lastObject;
+            if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
+                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+                loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
+                loadMoreCellData.dataType = kDataType_LoadMore;
+                [self.data addObject:loadMoreCellData];
+            }
+            
+            [self saveCache];
+            [self.delegate preprocessDataSourceForRender:self];
         }
-    });
+        [self.delegate dataSource:self didFinishRefreshWithError:nil];
+        self.loadingCount --;
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+    }];
 }
 
 - (void)loadMore
 {
     [super loadMore];
     
-    __weak __typeof(&*self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
-        @autoreleasepool {
-            __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-            HSUTableCellData *lastStatusData = [strongSelf dataAtIndex:strongSelf.count-2];
-            NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
-            id result = [TWENGINE getMentionsTimelineWithCount:self.requestCount sinceID:nil maxID:lastStatusId];
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Load failed"]) {
-                        [result removeObjectAtIndex:0];
-                        id loadMoreCellData = strongSelf.data.lastObject;
-                        [strongSelf.data removeLastObject];
-                        for (NSDictionary *tweet in result) {
-                            HSUTableCellData *cellData =
-                            [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
-                            [strongSelf.data addObject:cellData];
-                        }
-                        [strongSelf.data addObject:loadMoreCellData];
-                        
-                        [strongSelf saveCache];
-                        [strongSelf.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
-                        [strongSelf.delegate preprocessDataSourceForRender:self];
-                    } else {
-                        [strongSelf.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
-                    }
-                    [strongSelf.delegate dataSource:strongSelf didFinishLoadMoreWithError:nil];
-                    strongSelf.loadingCount --;
-                }
-            });
+    HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
+    NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
+    [TWENGINE getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
+        [responseObj removeObjectAtIndex:0];
+        id loadMoreCellData = self.data.lastObject;
+        [self.data removeLastObject];
+        for (NSDictionary *tweet in responseObj) {
+            HSUTableCellData *cellData =
+            [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
+            [self.data addObject:cellData];
         }
-    });
+        [self.data addObject:loadMoreCellData];
+        
+        [self saveCache];
+        [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
+        [self.delegate preprocessDataSourceForRender:self];
+        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
+        self.loadingCount --;
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
+        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
+        self.loadingCount --;
+    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath

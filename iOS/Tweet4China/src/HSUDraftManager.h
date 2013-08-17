@@ -38,6 +38,6 @@
 
 - (void)presentDraftsViewController;
 
-- (NSError *)sendDraft:(NSDictionary *)draft;
+- (void)sendDraft:(NSDictionary *)draft success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 @end

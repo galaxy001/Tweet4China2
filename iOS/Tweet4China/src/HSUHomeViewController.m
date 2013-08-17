@@ -30,6 +30,7 @@
     [super viewDidAppear:animated];
     
     [(HSUHomeDataSource *)self.dataSource authenticate];
+    return;
     
     if (self.dataSource.count == 0) {
         [self.refreshControl beginRefreshing];

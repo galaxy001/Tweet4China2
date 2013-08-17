@@ -60,39 +60,25 @@
     [self.tableView reloadData];
     
     if ([cellData.rawData[@"following"] boolValue]) {
-        dispatch_async(GCDBackgroundThread, ^{
-            id result = [TWENGINE unfollowUser:screenName isID:NO];
-            __weak __typeof(&*self)weakSelf = self;
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Unfollow failed"]) {
-                        cellData.renderData[@"sending_following_request"] = @(NO);
-                        NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
-                        rawData[@"following"] = @(NO);
-                        cellData.rawData = rawData;
-                        [strongSelf.tableView reloadData];
-                    }
-                }
-            });
-        });
+        [TWENGINE unFollowUser:screenName success:^(id responseObj) {
+            cellData.renderData[@"sending_following_request"] = @(NO);
+            NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
+            rawData[@"following"] = @(NO);
+            cellData.rawData = rawData;
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Unfollow failed"];
+        }];
     } else {
-        dispatch_async(GCDBackgroundThread, ^{
-            id result = [TWENGINE followUser:screenName isID:NO];
-            __weak __typeof(&*self)weakSelf = self;
-            dispatch_sync(GCDMainThread, ^{
-                @autoreleasepool {
-                    __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                    if ([TWENGINE dealWithError:result errTitle:@"Follow failed"]) {
-                        cellData.renderData[@"sending_following_request"] = @(NO);
-                        NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
-                        rawData[@"following"] = @(YES);
-                        cellData.rawData = rawData;
-                        [strongSelf.tableView reloadData];
-                    }
-                }
-            });
-        });
+        [TWENGINE followUser:screenName success:^(id responseObj) {
+            cellData.renderData[@"sending_following_request"] = @(NO);
+            NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
+            rawData[@"following"] = @(YES);
+            cellData.rawData = rawData;
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Follow failed"];
+        }];
     }
 }
 

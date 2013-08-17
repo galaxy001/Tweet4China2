@@ -15,6 +15,6 @@
 @property (nonatomic, copy) NSString *prevCursor;
 
 - (id)initWithScreenName:(NSString *)screenName;
-- (id)fetchData;
+- (void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 @end

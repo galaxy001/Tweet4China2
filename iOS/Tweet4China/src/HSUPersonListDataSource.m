@@ -19,52 +19,44 @@
     return self;
 }
 
-- (id)fetchData
+- (void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    return nil;
 }
 
 - (void)loadMore
 {
     [super loadMore];
     
-    dispatch_async(GCDBackgroundThread, ^{
-        id result = [self fetchData];
-        __weak __typeof(&*self)weakSelf = self;
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([TWENGINE dealWithError:result errTitle:@"Load followers failed"]) {
-                    NSDictionary *dict = result;
-                    strongSelf.nextCursor = dict[@"next_cursor_str"];
-                    strongSelf.prevCursor = dict[@"previous_cursor_str"];
-                    NSArray *users = dict[@"users"];
-                    if (users.count) {
-                        HSUTableCellData *loadMoreCellData = strongSelf.data.lastObject;
-                        [strongSelf.data removeLastObject];
-                        for (NSDictionary *tweet in users) {
-                            HSUTableCellData *cellData =
-                            [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_Person];
-                            [strongSelf.data addObject:cellData];
-                        }
-                        if (!loadMoreCellData) {
-                            loadMoreCellData = [[HSUTableCellData alloc] init];
-                            loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
-                            loadMoreCellData.dataType = kDataType_LoadMore;
-                        }
-                        [strongSelf.data addObject:loadMoreCellData];
-                        
-                        [strongSelf.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
-                        [strongSelf.delegate preprocessDataSourceForRender:self];
-                    } else {
-                        [strongSelf.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
-                    }
-                    [strongSelf.delegate dataSource:strongSelf didFinishRefreshWithError:nil];
-                    strongSelf.loadingCount --;
-                }
+    [self fetchDataWithSuccess:^(id responseObj) {
+        NSDictionary *dict = responseObj;
+        self.nextCursor = dict[@"next_cursor_str"];
+        self.prevCursor = dict[@"previous_cursor_str"];
+        NSArray *users = dict[@"users"];
+        if (users.count) {
+            HSUTableCellData *loadMoreCellData = self.data.lastObject;
+            [self.data removeLastObject];
+            for (NSDictionary *tweet in users) {
+                HSUTableCellData *cellData =
+                [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_Person];
+                [self.data addObject:cellData];
             }
-        });
-    });
+            if (!loadMoreCellData) {
+                loadMoreCellData = [[HSUTableCellData alloc] init];
+                loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
+                loadMoreCellData.dataType = kDataType_LoadMore;
+            }
+            [self.data addObject:loadMoreCellData];
+            
+            [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
+            [self.delegate preprocessDataSourceForRender:self];
+        } else {
+            [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
+        }
+        [self.delegate dataSource:self didFinishRefreshWithError:nil];
+        self.loadingCount --;
+    } failure:^(NSError *error) {
+        [TWENGINE dealWithError:error errTitle:@"Load followers failed"];
+    }];
 }
 
 @end

@@ -136,42 +136,14 @@
     [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
 }
 
-- (NSError *)sendDraft:(NSDictionary *)draft
+- (void)sendDraft:(NSDictionary *)draft success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    // do send
-    NSURL *baseURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update.json"];
-    
-    NSMutableArray *params = [NSMutableArray array];
-    
-    // status param
-    OARequestParameter *statusP = [OARequestParameter requestParameterWithName:@"status" value:draft[@"status"]];
-    [params addObject:statusP];
-    
-    // reply param
-    if (draft[kTwitter_Parameter_Key_Reply_ID]) {
-        OARequestParameter *inReplyToStatusIdP = [OARequestParameter requestParameterWithName:kTwitter_Parameter_Key_Reply_ID value:draft[kTwitter_Parameter_Key_Reply_ID]];
-        [params addObject:inReplyToStatusIdP];
-    }
-    
-    // image param
-    if (draft[@"image_file_path"]) {
-        baseURL = [NSURL URLWithString:@"https://api.twitter.com/1.1/statuses/update_with_media.json"];
-        NSData *imageData = [NSData dataWithContentsOfFile:draft[@"image_file_path"]];
-        OARequestParameter *mediaP = [OARequestParameter requestParameterWithName:@"media_data[]" value:[imageData base64EncodingWithLineLength:0]];
-        [params addObject:mediaP];
-    }
-    
-    // location param
     CLLocationCoordinate2D location = CLLocationCoordinate2DMake([draft[@"lat"] doubleValue], [draft[@"long"] doubleValue]);
-    if (location.latitude && location.longitude) {
-        OARequestParameter *latP = [OARequestParameter requestParameterWithName:@"lat" value:S(@"%g", location.latitude)];
-        OARequestParameter *longP = [OARequestParameter requestParameterWithName:@"long" value:S(@"%g", location.longitude)];
-        [params addObject:latP];
-        [params addObject:longP];
-    }
-    
-    OAMutableURLRequest *request = [TWENGINE requestWithBaseURL:baseURL];
-    return [TWENGINE sendPOSTRequest:request withParameters:params];
+    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitter_Parameter_Key_Reply_ID] imageFilePath:draft[@"image_file_path"] location:location success:^(id responseObj) {
+        success(responseObj);
+    } failure:^(NSError *error) {
+        failure(error);
+    }];
 }
 
 @end

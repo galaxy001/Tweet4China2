@@ -78,33 +78,26 @@
 {
     [super refresh];
     
-    __weak __typeof(&*self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
-        id result = [TWENGINE getTimelineForUser:self.screenName isID:NO count:3];
-        dispatch_sync(GCDMainThread, ^{
-            @autoreleasepool {
-                __strong __typeof(&*weakSelf)strongSelf = weakSelf;
-                if ([result isKindOfClass:[NSArray class]]) {
-                    NSArray *tweets = result;
-                    for (NSDictionary *tweet in tweets) {
-                        HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
-                        [strongSelf.data addObject:statusCellData];
-                    }
-                    [strongSelf.delegate preprocessDataSourceForRender:strongSelf];
-                    if (strongSelf.count) {
-                        NSDictionary *rawData = @{@"title": @"View More Tweets",
-                                                  @"action": kAction_UserTimeline,
-                                                  @"user_screen_name": strongSelf.screenName};
-                        HSUTableCellData *viewMoreCellData =
-                            [[HSUTableCellData alloc] initWithRawData:rawData
-                                                             dataType:kDataType_NormalTitle];
-                        [strongSelf.data addObject:viewMoreCellData];
-                        [strongSelf.delegate dataSource:strongSelf didFinishRefreshWithError:nil];
-                    }
-                }
-            }
-        });
-    });
+    [TWENGINE getUserTimelineWithScreenName:self.screenName success:^(id responseObj) {
+        NSArray *tweets = responseObj;
+        for (NSDictionary *tweet in tweets) {
+            HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
+            [self.data addObject:statusCellData];
+        }
+        [self.delegate preprocessDataSourceForRender:self];
+        if (self.count) {
+            NSDictionary *rawData = @{@"title": @"View More Tweets",
+                                      @"action": kAction_UserTimeline,
+                                      @"user_screen_name": self.screenName};
+            HSUTableCellData *viewMoreCellData =
+            [[HSUTableCellData alloc] initWithRawData:rawData
+                                             dataType:kDataType_NormalTitle];
+            [self.data addObject:viewMoreCellData];
+            [self.delegate dataSource:self didFinishRefreshWithError:nil];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
