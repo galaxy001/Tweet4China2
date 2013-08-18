@@ -394,7 +394,7 @@
 		96F2B6AA17C0D82A008C89CE /* AppProxyCap.m in Sources */ = {isa = PBXBuildFile; fileRef = 96114D1917C0CD3E00B5FB04 /* AppProxyCap.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc -w"; }; };
 		96F2B6AB17C0D82A008C89CE /* interpose.c in Sources */ = {isa = PBXBuildFile; fileRef = 96114D1A17C0CD3E00B5FB04 /* interpose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		96F2B6AF17C0D949008C89CE /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962817BA16DE5FF100ABF0AD /* SystemConfiguration.framework */; };
-		96F92D8416FB02070026284D /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F92D8316FB02070026284D /* TTTAttributedLabel.m */; };
+		96F92D8416FB02070026284D /* TTTAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 96F92D8316FB02070026284D /* TTTAttributedLabel.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		96FA81D317450B6A00DB023A /* HSUDraftsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FA81D217450B6A00DB023A /* HSUDraftsCell.m */; };
 		96FAB148174BDBBC00C8C854 /* HSUMessageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96FAB147174BDBBC00C8C854 /* HSUMessageCell.m */; };
 /* End PBXBuildFile section */
