@@ -10,6 +10,9 @@
 #import "HSUProxyURLProtocol.h"
 #import "HSUTabController.h"
 
+void set_config(const char *server, const char *remote_port, const char* password, const char* method);
+int local_main();
+
 @implementation HSUAppDelegate
 
 + (HSUAppDelegate *)shared
@@ -19,11 +22,13 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-#ifndef NO_PROXY
-//    [NSURLProtocol registerClass:[HSUProxyURLProtocol class]];
-#endif
+    // Start shadow socks proxy
+    dispatch_async(dispatch_queue_create("shadowsock", NULL), ^{
+        set_config("209.141.36.62", "8348", "$#HAL9000!", "aes-256-cfb");
+        local_main();
+    });
     
-    // Init global variables
+    // UI initialize
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     HSUTabController *tabController = [[HSUTabController alloc] init];

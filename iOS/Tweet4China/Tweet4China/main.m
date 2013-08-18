@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "AppProxyCap.h"
 #import "HSUAppDelegate.h"
 
 #ifdef DEBUG
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
     NSSetUncaughtExceptionHandler(ExceptionCatched);
 #endif
     @autoreleasepool {
+		[AppProxyCap activate];
+		[AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:1080];
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([HSUAppDelegate class]));
     }
 }

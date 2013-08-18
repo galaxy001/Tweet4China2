@@ -460,7 +460,7 @@
             [[HSUDraftManager shared] presentDraftsViewController];
         };
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet not sent"
-                                                        message:@"There was an issue when sending your Tweets. It has been saved to your drafts. Please try again later."
+                                                        message:error.userInfo[@"message"]
                                                cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
         dispatch_async(GCDMainThread, ^{
             [alert show];

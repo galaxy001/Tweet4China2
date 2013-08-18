@@ -34,7 +34,7 @@ static NSString * const url_statuses_retweets_of_me = @"https://api.twitter.com/
 static NSString * const url_statuses_user_timeline = @"https://api.twitter.com/1.1/statuses/user_timeline.json";
 static NSString * const url_statuses_metions_timeline = @"https://api.twitter.com/1.1/statuses/mentions_timeline.json";
 static NSString * const url_statuses_update_with_media = @"https://api.twitter.com/1.1/statuses/update_with_media.json";
-static NSString * const url_statuses_destroy = @"https://api.twitter.com/1.1/statuses/destroy.json";
+static NSString * const url_statuses_destroy = @"https://api.twitter.com/1.1/statuses/destroy/%@.json";
 static NSString * const url_statuses_show = @"https://api.twitter.com/1.1/statuses/show.json";
 static NSString * const url_statuses_oembed = @"https://api.twitter.com/1.1/statuses/oembed.json";
 static NSString * const url_statuses_retweet = @"https://api.twitter.com/1.1/statuses/retweet/%@.json";
@@ -345,8 +345,8 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)destroyStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendPOSTWithUrl:url_statuses_destroy
-               parameters:@{@"id": statusID}
+    [self sendPOSTWithUrl:S(url_statuses_destroy, statusID)
+               parameters:nil
                   success:success failure:failure];
 }
 
