@@ -31,23 +31,24 @@
     if (!TWENGINE.isAuthorized) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [TWENGINE authorizeWithSuccess:success failure:failure];
-    } else {
-        id userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey];
-        if (!userSettings) {
-            UIAlertView *loadingAlert = [[UIAlertView alloc] initWithTitle:@"Loading account info..." message:nil cancelButtonItem:nil otherButtonItems:nil, nil];
-            UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            [loadingAlert addSubview:spinner];
-            spinner.frame = ccr(125, 50, 30, 30);
-            [loadingAlert show];
-            [TWENGINE getUserSettingsWithSuccess:^(id responseObj) {
-                [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                [loadingAlert dismissWithClickedButtonIndex:-1 animated:YES];
-            } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:@"Fetch account info failed"];
-            }];
-        }
+        [TWENGINE authorizeWithSuccess:^(id responseObj) {
+            id userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey];
+            if (!userSettings) {
+                UIAlertView *loadingAlert = [[UIAlertView alloc] initWithTitle:@"Loading account info..." message:nil cancelButtonItem:nil otherButtonItems:nil, nil];
+                UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                [loadingAlert addSubview:spinner];
+                spinner.frame = ccr(125, 50, 30, 30);
+                [loadingAlert show];
+                [TWENGINE getUserSettingsWithSuccess:^(id responseObj) {
+                    [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [loadingAlert dismissWithClickedButtonIndex:-1 animated:YES];
+                } failure:^(NSError *error) {
+                    [TWENGINE dealWithError:error errTitle:@"Fetch account info failed"];
+                }];
+            }
+            success(responseObj);
+        } failure:failure];
     }
 }
 

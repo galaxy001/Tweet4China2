@@ -340,29 +340,25 @@
     locationManager.pausesLocationUpdatesAutomatically = YES;
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
-    dispatch_async(GCDBackgroundThread, ^{
-        [TWENGINE getFriendsWithSuccess:^(id responseObj) {
-            friends = responseObj;
-            [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            [self filterSuggestions];
-        } failure:^(NSError *error) {
-            
-        }];
-    });
+    [TWENGINE getFriendsWithSuccess:^(id responseObj) {
+        friends = responseObj;
+        [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self filterSuggestions];
+    } failure:^(NSError *error) {
+        
+    }];
 
-    dispatch_async(GCDBackgroundThread, ^{
-        [TWENGINE getTrendsWithSuccess:^(id responseObj) {
-            trends = responseObj[0][@"trends"];
-            [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self filterSuggestions];
-            });
-        } failure:^(NSError *error) {
-            
-        }];
-    });
+    [TWENGINE getTrendsWithSuccess:^(id responseObj) {
+        trends = responseObj[0][@"trends"];
+        [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self filterSuggestions];
+        });
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {

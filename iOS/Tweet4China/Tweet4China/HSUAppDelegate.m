@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
 #ifndef NO_PROXY
-    [NSURLProtocol registerClass:[HSUProxyURLProtocol class]];
+//    [NSURLProtocol registerClass:[HSUProxyURLProtocol class]];
 #endif
     
     // Init global variables

@@ -14,7 +14,7 @@
 {
     [super refresh];
     
-    [self fetchMoreDataWithSuccess:^(id responseObj) {
+    [self fetchRefreshDataWithSuccess:^(id responseObj) {
         NSArray *tweets = responseObj;
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {

@@ -61,17 +61,24 @@
 {
     [super viewDidAppear:animated];
     
-    [TWENGINE lookupUsers:@[self.screenName] success:^(id responseObj) {
-        NSArray *profiles = responseObj;
-        if (profiles.count) {
-            [self.profileView setupWithProfile:profiles[0]];
-            self.profile = profiles[0];
-            [[NSUserDefaults standardUserDefaults] setObject:self.profile forKey:kUserProfile_DBKey];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-        }
+    [TWENGINE lookupUser:self.screenName success:^(id responseObj) {
+        NSDictionary *profile = responseObj;
+        [self.profileView setupWithProfile:profile];
+        self.profile = profile;
+        [[NSUserDefaults standardUserDefaults] setObject:self.profile forKey:kUserProfile_DBKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     } failure:^(NSError *error) {
         
     }];
+}
+
+- (NSString *)screenName
+{
+    if (_screenName) {
+        return _screenName;
+    }
+    self.screenName = MyScreenName;
+    return _screenName;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

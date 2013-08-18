@@ -10,8 +10,18 @@
 
 #import "HSUAppDelegate.h"
 
+#ifdef DEBUG
+void ExceptionCatched(NSException *exception)
+{
+    NSLog(@"Exception: %@", exception.callStackSymbols);
+}
+#endif
+
 int main(int argc, char *argv[])
 {
+#ifdef DEBUG
+    NSSetUncaughtExceptionHandler(ExceptionCatched);
+#endif
     @autoreleasepool {
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([HSUAppDelegate class]));
     }

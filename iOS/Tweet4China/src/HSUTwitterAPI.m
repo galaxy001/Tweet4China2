@@ -98,7 +98,11 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     self = [super init];
     if (self) {
-        self.dateFormatter = [[NSDateFormatter alloc] init];
+        self.dateFormatter = [[NSDateFormatter alloc]init];
+        NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en_US"];
+        [self.dateFormatter setLocale:usLocale];
+        [self.dateFormatter setDateStyle:NSDateFormatterLongStyle];
+        [self.dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
         [self.dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZZ yyyy"];
     }
     return self;
@@ -138,11 +142,15 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  NSArray *twitterAccounts =
                  [self.accountStore accountsWithAccountType:twitterAccountType];
                  if (twitterAccounts.count) {
-                     self.account = twitterAccounts[0];
-                     success(self.account);
+                     self.account = [twitterAccounts lastObject];
+                     dispatch_async(GCDMainThread, ^{
+                         success(self.account);
+                     });
                  }
              } else {
-                 failure(nil);
+                 dispatch_async(GCDMainThread, ^{
+                     failure(nil);
+                 });
              }
          }];
     } else {
@@ -203,16 +211,43 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     if (!users.count) return;
     [self sendGETWithUrl:url_users_lookup
-              parameters:@{@"screen_name": [users componentsJoinedByString:@","]}
+              parameters:@{@"user_id": [users componentsJoinedByString:@","]}
                  success:success failure:failure];
+}
+- (void)lookupUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendGETWithUrl:url_users_lookup
+              parameters:@{@"screen_name": screenName}
+                 success:^(id responseObj) {
+                     NSArray *users = responseObj;
+                     if (users.count) {
+                         success(users[0]);
+                     }
+                 } failure:failure];
 }
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    if (imageFilePath) {
-        [self sendPOSTWithUrl:url_statuses_update_with_media parameters:nil success:success failure:failure];
-    } else {
-        [self sendPOSTWithUrl:url_statuses_update parameters:nil success:success failure:failure];
+    NSMutableDictionary *params = [@{} mutableCopy];
+    NSString *url = url_statuses_update;
+    
+    params[@"status"] = status;
+    
+    if (inReplyToID) {
+        params[kTwitter_Parameter_Key_Reply_ID] = inReplyToID;
     }
+    
+    if (imageFilePath) {
+        url = url_statuses_update_with_media;
+        UIImage *image = [UIImage imageWithContentsOfFile:imageFilePath];
+        params[@"media[]"] = UIImageJPEGRepresentation(image, 1.f);
+    }
+    
+    if (location.latitude && location.longitude) {
+        params[@"lat"] = S(@"%g", location.latitude);
+        params[@"long"] = S(@"%g", location.longitude);
+    }
+    
+    [self sendPOSTWithUrl:url parameters:params success:success failure:failure];
 }
 - (void)sendDirectMessage:(NSString *)message toUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -227,25 +262,46 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)getFollowersSinceId:(NSString *)sinceID forUserScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendGETWithUrl:url_followers_ids parameters:nil success:^(id responseObj) {
-        NSArray *users = responseObj;
-        [self lookupUsers:users success:success failure:failure];
-    } failure:failure];
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (screenName) params[@"screen_name"] = screenName;
+    [self sendGETWithUrl:url_followers_ids
+              parameters:params
+                 success:^(id responseObj)
+     {
+         NSMutableDictionary *usersDict = [responseObj mutableCopy];
+         [self lookupUsers:usersDict[@"ids"]
+                   success:^(id responseObj) {
+             usersDict[@"users"] = responseObj;
+             success(usersDict);
+         } failure:failure];
+     } failure:failure];
 }
 - (void)getFriendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendGETWithUrl:url_friends_ids parameters:nil success:^(id responseObj) {
-        NSArray *users = responseObj;
-        [self lookupUsers:users success:success failure:failure];
-    } failure:failure];
+    [self sendGETWithUrl:url_friends_ids
+              parameters:nil
+                 success:^(id responseObj)
+     {
+         NSMutableDictionary *usersDict = [responseObj mutableCopy];
+         [self lookupUsers:usersDict[@"ids"]
+                   success:^(id responseObj) {
+             usersDict[@"users"] = responseObj;
+             success(usersDict);
+         } failure:failure];
+     } failure:failure];
 }
 - (void)getSentMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendGETWithUrl:url_direct_messages_sent parameters:nil success:success failure:failure];
+    [self sendGETWithUrl:url_direct_messages_sent
+              parameters:@{@"since_id": sinceID}
+                 success:success failure:failure];
 }
 - (void)getTrendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendGETWithUrl:url_trends_place parameters:nil success:success failure:failure];
+    [self sendGETWithUrl:url_trends_place
+              parameters:@{@"id": @"1"}
+                 success:success failure:failure];
 }
 - (void)blockUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -312,30 +368,65 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         return;
     }
     
+    NSData *media = parameters[@"media[]"];
+    if ([parameters isKindOfClass:[NSMutableDictionary class]] &&
+        media) {
+        NSMutableDictionary *mp = (NSMutableDictionary *)parameters;
+        [mp removeObjectForKey:@"media[]"];
+        parameters = mp;
+    }
     SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
                                             requestMethod:method
                                                       URL:[NSURL URLWithString:url]
                                                parameters:parameters];
+    if (media) {
+        [request addMultipartData:media withName:@"media[]" type:@"image/jpeg" filename:@"image.jpg"];
+    }
     [request setAccount:self.account];
-    
     [request performRequestWithHandler:^(NSData *responseData,
                                          NSHTTPURLResponse *urlResponse,
                                          NSError *error) {
         dispatch_sync(GCDMainThread, ^{
-            if (responseData) {
-                if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
-                    id responseObj = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                     options:NSJSONReadingAllowFragments
-                                                                       error:nil];
-                    if ([responseObj isKindOfClass:[NSArray class]] ||
-                        [responseObj isKindOfClass:[NSDictionary class]]) {
-                        success(RemoveFuckingNull(responseObj));
-                    }
-                } else {
-                    [self dealWithError:error errTitle:@"Some problems with your network"];
-                    failure(error);
-                }
+            
+            if (error) {
+                [self dealWithError:error errTitle:@"Some problems with your network"];
+                failure(error);
+                return ;
             }
+            
+            if (responseData) {
+                id responseObj = [NSJSONSerialization JSONObjectWithData:responseData
+                                                                 options:NSJSONReadingAllowFragments
+                                                                   error:nil];
+                if ([responseObj isKindOfClass:[NSArray class]] ||
+                    [responseObj isKindOfClass:[NSDictionary class]]) {
+                    
+                    responseObj = RemoveFuckingNull(responseObj);
+                    
+                    if ([responseObj isKindOfClass:[NSDictionary class]]) {
+                        if ([responseObj[@"errors"] count]) {
+                            NSMutableDictionary *errorDict = [responseObj[@"errors"][0] mutableCopy];
+                            errorDict[@"url"] = url;
+                            NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:1 userInfo:errorDict];
+                            failure(error);
+                            return ;
+                        }
+                    }
+                    
+                    if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
+                        success(responseObj);
+                        return;
+                    }
+                }
+                
+                NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:3 userInfo:responseObj];
+                failure(error);
+                return;
+            }
+            
+            NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:3 userInfo:nil];
+            failure(error);
+            return;
         });
     }];
 }
@@ -343,7 +434,10 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)dealWithError:(NSError *)error errTitle:(NSString *)errTitle;
 {
     NSLog(@"API Request Error %@", error);
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:errTitle delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:@"Error"
+                          message:errTitle
+                          delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [alert show];
 }
 
