@@ -90,4 +90,9 @@
     self.view.bottom = bottom;
 }
 
+- (void)dismiss
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
 @end

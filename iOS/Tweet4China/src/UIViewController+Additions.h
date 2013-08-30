@@ -19,4 +19,7 @@
 @property (nonatomic, assign) CGFloat right;
 @property (nonatomic, assign) CGFloat bottom;
 
+// convenient [self dismissViewControllerAnimated:YES completion:nil];
+- (void)dismiss;
+
 @end

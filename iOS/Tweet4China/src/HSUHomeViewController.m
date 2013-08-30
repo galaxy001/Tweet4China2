@@ -32,7 +32,10 @@
     [(HSUHomeDataSource *)self.dataSource authenticateWithSuccess:^(id responseObj) {
         [self.refreshControl beginRefreshing];
         [self.dataSource refresh];
-    } failure:nil];
+    } failure:^(NSError *error){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authorize Error" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        [alert show];
+    }];
 }
 
 #pragma mark - dataSource delegate
