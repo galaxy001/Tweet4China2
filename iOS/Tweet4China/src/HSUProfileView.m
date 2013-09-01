@@ -94,6 +94,8 @@
         nameLabel.textColor = kWhiteColor;
         nameLabel.textAlignment = NSTextAlignmentCenter;
         nameLabel.backgroundColor = kClearColor;
+        nameLabel.shadowOffset = ccs(0, 1);
+        nameLabel.shadowColor = kGrayColor;
         nameLabel.size = ccs(kLabelWidth, 17*1.2);
         nameLabel.topCenter = ccp(infoView.width/2, avatarBGView.bottom+7);
         nameLabel.text = screenName.twitterScreenName;
@@ -110,6 +112,8 @@
         screenNameLabel.textColor = kWhiteColor;
         screenNameLabel.textAlignment = NSTextAlignmentCenter;
         screenNameLabel.backgroundColor = kClearColor;
+        screenNameLabel.shadowOffset = ccs(0, 1);
+        screenNameLabel.shadowColor = kGrayColor;
         screenNameLabel.size = ccs(kLabelWidth, kNormalTextSize*1.2);
         screenNameLabel.topCenter = ccp(infoView.width/2, nameLabel.bottom+5);
         screenNameLabel.text = screenName.twitterScreenName;
