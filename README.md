@@ -4,14 +4,14 @@ An open source Twitter client using [Shadowsocks](http://www.shadowsocks.com) pr
 
 # Screenshots
 
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/1.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/2.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/3.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/4.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/5.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/6.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/7.PNG" style="max-width: 320px;"/>
-<img src="https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/8.PNG" style="max-width: 320px;"/>
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/1.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/2.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/3.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/4.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/5.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/6.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/7.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/8.PNG)
 
 # Usage
 
