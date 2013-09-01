@@ -20,7 +20,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(kNNStartRefreshing, self, @selector(startRefreshing));
+        notification_add_observer(HSUStartRefreshingNotification, self, @selector(startRefreshing));
     }
     return self;
 }

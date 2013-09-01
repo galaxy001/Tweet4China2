@@ -186,7 +186,7 @@
 {
     // todo
     if (self.textView.hasText) {
-        notification_post_with_object(kNNConversationBackWithIncompletedSending, @[((HSUMessagesDataSource *)self.dataSource).conversation, self.textView.text]);
+        notification_post_with_object(HSUConversationBackWithIncompletedSendingNotification, @[((HSUMessagesDataSource *)self.dataSource).conversation, self.textView.text]);
     }
     [super backButtonTouched];
 }

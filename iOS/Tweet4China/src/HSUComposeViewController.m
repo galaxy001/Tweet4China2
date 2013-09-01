@@ -117,27 +117,14 @@
     } else {
         self.title = @"New Tweet";
     }
-    self.navigationController.navigationBar.tintColor = bw(212);
-    NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
-            UITextAttributeTextShadowColor: kWhiteColor,
-            UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
     
     UIBarButtonItem *cancelButtonItem = [[UIBarButtonItem alloc] init];
     cancelButtonItem.title = @"Cancel";
     cancelButtonItem.target = self;
     cancelButtonItem.action = @selector(cancelCompose);
-    cancelButtonItem.tintColor = bw(220);
     self.navigationItem.leftBarButtonItem = cancelButtonItem;
     
-    NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
-                                         UITextAttributeTextShadowColor: kWhiteColor,
-                                         UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
-    [cancelButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
-    [cancelButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
-    [cancelButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
-
-    UIBarButtonItem *sendButtonItem = [[HSUSendBarButtonItem alloc] init];
+    UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
     sendButtonItem.title = @"Tweet";
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(sendTweet);
@@ -156,7 +143,7 @@
     } else {
         contentTV.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"draft"];
     }
-
+    
     toolbar =[UIImageView viewStrechedNamed:@"button-bar-background"];
     [self.view addSubview:toolbar];
     toolbar.userInteractionEnabled = YES;
@@ -301,7 +288,6 @@
     suggestionsTV.hidden = YES;
     suggestionsTV.delegate = self;
     suggestionsTV.dataSource = self;
-    suggestionsTV.top = 45;
     suggestionsTV.width = self.view.width;
     suggestionsTV.rowHeight = 37;
     suggestionsTV.backgroundColor = bw(232);
@@ -312,28 +298,51 @@
     contentShadowV = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"searches-top-shadow.png"] stretchableImageFromCenter]];
     [self.view addSubview:contentShadowV];
     contentShadowV.hidden = YES;
-    contentShadowV.top = suggestionsTV.top;
     contentShadowV.width = suggestionsTV.width;
     
     if (self.defaultImage) {
         postImage = self.defaultImage;
+    }
+    
+    CGFloat toolbar_height = 40;
+    
+    contentTV.frame = ccr(0, 0, self.view.width, self.view.height- MAX(keyboardHeight, 216)-toolbar_height);
+    toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbar_height);
+    extraPanelSV.top = toolbar.bottom;
+    extraPanelSV.height = self.view.height - extraPanelSV.top;
+    extraPanelSV.contentSize = ccs(extraPanelSV.width*2, extraPanelSV.height);
+    previewIV.frame = ccr(30, 30, extraPanelSV.width-60, extraPanelSV.height-60);
+    previewCloseBnt.center = previewIV.rightTop;
+    toggleLocationBnt.bottom = extraPanelSV.height - 10;
+    suggestionsTV.top = contentTV.top + 45;
+    contentShadowV.top = suggestionsTV.top;
+    
+    if (suggestionType) {
+        suggestionsTV.hidden = NO;
+        contentShadowV.hidden = NO;
+        contentTV.height = kSingleLineHeight;
+        suggestionsTV.height = self.view.height - suggestionsTV.top - keyboardHeight;
+    } else {
+        suggestionsTV.hidden = YES;
+        contentShadowV.hidden = YES;
     }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-
+    
     if (lifeCycleCount == 0) {
         [contentTV becomeFirstResponder];
     }
     [self textViewDidChange:contentTV];
     contentChanged = NO;
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
+    
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
@@ -348,7 +357,7 @@
     } failure:^(NSError *error) {
         
     }];
-
+    
     [TWENGINE getTrendsWithSuccess:^(id responseObj) {
         trends = responseObj[0][@"trends"];
         [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
@@ -361,6 +370,13 @@
     }];
 }
 
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [super viewWillDisappear:animated];
+}
+
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
 
@@ -370,8 +386,9 @@
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-
+    
     CGFloat toolbar_height = 40;
+    
     contentTV.frame = ccr(0, 0, self.view.width, self.view.height- MAX(keyboardHeight, 216)-toolbar_height);
     toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbar_height);
     extraPanelSV.top = toolbar.bottom;
@@ -380,12 +397,18 @@
     previewIV.frame = ccr(30, 30, extraPanelSV.width-60, extraPanelSV.height-60);
     previewCloseBnt.center = previewIV.rightTop;
     toggleLocationBnt.bottom = extraPanelSV.height - 10;
-
+    suggestionsTV.top = contentTV.top + 45;
+    contentShadowV.top = suggestionsTV.top;
+    
     if (suggestionType) {
         suggestionsTV.hidden = NO;
         contentShadowV.hidden = NO;
         contentTV.height = kSingleLineHeight;
         suggestionsTV.height = self.view.height - suggestionsTV.top - keyboardHeight;
+        // ios7
+        contentTV.top = 54;
+        suggestionsTV.top = contentTV.top + 45;
+        contentShadowV.top = suggestionsTV.top;
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
@@ -542,9 +565,11 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat left = photoBnt.center.x - nippleIV.width / 2;
-    CGFloat right = geoBnt.center.x - nippleIV.width / 2;
-    nippleIV.left = left + (right - left) * scrollView.contentOffset.x / scrollView.width;
+    if (scrollView.width) {
+        CGFloat left = photoBnt.center.x - nippleIV.width / 2;
+        CGFloat right = geoBnt.center.x - nippleIV.width / 2;
+        nippleIV.left = left + (right - left) * scrollView.contentOffset.x / scrollView.width;
+    }
 }
 
 #pragma mark - Actions

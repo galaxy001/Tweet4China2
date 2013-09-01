@@ -38,7 +38,7 @@
 
 - (void)viewDidLoad
 {
-    notification_add_observer(kNNDeleteConversation, self, @selector(_conversationDeleted:));
+    notification_add_observer(HSUDeleteConversationNotification, self, @selector(_conversationDeleted:));
     
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.view addSubview:tableView];

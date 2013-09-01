@@ -11,21 +11,21 @@
 
 @implementation HSUNavitationBar
 {
-    UIImageView *logo;
+    BOOL set;
 }
 
 - (void)layoutSubviews
 {
-    if (!logo) {
-//        logo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_title_logo_duck"]];
-//        [self addSubview:logo];
-        [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar"] forBarMetrics:UIBarMetricsDefault];
+    if (!set) {
+        self.backgroundColor = rgba(72, 150, 205, 0.9);
+//        UIImage *bgImg = [UIImage imageNamed:@"bg_nav_bar"];
+//        bgImg = [bgImg subImageAtRect:ccr(0, 20, bgImg.size.width, bgImg.size.height-20)];
+//        [self setBackgroundImage:bgImg forBarMetrics:UIBarMetricsDefault];
     }
-//    logo.frame = CGRectMake(self.bounds.size.width/2-logo.bounds.size.width/2, 10, logo.bounds.size.width, logo.bounds.size.height);
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    return CGSizeMake(self.frame.size.width, 44);
+    return CGSizeMake(self.frame.size.width, 34);
 }
 
 @end

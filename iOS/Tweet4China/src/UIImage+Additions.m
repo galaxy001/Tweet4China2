@@ -10,11 +10,13 @@
 
 @implementation UIImage (Additions)
 
-- (UIImage *)stretchableImageFromCenter {
+- (UIImage *)stretchableImageFromCenter
+{
     return [self stretchableImageWithLeftCapWidth:self.size.width/2 topCapHeight:self.size.height/2];
 }
 
-- (UIImage*)scaleToWidth:(CGFloat)width {
+- (UIImage*)scaleToWidth:(CGFloat)width
+{
     if (width >= self.size.width) {
         return self;
     }
@@ -29,5 +31,14 @@
     return scaledImage;
 }
 
+-(UIImage *)subImageAtRect:(CGRect)rect
+{
+	rect = ccr(rect.origin.x*self.scale, rect.origin.y*self.scale, rect.size.width*self.scale, rect.size.height*self.scale);
+    CGImageRef imageRef = CGImageCreateWithImageInRect([self CGImage], rect);
+    UIImage* subImage = [UIImage imageWithCGImage:imageRef scale:self.scale orientation:self.imageOrientation];
+    CGImageRelease(imageRef);
+    
+    return subImage;
+}
 
 @end

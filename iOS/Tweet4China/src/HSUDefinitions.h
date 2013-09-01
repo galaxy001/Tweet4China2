@@ -9,7 +9,11 @@
 #ifndef Tweet4China_HSUDefinitions_h
 #define Tweet4China_HSUDefinitions_h
 
-#include "HSUAppDefinitions.h"
+// Define twitter application consumer key & secret.
+// Access level of your twitter application should contains Read, write, and direct messages
+// if you want to use all of the features.
+//#define kTwitterAppKey
+//#define kTwitterAppSecret
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
@@ -25,7 +29,6 @@
 #import "HSUTabController.h"
 #import "Reachability.h"
 #import "HSUBaseViewController.h"
-#import "HSUTwitterEngine.h"
 #import "HSUTwitterAPI.h"
 #import "TwitterText.h"
 #import "NSString+Additions.h"
@@ -87,9 +90,12 @@ _Pragma("clang diagnostic pop") \
 #define DEF_NavitationController_Light [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 
 
-#define kNNStartRefreshing @"HSU_Start_Refreshing"
-#define kNNDeleteConversation @"DeleteConversation"
-#define kNNConversationBackWithIncompletedSending @"ConversationBackWithIncompletedSending"
+#define HSUStartRefreshingNotification @"HSUStartRefreshingNotification"
+#define HSUDeleteConversationNotification @"HSUDeleteConversationNotification"
+#define HSUConversationBackWithIncompletedSendingNotification @"HSUConversationBackWithIncompletedSendingNotification"
+#define HSUDraftsCountChangedNotification @"HSUDraftsCountChangedNotification"
+#define HSUShadowsocksStarted @"HSUShadowsocksStarted"
+#define HSUTwiterLoginSuccess @"HSUTwiterLoginSuccess"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_DefaultStatus @"DefaultStatus"
@@ -102,12 +108,14 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_Message @"Message"
 #define kDataType_Conversation @"Conversation"
 
-
 #define kTwitter_Parameter_Key_Reply_ID @"in_reply_to_status_id"
-
 #define kUserSettings_DBKey @"user_settings"
 #define kUserProfile_DBKey @"user_profile"
 
-#define NOTI_DraftsCountChanged @"HSUDraftsCountChanged"
+#define kShadowsocksSettings_Server @"server"
+#define kShadowsocksSettings_RemotePort @"remote_port"
+#define kShadowsocksSettings_Password @"password"
+#define kShadowsocksSettings_Method @"method"
+#define kShadowsocksSettings_Direct @"direct"
 
 #endif

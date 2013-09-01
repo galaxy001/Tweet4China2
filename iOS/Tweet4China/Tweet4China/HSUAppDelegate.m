@@ -7,7 +7,6 @@
 //
 
 #import "HSUAppDelegate.h"
-#import "HSUProxyURLProtocol.h"
 #import "HSUTabController.h"
 
 void set_config(const char *server, const char *remote_port, const char* password, const char* method);
@@ -22,11 +21,9 @@ int local_main();
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Start shadow socks proxy
-    dispatch_async(dispatch_queue_create("shadowsock", NULL), ^{
-        set_config("209.141.36.62", "8348", "$#HAL9000!", "aes-256-cfb");
-        local_main();
-    });
+//    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kShadowsocksSettings_Server];
+//    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self startShadowsocks];
     
     // UI initialize
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -37,6 +34,34 @@ int local_main();
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+- (void)startShadowsocks
+{
+    NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Server];
+    NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
+    NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
+    NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
+    
+    if (server && remotePort && passowrd && method) {
+        dispatch_async(dispatch_queue_create("shadowsocks", NULL), ^{
+//            set_config("209.141.36.62", "8348", "$#HAL9000!", "aes-256-cfb");
+            set_config([server cStringUsingEncoding:NSASCIIStringEncoding],
+                       [remotePort cStringUsingEncoding:NSASCIIStringEncoding],
+                       [passowrd cStringUsingEncoding:NSASCIIStringEncoding],
+                       [method cStringUsingEncoding:NSASCIIStringEncoding]);
+            local_main();
+        });
+        self.shadowsocksStarted = YES;
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:HSUShadowsocksStarted object:nil];
+    }
+}
+
+- (BOOL)shadowsocksStarted
+{
+    BOOL direct = [[[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Direct] boolValue];
+    return direct || _shadowsocksStarted;
 }
 
 @end

@@ -14,7 +14,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(kNNConversationBackWithIncompletedSending, self, @selector(_conversationBack:));
+        notification_add_observer(HSUConversationBackWithIncompletedSendingNotification, self, @selector(_conversationBack:));
     }
     return self;
 }

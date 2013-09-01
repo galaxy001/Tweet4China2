@@ -13,7 +13,10 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, weak) HSUTabController *tabController;
+@property (nonatomic, assign) BOOL shadowsocksStarted;
 
 + (HSUAppDelegate *)shared;
+
+- (void)startShadowsocks;
 
 @end

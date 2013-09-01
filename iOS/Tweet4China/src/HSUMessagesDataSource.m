@@ -25,7 +25,7 @@
 
 - (void)deleteConversation
 {
-    notification_post_with_object(kNNDeleteConversation, self.conversation);
+    notification_post_with_object(HSUDeleteConversationNotification, self.conversation);
     for (NSDictionary *message in self.conversation[@"messages"]) {
         [TWENGINE deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
             

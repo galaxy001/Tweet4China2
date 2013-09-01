@@ -10,19 +10,18 @@
 
 @implementation HSUNavigationBarLight
 {
-    BOOL addedBackground;
+    BOOL set;
 }
 
 - (void)layoutSubviews
 {
-    if (!addedBackground) {
-        addedBackground = YES;
-        [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar_light"] forBarMetrics:UIBarMetricsDefault];
+    if (!set) {
+
     }
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    return CGSizeMake(self.frame.size.width, 44);
+    return CGSizeMake(self.frame.size.width, 34);
 }
 
 @end

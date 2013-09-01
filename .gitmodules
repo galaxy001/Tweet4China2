@@ -31,3 +31,6 @@
 [submodule "iOS/Tweet4China/3th-party/shadowsocks-iOS"]
 	path = iOS/Tweet4China/3th-party/shadowsocks-iOS
 	url = https://github.com/shadowsocks/shadowsocks-iOS.git
+[submodule "iOS/Tweet4China/3th-party/RETableViewManager"]
+	path = iOS/Tweet4China/3th-party/RETableViewManager
+	url = https://github.com/romaonthego/RETableViewManager.git

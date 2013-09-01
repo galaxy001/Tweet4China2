@@ -28,6 +28,7 @@
 #import "HSUDraftsCell.h"
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
+#import "HSUTestViewController.h"
 
 @interface HSUBaseViewController ()
 
@@ -64,8 +65,6 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
     notification_add_observer(UIKeyboardWillChangeFrameNotification, self, @selector(keyboardFrameChanged:));
     notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
     notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
@@ -83,7 +82,7 @@
     if (self.tableView) {
         tableView = self.tableView;
     } else {
-        tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStyleGrouped];
+        tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [self.view addSubview:tableView];
         self.tableView = tableView;
     }
@@ -119,6 +118,18 @@
             self.navigationItem.leftBarButtonItem = [self _createBackButton];
         }
     }
+    
+    UIView *statusViewBg = [[UIView alloc] initWithFrame:ccr(0, 0, self.view.width, 20)];
+    statusViewBg.backgroundColor = rgba(72, 150, 205, 0.9);
+    [self.view addSubview:statusViewBg];
+//    UIImage *bgImg = [UIImage imageNamed:@"bg_nav_bar"];
+//    bgImg = [bgImg subImageAtRect:ccr(0, 0, bgImg.size.width, 20)];
+//    UIImageView *statusViewBg = [[UIImageView alloc] initWithImage:bgImg];
+//    [self.view addSubview:statusViewBg];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
+    [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -279,7 +290,7 @@
 - (void)_composeButtonTouched
 {
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[UINavigationController alloc] init];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }

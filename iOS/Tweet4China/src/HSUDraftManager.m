@@ -84,7 +84,7 @@
     drafts[draftID] = draft;
     [[NSUserDefaults standardUserDefaults] setObject:drafts forKey:@"drafts"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    notification_post(NOTI_DraftsCountChanged);
+    notification_post(HSUDraftsCountChangedNotification);
 }
 
 - (BOOL)removeDraft:(NSDictionary *)draft
@@ -108,7 +108,7 @@
         [drafts removeObjectForKey:draftID];
         [[NSUserDefaults standardUserDefaults] setObject:drafts forKey:@"drafts"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        notification_post(NOTI_DraftsCountChanged);
+        notification_post(HSUDraftsCountChangedNotification);
     }
     return YES;
 }

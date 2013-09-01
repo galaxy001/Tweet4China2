@@ -69,7 +69,7 @@
         [draftData addObject:draftsCellData];
         [self.sectionsData addObject:draftData];
         
-        notification_add_observer(NOTI_DraftsCountChanged, self, @selector(_notificationDraftCountChanged));
+        notification_add_observer(HSUDraftsCountChangedNotification, self, @selector(_notificationDraftCountChanged));
     }
     return self;
 }

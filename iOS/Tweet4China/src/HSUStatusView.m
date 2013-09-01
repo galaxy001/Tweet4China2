@@ -89,12 +89,12 @@
 {
     ambientL.textColor = kGrayColor;
     ambientL.font = [UIFont systemFontOfSize:13];
-    ambientL.highlightedTextColor = kWhiteColor;
+//    ambientL.highlightedTextColor = kWhiteColor;
     ambientL.backgroundColor = kClearColor;
     
     nameL.textColor = kBlackColor;
     nameL.font = [UIFont boldSystemFontOfSize:14];
-    nameL.highlightedTextColor = kWhiteColor;
+//    nameL.highlightedTextColor = kWhiteColor;
     nameL.backgroundColor = kClearColor;
     
     avatarB.layer.cornerRadius = 5;
@@ -103,18 +103,18 @@
     
     screenNameL.textColor = kGrayColor;
     screenNameL.font = [UIFont systemFontOfSize:12];
-    screenNameL.highlightedTextColor = kWhiteColor;
+//    screenNameL.highlightedTextColor = kWhiteColor;
     screenNameL.backgroundColor = kClearColor;
     
     timeL.textColor = kGrayColor;
     timeL.font = [UIFont systemFontOfSize:12];
-    timeL.highlightedTextColor = kWhiteColor;
+//    timeL.highlightedTextColor = kWhiteColor;
     timeL.backgroundColor = kClearColor;
     
     textAL.textColor = rgb(38, 38, 38);
     textAL.font = [UIFont systemFontOfSize:textAL_font_S];
     textAL.backgroundColor = kClearColor;
-    textAL.highlightedTextColor = kWhiteColor;
+//    textAL.highlightedTextColor = kWhiteColor;
     textAL.lineBreakMode = NSLineBreakByWordWrapping;
     textAL.numberOfLines = 0;
     textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -354,7 +354,7 @@
         textAL.font = [UIFont systemFontOfSize:textAL_font_S];
         textAL.backgroundColor = kClearColor;
         textAL.textColor = rgb(38, 38, 38);
-        textAL.highlightedTextColor = kWhiteColor;
+//        textAL.highlightedTextColor = kWhiteColor;
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
         textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),

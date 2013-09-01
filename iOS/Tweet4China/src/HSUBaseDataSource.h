@@ -41,7 +41,6 @@
 - (void)saveCache;
 + (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce;
 + (NSString *)cacheKey;
-- (void)authenticateWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)removeCellData:(HSUTableCellData *)cellData;
 
 @end

@@ -8,6 +8,7 @@
 
 #import "HSUHomeViewController.h"
 #import "HSUHomeDataSource.h"
+#import "HSUProxySettingsViewController.h"
 
 @interface HSUHomeViewController ()
 
@@ -21,21 +22,42 @@
     if (self) {
         self.dataSourceClass = [HSUHomeDataSource class];
         [HSUHomeDataSource checkUnreadForViewController:self];
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(twitterLoginSuccess:)
+         name:HSUTwiterLoginSuccess object:[HSUTwitterAPI shared]];
     }
     return self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    if (![HSUAppDelegate shared].shadowsocksStarted) {
+        HSUProxySettingsViewController *psVC = [[HSUProxySettingsViewController alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:psVC];
+        [self presentViewController:nav animated:YES completion:nil];
+        return;
+    }
     
-    [(HSUHomeDataSource *)self.dataSource authenticateWithSuccess:^(id responseObj) {
-        [self.refreshControl beginRefreshing];
-        [self.dataSource refresh];
-    } failure:^(NSError *error){
+//    if ([HSUTwitterAPI shared].isAuthorized && [HSUAppDelegate shared].shadowsocksStarted) {
+//        [self.refreshControl beginRefreshing];
+//        [self.dataSource refresh];
+//    }
+    
+    [super viewDidAppear:animated];
+}
+
+- (void)twitterLoginSuccess:(NSNotification *)notification
+{
+    NSError *error = notification.userInfo[@"error"];
+    BOOL success = [notification.userInfo[@"success"] boolValue];
+    if (error || !success) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Authorize Error" message:error.description delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
         [alert show];
-    }];
+    } else {
+        [self.refreshControl beginRefreshing];
+        [self.dataSource refresh];
+    }
 }
 
 #pragma mark - dataSource delegate
