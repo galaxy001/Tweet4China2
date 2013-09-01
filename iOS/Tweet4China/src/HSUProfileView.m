@@ -127,6 +127,8 @@
         descLabel.backgroundColor = kClearColor;
         descLabel.lineBreakMode = NSLineBreakByWordWrapping;
         descLabel.numberOfLines = 2;
+        descLabel.shadowOffset = ccs(0, 1);
+        descLabel.shadowColor = kGrayColor;
         descLabel.size = ccs(kLabelWidth, 32);
         descLabel.topCenter = ccp(infoView.width/2*3, 40);
         
@@ -137,6 +139,8 @@
         locationLabel.textColor = kWhiteColor;
         locationLabel.textAlignment = NSTextAlignmentCenter;
         locationLabel.backgroundColor = kClearColor;
+        locationLabel.shadowOffset = ccs(0, 1);
+        locationLabel.shadowColor = kGrayColor;
         locationLabel.size = ccs(kLabelWidth, kNormalTextSize*1.2);
         locationLabel.topCenter = ccp(infoView.width/2*3, descLabel.bottom+5);
         
@@ -147,6 +151,8 @@
         siteLabel.textColor = kWhiteColor;
         siteLabel.textAlignment = NSTextAlignmentCenter;
         siteLabel.backgroundColor = kClearColor;
+        siteLabel.shadowOffset = ccs(0, 1);
+        siteLabel.shadowColor = kGrayColor;
         siteLabel.size = ccs(kLabelWidth, kNormalTextSize*1.2);
         siteLabel.topCenter = ccp(infoView.width/2*3, locationLabel.bottom+5);
         
@@ -293,8 +299,11 @@
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];
     [self.descLabel sizeToFit];
+    self.descLabel.topCenter = ccp(self.infoView.width/2*3, self.descLabel.top);
     self.locationLabel.text = profile[@"location"];
+    self.locationLabel.topCenter = ccp(self.infoView.width/2*3, self.locationLabel.top);
     self.siteLabel.text = [self _websiteForProfile:profile];
+    self.siteLabel.topCenter = ccp(self.infoView.width/2*3, self.siteLabel.top);
     self.pager.hidden = NO;
     NSString *bannerUrl = [profile[@"profile_banner_url"] stringByAppendingString:@"/mobile_retina"];
     [self.infoBGView setImageWithURL:[NSURL URLWithString:bannerUrl] placeholderImage:[UIImage imageNamed:@"bg_profile_empty"]];

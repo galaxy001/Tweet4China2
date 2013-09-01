@@ -23,7 +23,6 @@ int local_main();
 {
 //    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kShadowsocksSettings_Server];
 //    [[NSUserDefaults standardUserDefaults] synchronize];
-    [self startShadowsocks];
     
     // UI initialize
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
@@ -33,6 +32,7 @@ int local_main();
     self.tabController = tabController;
     [self.window makeKeyAndVisible];
     
+    [self startShadowsocks];
     return YES;
 }
 
@@ -44,12 +44,16 @@ int local_main();
     NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
     
     if (server && remotePort && passowrd && method) {
+        self.window.userInteractionEnabled = NO;
         dispatch_async(dispatch_queue_create("shadowsocks", NULL), ^{
 //            set_config("209.141.36.62", "8348", "$#HAL9000!", "aes-256-cfb");
             set_config([server cStringUsingEncoding:NSASCIIStringEncoding],
                        [remotePort cStringUsingEncoding:NSASCIIStringEncoding],
                        [passowrd cStringUsingEncoding:NSASCIIStringEncoding],
                        [method cStringUsingEncoding:NSASCIIStringEncoding]);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.window.userInteractionEnabled = YES;
+            });
             local_main();
         });
         self.shadowsocksStarted = YES;
