@@ -98,10 +98,7 @@
     [tableView registerClass:[HSUMessageCell class] forCellReuseIdentifier:kDataType_Message];
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
-    tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    tableView.backgroundColor = kClearColor;
     tableView.backgroundView = nil;
-    tableView.separatorColor = rgb(206, 206, 206);
     
     if (self.useRefreshControl) {
         HSURefreshControl *refreshControl = [[HSURefreshControl alloc] init];
@@ -119,22 +116,14 @@
         }
     }
     
-    UIView *statusViewBg = [[UIView alloc] initWithFrame:ccr(0, 0, self.view.width, 20)];
-    statusViewBg.backgroundColor = rgba(72, 150, 205, 0.9);
-    [self.view addSubview:statusViewBg];
-//    UIImage *bgImg = [UIImage imageNamed:@"bg_nav_bar"];
-//    bgImg = [bgImg subImageAtRect:ccr(0, 0, bgImg.size.width, 20)];
-//    UIImageView *statusViewBg = [[UIImageView alloc] initWithImage:bgImg];
-//    [self.view addSubview:statusViewBg];
-    
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    
     [super viewDidLoad];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     self.tableView.frame = self.view.bounds;
@@ -247,24 +236,16 @@
 - (NSArray *)_createRightBarButtonItems
 {
     // Search BarButtonItem
-    UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [searchButton setImage:[UIImage imageNamed:@"ic_title_search"] forState:UIControlStateNormal];
-    [searchButton sizeToFit];
-    searchButton.width *= 2.1;
-    searchButton.showsTouchWhenHighlighted = YES;
-    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
-    
-    [searchButton setTapTarget:self action:@selector(_searchButtonTouched)];
+    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc]
+                                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                        target:self
+                                        action:@selector(_searchButtonTouched)];
     
     // Compose BarButtonItem
-    UIButton *composeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [composeButton setImage:[UIImage imageNamed:@"ic_title_tweet"] forState:UIControlStateNormal];
-    [composeButton sizeToFit];
-    composeButton.width *= 1.42;
-    composeButton.showsTouchWhenHighlighted = YES;
-    [composeButton setTapTarget:self action:@selector(_composeButtonTouched)];
-    
-    UIBarButtonItem *composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
+    UIBarButtonItem *composeBarButton = [[UIBarButtonItem alloc]
+                                         initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                         target:self
+                                         action:@selector(_composeButtonTouched)];
     
     return @[composeBarButton, searchBarButton];
 }

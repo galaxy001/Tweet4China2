@@ -769,7 +769,7 @@
 		96710D7417C10F0900497043 /* fishhook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
 		96710D7517C10F0900497043 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		96710D7617C10F0900497043 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		96710D7A17C10F5600497043 /* QuietAssertMacros.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = QuietAssertMacros.c; path = src/QuietAssertMacros.c; sourceTree = "<group>"; };
+		96710D7A17C10F5600497043 /* QuietAssertMacros.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = QuietAssertMacros.c; path = ../../src/QuietAssertMacros.c; sourceTree = "<group>"; };
 		9672724A1732B66200B6E30A /* btn_floating_segment_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_floating_segment_default.png; sourceTree = "<group>"; };
 		9672724B1732B66200B6E30A /* btn_floating_segment_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_floating_segment_default@2x.png"; sourceTree = "<group>"; };
 		9672724C1732B66200B6E30A /* btn_floating_segment_selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btn_floating_segment_selected.png; sourceTree = "<group>"; };
@@ -1193,7 +1193,6 @@
 				962817A216DE5FDF00ABF0AD /* images */,
 				962AB00916FB344600D44566 /* audio */,
 				962817A316DE5FDF00ABF0AD /* src */,
-				96710D7A17C10F5600497043 /* QuietAssertMacros.c */,
 				9628175516DE5EDC00ABF0AD /* Tweet4China */,
 				960640C217D08590000B1032 /* shadowsocks */,
 				9628174E16DE5EDC00ABF0AD /* Frameworks */,
@@ -1673,6 +1672,7 @@
 		96710D7217C10F0900497043 /* fishhook */ = {
 			isa = PBXGroup;
 			children = (
+				96710D7A17C10F5600497043 /* QuietAssertMacros.c */,
 				96710D7317C10F0900497043 /* fishhook.c */,
 				96710D7417C10F0900497043 /* fishhook.h */,
 				96710D7517C10F0900497043 /* LICENSE */,

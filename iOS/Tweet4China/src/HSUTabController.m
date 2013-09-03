@@ -28,32 +28,29 @@
 {
     self = [super init];
     if (self) {
-        UINavigationController *homeNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavitationBar class] toolbarClass:nil];
+        UINavigationController *homeNav = [[UINavigationController alloc] init];
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
-        homeNav.tabBarItem.title = @"Home";
-        [homeNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"ic_tab_home_selected"] withFinishedUnselectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
+        homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"ic_tab_home_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
 
-        UINavigationController *connectNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavitationBar class] toolbarClass:nil];
+        UINavigationController *connectNav = [[UINavigationController alloc] init];
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
-        connectNav.tabBarItem.title = @"Connect";
-        [connectNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"ic_tab_at_selected"] withFinishedUnselectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
+        connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect" image:[UIImage imageNamed:@"ic_tab_at_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *discoverNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavitationBar class] toolbarClass:nil];
+        UINavigationController *discoverNav = [[UINavigationController alloc] init];
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
-        discoverNav.tabBarItem.title = @"Discover";
-        [discoverNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"ic_tab_hash_selected"] withFinishedUnselectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
+        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Discover" image:[UIImage imageNamed:@"ic_tab_hash_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *meNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavitationBar class] toolbarClass:nil];
+        UINavigationController *meNav = [[UINavigationController alloc] init];
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
         meNav.tabBarItem.title = @"Me";
-        [meNav.tabBarItem setFinishedSelectedImage:[UIImage imageNamed:@"ic_tab_profile_selected"] withFinishedUnselectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
+        meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me" image:[UIImage imageNamed:@"ic_tab_profile_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
         self.viewControllers = @[homeNav, connectNav, discoverNav, meNav];
@@ -118,8 +115,8 @@
             [tabBarItem addTarget:self action:@selector(iPadTabBarItemTouched:) forControlEvents:UIControlEventTouchDown];
         }
     } else {
-        [[UITabBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg_tab_bar"]];
-        [[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"bg_tab_bar_selected"]];
+//        [[UITabBar appearance] setBackgroundImage:[UIImage imageNamed:@"bg_tab_bar"]];
+//        [[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"bg_tab_bar_selected"]];
         self.tabBar.frame = CGRectMake(0, kWinHeight-kTabBarHeight, kWinWidth, kTabBarHeight);
         ((UIView *)[self.view.subviews objectAtIndex:0]).frame = CGRectMake(0, 0, kWinWidth, kWinHeight-kTabBarHeight);
     }

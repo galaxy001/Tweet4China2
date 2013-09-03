@@ -21,6 +21,7 @@
 @property (nonatomic, assign) BOOL useRefreshControl;
 @property (nonatomic, assign) uint viewDidAppearCount;
 @property (nonatomic, assign) float keyboardHeight;
+@property (nonatomic, assign) BOOL useDefaultStatusView;
 
 - (id)initWithDataSource:(HSUBaseDataSource *)dataSource;
 - (Class)cellClassForDataType:(NSString *)dataType;

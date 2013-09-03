@@ -18,9 +18,6 @@
 {
     if (!set) {
         self.backgroundColor = rgba(72, 150, 205, 0.9);
-//        UIImage *bgImg = [UIImage imageNamed:@"bg_nav_bar"];
-//        bgImg = [bgImg subImageAtRect:ccr(0, 20, bgImg.size.width, bgImg.size.height-20)];
-//        [self setBackgroundImage:bgImg forBarMetrics:UIBarMetricsDefault];
     }
 }
 
