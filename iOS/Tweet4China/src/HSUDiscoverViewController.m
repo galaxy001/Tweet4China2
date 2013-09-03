@@ -8,13 +8,13 @@
 
 #import "HSUDiscoverViewController.h"
 
-#define StartURL @"http://www.google.com/m"
+#define StartURL @"http://m.facebook.com"
 
 @interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate>
 
 @property (nonatomic, weak) UIWebView *webView;
 @property (nonatomic, weak) UITextField *urlTextField;
-
+@property (nonatomic, weak) UIView *tabBarBackground;
 
 @end
 
@@ -31,6 +31,7 @@
     webView.allowsInlineMediaPlayback = YES;
     webView.backgroundColor = kWhiteColor;
     [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:StartURL]]];
+    webView.frame = self.view.bounds;
     
     self.hideRightButtons = YES;
     self.useRefreshControl = NO;
@@ -52,15 +53,22 @@
     urlTextField.placeholder = @"Type URL";
     urlTextField.backgroundColor = bw(245);
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
-    urlTextField.text = StartURL;
     
     [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    if (!self.urlTextField.hasText) {
+        self.urlTextField.text = StartURL;
+    }
+    
+    [super viewDidAppear:animated];
 }
 
 - (void)viewDidLayoutSubviews
 {
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
-    self.webView.scrollView.contentSize = self.webView.size;
     
     self.urlTextField.frame = ccr(20, 7, self.view.width-45, self.navigationController.navigationBar.height-14);
     self.urlTextField.layer.cornerRadius = 5;
@@ -103,7 +111,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self.urlTextField resignFirstResponder];
-    if (!self.urlTextField.isEditing) {
+    if (!self.urlTextField.isEditing && self.webView.request.URL.absoluteString.length) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
     }
 }

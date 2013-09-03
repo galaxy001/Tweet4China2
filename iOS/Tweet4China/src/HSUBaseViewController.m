@@ -235,11 +235,11 @@
 #pragma mark - base view controller's methods
 - (NSArray *)_createRightBarButtonItems
 {
-    // Search BarButtonItem
-    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc]
-                                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-                                        target:self
-                                        action:@selector(_searchButtonTouched)];
+//    // Search BarButtonItem
+//    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc]
+//                                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+//                                        target:self
+//                                        action:@selector(_searchButtonTouched)];
     
     // Compose BarButtonItem
     UIBarButtonItem *composeBarButton = [[UIBarButtonItem alloc]
@@ -247,7 +247,8 @@
                                          target:self
                                          action:@selector(_composeButtonTouched)];
     
-    return @[composeBarButton, searchBarButton];
+//    return @[composeBarButton, searchBarButton];
+    return @[composeBarButton];
 }
 
 - (void)backButtonTouched

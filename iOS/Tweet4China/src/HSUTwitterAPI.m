@@ -284,14 +284,20 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (maxID) params[@"max_id"] = maxID;
+    if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_home_timeline
-              parameters:maxID ? @{@"max_id": maxID} : nil
+              parameters:params
                  success:success failure:failure];
 }
 - (void)getHomeTimelineSinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_home_timeline
-              parameters:sinceID ? @{@"since_id": sinceID} : nil
+              parameters:params
                  success:success failure:failure];
 }
 - (void)getMentionsTimelineSinceID:(NSString *)sinceID maxID:(NSString *)maxID count:(NSUInteger)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
@@ -304,10 +310,24 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
               parameters:params
                  success:success failure:failure];
 }
-- (void)getUserTimelineWithScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)getUserTimelineWithScreenName:(NSString *)screenName sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (screenName) params[@"screen_name"] = screenName;
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_user_timeline
-              parameters:screenName ? @{@"screen_name": screenName} : nil
+              parameters:params
+                 success:success failure:failure];
+}
+- (void)getUserTimelineWithScreenName:(NSString *)screenName maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (screenName) params[@"screen_name"] = screenName;
+    if (maxID) params[@"max_id"] = maxID;
+    if (count) params[@"count"] = @(count);
+    [self sendGETWithUrl:url_statuses_user_timeline
+              parameters:params
                  success:success failure:failure];
 }
 - (void)getDirectMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

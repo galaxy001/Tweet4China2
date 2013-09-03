@@ -60,16 +60,17 @@
         [referencesData addObject:listsCellData];
         [self.sectionsData addObject:referencesData];
         
-        NSMutableArray *draftData = [NSMutableArray arrayWithCapacity:1];
-        rawData = @{@"title": @"Drafts",
-                    @"count": @([[HSUDraftManager shared] draftsSortedByUpdateTime].count),
-                    @"action": kAction_Drafts};
-        HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
-                                                                           dataType:kDataType_Drafts];
-        [draftData addObject:draftsCellData];
-        [self.sectionsData addObject:draftData];
-        
-        notification_add_observer(HSUDraftsCountChangedNotification, self, @selector(_notificationDraftCountChanged));
+        if ([self.screenName isEqualToString:TWENGINE.myScreenName]) {
+            NSMutableArray *draftData = [NSMutableArray arrayWithCapacity:1];
+            rawData = @{@"title": @"Drafts",
+                        @"count": @([[HSUDraftManager shared] draftsSortedByUpdateTime].count),
+                        @"action": kAction_Drafts};
+            HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+                                                                                dataType:kDataType_Drafts];
+            [draftData addObject:draftsCellData];
+            [self.sectionsData addObject:draftData];
+            notification_add_observer(HSUDraftsCountChangedNotification, self, @selector(_notificationDraftCountChanged));
+        }
     }
     return self;
 }
@@ -78,7 +79,7 @@
 {
     [super refresh];
     
-    [TWENGINE getUserTimelineWithScreenName:self.screenName success:^(id responseObj) {
+    [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         for (NSDictionary *tweet in tweets) {
             HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];

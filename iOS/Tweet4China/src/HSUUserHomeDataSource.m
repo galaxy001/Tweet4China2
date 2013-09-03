@@ -12,7 +12,7 @@
 
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [TWENGINE getHomeTimelineSinceID:nil count:self.requestCount success:^(id responseObj) {
+    [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         self.lastStatsuID = tweet[@"id_str"];
         success(responseObj);
@@ -23,7 +23,7 @@
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [TWENGINE getHomeTimelineWithMaxID:self.lastStatsuID count:self.requestCount success:^(id responseObj) {
+    [TWENGINE getUserTimelineWithScreenName:self.screenName maxID:self.lastStatsuID count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         self.lastStatsuID = tweet[@"id_str"];
         success(responseObj);

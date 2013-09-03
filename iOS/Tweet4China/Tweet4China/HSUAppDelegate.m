@@ -9,9 +9,6 @@
 #import "HSUAppDelegate.h"
 #import "HSUTabController.h"
 
-void set_config(const char *server, const char *remote_port, const char* password, const char* method);
-int local_main();
-
 @implementation HSUAppDelegate
 
 + (HSUAppDelegate *)shared
@@ -21,7 +18,6 @@ int local_main();
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // UI initialize
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     HSUTabController *tabController = [[HSUTabController alloc] init];
@@ -30,6 +26,11 @@ int local_main();
     [self.window makeKeyAndVisible];
     
     return YES;
+}
+
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    exit(0);
 }
 
 @end
