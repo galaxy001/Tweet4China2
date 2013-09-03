@@ -32,7 +32,7 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (![HSUAppDelegate shared].shadowsocksStarted) {
+    if (!*shadowsocksStarted) {
         HSUProxySettingsViewController *psVC = [[HSUProxySettingsViewController alloc] init];
         UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:psVC];
         [self presentViewController:nav animated:YES completion:nil];

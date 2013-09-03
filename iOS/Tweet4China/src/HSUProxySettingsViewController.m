@@ -94,8 +94,7 @@
     [[NSUserDefaults standardUserDefaults] setObject:passowrdItem.value forKey:kShadowsocksSettings_Password];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    [[HSUAppDelegate shared] startShadowsocks];
-    if (![HSUAppDelegate shared].shadowsocksStarted) {
+    if (!StartProxy()) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
                                                         message:@"Finish Settings or Tap Cancel"
                                                        delegate:nil

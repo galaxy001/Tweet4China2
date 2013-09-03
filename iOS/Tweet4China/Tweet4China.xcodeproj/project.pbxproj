@@ -105,7 +105,6 @@
 		960640E217D085D8000B1032 /* interpose.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640B917D06E1E000B1032 /* interpose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640E417D085D8000B1032 /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640B417D06D0C000B1032 /* ev.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640E517D085D8000B1032 /* encrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640AA17D06CF2000B1032 /* encrypt.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		960640E617D085D8000B1032 /* local.m in Sources */ = {isa = PBXBuildFile; fileRef = 960640AD17D06CF2000B1032 /* local.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640E717D085D8000B1032 /* table.m in Sources */ = {isa = PBXBuildFile; fileRef = 960640B017D06CF2000B1032 /* table.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640EA17D0874B000B1032 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640E917D0874B000B1032 /* Security.framework */; };
 		960640EB17D08C41000B1032 /* libshadowsocks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640C017D0858F000B1032 /* libshadowsocks.a */; };
@@ -113,6 +112,7 @@
 		960640F017D08EAC000B1032 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640EE17D08E81000B1032 /* libcrypto.a */; };
 		9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF6617086E320038935C /* CFNetwork.framework */; };
 		9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF69170899E00038935C /* AudioToolbox.framework */; };
+		9621355D17D60BC200AAB222 /* local.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621355C17D60BC200AAB222 /* local.m */; };
 		9628175016DE5EDC00ABF0AD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
 		9628175216DE5EDC00ABF0AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175116DE5EDC00ABF0AD /* Foundation.framework */; };
 		9628175416DE5EDC00ABF0AD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175316DE5EDC00ABF0AD /* CoreGraphics.framework */; };
@@ -571,7 +571,6 @@
 		960640AA17D06CF2000B1032 /* encrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encrypt.c; path = "shadowsocks-iOS/ShadowWeb/encrypt.c"; sourceTree = "<group>"; };
 		960640AB17D06CF2000B1032 /* encrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encrypt.h; path = "shadowsocks-iOS/ShadowWeb/encrypt.h"; sourceTree = "<group>"; };
 		960640AC17D06CF2000B1032 /* local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = local.h; path = "shadowsocks-iOS/ShadowWeb/local.h"; sourceTree = "<group>"; };
-		960640AD17D06CF2000B1032 /* local.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = local.m; path = "shadowsocks-iOS/ShadowWeb/local.m"; sourceTree = "<group>"; };
 		960640AE17D06CF2000B1032 /* socks5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = socks5.h; path = "shadowsocks-iOS/ShadowWeb/socks5.h"; sourceTree = "<group>"; };
 		960640AF17D06CF2000B1032 /* table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = table.h; path = "shadowsocks-iOS/ShadowWeb/table.h"; sourceTree = "<group>"; };
 		960640B017D06CF2000B1032 /* table.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = table.m; path = "shadowsocks-iOS/ShadowWeb/table.m"; sourceTree = "<group>"; };
@@ -590,6 +589,7 @@
 		9612AF5817086D710038935C /* rc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc4.h; sourceTree = "<group>"; };
 		9612AF6617086E320038935C /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9612AF69170899E00038935C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		9621355C17D60BC200AAB222 /* local.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = local.m; sourceTree = "<group>"; };
 		9628174C16DE5EDC00ABF0AD /* Tweet4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweet4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9628174F16DE5EDC00ABF0AD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9628175116DE5EDC00ABF0AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -1145,7 +1145,6 @@
 				960640AA17D06CF2000B1032 /* encrypt.c */,
 				960640AB17D06CF2000B1032 /* encrypt.h */,
 				960640AC17D06CF2000B1032 /* local.h */,
-				960640AD17D06CF2000B1032 /* local.m */,
 				960640AE17D06CF2000B1032 /* socks5.h */,
 				960640AF17D06CF2000B1032 /* table.h */,
 				960640B017D06CF2000B1032 /* table.m */,
@@ -1156,6 +1155,7 @@
 		960640C217D08590000B1032 /* shadowsocks */ = {
 			isa = PBXGroup;
 			children = (
+				9621355C17D60BC200AAB222 /* local.m */,
 				96A5076217D31C44002AABEE /* AppProxyCap.h */,
 				96A5076317D31C44002AABEE /* AppProxyCap.m */,
 				960640C317D08590000B1032 /* Supporting Files */,
@@ -2319,8 +2319,8 @@
 				960640E217D085D8000B1032 /* interpose.c in Sources */,
 				960640E417D085D8000B1032 /* ev.c in Sources */,
 				960640E517D085D8000B1032 /* encrypt.c in Sources */,
+				9621355D17D60BC200AAB222 /* local.m in Sources */,
 				96A5076417D31C44002AABEE /* AppProxyCap.m in Sources */,
-				960640E617D085D8000B1032 /* local.m in Sources */,
 				960640E717D085D8000B1032 /* table.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

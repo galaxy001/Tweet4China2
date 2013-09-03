@@ -184,7 +184,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)authorize
 {
-    if ([HSUAppDelegate shared].shadowsocksStarted) {
+    if (!*shadowsocksStarted) {
         [self authorizeByFHSTwitterEngine];
     }
 }
@@ -359,8 +359,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     
     if (imageFilePath) {
         url = url_statuses_update_with_media;
-        UIImage *image = [UIImage imageWithContentsOfFile:imageFilePath];
-        params[@"media[]"] = UIImageJPEGRepresentation(image, 1.f);
+        params[@"media[]"] = [NSData dataWithContentsOfFile:imageFilePath];
     }
     
     if (location.latitude && location.longitude) {

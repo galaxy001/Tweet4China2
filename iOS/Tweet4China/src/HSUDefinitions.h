@@ -46,6 +46,9 @@
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
+BOOL *shadowsocksStarted;
+BOOL StartProxy();
+
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
 
