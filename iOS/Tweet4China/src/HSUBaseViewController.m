@@ -110,10 +110,8 @@
     if (!self.hideRightButtons) {
         self.navigationItem.rightBarButtonItems = [self _createRightBarButtonItems];
     }
-    if (!self.hideBackButton) {
-        if ([self.navigationController.viewControllers objectAtIndex:0] != self) {
-            self.navigationItem.leftBarButtonItem = [self _createBackButton];
-        }
+    if (self.hideBackButton) {
+        self.navigationItem.backBarButtonItem = nil;
     }
     
     [super viewDidLoad];
@@ -250,18 +248,6 @@
                                          action:@selector(_composeButtonTouched)];
     
     return @[composeBarButton, searchBarButton];
-}
-
-- (UIBarButtonItem *)_createBackButton
-{
-    UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_back"] forState:UIControlStateNormal];
-    [backButton sizeToFit];
-    backButton.width *= 1.6;
-    backButton.showsTouchWhenHighlighted = YES;
-    [backButton setTapTarget:self action:@selector(backButtonTouched)];
-    
-    return [[UIBarButtonItem alloc] initWithCustomView:backButton];
 }
 
 - (void)backButtonTouched
