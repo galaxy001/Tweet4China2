@@ -54,8 +54,6 @@
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     urlTextField.text = StartURL;
     
-    self.navigationController.navigationBar.translucent = NO;
-    
     [super viewWillAppear:animated];
 }
 

@@ -124,6 +124,8 @@
     [super viewWillAppear:animated];
     
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleDefault];
+    self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
+    self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     self.tableView.frame = self.view.bounds;
