@@ -36,7 +36,6 @@ BOOL StartProxy()
     NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
     NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
     NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
-    
     if (server && remotePort && passowrd && method) {
         dispatch_async(dispatch_queue_create("shadowsocks", NULL), ^{
             set_config([server cStringUsingEncoding:NSASCIIStringEncoding],

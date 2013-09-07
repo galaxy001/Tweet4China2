@@ -9,6 +9,8 @@
 #import "HSUAppDelegate.h"
 #import "HSUTabController.h"
 
+void local_stop ();
+
 @implementation HSUAppDelegate
 
 + (HSUAppDelegate *)shared
@@ -28,9 +30,9 @@
     return YES;
 }
 
-- (void)applicationDidEnterBackground:(UIApplication *)application
+- (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    exit(0);
+    StartProxy();
 }
 
 @end

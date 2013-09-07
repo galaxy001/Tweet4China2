@@ -16,6 +16,10 @@ char _remote_port[SAVED_STR_LEN];
 char _method[SAVED_STR_LEN];
 char _password[SAVED_STR_LEN];
 
+int listenfd;
+struct listen_ctx listen_ctx;
+struct ev_loop *loop;
+
 struct client_ctx {
     ev_io io;
     int fd;
@@ -564,7 +568,7 @@ void shadowsocksStartedNotification();
 
 int local_main ()
 {
-    int listenfd;
+    NSLog(@"start");
     listenfd = create_and_bind("1080");
     if (listenfd < 0) {
 #ifdef DEBUG
@@ -582,12 +586,13 @@ int local_main ()
     shadowsocksStartedNotification();
 
     setnonblocking(listenfd);
-    struct listen_ctx listen_ctx;
     listen_ctx.fd = listenfd;
-    struct ev_loop *loop = EV_DEFAULT;
+    loop = EV_DEFAULT;
     ev_io_init (&listen_ctx.io, accept_cb, listenfd, EV_READ);
     ev_io_start (loop, &listen_ctx.io);
+    NSLog(@"started");
     ev_run (loop, 0);
+    NSLog(@"stopped");
     return 0;
 }
 

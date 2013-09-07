@@ -644,6 +644,8 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                           message:errTitle
                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [alert show];
+    
+    
 }
 
 - (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate {
