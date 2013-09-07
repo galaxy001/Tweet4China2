@@ -90,13 +90,11 @@
 - (void)stop
 {
     [_serverSocket disconnect];
-    @synchronized(_pipelines) {
-        [_pipelines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            HSUShadowsocksPipeline *pipeline = obj;
-            [pipeline.localSocket disconnect];
-            [pipeline.remoteSocket disconnect];
-        }];
-    }
+    [_pipelines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        HSUShadowsocksPipeline *pipeline = obj;
+        [pipeline.localSocket disconnect];
+        [pipeline.remoteSocket disconnect];
+    }];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
@@ -113,17 +111,13 @@
     init_encryption(&(pipeline->sendEncryptionContext));
     init_encryption(&(pipeline->recvEncryptionContext));
     
-    @synchronized(_pipelines) {
-        [_pipelines addObject:pipeline];
-    }
+    [_pipelines addObject:pipeline];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
     GCDAsyncSocket *localSocket;
-    @synchronized(_pipelines) {
-        localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
-    }
+    localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
     [localSocket readDataWithTimeout:-1 tag:0];
 }
 
@@ -132,9 +126,7 @@
     HSUShadowsocksPipeline *pipeline;
     int len = data.length;
     
-    @synchronized(_pipelines) {
-        pipeline = [self pipelineOfRemoteSocket:sock];
-    }
+    pipeline = [self pipelineOfRemoteSocket:sock];
     if (pipeline) { // read from remote
         NSLog(@"remote data length: %d", data.length);
         // encrypt code
@@ -143,9 +135,7 @@
         return;
     }
     
-    @synchronized(_pipelines) {
-        pipeline = [self pipelineOfLocalSocket:sock];
-    }
+    pipeline = [self pipelineOfLocalSocket:sock];
     if (pipeline) { // read from local
         NSLog(@"local data length: %d", data.length);
         // encrypt code
@@ -159,12 +149,8 @@
 {
     [sock readDataWithTimeout:-1 tag:0];
     
-    GCDAsyncSocket *localSocket;
-    GCDAsyncSocket *remoteSocket;
-    @synchronized(_pipelines) {
-        localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
-        remoteSocket = [self pipelineOfLocalSocket:sock].remoteSocket;
-    }
+    GCDAsyncSocket *localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
+    GCDAsyncSocket *remoteSocket = [self pipelineOfLocalSocket:sock].remoteSocket;
     if (localSocket) { // read from remote
         [localSocket readDataWithTimeout:-1 tag:0];
     } else if (remoteSocket) { // read from local
@@ -176,9 +162,7 @@
 {
     HSUShadowsocksPipeline *pipeline;
     
-    @synchronized(_pipelines) {
-        pipeline = [self pipelineOfRemoteSocket:sock];
-    }
+    pipeline = [self pipelineOfRemoteSocket:sock];
     if (pipeline) { // disconnect remote
         NSLog(@"remote disconnect");
         if (pipeline.localSocket.isDisconnected) {
@@ -192,9 +176,7 @@
         return;
     }
     
-    @synchronized(_pipelines) {
-        pipeline = [self pipelineOfLocalSocket:sock];
-    }
+    pipeline = [self pipelineOfLocalSocket:sock];
     if (pipeline) { // disconnect local
         NSLog(@"local disconnect");
         if (pipeline.remoteSocket.isDisconnected) {
