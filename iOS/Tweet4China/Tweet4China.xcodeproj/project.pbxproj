@@ -140,6 +140,7 @@
 		9631AD191714738F006A4C0F /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 9631AD181714738F006A4C0F /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9632A16217D9CB6D0046F930 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9632A16117D9CB6D0046F930 /* Images.xcassets */; };
 		9632A24E17DB1E840046F930 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */; };
+		9632A25117DB1EBD0046F930 /* HSUShadowsocksProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */; };
 		9633E5E1174D20EF009062B7 /* error-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DB174D20EF009062B7 /* error-bubble.png */; };
 		9633E5E2174D20EF009062B7 /* error-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DC174D20EF009062B7 /* error-bubble@2x.png */; };
 		9633E5E3174D20EF009062B7 /* ic_dm_reply_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DD174D20EF009062B7 /* ic_dm_reply_default.png */; };
@@ -629,6 +630,8 @@
 		9632A16117D9CB6D0046F930 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9632A24C17DB1E840046F930 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
 		9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUShadowsocksProxy.h; sourceTree = "<group>"; };
+		9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUShadowsocksProxy.m; sourceTree = "<group>"; };
 		9633E5DB174D20EF009062B7 /* error-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble.png"; sourceTree = "<group>"; };
 		9633E5DC174D20EF009062B7 /* error-bubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble@2x.png"; sourceTree = "<group>"; };
 		9633E5DD174D20EF009062B7 /* ic_dm_reply_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_dm_reply_default.png; sourceTree = "<group>"; };
@@ -1142,6 +1145,8 @@
 		960640C217D08590000B1032 /* shadowsocks */ = {
 			isa = PBXGroup;
 			children = (
+				9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */,
+				9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */,
 				9632A24C17DB1E840046F930 /* GCDAsyncSocket.h */,
 				9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */,
 				9621355C17D60BC200AAB222 /* local.m */,
@@ -2292,6 +2297,7 @@
 				960640E217D085D8000B1032 /* interpose.c in Sources */,
 				960640E417D085D8000B1032 /* ev.c in Sources */,
 				960640E517D085D8000B1032 /* encrypt.c in Sources */,
+				9632A25117DB1EBD0046F930 /* HSUShadowsocksProxy.m in Sources */,
 				9621355D17D60BC200AAB222 /* local.m in Sources */,
 				96A5076417D31C44002AABEE /* AppProxyCap.m in Sources */,
 				9632A24E17DB1E840046F930 /* GCDAsyncSocket.m in Sources */,

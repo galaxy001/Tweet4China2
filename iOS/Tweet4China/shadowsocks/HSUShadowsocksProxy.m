@@ -13,7 +13,8 @@
 @interface HSUShadowsocksPipeline : NSObject
 {
  @public
-    struct encryption_ctx encryptionContext;
+    struct encryption_ctx sendEncryptionContext;
+    struct encryption_ctx recvEncryptionContext;
 }
 
 @property (nonatomic, strong) GCDAsyncSocket *localSocket;
@@ -109,7 +110,8 @@
     pipeline.remoteSocket = remoteSocket;
     
     // encrypt code
-    init_encryption(&(pipeline->encryptionContext));
+    init_encryption(&(pipeline->sendEncryptionContext));
+    init_encryption(&(pipeline->recvEncryptionContext));
     
     @synchronized(_pipelines) {
         [_pipelines addObject:pipeline];
@@ -136,7 +138,7 @@
     if (pipeline) { // read from remote
         NSLog(@"remote data length: %d", data.length);
         // encrypt code
-        decrypt_buf(&(pipeline->encryptionContext), (char *)data.bytes, &len);
+        decrypt_buf(&(pipeline->recvEncryptionContext), (char *)data.bytes, &len);
         [pipeline.localSocket writeData:data withTimeout:-1 tag:0];
         return;
     }
@@ -147,7 +149,7 @@
     if (pipeline) { // read from local
         NSLog(@"local data length: %d", data.length);
         // encrypt code
-        encrypt_buf(&(pipeline->encryptionContext), (char *)data.bytes, &len);
+        encrypt_buf(&(pipeline->sendEncryptionContext), (char *)data.bytes, &len);
         [pipeline.remoteSocket writeData:data withTimeout:-1 tag:0];
         return;
     }
@@ -182,7 +184,8 @@
         if (pipeline.localSocket.isDisconnected) {
             [_pipelines removeObject:pipeline];
             // encrypt code
-            cleanup_encryption(&(pipeline->encryptionContext));
+            cleanup_encryption(&(pipeline->sendEncryptionContext));
+            cleanup_encryption(&(pipeline->recvEncryptionContext));
         } else {
             [pipeline.localSocket disconnectAfterReadingAndWriting];
         }
@@ -197,7 +200,8 @@
         if (pipeline.remoteSocket.isDisconnected) {
             [_pipelines removeObject:pipeline];
             // encrypt code
-            cleanup_encryption(&(pipeline->encryptionContext));
+            cleanup_encryption(&(pipeline->sendEncryptionContext));
+            cleanup_encryption(&(pipeline->recvEncryptionContext));
         } else {
             [pipeline.remoteSocket disconnectAfterReadingAndWriting];
         }

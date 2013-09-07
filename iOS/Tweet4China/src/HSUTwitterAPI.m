@@ -108,10 +108,10 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (id)init
 {
 #ifndef kTwitterAppKey
-    #error "Define your kTwitterAppKey in HSUAppDefinitions.h before compile"
+    #error "Define your kTwitterAppKey in HSUDefinitions.h before compile"
 #endif
 #ifndef kTwitterAppSecret
-    #error "Define your kTwitterAppSecret in HSUAppDefinitions.h before compile"
+    #error "Define your kTwitterAppSecret in HSUDefinitions.h before compile"
 #endif
     self = [super init];
     if (self) {
@@ -184,8 +184,12 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)authorize
 {
-    if (!*shadowsocksStarted) {
-        [self authorizeByFHSTwitterEngine];
+    if (*shadowsocksStarted) {
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self authorizeByFHSTwitterEngine];
+        });
     }
 }
 
