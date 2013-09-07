@@ -34,3 +34,6 @@
 [submodule "iOS/Tweet4China/3th-party/FHSTwitterEngine"]
 	path = iOS/Tweet4China/3th-party/FHSTwitterEngine
 	url = git@github.com:tuoxie007/FHSTwitterEngine.git
+[submodule "iOS/Tweet4China/3th-party/CocoaAsyncSocket"]
+	path = iOS/Tweet4China/3th-party/CocoaAsyncSocket
+	url = https://github.com/robbiehanson/CocoaAsyncSocket.git

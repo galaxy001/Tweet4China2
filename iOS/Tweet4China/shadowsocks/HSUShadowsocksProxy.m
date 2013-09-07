@@ -9,6 +9,10 @@
 #import "HSUShadowsocksProxy.h"
 #import "GCDAsyncSocket.h"
 #include "encrypt.h"
+#include "socks5.h"
+#include <arpa/inet.h>
+
+#define ADDR_STR_LEN 512
 
 @interface HSUShadowsocksPipeline : NSObject
 {
@@ -19,10 +23,20 @@
 
 @property (nonatomic, strong) GCDAsyncSocket *localSocket;
 @property (nonatomic, strong) GCDAsyncSocket *remoteSocket;
+@property (nonatomic, assign) int stage;
+
+- (void)disconnect;
 
 @end
 
 @implementation HSUShadowsocksPipeline
+
+- (void)disconnect
+{
+    [self.localSocket disconnectAfterReadingAndWriting];
+    [self.remoteSocket disconnectAfterReadingAndWriting];
+}
+
 @end
 
 
@@ -31,6 +45,8 @@
     dispatch_queue_t _socketQueue;
     GCDAsyncSocket *_serverSocket;
     NSMutableArray *_pipelines;
+    NSString *_host;
+    NSInteger _port;
 }
 
 - (HSUShadowsocksPipeline *)pipelineOfLocalSocket:(GCDAsyncSocket *)localSocket
@@ -61,24 +77,28 @@
 {
     _serverSocket = nil;
     _pipelines = nil;
+    _host = nil;
 }
 
-- (id)init
+- (id)initWithHost:(NSString *)host port:(NSInteger)port password:(NSString *)passoword method:(NSString *)method
 {
     self = [super init];
     if (self) {
-        config_encryption("thanksgiving", "table");
+        _host = [host copy];
+        _port = port;
+        config_encryption([passoword cStringUsingEncoding:NSASCIIStringEncoding],
+                          [method cStringUsingEncoding:NSASCIIStringEncoding]);
     }
     return self;
 }
 
-- (BOOL)start
+- (BOOL)startWithLocalPort:(NSInteger)localPort
 {
     [self stop];
     _socketQueue = dispatch_queue_create("me.tuoxie.shadowsocks", NULL);
     _serverSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
     NSError *error;
-    [_serverSocket acceptOnPort:11010 error:&error];
+    [_serverSocket acceptOnPort:localPort error:&error];
     if (error) {
         NSLog(@"bind failed, %@", error);
         return NO;
@@ -99,15 +119,13 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didAcceptNewSocket:(GCDAsyncSocket *)newSocket
 {
-    NSLog(@"new request");
     HSUShadowsocksPipeline *pipeline = [[HSUShadowsocksPipeline alloc] init];
     pipeline.localSocket = newSocket;
     
     GCDAsyncSocket *remoteSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:_socketQueue];
-    [remoteSocket connectToHost:@"106.187.45.148" onPort:22 error:nil];
+    [remoteSocket connectToHost:_host onPort:_port error:nil];
     pipeline.remoteSocket = remoteSocket;
     
-    // encrypt code
     init_encryption(&(pipeline->sendEncryptionContext));
     init_encryption(&(pipeline->recvEncryptionContext));
     
@@ -116,45 +134,125 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    GCDAsyncSocket *localSocket;
-    localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
+    HSUShadowsocksPipeline *pipeline = [self pipelineOfRemoteSocket:sock];
+    GCDAsyncSocket *localSocket = pipeline.localSocket;
     [localSocket readDataWithTimeout:-1 tag:0];
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    HSUShadowsocksPipeline *pipeline;
+    HSUShadowsocksPipeline *pipeline =
+    [self pipelineOfLocalSocket:sock] ?: [self pipelineOfRemoteSocket:sock];
     int len = data.length;
-    
-    pipeline = [self pipelineOfRemoteSocket:sock];
-    if (pipeline) { // read from remote
-        NSLog(@"remote data length: %d", data.length);
-        // encrypt code
-        decrypt_buf(&(pipeline->recvEncryptionContext), (char *)data.bytes, &len);
-        [pipeline.localSocket writeData:data withTimeout:-1 tag:0];
-        return;
-    }
-    
-    pipeline = [self pipelineOfLocalSocket:sock];
-    if (pipeline) { // read from local
-        NSLog(@"local data length: %d", data.length);
-        // encrypt code
+    if (tag == 0) {
+        // write version + method
+        [pipeline.localSocket
+         writeData:[NSData dataWithBytes:"\x05\x00" length:2]
+         withTimeout:-1
+         tag:0];
+    } else if (tag == 1) {
+        struct socks5_request *request = (struct socks5_request *)data.bytes;
+        if (request->cmd != SOCKS_CMD_CONNECT) {
+            NSLog(@"unsupported cmd: %d", request->cmd);
+            struct socks5_response response;
+            response.ver = SOCKS_VERSION;
+            response.rep = SOCKS_CMD_NOT_SUPPORTED;
+            response.rsv = 0;
+            response.atyp = SOCKS_IPV4;
+            char *send_buf = (char *)&response;
+            [pipeline.localSocket writeData:[NSData dataWithBytes:send_buf length:4] withTimeout:-1 tag:1];
+            [pipeline disconnect];
+            return;
+        }
+        
+        char addr_to_send[ADDR_STR_LEN];
+        int addr_len = 0;
+        addr_to_send[addr_len++] = request->atyp;
+        
+        char addr_str[ADDR_STR_LEN];
+        // get remote addr and port
+        if (request->atyp == SOCKS_IPV4) {
+            // IP V4
+            size_t in_addr_len = sizeof(struct in_addr);
+            memcpy(addr_to_send + addr_len, data.bytes + 4, in_addr_len + 2);
+            addr_len += in_addr_len + 2;
+            
+            // now get it back and print it
+            inet_ntop(AF_INET, data.bytes + 4, addr_str, ADDR_STR_LEN);
+        } else if (request->atyp == SOCKS_DOMAIN) {
+            // Domain name
+            unsigned char name_len = *(unsigned char *)(data.bytes + 4);
+            addr_to_send[addr_len++] = name_len;
+            memcpy(addr_to_send + addr_len, data.bytes + 4 + 1, name_len);
+            memcpy(addr_str, data.bytes + 4 + 1, name_len);
+            addr_str[name_len] = '\0';
+            addr_len += name_len;
+            
+            // get port
+            addr_to_send[addr_len++] = *(unsigned char *)(data.bytes + 4 + 1 + name_len);
+            addr_to_send[addr_len++] = *(unsigned char *)(data.bytes + 4 + 1 + name_len + 1);
+        } else {
+            NSLog(@"unsupported addrtype: %d", request->atyp);
+            [pipeline disconnect];
+            return;
+        }
+        
+        encrypt_buf(&(pipeline->sendEncryptionContext), addr_to_send, &addr_len);
+        [pipeline.remoteSocket
+         writeData:[NSData dataWithBytes:addr_to_send length:addr_len]
+         withTimeout:-1
+         tag:2];
+        
+        // Fake reply
+        struct socks5_response response;
+        response.ver = SOCKS_VERSION;
+        response.rep = 0;
+        response.rsv = 0;
+        response.atyp = SOCKS_IPV4;
+        
+        struct in_addr sin_addr;
+        inet_aton("0.0.0.0", &sin_addr);
+        
+        int reply_size = 4 + sizeof(struct in_addr) + sizeof(unsigned short);
+        char *replayBytes = (char *)malloc(reply_size);
+        
+        memcpy(replayBytes, &response, 4);
+        memcpy(replayBytes + 4, &sin_addr, sizeof(struct in_addr));
+        *((unsigned short *)(replayBytes + 4 + sizeof(struct in_addr)))
+        = (unsigned short) htons(atoi("22"));
+        
+        [pipeline.localSocket
+         writeData:[NSData dataWithBytes:replayBytes length:reply_size]
+         withTimeout:-1
+         tag:3];
+    } else if (tag == 2) {
         encrypt_buf(&(pipeline->sendEncryptionContext), (char *)data.bytes, &len);
-        [pipeline.remoteSocket writeData:data withTimeout:-1 tag:0];
-        return;
+        [pipeline.remoteSocket writeData:data withTimeout:-1 tag:4];
+    } else if (tag == 3) {
+        decrypt_buf(&(pipeline->recvEncryptionContext), (char *)data.bytes, &len);
+        [pipeline.localSocket writeData:data withTimeout:-1 tag:3];
     }
+    
+    return;
 }
 
 - (void)socket:(GCDAsyncSocket *)sock didWriteDataWithTag:(long)tag
 {
-    [sock readDataWithTimeout:-1 tag:0];
+    HSUShadowsocksPipeline *pipeline =
+    [self pipelineOfLocalSocket:sock] ?: [self pipelineOfRemoteSocket:sock];
     
-    GCDAsyncSocket *localSocket = [self pipelineOfRemoteSocket:sock].localSocket;
-    GCDAsyncSocket *remoteSocket = [self pipelineOfLocalSocket:sock].remoteSocket;
-    if (localSocket) { // read from remote
-        [localSocket readDataWithTimeout:-1 tag:0];
-    } else if (remoteSocket) { // read from local
-        [remoteSocket readDataWithTimeout:-1 tag:0];
+    if (tag == 0) {
+        [pipeline.localSocket readDataWithTimeout:-1 tag:1];
+    } else if (tag == 1) {
+        
+    } else if (tag == 2) {
+        
+    } else if (tag == 3) {
+        [pipeline.remoteSocket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:4096 tag:3];
+        [pipeline.localSocket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:4096 tag:2];
+    } else if (tag == 4) {
+        [pipeline.remoteSocket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:4096 tag:3];
+        [pipeline.localSocket readDataWithTimeout:-1 buffer:nil bufferOffset:0 maxLength:4096 tag:2];
     }
 }
 
@@ -164,7 +262,6 @@
     
     pipeline = [self pipelineOfRemoteSocket:sock];
     if (pipeline) { // disconnect remote
-        NSLog(@"remote disconnect");
         if (pipeline.localSocket.isDisconnected) {
             [_pipelines removeObject:pipeline];
             // encrypt code
@@ -178,7 +275,6 @@
     
     pipeline = [self pipelineOfLocalSocket:sock];
     if (pipeline) { // disconnect local
-        NSLog(@"local disconnect");
         if (pipeline.remoteSocket.isDisconnected) {
             [_pipelines removeObject:pipeline];
             // encrypt code

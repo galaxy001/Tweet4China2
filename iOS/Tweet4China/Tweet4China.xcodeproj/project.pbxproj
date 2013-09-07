@@ -103,7 +103,6 @@
 		9605A862171C51150031BA74 /* nonretina.sh in Resources */ = {isa = PBXBuildFile; fileRef = 9605A861171C51150031BA74 /* nonretina.sh */; };
 		960640C117D08590000B1032 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175116DE5EDC00ABF0AD /* Foundation.framework */; };
 		960640E217D085D8000B1032 /* interpose.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640B917D06E1E000B1032 /* interpose.c */; settings = {COMPILER_FLAGS = "-w"; }; };
-		960640E417D085D8000B1032 /* ev.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640B417D06D0C000B1032 /* ev.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640E517D085D8000B1032 /* encrypt.c in Sources */ = {isa = PBXBuildFile; fileRef = 960640AA17D06CF2000B1032 /* encrypt.c */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640E717D085D8000B1032 /* table.m in Sources */ = {isa = PBXBuildFile; fileRef = 960640B017D06CF2000B1032 /* table.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		960640EA17D0874B000B1032 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640E917D0874B000B1032 /* Security.framework */; };
@@ -112,7 +111,6 @@
 		960640F017D08EAC000B1032 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640EE17D08E81000B1032 /* libcrypto.a */; };
 		9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF6617086E320038935C /* CFNetwork.framework */; };
 		9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF69170899E00038935C /* AudioToolbox.framework */; };
-		9621355D17D60BC200AAB222 /* local.m in Sources */ = {isa = PBXBuildFile; fileRef = 9621355C17D60BC200AAB222 /* local.m */; };
 		9628175016DE5EDC00ABF0AD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
 		9628175216DE5EDC00ABF0AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175116DE5EDC00ABF0AD /* Foundation.framework */; };
 		9628175416DE5EDC00ABF0AD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175316DE5EDC00ABF0AD /* CoreGraphics.framework */; };
@@ -139,8 +137,8 @@
 		962AB00D16FB345B00D44566 /* psst1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 962AB00B16FB345B00D44566 /* psst1.wav */; };
 		9631AD191714738F006A4C0F /* GTMNSString+HTML.m in Sources */ = {isa = PBXBuildFile; fileRef = 9631AD181714738F006A4C0F /* GTMNSString+HTML.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		9632A16217D9CB6D0046F930 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9632A16117D9CB6D0046F930 /* Images.xcassets */; };
-		9632A24E17DB1E840046F930 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */; };
 		9632A25117DB1EBD0046F930 /* HSUShadowsocksProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */; };
+		9632A38F17DB86900046F930 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9632A25817DB868E0046F930 /* GCDAsyncSocket.m */; };
 		9633E5E1174D20EF009062B7 /* error-bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DB174D20EF009062B7 /* error-bubble.png */; };
 		9633E5E2174D20EF009062B7 /* error-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DC174D20EF009062B7 /* error-bubble@2x.png */; };
 		9633E5E3174D20EF009062B7 /* ic_dm_reply_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DD174D20EF009062B7 /* ic_dm_reply_default.png */; };
@@ -564,7 +562,6 @@
 		9605A861171C51150031BA74 /* nonretina.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = nonretina.sh; sourceTree = "<group>"; };
 		960640AA17D06CF2000B1032 /* encrypt.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encrypt.c; path = "shadowsocks-iOS/ShadowWeb/encrypt.c"; sourceTree = "<group>"; };
 		960640AB17D06CF2000B1032 /* encrypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = encrypt.h; path = "shadowsocks-iOS/ShadowWeb/encrypt.h"; sourceTree = "<group>"; };
-		960640AC17D06CF2000B1032 /* local.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = local.h; path = "shadowsocks-iOS/ShadowWeb/local.h"; sourceTree = "<group>"; };
 		960640AE17D06CF2000B1032 /* socks5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = socks5.h; path = "shadowsocks-iOS/ShadowWeb/socks5.h"; sourceTree = "<group>"; };
 		960640AF17D06CF2000B1032 /* table.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = table.h; path = "shadowsocks-iOS/ShadowWeb/table.h"; sourceTree = "<group>"; };
 		960640B017D06CF2000B1032 /* table.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = table.m; path = "shadowsocks-iOS/ShadowWeb/table.m"; sourceTree = "<group>"; };
@@ -583,7 +580,6 @@
 		9612AF5817086D710038935C /* rc4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rc4.h; sourceTree = "<group>"; };
 		9612AF6617086E320038935C /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9612AF69170899E00038935C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		9621355C17D60BC200AAB222 /* local.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = local.m; sourceTree = "<group>"; };
 		9628174C16DE5EDC00ABF0AD /* Tweet4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweet4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9628174F16DE5EDC00ABF0AD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9628175116DE5EDC00ABF0AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -628,10 +624,10 @@
 		9631AD171714738F006A4C0F /* GTMNSString+HTML.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GTMNSString+HTML.h"; sourceTree = "<group>"; };
 		9631AD181714738F006A4C0F /* GTMNSString+HTML.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GTMNSString+HTML.m"; sourceTree = "<group>"; };
 		9632A16117D9CB6D0046F930 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		9632A24C17DB1E840046F930 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
-		9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUShadowsocksProxy.h; sourceTree = "<group>"; };
 		9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUShadowsocksProxy.m; sourceTree = "<group>"; };
+		9632A25717DB868E0046F930 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
+		9632A25817DB868E0046F930 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
 		9633E5DB174D20EF009062B7 /* error-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble.png"; sourceTree = "<group>"; };
 		9633E5DC174D20EF009062B7 /* error-bubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble@2x.png"; sourceTree = "<group>"; };
 		9633E5DD174D20EF009062B7 /* ic_dm_reply_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_dm_reply_default.png; sourceTree = "<group>"; };
@@ -1134,7 +1130,6 @@
 				960640B417D06D0C000B1032 /* ev.c */,
 				960640AA17D06CF2000B1032 /* encrypt.c */,
 				960640AB17D06CF2000B1032 /* encrypt.h */,
-				960640AC17D06CF2000B1032 /* local.h */,
 				960640AE17D06CF2000B1032 /* socks5.h */,
 				960640AF17D06CF2000B1032 /* table.h */,
 				960640B017D06CF2000B1032 /* table.m */,
@@ -1147,9 +1142,6 @@
 			children = (
 				9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */,
 				9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */,
-				9632A24C17DB1E840046F930 /* GCDAsyncSocket.h */,
-				9632A24D17DB1E840046F930 /* GCDAsyncSocket.m */,
-				9621355C17D60BC200AAB222 /* local.m */,
 				96A5076217D31C44002AABEE /* AppProxyCap.h */,
 				96A5076317D31C44002AABEE /* AppProxyCap.m */,
 				960640C317D08590000B1032 /* Supporting Files */,
@@ -1255,6 +1247,7 @@
 		9628177516DE5FDF00ABF0AD /* 3th-party */ = {
 			isa = PBXGroup;
 			children = (
+				9632A25217DB868E0046F930 /* CocoaAsyncSocket */,
 				96A11F2217D0C1A500F98ABD /* RETableViewManager */,
 				960640A917D06CA7000B1032 /* shadowsocks */,
 				96710D7217C10F0900497043 /* fishhook */,
@@ -1542,6 +1535,23 @@
 				9631AD181714738F006A4C0F /* GTMNSString+HTML.m */,
 			);
 			path = "GTMNSString+HTML";
+			sourceTree = "<group>";
+		};
+		9632A25217DB868E0046F930 /* CocoaAsyncSocket */ = {
+			isa = PBXGroup;
+			children = (
+				9632A25517DB868E0046F930 /* GCD */,
+			);
+			path = CocoaAsyncSocket;
+			sourceTree = "<group>";
+		};
+		9632A25517DB868E0046F930 /* GCD */ = {
+			isa = PBXGroup;
+			children = (
+				9632A25717DB868E0046F930 /* GCDAsyncSocket.h */,
+				9632A25817DB868E0046F930 /* GCDAsyncSocket.m */,
+			);
+			path = GCD;
 			sourceTree = "<group>";
 		};
 		9639B91C16FDF59E0032177F /* Additions */ = {
@@ -2021,6 +2031,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				English,
 			);
 			mainGroup = 9628174316DE5EDC00ABF0AD;
 			productRefGroup = 9628174D16DE5EDC00ABF0AD /* Products */;
@@ -2295,12 +2306,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				960640E217D085D8000B1032 /* interpose.c in Sources */,
-				960640E417D085D8000B1032 /* ev.c in Sources */,
 				960640E517D085D8000B1032 /* encrypt.c in Sources */,
 				9632A25117DB1EBD0046F930 /* HSUShadowsocksProxy.m in Sources */,
-				9621355D17D60BC200AAB222 /* local.m in Sources */,
 				96A5076417D31C44002AABEE /* AppProxyCap.m in Sources */,
-				9632A24E17DB1E840046F930 /* GCDAsyncSocket.m in Sources */,
+				9632A38F17DB86900046F930 /* GCDAsyncSocket.m in Sources */,
 				960640E717D085D8000B1032 /* table.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

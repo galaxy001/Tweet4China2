@@ -15,5 +15,6 @@
 @property (nonatomic, weak) HSUTabController *tabController;
 
 + (HSUAppDelegate *)shared;
+- (BOOL)startShadowsocks;
 
 @end

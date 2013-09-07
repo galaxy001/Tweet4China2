@@ -11,7 +11,8 @@
 @protocol GCDAsyncSocketDelegate;
 @interface HSUShadowsocksProxy : NSObject <GCDAsyncSocketDelegate>
 
-- (BOOL)start; // auto restart
+- (id)initWithHost:(NSString *)host port:(NSInteger)port password:(NSString *)passoword method:(NSString *)method;
+- (BOOL)startWithLocalPort:(NSInteger)localPort; // auto restart
 - (void)stop;
 
 @end

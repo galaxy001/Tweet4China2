@@ -8,8 +8,9 @@
 
 #import "HSUAppDelegate.h"
 #import "HSUTabController.h"
+#import "HSUShadowsocksProxy.h"
 
-void local_stop ();
+static HSUShadowsocksProxy *proxy;
 
 @implementation HSUAppDelegate
 
@@ -20,6 +21,8 @@ void local_stop ();
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self startShadowsocks];
+    
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
     HSUTabController *tabController = [[HSUTabController alloc] init];
@@ -32,7 +35,23 @@ void local_stop ();
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    StartProxy();
+    [self startShadowsocks];
+}
+
+- (BOOL)startShadowsocks
+{
+    NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Server];
+    NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
+    NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
+    NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
+    if (proxy == nil) {
+        proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
+    }
+    [proxy stop];
+    if (server && remotePort && passowrd && method) {
+        return (shadowsocksStarted = [proxy startWithLocalPort:71080]);
+    }
+    return (shadowsocksStarted = NO);
 }
 
 @end
