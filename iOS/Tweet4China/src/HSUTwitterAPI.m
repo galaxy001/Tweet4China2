@@ -409,8 +409,9 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)getFollowersSinceId:(NSString *)sinceID forUserScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     NSMutableDictionary *params = [@{} mutableCopy];
-    if (sinceID) params[@"since_id"] = sinceID;
+    if (sinceID) params[@"cursor"] = sinceID;
     if (screenName) params[@"screen_name"] = screenName;
+    params[@"count"] = @"100";
     [self sendGETWithUrl:url_followers_ids
               parameters:params
                  success:^(id responseObj)
@@ -423,10 +424,28 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
          } failure:failure];
      } failure:failure];
 }
+- (void)getFollowingsSinceId:(NSString *)sinceID forUserScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"cursor"] = sinceID;
+    if (screenName) params[@"screen_name"] = screenName;
+    params[@"count"] = @"100";
+    [self sendGETWithUrl:url_friends_ids
+              parameters:params
+                 success:^(id responseObj)
+     {
+         NSMutableDictionary *usersDict = [responseObj mutableCopy];
+         [self lookupUsers:usersDict[@"ids"]
+                   success:^(id responseObj) {
+                       usersDict[@"users"] = responseObj;
+                       success(usersDict);
+                   } failure:failure];
+     } failure:failure];
+}
 - (void)getFriendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_friends_ids
-              parameters:nil
+              parameters:@{@"count": @"100"}
                  success:^(id responseObj)
      {
          NSMutableDictionary *usersDict = [responseObj mutableCopy];
@@ -543,7 +562,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                 return ;
             }
             
-            if (responseData) {
+            if (responseData.length) {
                 id responseObj = [NSJSONSerialization JSONObjectWithData:responseData
                                                                  options:NSJSONReadingAllowFragments
                                                                    error:nil];

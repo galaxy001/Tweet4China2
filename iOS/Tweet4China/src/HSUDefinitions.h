@@ -12,8 +12,8 @@
 // Define twitter application consumer key & secret.
 // Access level of your twitter application should contains Read, write, and direct messages
 // if you want to use all of the features.
-//#define kTwitterAppKey
-//#define kTwitterAppSecret
+#define kTwitterAppKey @"JotIXH4moIF1fIJDVJ50eQ"
+#define kTwitterAppSecret @"5TKbyf4fDyjzse0GqJ62YwABgP6zKuZCbCHUeYTqugc"
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
