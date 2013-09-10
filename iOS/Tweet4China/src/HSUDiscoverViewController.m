@@ -163,7 +163,7 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self.urlTextField resignFirstResponder];
-    if (!self.urlTextField.isEditing && self.currentURL) {
+    if (!self.urlTextField.hasText && !self.urlTextField.isEditing && self.currentURL) {
         self.urlTextField.text = self.currentURL.absoluteString;
     }
 }
