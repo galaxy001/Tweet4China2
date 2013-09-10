@@ -8,6 +8,7 @@
 
 #import "HSUDiscoverViewController.h"
 #import "NJKWebViewProgress.h"
+#import "HSUComposeViewController.h"
 
 #define StartURL @"http://m.facebook.com"
 
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) NSURL *currentURL;
 @property (nonatomic, strong) NJKWebViewProgress *progressHandler;
 @property (nonatomic, weak) UIProgressView *progressBar;
+@property (nonatomic, copy) NSString *startUrl;
 
 @end
 
@@ -30,6 +32,8 @@
     self.progressHandler.webViewProxyDelegate = self;
     self.progressHandler.progressDelegate = self;
     
+    self.startUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kDiscoverHomePage] ?: StartURL;
+    
     UIWebView *webView = [[UIWebView alloc] init];
     [self.view addSubview:webView];
     self.webView = webView;
@@ -37,7 +41,7 @@
     webView.scalesPageToFit = YES;
     webView.allowsInlineMediaPlayback = YES;
     webView.backgroundColor = kWhiteColor;
-    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:StartURL]]];
+    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
     webView.frame = self.view.bounds;
     webView.delegate = self.progressHandler;
     
@@ -64,9 +68,16 @@
     
     UIProgressView *progressBar = [[UIProgressView alloc] init];
     [self.navigationController.navigationBar addSubview:progressBar];
+    progressBar.trackTintColor = kWhiteColor;
     progressBar.top = self.navigationController.navigationBar.height - progressBar.height;
     progressBar.width = self.navigationController.navigationBar.width;
     self.progressBar = progressBar;
+    
+    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                   target:self
+                                   action:@selector(menuButtonTouched)];
+    self.navigationItem.rightBarButtonItem = menuButton;
     
     [super viewWillAppear:animated];
 }
@@ -74,7 +85,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     if (!self.urlTextField.hasText) {
-        self.urlTextField.text = StartURL;
+        self.urlTextField.text = self.startUrl;
     }
     
     [super viewDidAppear:animated];
@@ -84,7 +95,7 @@
 {
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
     
-    self.urlTextField.frame = ccr(20, 7, self.view.width-45, self.navigationController.navigationBar.height-14);
+    self.urlTextField.frame = ccr(10, 7, self.view.width-60, self.navigationController.navigationBar.height-14);
     self.urlTextField.layer.cornerRadius = 5;
     
     [super viewDidLayoutSubviews];
@@ -155,6 +166,56 @@
     if (!self.urlTextField.isEditing && self.currentURL) {
         self.urlTextField.text = self.currentURL.absoluteString;
     }
+}
+
+- (void)menuButtonTouched
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:@"Refresh"];
+    RIButtonItem *stopItem = [RIButtonItem itemWithLabel:@"Stop"];
+    RIButtonItem *backwardItem = [RIButtonItem itemWithLabel:@"Backward"];
+    RIButtonItem *forwardItem = [RIButtonItem itemWithLabel:@"Forward"];
+    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:@"Share Link"];
+    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:@"Copy URL"];
+    RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:@"Set as Home"];
+    UIActionSheet *menu = [[UIActionSheet alloc]
+                           initWithTitle:nil
+                           cancelButtonItem:cancelItem
+                           destructiveButtonItem:nil
+                           otherButtonItems:stopItem, refreshItem, backwardItem, forwardItem, shareItem, copyItem, setHomeItem, nil];
+    [menu showInView:self.view.window];
+    
+    refreshItem.action = ^{
+        [self.webView reload];
+    };
+    
+    stopItem.action = ^{
+        [self.webView stopLoading];
+    };
+    
+    backwardItem.action = ^{
+        [self.webView goBack];
+    };
+    
+    forwardItem.action = ^{
+        [self.webView goForward];
+    };
+    
+    shareItem.action = ^{
+        HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
+        composeVC.defaultText = S(@" %@", self.urlTextField.text);
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:composeVC];
+        [self presentViewController:nav animated:YES completion:nil];
+    };
+    
+    copyItem.action = ^{
+        [UIPasteboard generalPasteboard].string = self.urlTextField.text;
+    };
+    
+    setHomeItem.action = ^{
+        [[NSUserDefaults standardUserDefaults] setObject:self.urlTextField.text forKey:kDiscoverHomePage];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    };
 }
 
 @end

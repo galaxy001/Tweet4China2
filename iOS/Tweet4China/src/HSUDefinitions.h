@@ -113,6 +113,7 @@ _Pragma("clang diagnostic pop") \
 #define kTwitter_Parameter_Key_Reply_ID @"in_reply_to_status_id"
 #define kUserSettings_DBKey @"user_settings"
 #define kUserProfile_DBKey @"user_profile"
+#define kDiscoverHomePage @"HSUDiscoverHomePage"
 
 #define kShadowsocksSettings_Server @"server"
 #define kShadowsocksSettings_RemotePort @"remote_port"
