@@ -176,6 +176,7 @@
 		964827AF16E37ACF0002345B /* HSUTexturedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 964827AE16E37ACF0002345B /* HSUTexturedView.m */; };
 		964827B216E37C9C0002345B /* HSUBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 964827B116E37C9C0002345B /* HSUBaseViewController.m */; };
 		964827B416E3839D0002345B /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 964827B316E3839D0002345B /* QuartzCore.framework */; };
+		9661DA0117DEFBE400E912E2 /* NJKWebViewProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = 9661DA0017DEFBE400E912E2 /* NJKWebViewProgress.m */; };
 		966498A716F22F1C00BC901A /* ic_tweet_attr_audio_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966498A116F22F1B00BC901A /* ic_tweet_attr_audio_default@2x.png */; };
 		966498A816F22F1C00BC901A /* ic_tweet_attr_convo_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966498A216F22F1B00BC901A /* ic_tweet_attr_convo_default@2x.png */; };
 		966498A916F22F1C00BC901A /* ic_tweet_attr_geo_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966498A316F22F1B00BC901A /* ic_tweet_attr_geo_default@2x.png */; };
@@ -669,6 +670,8 @@
 		964827B016E37C9C0002345B /* HSUBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUBaseViewController.h; sourceTree = "<group>"; };
 		964827B116E37C9C0002345B /* HSUBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUBaseViewController.m; sourceTree = "<group>"; };
 		964827B316E3839D0002345B /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		9661D9FF17DEFBE400E912E2 /* NJKWebViewProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NJKWebViewProgress.h; sourceTree = "<group>"; };
+		9661DA0017DEFBE400E912E2 /* NJKWebViewProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NJKWebViewProgress.m; sourceTree = "<group>"; };
 		966498A116F22F1B00BC901A /* ic_tweet_attr_audio_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_tweet_attr_audio_default@2x.png"; sourceTree = "<group>"; };
 		966498A216F22F1B00BC901A /* ic_tweet_attr_convo_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_tweet_attr_convo_default@2x.png"; sourceTree = "<group>"; };
 		966498A316F22F1B00BC901A /* ic_tweet_attr_geo_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_tweet_attr_geo_default@2x.png"; sourceTree = "<group>"; };
@@ -1247,6 +1250,7 @@
 		9628177516DE5FDF00ABF0AD /* 3th-party */ = {
 			isa = PBXGroup;
 			children = (
+				9661D9FE17DEFBE400E912E2 /* NJKWebViewProgress */,
 				9632A25217DB868E0046F930 /* CocoaAsyncSocket */,
 				96A11F2217D0C1A500F98ABD /* RETableViewManager */,
 				960640A917D06CA7000B1032 /* shadowsocks */,
@@ -1575,6 +1579,16 @@
 				96D291BD1742924000AB4F8C /* NSData+MD5.m */,
 			);
 			name = Additions;
+			sourceTree = "<group>";
+		};
+		9661D9FE17DEFBE400E912E2 /* NJKWebViewProgress */ = {
+			isa = PBXGroup;
+			children = (
+				9661D9FF17DEFBE400E912E2 /* NJKWebViewProgress.h */,
+				9661DA0017DEFBE400E912E2 /* NJKWebViewProgress.m */,
+			);
+			name = NJKWebViewProgress;
+			path = NJKWebViewProgress/NJKWebViewProgress;
 			sourceTree = "<group>";
 		};
 		9664992816F3078800BC901A /* AFNetworking */ = {
@@ -2438,6 +2452,7 @@
 				96A11F5A17D0C1A500F98ABD /* RETableViewDateTimeCell.m in Sources */,
 				9672727B1732CF1200B6E30A /* HSUFollowersDataSource.m in Sources */,
 				967272B01733C29B00B6E30A /* HSUPersonListDataSource.m in Sources */,
+				9661DA0117DEFBE400E912E2 /* NJKWebViewProgress.m in Sources */,
 				967272B31733CC2100B6E30A /* HSUTweetsViewController.m in Sources */,
 				967272B61733CCB500B6E30A /* HSUTweetsDataSource.m in Sources */,
 				96A11F2117D0BFB600F98ABD /* HSUProxySettingsViewController.m in Sources */,

@@ -37,3 +37,6 @@
 [submodule "iOS/Tweet4China/3th-party/CocoaAsyncSocket"]
 	path = iOS/Tweet4China/3th-party/CocoaAsyncSocket
 	url = https://github.com/robbiehanson/CocoaAsyncSocket.git
+[submodule "iOS/Tweet4China/3th-party/NJKWebViewProgress"]
+	path = iOS/Tweet4China/3th-party/NJKWebViewProgress
+	url = https://github.com/ninjinkun/NJKWebViewProgress.git
