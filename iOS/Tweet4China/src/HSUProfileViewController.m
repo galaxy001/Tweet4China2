@@ -18,6 +18,7 @@
 #import "HSUComposeViewController.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUConversationsViewController.h"
+#import "HSUProxySettingsViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate>
 
@@ -271,6 +272,38 @@
     count ++;
     
     [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+- (void)settingsButtonTouched
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:@"Proxy Settings"];
+    RIButtonItem *helpItem = [RIButtonItem itemWithLabel:@"Help"];
+    RIButtonItem *signOutItem = [RIButtonItem itemWithLabel:@"Sign Out"];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                     cancelButtonItem:cancelItem
+                                                destructiveButtonItem:nil
+                                                     otherButtonItems:proxySettingsItem, helpItem, signOutItem, nil];
+    [actionSheet showInView:self.view.window];
+    proxySettingsItem.action = ^{
+        HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
+        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:proxySettingsVC];
+        [self presentViewController:nav animated:YES completion:nil];
+    };
+    helpItem.action = ^{
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/tuoxie007/Tweet4China2"]];
+    };
+    signOutItem.action = ^{
+        RIButtonItem *doSignOutItem = [RIButtonItem itemWithLabel:@"Sign Out"];
+        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                         cancelButtonItem:cancelItem
+                                                    destructiveButtonItem:doSignOutItem
+                                                         otherButtonItems:nil];
+        [actionSheet showInView:self.view.window];
+        doSignOutItem.action = ^{
+            [TWENGINE signOut];
+        };
+    };
 }
 
 - (void)_composeButtonTouched

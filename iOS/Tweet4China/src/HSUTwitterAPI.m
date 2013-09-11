@@ -151,11 +151,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  }
              }];
         }
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(shadowsocksStarted)
-         name:HSUShadowsocksStarted
-         object:nil];
     }
     return self;
 }
@@ -180,6 +175,15 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (BOOL)isAuthorized
 {
     return [FHSTwitterEngine sharedEngine].isAuthorized && self.account != nil;
+}
+
+- (void)signOut
+{
+    [[FHSTwitterEngine sharedEngine] clearAccessToken];
+    self.account = nil;
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self authorize];
 }
 
 - (void)authorize
@@ -378,7 +382,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     params[@"status"] = status;
     
     if (inReplyToID) {
-        params[kTwitter_Parameter_Key_Reply_ID] = inReplyToID;
+        params[kTwitterReplyID_ParameterKey] = inReplyToID;
     }
     
     if (imageFilePath) {
@@ -532,8 +536,8 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)sendWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     if (!self.account) {
-        // todo
         NSLog(@"not authorized");
+        [self authorize];
         return;
     }
     

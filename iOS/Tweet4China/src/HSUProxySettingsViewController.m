@@ -58,10 +58,10 @@
           }]];
     }
     
-//    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-//                                              initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-//                                              target:self
-//                                              action:@selector(cancel)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                              target:self
+                                              action:@selector(dismiss)];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                               initWithBarButtonSystemItem:UIBarButtonSystemItemDone
@@ -69,13 +69,6 @@
                                               action:@selector(done)];
     
     [super viewDidLoad];
-}
-
-- (void)cancel
-{
-    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:kShadowsocksSettings_Direct];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    [self dismiss];
 }
 
 - (void)done

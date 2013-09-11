@@ -7,6 +7,7 @@
 //
 
 #import "HSUTweetsDataSource.h"
+#import "Reachability.h"
 
 @implementation HSUTweetsDataSource
 

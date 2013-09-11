@@ -10,6 +10,7 @@
 #import "NSString+MD5.h"
 #import "HSUDraftsViewController.h"
 #import "OARequestParameter.h"
+#import "HSUTabController.h"
 
 @implementation HSUDraftManager
 
@@ -43,7 +44,7 @@
     draft[@"id"] = draftID;
     if (title) draft[@"title"] = title;
     if (imageFilePath) draft[@"image_file_path"] = imageFilePath;
-    if (reply) draft[kTwitter_Parameter_Key_Reply_ID] = reply;
+    if (reply) draft[kTwitterReplyID_ParameterKey] = reply;
     if (locationXY.latitude) draft[@"lat"] = S(@"%g", locationXY.latitude);
     if (locationXY.longitude) draft[@"long"] = S(@"%g", locationXY.longitude);
     draft[@"update_time"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
@@ -139,7 +140,7 @@
 - (void)sendDraft:(NSDictionary *)draft success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     CLLocationCoordinate2D location = CLLocationCoordinate2DMake([draft[@"lat"] doubleValue], [draft[@"long"] doubleValue]);
-    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitter_Parameter_Key_Reply_ID] imageFilePath:draft[@"image_file_path"] location:location success:^(id responseObj) {
+    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitterReplyID_ParameterKey] imageFilePath:draft[@"image_file_path"] location:location success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

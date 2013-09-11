@@ -9,6 +9,7 @@
 #import "HSUConversationCell.h"
 #import "UIImageView+WebCache.h"
 #import <QuartzCore/QuartzCore.h>
+#import "NSDate+Additions.h"
 
 @interface HSUConversationCell ()
 

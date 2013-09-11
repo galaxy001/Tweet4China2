@@ -8,6 +8,7 @@
 
 #import "HSUConnectDataSource.h"
 #import "HSULoadMoreCell.h"
+#import "HSUBaseViewController.h"
 
 @implementation HSUConnectDataSource
 

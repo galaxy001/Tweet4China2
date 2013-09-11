@@ -7,6 +7,7 @@
 //
 
 #import "HSUHomeDataSource.h"
+#import "HSUBaseViewController.h"
 
 @implementation HSUHomeDataSource
 

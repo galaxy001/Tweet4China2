@@ -8,6 +8,7 @@
 
 #import "HSUConnectViewController.h"
 #import "HSUConnectDataSource.h"
+#import "HSURefreshControl.h"
 
 @interface HSUConnectViewController ()
 

@@ -14,6 +14,7 @@
 #import "HSUMiniBrowser.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUProfileViewController.h"
+#import "TTTAttributedLabel.h"
 
 @interface HSUStatusViewController ()
 

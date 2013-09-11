@@ -229,6 +229,7 @@
         if ([screenName isEqualToString:MyScreenName]) {
             UIButton *settingsButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:settingsButton];
+            [settingsButton setTapTarget:delegate action:@selector(settingsButtonTouched)];
             [settingsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                       forState:UIControlStateNormal];
             [settingsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]

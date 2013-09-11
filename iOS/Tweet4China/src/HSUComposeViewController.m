@@ -14,6 +14,7 @@
 #import "HSUSuggestMentionCell.h"
 #import <MapKit/MapKit.h>
 #import "HSUSendBarButtonItem.h"
+#import "TwitterText.h"
 
 #define kMaxWordLen 140
 #define kSingleLineHeight 45
@@ -108,7 +109,7 @@
     if (self.draft) {
         self.defaultTitle = self.draft[@"title"];
         self.defaultText = self.draft[@"status"];
-        self.inReplyToStatusId = self.draft[kTwitter_Parameter_Key_Reply_ID];
+        self.inReplyToStatusId = self.draft[kTwitterReplyID_ParameterKey];
         self.defaultImage = [UIImage imageWithContentsOfFile:self.draft[@"image_file_path"]];
     }
     

@@ -23,6 +23,7 @@
 - (void)followingButtonTouched;
 - (void)followersButtonTouched;
 - (void)actionsButtonTouched;
+- (void)settingsButtonTouched;
 - (void)followButtonTouched:(UIButton *)followButton;
 - (void)messagesButtonTouched;
 

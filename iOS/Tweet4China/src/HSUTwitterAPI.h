@@ -17,6 +17,7 @@ typedef void (^HSUTwitterAPIFailureBlock)(NSError *error);
 + (instancetype)shared;
 - (BOOL)isAuthorized;
 - (NSString *)myScreenName;
+- (void)signOut;
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

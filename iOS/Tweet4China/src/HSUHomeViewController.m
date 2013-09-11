@@ -9,6 +9,7 @@
 #import "HSUHomeViewController.h"
 #import "HSUHomeDataSource.h"
 #import "HSUProxySettingsViewController.h"
+#import "HSURefreshControl.h"
 
 @interface HSUHomeViewController ()
 

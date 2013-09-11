@@ -9,6 +9,7 @@
 #import "HSUDraftsViewController.h"
 #import "HSUDraftsDataSource.h"
 #import "HSUComposeViewController.h"
+#import "HSUTabController.h"
 
 #define toolbar_height 44
 
