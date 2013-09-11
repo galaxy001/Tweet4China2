@@ -12,6 +12,9 @@ An open source Twitter client using [Shadowsocks](http://www.shadowsocks.com) pr
 ![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/6.PNG)
 ![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/7.PNG)
 ![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/8.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/9.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/10.PNG)
+![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/11.PNG)
 
 # Usage
 
