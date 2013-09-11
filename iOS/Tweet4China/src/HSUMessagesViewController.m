@@ -126,29 +126,33 @@
             self.textView.width = 310;
         }
     }
+    self.textView.left = 12;
     CGSize textViewSize = self.textView.contentSize;
     if (textViewSize.height > 100) {
         textViewSize = ccs(textViewSize.width, 100);
     } else if (textViewSize.height < 1) {
-        textViewSize = ccs(self.view.width-10, 36);
+        textViewSize = ccs(self.view.width-12-12, 36);
     }
-    
-    self.tableView.top = 10 + self.navigationController.navigationBar.height + 10;
-    self.tableView.height = self.height - self.tableView.top - textViewSize.height;
     
     CGSize textViewBackgroundSize = ccs(textViewSize.width, textViewSize.height-8);
     CGSize toolbarSize = ccs(self.width, textViewBackgroundSize.height+9+7);
     
     __weak typeof(&*self)weakSelf = self;
     void (^animatedBlock)() = ^{
-        weakSelf.tableView.height = weakSelf.height - weakSelf.keyboardHeight - toolbarSize.height;
         weakSelf.toolbar.size = toolbarSize;
         weakSelf.toolbar.bottom = weakSelf.height - weakSelf.keyboardHeight;
+        
         weakSelf.textViewBackground.leftTop = ccp(5, weakSelf.toolbar.top + 9);
         weakSelf.textViewBackground.size = textViewBackgroundSize;
-        weakSelf.textView.size = textViewSize;
-        weakSelf.textView.leftTop = ccp(12, weakSelf.tableView.bottom+5);
+        
         weakSelf.wordCountLabel.rightCenter = ccp(weakSelf.width-10, weakSelf.toolbar.rightCenter.y);
+        
+        weakSelf.textView.size = textViewSize;
+        weakSelf.textView.top = weakSelf.toolbar.top + 5;
+        weakSelf.textView.width = weakSelf.width - weakSelf.textView.left * 2 - weakSelf.wordCountLabel.width;
+        
+        weakSelf.tableView.top = 10 + weakSelf.navigationController.navigationBar.height + 10;
+        weakSelf.tableView.height = weakSelf.toolbar.top - weakSelf.tableView.top;
     };
     if (self.viewDidAppearCount == 0 || self.layoutForTextChanged) {
         self.layoutForTextChanged = NO;
