@@ -350,7 +350,7 @@
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
     [TWENGINE getFriendsWithSuccess:^(id responseObj) {
-        friends = responseObj;
+        friends = responseObj[@"users"];
         [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         [self filterSuggestions];
@@ -358,6 +358,7 @@
         
     }];
     
+    trends = [[NSUserDefaults standardUserDefaults] objectForKey:@"trends"];
     [TWENGINE getTrendsWithSuccess:^(id responseObj) {
         trends = responseObj[0][@"trends"];
         [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
