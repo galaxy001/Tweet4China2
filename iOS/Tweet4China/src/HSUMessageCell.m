@@ -29,6 +29,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+        
         UILabel *timeLabel = [[UILabel alloc] init];
         [self.contentView addSubview:timeLabel];
         self.timeLabel = timeLabel;

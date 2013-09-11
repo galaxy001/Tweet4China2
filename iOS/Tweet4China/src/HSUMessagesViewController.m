@@ -129,9 +129,16 @@
     CGSize textViewSize = self.textView.contentSize;
     if (textViewSize.height > 100) {
         textViewSize = ccs(textViewSize.width, 100);
+    } else if (textViewSize.height < 1) {
+        textViewSize = ccs(self.view.width-10, 36);
     }
+    
+    self.tableView.top = 10 + self.navigationController.navigationBar.height + 10;
+    self.tableView.height = self.height - self.tableView.top - textViewSize.height;
+    
     CGSize textViewBackgroundSize = ccs(textViewSize.width, textViewSize.height-8);
     CGSize toolbarSize = ccs(self.width, textViewBackgroundSize.height+9+7);
+    
     __weak typeof(&*self)weakSelf = self;
     void (^animatedBlock)() = ^{
         weakSelf.tableView.height = weakSelf.height - weakSelf.keyboardHeight - toolbarSize.height;
