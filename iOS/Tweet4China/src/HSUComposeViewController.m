@@ -86,6 +86,7 @@
     
     UIImage *postImage;
     
+    NSString *textAtFist;
     BOOL contentChanged;
 }
 
@@ -110,6 +111,8 @@
         self.inReplyToStatusId = self.draft[kTwitter_Parameter_Key_Reply_ID];
         self.defaultImage = [UIImage imageWithContentsOfFile:self.draft[@"image_file_path"]];
     }
+    
+    textAtFist = [self.defaultText copy];
     
 //    setup navigation bar
     if (self.defaultTitle) {
@@ -431,6 +434,9 @@
         return;
     }
     if (contentChanged) {
+        if ([textAtFist isEqualToString:contentTV.text]) {
+            return;
+        }
         RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:@"Cancel"];
         RIButtonItem *giveUpBnt = [RIButtonItem itemWithLabel:@"Don't save"];
         giveUpBnt.action = ^{
@@ -464,6 +470,7 @@
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sent" message:briefMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+        alert = [[UIAlertView alloc] init];
         dispatch_async(GCDMainThread, ^{
             [alert show];
         });
