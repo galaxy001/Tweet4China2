@@ -316,16 +316,6 @@
     toggleLocationBnt.bottom = extraPanelSV.height - 10;
     suggestionsTV.top = contentTV.top + 45;
     contentShadowV.top = suggestionsTV.top;
-    
-    if (suggestionType) {
-        suggestionsTV.hidden = NO;
-        contentShadowV.hidden = NO;
-        contentTV.height = kSingleLineHeight;
-        suggestionsTV.height = self.view.height - suggestionsTV.top - keyboardHeight;
-    } else {
-        suggestionsTV.hidden = YES;
-        contentShadowV.hidden = YES;
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -410,6 +400,7 @@
         contentTV.top = 54;
         suggestionsTV.top = contentTV.top + 45;
         contentShadowV.top = suggestionsTV.top;
+        suggestionsTV.height -= 54;
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
