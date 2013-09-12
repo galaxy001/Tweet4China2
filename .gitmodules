@@ -40,3 +40,6 @@
 [submodule "iOS/Tweet4China/3th-party/NJKWebViewProgress"]
 	path = iOS/Tweet4China/3th-party/NJKWebViewProgress
 	url = https://github.com/ninjinkun/NJKWebViewProgress.git
+[submodule "iOS/Tweet4China/3th-party/SVProgressHUD"]
+	path = iOS/Tweet4China/3th-party/SVProgressHUD
+	url = https://github.com/samvermette/SVProgressHUD.git

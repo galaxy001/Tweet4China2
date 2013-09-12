@@ -100,6 +100,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 @property (nonatomic, strong) ACAccount *account;
 @property (nonatomic, strong) ACAccountStore *accountStore;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (nonatomic, assign, getter = isAuthorizing) BOOL authorizing;
 
 @end
 
@@ -188,7 +189,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)authorize
 {
-    if (shadowsocksStarted) {
+    if (shadowsocksStarted && !self.isAuthorizing) {
         double delayInSeconds = 1.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -207,11 +208,10 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
              ACAccountType *twitterAccountType = [[HSUTwitterAPI shared].accountStore
                                                   accountTypeWithAccountTypeIdentifier:
                                                   ACAccountTypeIdentifierTwitter];
-             ACAccount *newAccount = [[ACAccount alloc] initWithAccountType:twitterAccountType];
+             __block ACAccount *newAccount = [[ACAccount alloc] initWithAccountType:twitterAccountType];
              newAccount.credential = [[ACAccountCredential alloc]
                                       initWithOAuthToken:[FHSTwitterEngine sharedEngine].accessToken.key
                                       tokenSecret:[FHSTwitterEngine sharedEngine].accessToken.secret];
-             
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                  NSDictionary *userSettings = responseObj;
                  newAccount.username = userSettings[@"screen_name"];
@@ -219,6 +219,9 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  [[NSUserDefaults standardUserDefaults] synchronize];
                  if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
                      
+                     [SVProgressHUD showWithStatus:@"Adding account to system\nBe patient !"];
+                     [HSUTwitterAPI shared].authorizing = YES;
+                     [UIApplication sharedApplication].keyWindow.userInteractionEnabled = NO;
                      [[HSUTwitterAPI shared].accountStore saveAccount:newAccount
                                                 withCompletionHandler:^(BOOL success, NSError *error)
                      {
@@ -241,10 +244,16 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                                            postNotificationName:HSUTwiterLoginSuccess
                                            object:self
                                            userInfo:@{@"success": @YES}];
-                                          break;
+                                          [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
+                                          [HSUTwitterAPI shared].authorizing = NO;
+                                          [SVProgressHUD dismiss];
+                                          return ;
                                       }
                                   }
                               }
+                              [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
+                              [HSUTwitterAPI shared].authorizing = NO;
+                              [SVProgressHUD showErrorWithStatus:@"Failed"];
                           }];
                      }];
                  }
@@ -284,11 +293,15 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)syncGetUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self syncSendByFHSTwitterEngineWithUrl:url_account_settings
-                                     method:SLRequestMethodGET
-                                 parameters:nil
-                                    success:success
-                                    failure:failure];
+    id ret = [self syncSendByFHSTwitterEngineWithUrl:url_account_settings
+                                              method:SLRequestMethodGET
+                                          parameters:nil];
+    if ([ret isKindOfClass:[NSError class]]) {
+        failure(ret);
+    } else {
+        success(ret);
+    }
+    
 }
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -635,7 +648,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     });
 }
 
-- (void)syncSendByFHSTwitterEngineWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (id)syncSendByFHSTwitterEngineWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSURL *baseURL = [NSURL URLWithString:url];
@@ -657,9 +670,9 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     
     if (error) {
         [self dealWithError:error errTitle:@"Some problems with your network"];
-        failure(error);
+        return error;
     } else {
-        success(responseObj);
+        return responseObj;
     }
 }
 

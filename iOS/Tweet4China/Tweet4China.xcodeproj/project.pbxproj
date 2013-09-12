@@ -232,6 +232,8 @@
 		966DEABD179927710032ED29 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEABC179927710032ED29 /* Social.framework */; };
 		966DEABF17992BA60032ED29 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEABE17992BA60032ED29 /* Accounts.framework */; };
 		966DEAC1179947C20032ED29 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEAC0179947C20032ED29 /* Twitter.framework */; };
+		9670596117E1AE3600C4CB75 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */; };
+		9670596217E1AE3600C4CB75 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670596017E1AE3600C4CB75 /* SVProgressHUD.m */; };
 		96710D7717C10F0900497043 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 96710D7317C10F0900497043 /* fishhook.c */; };
 		96710D7817C10F0900497043 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 96710D7517C10F0900497043 /* LICENSE */; };
 		96710D7917C10F0900497043 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 96710D7617C10F0900497043 /* README.md */; };
@@ -755,6 +757,9 @@
 		966DEABC179927710032ED29 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		966DEABE17992BA60032ED29 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		966DEAC0179947C20032ED29 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
+		9670595F17E1AE3600C4CB75 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
+		9670596017E1AE3600C4CB75 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
 		96710D7317C10F0900497043 /* fishhook.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fishhook.c; sourceTree = "<group>"; };
 		96710D7417C10F0900497043 /* fishhook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fishhook.h; sourceTree = "<group>"; };
 		96710D7517C10F0900497043 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -1250,6 +1255,7 @@
 		9628177516DE5FDF00ABF0AD /* 3th-party */ = {
 			isa = PBXGroup;
 			children = (
+				9670595D17E1AE3600C4CB75 /* SVProgressHUD */,
 				9661D9FE17DEFBE400E912E2 /* NJKWebViewProgress */,
 				9632A25217DB868E0046F930 /* CocoaAsyncSocket */,
 				96A11F2217D0C1A500F98ABD /* RETableViewManager */,
@@ -1677,6 +1683,17 @@
 				9664995216F307A700BC901A /* Base64TranscoderFHS.h */,
 			);
 			path = Crytpo;
+			sourceTree = "<group>";
+		};
+		9670595D17E1AE3600C4CB75 /* SVProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */,
+				9670595F17E1AE3600C4CB75 /* SVProgressHUD.h */,
+				9670596017E1AE3600C4CB75 /* SVProgressHUD.m */,
+			);
+			name = SVProgressHUD;
+			path = SVProgressHUD/SVProgressHUD;
 			sourceTree = "<group>";
 		};
 		96710D7217C10F0900497043 /* fishhook */ = {
@@ -2149,6 +2166,7 @@
 				9605A82A171C503D0031BA74 /* bg_tab_bar_selected.png in Resources */,
 				9605A82B171C503D0031BA74 /* bg_tab_bar.png in Resources */,
 				9605A82C171C503D0031BA74 /* bg_texture.png in Resources */,
+				9670596117E1AE3600C4CB75 /* SVProgressHUD.bundle in Resources */,
 				9605A82D171C503D0031BA74 /* button-bar-at.png in Resources */,
 				9605A82E171C503D0031BA74 /* button-bar-camera-glow.png in Resources */,
 				9605A82F171C503D0031BA74 /* button-bar-camera.png in Resources */,
@@ -2339,6 +2357,7 @@
 				9628184E16DFAB3D00ABF0AD /* HSUHomeViewController.m in Sources */,
 				9628185116DFAB5000ABF0AD /* HSUConnectViewController.m in Sources */,
 				9628185416DFAB8100ABF0AD /* HSUDiscoverViewController.m in Sources */,
+				9670596217E1AE3600C4CB75 /* SVProgressHUD.m in Sources */,
 				9628185716DFABE700ABF0AD /* HSUProfileViewController.m in Sources */,
 				9628185A16DFACEC00ABF0AD /* HSUCommonTools.m in Sources */,
 				9628185D16DFAE2A00ABF0AD /* HSUNavitationBar.m in Sources */,

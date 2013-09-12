@@ -34,6 +34,7 @@
 #import "HSUNavigationBarLight.h"
 #import "HSUDraftManager.h"
 #import "NSData+MD5.h"
+#import "SVProgressHUD.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
