@@ -22,7 +22,7 @@ extern CFDictionaryRef SCDynamicStoreCopyProxies (SCDynamicStoreRef store);
 static CFDictionaryRef new_SCDynamicStoreCopyProxies (SCDynamicStoreRef store) {
 	if (!activated || !proxyPref) 
 		return origin_SCDynamicStoreCopyProxies(store);
-	NSLog(@"AppProxyCap: proxify configuration applied: %@", proxyPref);
+	//NSLog(@"AppProxyCap: proxify configuration applied: %@", proxyPref);
 	return CFDictionaryCreateCopy(NULL, (CFDictionaryRef)proxyPref);
 }
 

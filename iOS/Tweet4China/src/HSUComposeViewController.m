@@ -471,7 +471,6 @@
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sent" message:briefMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        alert = [[UIAlertView alloc] init];
         dispatch_async(GCDMainThread, ^{
             [alert show];
         });
