@@ -93,7 +93,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 @interface HSUTwitterAPI ()
 
-@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, assign, getter = isAuthorizing) BOOL authorizing;
 
 @end
@@ -110,13 +109,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 #endif
     self = [super init];
     if (self) {
-        self.dateFormatter = [[NSDateFormatter alloc]init];
-        NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en_US"];
-        [self.dateFormatter setLocale:usLocale];
-        [self.dateFormatter setDateStyle:NSDateFormatterLongStyle];
-        [self.dateFormatter setFormatterBehavior:NSDateFormatterBehavior10_4];
-        [self.dateFormatter setDateFormat:@"EEE MMM dd HH:mm:ss ZZZZ yyyy"];
-        
         FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
         [engine permanentlySetConsumerKey:kTwitterAppKey andSecret:kTwitterAppSecret];
         [engine loadAccessToken];
@@ -548,7 +540,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 
 - (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate {
-    return [self.dateFormatter dateFromString:twitterDate];
+    return [[FHSTwitterEngine sharedEngine] getDateFromTwitterCreatedAt:twitterDate];
 }
 
 @end
