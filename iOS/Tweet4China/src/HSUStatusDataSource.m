@@ -27,13 +27,15 @@
 {
     // load context data, then call finish on delegate
     NSDictionary *status = [self rawDataAtIndex:0];
-    [TWENGINE getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
-        HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
-        [self.data insertObject:chatCellData atIndex:0];
-        [self.delegate dataSource:self didFinishRefreshWithError:nil];
-    } failure:^(NSError *error) {
-        [self.delegate dataSource:self didFinishRefreshWithError:error];
-    }];
+    if ([status[@"in_reply_to_status_id_str"] length]) {
+        [TWENGINE getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
+            HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
+            [self.data insertObject:chatCellData atIndex:0];
+            [self.delegate dataSource:self didFinishRefreshWithError:nil];
+        } failure:^(NSError *error) {
+            [self.delegate dataSource:self didFinishRefreshWithError:error];
+        }];
+    }
 }
 
 @end
