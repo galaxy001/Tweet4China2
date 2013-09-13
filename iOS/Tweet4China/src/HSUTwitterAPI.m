@@ -7,8 +7,6 @@
 //
 
 #import "HSUTwitterAPI.h"
-#import <Accounts/Accounts.h>
-#import <Social/Social.h>
 #import "FHSTwitterEngine.h"
 #import "OAToken.h"
 #import "OARequestParameter.h"
@@ -97,8 +95,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 @interface HSUTwitterAPI ()
 
-@property (nonatomic, strong) ACAccount *account;
-@property (nonatomic, strong) ACAccountStore *accountStore;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @property (nonatomic, assign, getter = isAuthorizing) BOOL authorizing;
 
@@ -126,31 +122,8 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
         [engine permanentlySetConsumerKey:kTwitterAppKey andSecret:kTwitterAppSecret];
         [engine loadAccessToken];
-        self.accountStore = [[ACAccountStore alloc] init];
-        if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
-            
-            ACAccountType *twitterAccountType = [self.accountStore
-                                                 accountTypeWithAccountTypeIdentifier:
-                                                 ACAccountTypeIdentifierTwitter];
-            [self.accountStore
-             requestAccessToAccountsWithType:twitterAccountType
-             options:NULL
-             completion:^(BOOL granted, NSError *error) {
-                 if (granted) {
-                     NSArray *twitterAccounts =
-                     [self.accountStore accountsWithAccountType:twitterAccountType];
-                     
-                     for (ACAccount *account in twitterAccounts) {
-                         if ([account.username isEqualToString:[self mySettings][@"screen_name"]]) {
-                             self.account = account;
-                             return ;
-                         }
-                     }
-                 }
-                 if (!self.isAuthorized) {
-                     [self authorize];
-                 }
-             }];
+        if (!self.isAuthorized) {
+            [self authorize];
         }
     }
     return self;
@@ -175,13 +148,12 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (BOOL)isAuthorized
 {
-    return [FHSTwitterEngine sharedEngine].isAuthorized && self.account != nil;
+    return [FHSTwitterEngine sharedEngine].isAuthorized;
 }
 
 - (void)signOut
 {
     [[FHSTwitterEngine sharedEngine] clearAccessToken];
-    self.account = nil;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [self authorize];
@@ -205,58 +177,13 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                                         withCompletion:^(BOOL success)
      {
          if (success) {
-             ACAccountType *twitterAccountType = [[HSUTwitterAPI shared].accountStore
-                                                  accountTypeWithAccountTypeIdentifier:
-                                                  ACAccountTypeIdentifierTwitter];
-             __block ACAccount *newAccount = [[ACAccount alloc] initWithAccountType:twitterAccountType];
-             newAccount.credential = [[ACAccountCredential alloc]
-                                      initWithOAuthToken:[FHSTwitterEngine sharedEngine].accessToken.key
-                                      tokenSecret:[FHSTwitterEngine sharedEngine].accessToken.secret];
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
-                 NSDictionary *userSettings = responseObj;
-                 newAccount.username = userSettings[@"screen_name"];
                  [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
                  [[NSUserDefaults standardUserDefaults] synchronize];
-                 if ([SLComposeViewController isAvailableForServiceType:SLServiceTypeTwitter]) {
-                     
-                     [SVProgressHUD showWithStatus:@"Adding account to system\nBe patient !"];
-                     [HSUTwitterAPI shared].authorizing = YES;
-                     [UIApplication sharedApplication].keyWindow.userInteractionEnabled = NO;
-                     [[HSUTwitterAPI shared].accountStore saveAccount:newAccount
-                                                withCompletionHandler:^(BOOL success, NSError *error)
-                     {
-                         HSUTwitterAPI *api = [HSUTwitterAPI shared];
-                         ACAccountType *twitterAccountType = [api.accountStore
-                                                              accountTypeWithAccountTypeIdentifier:
-                                                              ACAccountTypeIdentifierTwitter];
-                         [api.accountStore
-                          requestAccessToAccountsWithType:twitterAccountType
-                          options:NULL
-                          completion:^(BOOL granted, NSError *error) {
-                              if (granted) {
-                                  NSArray *twitterAccounts =
-                                  [api.accountStore accountsWithAccountType:twitterAccountType];
-                                  
-                                  for (ACAccount *account in twitterAccounts) {
-                                      if ([account.username isEqualToString:[api mySettings][@"screen_name"]]) {
-                                          api.account = account;
-                                          [[NSNotificationCenter defaultCenter]
-                                           postNotificationName:HSUTwiterLoginSuccess
-                                           object:self
-                                           userInfo:@{@"success": @YES}];
-                                          [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
-                                          [HSUTwitterAPI shared].authorizing = NO;
-                                          [SVProgressHUD dismiss];
-                                          return ;
-                                      }
-                                  }
-                              }
-                              [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
-                              [HSUTwitterAPI shared].authorizing = NO;
-                              [SVProgressHUD showErrorWithStatus:@"Failed"];
-                          }];
-                     }];
-                 }
+                 [[NSNotificationCenter defaultCenter]
+                  postNotificationName:HSUTwiterLoginSuccess
+                  object:self
+                  userInfo:@{@"success": @YES}];
              } failure:^(NSError *error) {
                  [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
                  [[NSNotificationCenter defaultCenter]
@@ -275,7 +202,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (NSString *)myScreenName
 {
-    return self.account.username;
+    return [self mySettings][@"screen_name"];
 }
 
 - (NSDictionary *)mySettings
@@ -286,7 +213,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendWithUrl:url_account_settings
-               method:SLRequestMethodGET
+               method:@"GET"
            parameters:nil
               success:success
               failure:failure];
@@ -294,7 +221,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)syncGetUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     id ret = [self syncSendByFHSTwitterEngineWithUrl:url_account_settings
-                                              method:SLRequestMethodGET
+                                              method:@"GET"
                                           parameters:nil];
     if ([ret isKindOfClass:[NSError class]]) {
         failure(ret);
@@ -358,7 +285,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     params[@"count"] = @"200";
     params[@"skip_status"] = @"true";
     [self sendByFHSTwitterEngineWithUrl:url_direct_messages
-                                 method:SLRequestMethodGET
+                                 method:@"GET"
                              parameters:params
                                 success:success
                                 failure:failure];
@@ -389,31 +316,29 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    NSMutableDictionary *params = [@{} mutableCopy];
-    NSString *url = url_statuses_update;
+    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
     
-    params[@"status"] = status;
-    
-    if (inReplyToID) {
-        params[kTwitterReplyID_ParameterKey] = inReplyToID;
-    }
-    
-    if (imageFilePath) {
-        url = url_statuses_update_with_media;
-        params[@"media[]"] = [NSData dataWithContentsOfFile:imageFilePath];
-    }
-    
-    if (location.latitude && location.longitude) {
-        params[@"lat"] = S(@"%g", location.latitude);
-        params[@"long"] = S(@"%g", location.longitude);
-    }
-    
-    [self sendPOSTWithUrl:url parameters:params success:success failure:failure];
+    dispatch_async(GCDBackgroundThread, ^{
+        id responseObj = [engine postTweet:status
+                             withImageData:imageData
+                                 inReplyTo:inReplyToID
+                                  location:location];
+        NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
+        
+        dispatch_async(GCDMainThread, ^{
+            if (error) {
+                failure(error);
+            } else {
+                success(responseObj);
+            }
+        });
+    });
 }
 - (void)sendDirectMessage:(NSString *)message toUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendByFHSTwitterEngineWithUrl:url_direct_messages_new
-                                 method:SLRequestMethodPOST
+                                 method:@"POST"
                              parameters:@{@"text": message, @"screen_name": screenName}
                                 success:success
                                 failure:failure];
@@ -476,7 +401,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)getSentMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendByFHSTwitterEngineWithUrl:url_direct_messages_sent
-                                 method:SLRequestMethodGET
+                                 method:@"GET"
                              parameters:@{@"since_id": sinceID ?: @"-1"}
                                 success:success
                                 failure:failure];
@@ -524,7 +449,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)deleteDirectMessage:(NSString *)messageID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendByFHSTwitterEngineWithUrl:url_direct_messages_destroy
-                                 method:SLRequestMethodPOST
+                                 method:@"POST"
                              parameters:@{@"id": messageID}
                                 success:success
                                 failure:failure];
@@ -538,84 +463,26 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)sendGETWithUrl:(NSString *)url parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendWithUrl:url method:SLRequestMethodGET parameters:parameters success:success failure:failure];
+    [self sendWithUrl:url method:@"GET" parameters:parameters success:success failure:failure];
 }
 
 - (void)sendPOSTWithUrl:(NSString *)url parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendWithUrl:url method:SLRequestMethodPOST parameters:parameters success:success failure:failure];
+    [self sendWithUrl:url method:@"POST" parameters:parameters success:success failure:failure];
 }
 
-- (void)sendWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)sendWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    if (!self.account) {
+    if (!self.myScreenName) {
         NSLog(@"not authorized");
         [self authorize];
         return;
     }
     
-    NSData *media = parameters[@"media[]"];
-    if ([parameters isKindOfClass:[NSMutableDictionary class]] &&
-        media) {
-        NSMutableDictionary *mp = (NSMutableDictionary *)parameters;
-        [mp removeObjectForKey:@"media[]"];
-        parameters = mp;
-    }
-    SLRequest *request = [SLRequest requestForServiceType:SLServiceTypeTwitter
-                                            requestMethod:method
-                                                      URL:[NSURL URLWithString:url]
-                                               parameters:parameters];
-    if (media) {
-        [request addMultipartData:media withName:@"media[]" type:@"image/jpeg" filename:@"image.jpg"];
-    }
-    [request setAccount:self.account];
-    [request performRequestWithHandler:^(NSData *responseData,
-                                         NSHTTPURLResponse *urlResponse,
-                                         NSError *error) {
-        dispatch_async(GCDMainThread, ^{
-            if (error) {
-                [self dealWithError:error errTitle:@"Some problems with your network"];
-                failure(error);
-                return ;
-            }
-            
-            if (responseData.length) {
-                id responseObj = [NSJSONSerialization JSONObjectWithData:responseData
-                                                                 options:NSJSONReadingAllowFragments
-                                                                   error:nil];
-                if ([responseObj isKindOfClass:[NSArray class]] ||
-                    [responseObj isKindOfClass:[NSDictionary class]]) {
-                    
-                    responseObj = RemoveFuckingNull(responseObj);
-                    
-                    if ([responseObj isKindOfClass:[NSDictionary class]]) {
-                        if ([responseObj[@"errors"] count]) {
-                            NSMutableDictionary *errorDict = [responseObj[@"errors"][0] mutableCopy];
-                            errorDict[@"url"] = url;
-                            NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:1 userInfo:errorDict];
-                            failure(error);
-                            return ;
-                        }
-                    }
-                    
-                    if (urlResponse.statusCode >= 200 && urlResponse.statusCode < 300) {
-                        success(responseObj);
-                        return;
-                    }
-                }
-                
-                NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:3 userInfo:responseObj];
-                failure(error);
-                return;
-            }
-            
-            NSError *error = [NSError errorWithDomain:@"api.twiiter.com" code:3 userInfo:nil];
-            failure(error);
-        });
-    }];
+    [self sendByFHSTwitterEngineWithUrl:url method:method parameters:parameters success:success failure:failure];
 }
 
-- (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSURL *baseURL = [NSURL URLWithString:url];
@@ -623,14 +490,14 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     
     NSMutableArray *params = @[].mutableCopy;
     for (NSString *key in parameters.allKeys) {
-        NSString *value = parameters[key];
+        NSString *value = [NSString stringWithFormat:@"%@", parameters[key]];
         OARequestParameter *param = [OARequestParameter requestParameterWithName:key value:value];
         [params addObject:param];
     }
     dispatch_async(GCDBackgroundThread, ^{
         FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
         id responseObj;
-        if (method == SLRequestMethodGET) {
+        if ([method isEqualToString:@"GET"]) {
             responseObj = [engine sendGETRequest:request withParameters:params];
         } else {
             responseObj = [engine sendPOSTRequest:request withParameters:params];
@@ -648,7 +515,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     });
 }
 
-- (id)syncSendByFHSTwitterEngineWithUrl:(NSString *)url method:(SLRequestMethod)method parameters:(NSDictionary *)parameters
+- (id)syncSendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSURL *baseURL = [NSURL URLWithString:url];
@@ -661,7 +528,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         [params addObject:param];
     }
     id responseObj;
-    if (method == SLRequestMethodGET) {
+    if ([method isEqualToString:@"GET"]) {
         responseObj = [engine sendGETRequest:request withParameters:params];
     } else {
         responseObj = [engine sendPOSTRequest:request withParameters:params];

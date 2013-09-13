@@ -229,9 +229,7 @@
 		966ACE36174B9B210050F110 /* HSUMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE35174B9B210050F110 /* HSUMessagesViewController.m */; };
 		966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE38174B9B310050F110 /* HSUConversationsDataSource.m */; };
 		966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE3B174B9B3E0050F110 /* HSUMessagesDataSource.m */; };
-		966DEABD179927710032ED29 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEABC179927710032ED29 /* Social.framework */; };
 		966DEABF17992BA60032ED29 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEABE17992BA60032ED29 /* Accounts.framework */; };
-		966DEAC1179947C20032ED29 /* Twitter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEAC0179947C20032ED29 /* Twitter.framework */; };
 		9670596117E1AE3600C4CB75 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */; };
 		9670596217E1AE3600C4CB75 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670596017E1AE3600C4CB75 /* SVProgressHUD.m */; };
 		96710D7717C10F0900497043 /* fishhook.c in Sources */ = {isa = PBXBuildFile; fileRef = 96710D7317C10F0900497043 /* fishhook.c */; };
@@ -1061,9 +1059,7 @@
 				960640F017D08EAC000B1032 /* libcrypto.a in Frameworks */,
 				960640EB17D08C41000B1032 /* libshadowsocks.a in Frameworks */,
 				960640EA17D0874B000B1032 /* Security.framework in Frameworks */,
-				966DEAC1179947C20032ED29 /* Twitter.framework in Frameworks */,
 				966DEABF17992BA60032ED29 /* Accounts.framework in Frameworks */,
-				966DEABD179927710032ED29 /* Social.framework in Frameworks */,
 				9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */,
 				9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */,
 				962AB00816FB330A00D44566 /* AVFoundation.framework in Frameworks */,
