@@ -19,8 +19,6 @@
 
 @end
 
-id RemoveFuckingNull(id rootObject);
-
 static NSString * const url_search_tweets = @"https://api.twitter.com/1.1/search/tweets.json";
 
 static NSString * const url_users_search = @"https://api.twitter.com/1.1/users/search.json";
@@ -305,14 +303,10 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)lookupUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendGETWithUrl:url_users_lookup
+    [self sendGETWithUrl:url_users_show
               parameters:@{@"screen_name": screenName}
-                 success:^(id responseObj) {
-                     NSArray *users = responseObj;
-                     if (users.count) {
-                         success(users[0]);
-                     }
-                 } failure:failure];
+                 success:success
+                 failure:failure];
 }
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -551,8 +545,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                           message:errTitle
                           delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
     [alert show];
-    
-    
 }
 
 - (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate {
@@ -560,37 +552,3 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 
 @end
-
-id RemoveFuckingNull(id rootObject) {
-    if ([rootObject isKindOfClass:[NSDictionary class]]) {
-        NSMutableDictionary *sanitizedDictionary = [NSMutableDictionary dictionaryWithDictionary:rootObject];
-        [rootObject enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            id sanitized = removeNull(obj);
-            if (!sanitized) {
-                [sanitizedDictionary setObject:@"" forKey:key];
-            } else {
-                [sanitizedDictionary setObject:sanitized forKey:key];
-            }
-        }];
-        return [NSMutableDictionary dictionaryWithDictionary:sanitizedDictionary];
-    }
-    
-    if ([rootObject isKindOfClass:[NSArray class]]) {
-        NSMutableArray *sanitizedArray = [NSMutableArray arrayWithArray:rootObject];
-        [rootObject enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            id sanitized = removeNull(obj);
-            if (!sanitized) {
-                [sanitizedArray replaceObjectAtIndex:[sanitizedArray indexOfObject:obj] withObject:@""];
-            } else {
-                [sanitizedArray replaceObjectAtIndex:[sanitizedArray indexOfObject:obj] withObject:sanitized];
-            }
-        }];
-        return [NSMutableArray arrayWithArray:sanitizedArray];
-    }
-    
-    if ([rootObject isKindOfClass:[NSNull class]]) {
-        return (id)nil;
-    } else {
-        return rootObject;
-    }
-}
