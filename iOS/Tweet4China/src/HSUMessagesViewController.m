@@ -74,7 +74,7 @@
     self.actionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
     self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
     
-    UIBarButtonItem *sendButtonItem = [[HSUSendBarButtonItem alloc] init];
+    UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
     self.sendBarButtonItem = sendButtonItem;
     sendButtonItem.title = @"Send";
     sendButtonItem.target = self;
