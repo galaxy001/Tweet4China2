@@ -74,7 +74,6 @@
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
     [TWENGINE getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
-        [responseObj removeObjectAtIndex:0];
         id loadMoreCellData = self.data.lastObject;
         [self.data removeLastObject];
         for (NSDictionary *tweet in responseObj) {
@@ -91,7 +90,7 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
-        [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
+        [self.data.lastObject renderData][@"status"] = error ? @(kLoadMoreCellStatus_Error) : @(kLoadMoreCellStatus_NoMore);
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     }];

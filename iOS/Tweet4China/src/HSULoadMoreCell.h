@@ -12,6 +12,7 @@
 #define kLoadMoreCellStatus_Done 0
 #define kLoadMoreCellStatus_Loading 1
 #define kLoadMoreCellStatus_Error 2
+#define kLoadMoreCellStatus_NoMore 3
 
 @interface HSULoadMoreCell : HSUBaseTableCell
 

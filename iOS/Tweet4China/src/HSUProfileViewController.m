@@ -19,6 +19,7 @@
 #import "HSUNavigationBarLight.h"
 #import "HSUConversationsViewController.h"
 #import "HSUProxySettingsViewController.h"
+#import "HSUFavoritesDataSource.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate>
 
@@ -91,10 +92,13 @@
             [self tweetsButtonTouched];
             return;
         } else if ([rawData[@"action"] isEqualToString:kAction_Following]) {
-            [self followingButtonTouched];
+            [self followingsButtonTouched];
             return;
         } else if ([rawData[@"action"] isEqualToString:kAction_Followers]) {
             [self followersButtonTouched];
+            return;
+        } else if ([rawData[@"action"] isEqualToString:kAction_Favorites]) {
+            [self favoritesButtonTouched];
             return;
         }
     } else if ([data.dataType isEqualToString:kDataType_Drafts]) {
@@ -114,7 +118,7 @@
     [dataSource refresh];
 }
 
-- (void)followingButtonTouched
+- (void)followingsButtonTouched
 {
     HSUPersonListDataSource *dataSource = [[HSUFollowingDataSource alloc] initWithScreenName:self.screenName];
     HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
@@ -126,6 +130,19 @@
     HSUPersonListDataSource *dataSource = [[HSUFollowersDataSource alloc] initWithScreenName:self.screenName];
     HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
     [self.navigationController pushViewController:detailVC animated:YES];
+}
+
+- (void)favoritesButtonTouched
+{
+    HSUTweetsDataSource *dataSource = [[HSUFavoritesDataSource alloc] initWithScreenName:self.screenName];
+    HSUTweetsViewController *detailVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:detailVC animated:YES];
+    [dataSource refresh];
+}
+
+- (void)listsButtonTouched
+{
+    
 }
 
 - (void)draftsButtonTouched

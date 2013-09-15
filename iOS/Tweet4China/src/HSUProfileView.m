@@ -191,7 +191,7 @@
         followingButton.titleLabel.font = [UIFont systemFontOfSize:8];
         [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -38.5, 0, 0)];
         [followingButton setTitle:@"FOLLOWING" forState:UIControlStateNormal];
-        [followingButton setTapTarget:delegate action:@selector(followingButtonTouched)];
+        [followingButton setTapTarget:delegate action:@selector(followingsButtonTouched)];
         
         UILabel *followingCountLabel = [[UILabel alloc] init];
         [followingButton addSubview:followingCountLabel];
@@ -239,7 +239,7 @@
             settingsButton.leftCenter = ccp(10, buttonsPanel.height/2);
             
             UIButton *accountsButton = [[UIButton alloc] init];
-            [buttonsPanel addSubview:accountsButton];
+//            [buttonsPanel addSubview:accountsButton];
             [accountsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                       forState:UIControlStateNormal];
             [accountsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]

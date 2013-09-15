@@ -11,6 +11,6 @@
 @interface HSUUserHomeDataSource : HSUTweetsDataSource
 
 @property (nonatomic, copy) NSString *screenName;
-@property (nonatomic, copy) NSString *lastStatsuID;
+@property (nonatomic, copy) NSString *lastStatusID;
 
 @end

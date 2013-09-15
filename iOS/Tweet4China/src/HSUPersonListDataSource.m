@@ -50,7 +50,7 @@
             [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
             [self.delegate preprocessDataSourceForRender:self];
         } else {
-            [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Error);
+            [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_NoMore);
         }
         [self.delegate dataSource:self didFinishRefreshWithError:nil];
         self.loadingCount --;

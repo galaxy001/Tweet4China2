@@ -1,18 +1,27 @@
 //
-//  HSUUserHomeDataSource.m
+//  HSUFavoritesDataSource.m
 //  Tweet4China
 //
-//  Created by Jason Hsu on 5/3/13.
-//  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
+//  Created by Jason Hsu on 13-9-14.
+//  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUUserHomeDataSource.h"
+#import "HSUFavoritesDataSource.h"
 
-@implementation HSUUserHomeDataSource
+@implementation HSUFavoritesDataSource
+
+- (id)initWithScreenName:(NSString *)screenName
+{
+    self = [super init];
+    if (self) {
+        self.screenName = screenName;
+    }
+    return self;
+}
 
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
+    [TWENGINE getFavoritesWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         self.lastStatusID = tweet[@"id_str"];
         success(responseObj);
@@ -23,7 +32,7 @@
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [TWENGINE getUserTimelineWithScreenName:self.screenName maxID:self.lastStatusID count:self.requestCount success:^(id responseObj) {
+    [TWENGINE getFavoritesWithScreenName:self.screenName maxID:self.lastStatusID count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         self.lastStatusID = tweet[@"id_str"];
         success(responseObj);

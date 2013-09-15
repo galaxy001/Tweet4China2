@@ -223,7 +223,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     NSMutableDictionary *params = [@{} mutableCopy];
-    if (maxID) params[@"max_id"] = maxID;
+    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_home_timeline
               parameters:params
@@ -242,7 +242,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     NSMutableDictionary *params = [@{} mutableCopy];
     if (sinceID) params[@"since_id"] = sinceID;
-    if (maxID) params[@"max_id"] = maxID;
+    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_metions_timeline
               parameters:params
@@ -262,9 +262,29 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     NSMutableDictionary *params = [@{} mutableCopy];
     if (screenName) params[@"screen_name"] = screenName;
-    if (maxID) params[@"max_id"] = maxID;
+    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_user_timeline
+              parameters:params
+                 success:success failure:failure];
+}
+- (void)getFavoritesWithScreenName:(NSString *)screenName sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (screenName) params[@"screen_name"] = screenName;
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (count) params[@"count"] = @(count);
+    [self sendGETWithUrl:url_favorites_list
+              parameters:params
+                 success:success failure:failure];
+}
+- (void)getFavoritesWithScreenName:(NSString *)screenName maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (screenName) params[@"screen_name"] = screenName;
+    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
+    if (count) params[@"count"] = @(count);
+    [self sendGETWithUrl:url_favorites_list
               parameters:params
                  success:success failure:failure];
 }
@@ -495,7 +515,11 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                 [self dealWithError:error errTitle:@"Some problems with your network"];
                 failure(error);
             } else {
-                success(responseObj);
+                if ([responseObj count]) {
+                    success(responseObj);
+                } else {
+                    failure(nil);
+                }
             }
         });
     });
@@ -531,6 +555,9 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)dealWithError:(NSError *)error errTitle:(NSString *)errTitle;
 {
+    if (!error) {
+        return;
+    }
     NSLog(@"API Request Error %@", error);
     UIAlertView *alert = [[UIAlertView alloc]
                           initWithTitle:@"Error"

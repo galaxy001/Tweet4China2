@@ -31,7 +31,9 @@
 {
     if (!self.loadingCount && self.count > 1) {
         HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
-        if ([cellData.dataType isEqualToString:kDataType_LoadMore]) {
+        if ([cellData.dataType isEqualToString:kDataType_LoadMore] &&
+            [cellData.renderData[@"status"] integerValue] == kLoadMoreCellStatus_Done) {
+            
             cellData.renderData[@"status"] = @(kLoadMoreCellStatus_Loading);
             [self loadMore];
         }
