@@ -178,6 +178,7 @@
     RIButtonItem *shareItem = [RIButtonItem itemWithLabel:@"Share Link"];
     RIButtonItem *copyItem = [RIButtonItem itemWithLabel:@"Copy URL"];
     RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:@"Set as Home"];
+    RIButtonItem *openHomeItem = [RIButtonItem itemWithLabel:@"Open Home"];
     UIActionSheet *menu = [[UIActionSheet alloc]
                            initWithTitle:nil
                            cancelButtonItem:cancelItem
@@ -215,6 +216,10 @@
     setHomeItem.action = ^{
         [[NSUserDefaults standardUserDefaults] setObject:self.urlTextField.text forKey:kDiscoverHomePage];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    };
+    
+    openHomeItem.action = ^{
+        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:kDiscoverHomePage]]];
     };
 }
 
