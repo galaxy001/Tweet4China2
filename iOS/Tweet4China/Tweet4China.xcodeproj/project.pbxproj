@@ -1754,7 +1754,7 @@
 				96A11F5717D0C1A500F98ABD /* RETableViewSection.m */,
 			);
 			name = RETableViewManager;
-			path = "../../../../tweet4china2/iOS/Tweet4China/3th-party/RETableViewManager/RETableViewManager";
+			path = "../3th-party/RETableViewManager/RETableViewManager";
 			sourceTree = "<group>";
 		};
 		96A11F2317D0C1A500F98ABD /* Cells */ = {
