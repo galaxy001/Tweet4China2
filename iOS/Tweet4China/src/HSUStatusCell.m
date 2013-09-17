@@ -42,7 +42,11 @@
         
         self.statusView = [[HSUStatusView alloc] initWithFrame:ccr(padding_S, padding_S, self.contentView.width-padding_S*4, 0)
                                                     style:[[self class] statusStyle]];
+        
         [self.contentView addSubview:self.statusView];
+        
+        flagIV = [[UIImageView alloc] init];
+        [self.contentView addSubview:flagIV];
     }
     return self;
 }
@@ -71,6 +75,8 @@
     } else {
         flagIV.image = nil;
     }
+    [flagIV sizeToFit];
+    flagIV.rightTop = ccp(self.contentView.width, 0);
     
     [self.statusView setupWithData:data];
     [self setupControl:self.statusView.avatarB forKey:@"touchAvatar"];

@@ -69,6 +69,7 @@
         newRawData[@"retweeted"] = [NSNumber numberWithBool:YES];
         cellData.rawData = newRawData;
         [self.dataSource saveCache];
+        [self.tableView reloadData];
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Retweet failed"];
     }];
@@ -84,6 +85,7 @@
         newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
         cellData.rawData = newRawData;
         [self.dataSource saveCache];
+        [self.tableView reloadData];
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"];
     }];

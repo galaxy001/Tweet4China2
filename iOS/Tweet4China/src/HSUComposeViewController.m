@@ -463,17 +463,14 @@
 {
     if (contentTV.text == nil) return;
     NSString *status = contentTV.text;
-    NSString *briefMessage = [NSString stringWithFormat:@"Message sent: %@", [contentTV.text substringToIndex:MIN(20, contentTV.text.length)]];
+    NSString *briefMessage = [contentTV.text substringToIndex:MIN(20, contentTV.text.length)];
     //save draft
     NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
     NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location];
     
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sent" message:briefMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-        dispatch_async(GCDMainThread, ^{
-            [alert show];
-        });
+        [SVProgressHUD showSuccessWithStatus:S(@"Sent\n%@", briefMessage)];
     } failure:^(NSError *error) {
         [[HSUDraftManager shared] activeDraft:draft];
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
