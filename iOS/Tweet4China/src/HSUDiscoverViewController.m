@@ -183,7 +183,7 @@
                            initWithTitle:nil
                            cancelButtonItem:cancelItem
                            destructiveButtonItem:nil
-                           otherButtonItems:stopItem, refreshItem, backwardItem, forwardItem, shareItem, copyItem, setHomeItem, nil];
+                           otherButtonItems:stopItem, refreshItem, backwardItem, forwardItem, shareItem, copyItem, setHomeItem, openHomeItem, nil];
     [menu showInView:self.view.window];
     
     refreshItem.action = ^{
