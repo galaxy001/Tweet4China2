@@ -630,8 +630,8 @@
 		9632A16117D9CB6D0046F930 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUShadowsocksProxy.h; sourceTree = "<group>"; };
 		9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUShadowsocksProxy.m; sourceTree = "<group>"; };
-		9632A25717DB868E0046F930 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
-		9632A25817DB868E0046F930 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCDAsyncSocket.m; sourceTree = "<group>"; };
+		9632A25717DB868E0046F930 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = GCD/GCDAsyncSocket.h; sourceTree = "<group>"; };
+		9632A25817DB868E0046F930 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = GCD/GCDAsyncSocket.m; sourceTree = "<group>"; };
 		9633E5DB174D20EF009062B7 /* error-bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble.png"; sourceTree = "<group>"; };
 		9633E5DC174D20EF009062B7 /* error-bubble@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "error-bubble@2x.png"; sourceTree = "<group>"; };
 		9633E5DD174D20EF009062B7 /* ic_dm_reply_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ic_dm_reply_default.png; sourceTree = "<group>"; };
@@ -1549,18 +1549,10 @@
 		9632A25217DB868E0046F930 /* CocoaAsyncSocket */ = {
 			isa = PBXGroup;
 			children = (
-				9632A25517DB868E0046F930 /* GCD */,
-			);
-			path = CocoaAsyncSocket;
-			sourceTree = "<group>";
-		};
-		9632A25517DB868E0046F930 /* GCD */ = {
-			isa = PBXGroup;
-			children = (
 				9632A25717DB868E0046F930 /* GCDAsyncSocket.h */,
 				9632A25817DB868E0046F930 /* GCDAsyncSocket.m */,
 			);
-			path = GCD;
+			path = CocoaAsyncSocket;
 			sourceTree = "<group>";
 		};
 		9639B91C16FDF59E0032177F /* Additions */ = {

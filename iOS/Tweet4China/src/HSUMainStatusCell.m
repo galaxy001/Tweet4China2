@@ -601,7 +601,7 @@
     if (tap.state == UIGestureRecognizerStateEnded && imageView.image) {
         id delegate = self.data.renderData[@"photo_tap_delegate"];
         if ([delegate respondsToSelector:@selector(tappedPhoto:withCellData:)]) {
-            [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:imageView.image withObject:self.data];
+            [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:self.data.renderData[@"photo_url"] withObject:self.data];
         }
     }
 }

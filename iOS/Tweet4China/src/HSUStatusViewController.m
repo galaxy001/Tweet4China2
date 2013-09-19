@@ -120,9 +120,9 @@
     [linkActionSheet showInView:self.view.window];
 }
 
-- (void)tappedPhoto:(UIImage *)image withCellData:(HSUTableCellData *)cellData
+- (void)tappedPhoto:(NSString *)imageUrl withCellData:(HSUTableCellData *)cellData
 {
-    [self openPhoto:image withCellData:cellData];
+    [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
 }
 
 - (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData

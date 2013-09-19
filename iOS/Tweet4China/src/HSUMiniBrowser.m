@@ -51,6 +51,8 @@
     self.webview = webview;
     webview.delegate = self;
     webview.scrollView.delegate = self;
+    webview.scalesPageToFit = YES;
+    webview.allowsInlineMediaPlayback = YES;
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:self.url];
     [webview loadRequest:request];
     UIColor *webviewBGC = [UIColor clearColor];
