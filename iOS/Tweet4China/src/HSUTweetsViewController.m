@@ -80,15 +80,27 @@
     NSString *id_str = rawData[@"id_str"];
     BOOL favorited = [rawData[@"favorited"] boolValue];
     
-    [TWENGINE markStatus:id_str success:^(id responseObj) {
-        NSMutableDictionary *newRawData = [rawData mutableCopy];
-        newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
-        cellData.rawData = newRawData;
-        [self.dataSource saveCache];
-        [self.tableView reloadData];
-    } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"];
-    }];
+    if (favorited) {
+        [TWENGINE unMarkStatus:id_str success:^(id responseObj) {
+            NSMutableDictionary *newRawData = [rawData mutableCopy];
+            newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
+            cellData.rawData = newRawData;
+            [self.dataSource saveCache];
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"];
+        }];
+    } else {
+        [TWENGINE markStatus:id_str success:^(id responseObj) {
+            NSMutableDictionary *newRawData = [rawData mutableCopy];
+            newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
+            cellData.rawData = newRawData;
+            [self.dataSource saveCache];
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Favorite tweet failed"];
+        }];
+    }
 }
 
 - (void)delete:(HSUTableCellData *)cellData

@@ -438,9 +438,17 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 }
 - (void)unFollowUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendPOSTWithUrl:url_friendships_destroy parameters:nil success:success failure:failure];
+    [self sendPOSTWithUrl:url_friendships_destroy
+               parameters:@{@"screen_name": screenName}
+                  success:success failure:failure];
 }
 - (void)markStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_favorites_create
+               parameters:@{@"id": statusID}
+                  success:success failure:failure];
+}
+- (void)unMarkStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:url_favorites_destroy
                parameters:@{@"id": statusID}

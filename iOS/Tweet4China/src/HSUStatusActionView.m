@@ -48,6 +48,7 @@
         } else if (retweeted) {
             if (style == HSUStatusActionViewStyle_Default) {
                 [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_on"] forState:UIControlStateNormal];
+                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
             } else if (style == HSUStatusActionViewStyle_Gallery) {
                 [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_on_default"] forState:UIControlStateNormal];
                 [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_on_pressed"] forState:UIControlStateHighlighted];
@@ -55,6 +56,7 @@
         } else {
             if (style == HSUStatusActionViewStyle_Default) {
                 [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_off"] forState:UIControlStateNormal];
+                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
             } else if (style == HSUStatusActionViewStyle_Gallery) {
                 [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_off_default"] forState:UIControlStateNormal];
                 [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_off_pressed"] forState:UIControlStateHighlighted];
