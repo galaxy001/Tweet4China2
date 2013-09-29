@@ -18,6 +18,11 @@
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
         NSArray *tweets = responseObj;
         if (tweets.count) {
+            
+            if (tweets.count >= self.requestCount) {
+                [self.data removeAllObjects];
+            }
+            
             for (int i=tweets.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
