@@ -225,6 +225,7 @@
          writeData:[NSData dataWithBytes:replayBytes length:reply_size]
          withTimeout:-1
          tag:3];
+        free(replayBytes);
     } else if (tag == 2) {
         encrypt_buf(&(pipeline->sendEncryptionContext), (char *)data.bytes, &len);
         [pipeline.remoteSocket writeData:data withTimeout:-1 tag:4];

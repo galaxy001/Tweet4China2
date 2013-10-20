@@ -300,7 +300,7 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                      cancelButtonItem:cancelItem
                                                 destructiveButtonItem:nil
-                                                     otherButtonItems:helpItem, signOutItem, nil];
+                                                     otherButtonItems:proxySettingsItem, helpItem, signOutItem, nil];
     [actionSheet showInView:self.view.window];
     proxySettingsItem.action = ^{
         HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
