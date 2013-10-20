@@ -401,6 +401,8 @@
 		96D91DF71813ACB9001A8188 /* Appirater.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91DD61813ACB9001A8188 /* Appirater.m */; };
 		96D91DF91813ACB9001A8188 /* AppiraterLocalizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 96D91DD91813ACB9001A8188 /* AppiraterLocalizable.strings */; };
 		96D91DFD1813AEA7001A8188 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D91DFC1813AEA7001A8188 /* StoreKit.framework */; };
+		96D91E031813B288001A8188 /* HSUSearchPersonVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E021813B288001A8188 /* HSUSearchPersonVC.m */; };
+		96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */; };
 		96DABC44172A8471001AD70A /* icn_gallery_tweet_action_delete_default.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC20172A846E001AD70A /* icn_gallery_tweet_action_delete_default.png */; };
 		96DABC45172A8473001AD70A /* icn_gallery_tweet_action_delete_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */; };
 		96DABC46172A8473001AD70A /* icn_gallery_tweet_action_delete_pressed.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC22172A846E001AD70A /* icn_gallery_tweet_action_delete_pressed.png */; };
@@ -1067,6 +1069,10 @@
 		96D91DF41813ACB9001A8188 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/AppiraterLocalizable.strings"; sourceTree = "<group>"; };
 		96D91DF51813ACB9001A8188 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/AppiraterLocalizable.strings"; sourceTree = "<group>"; };
 		96D91DFC1813AEA7001A8188 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		96D91E011813B288001A8188 /* HSUSearchPersonVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonVC.h; sourceTree = "<group>"; };
+		96D91E021813B288001A8188 /* HSUSearchPersonVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonVC.m; sourceTree = "<group>"; };
+		96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonDataSource.h; sourceTree = "<group>"; };
+		96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonDataSource.m; sourceTree = "<group>"; };
 		96DABC20172A846E001AD70A /* icn_gallery_tweet_action_delete_default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icn_gallery_tweet_action_delete_default.png; sourceTree = "<group>"; };
 		96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_gallery_tweet_action_delete_default@2x.png"; sourceTree = "<group>"; };
 		96DABC22172A846E001AD70A /* icn_gallery_tweet_action_delete_pressed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icn_gallery_tweet_action_delete_pressed.png; sourceTree = "<group>"; };
@@ -2066,6 +2072,10 @@
 				960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */,
 				96A11F1F17D0BFB600F98ABD /* HSUProxySettingsViewController.h */,
 				96A11F2017D0BFB600F98ABD /* HSUProxySettingsViewController.m */,
+				96D91E011813B288001A8188 /* HSUSearchPersonVC.h */,
+				96D91E021813B288001A8188 /* HSUSearchPersonVC.m */,
+				96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */,
+				96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2553,6 +2563,7 @@
 				9696D7F216F0A4EB005D7AAB /* UIAlertView+Blocks.m in Sources */,
 				9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */,
 				96A11F6717D0C1A500F98ABD /* RERadioItem.m in Sources */,
+				96D91E031813B288001A8188 /* HSUSearchPersonVC.m in Sources */,
 				966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */,
 				9664993C16F3078800BC901A /* AFHTTPClient.m in Sources */,
 				9664993D16F3078800BC901A /* AFHTTPRequestOperation.m in Sources */,
@@ -2673,6 +2684,7 @@
 				966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */,
 				96FAB148174BDBBC00C8C854 /* HSUMessageCell.m in Sources */,
 				96A11F6517D0C1A500F98ABD /* REMultipleChoiceItem.m in Sources */,
+				96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */,
 				9633E5E9174D2258009062B7 /* HSUConversationCell.m in Sources */,
 				967F635B17550B4D00CB8730 /* HSUSendBarButtonItem.m in Sources */,
 				96DEB785179D447F005D3FAF /* HSUTwitterAPI.m in Sources */,

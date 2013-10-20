@@ -234,7 +234,7 @@
 #pragma mark - base view controller's methods
 - (NSArray *)_createRightBarButtonItems
 {
-//    // Search BarButtonItem
+    // Search BarButtonItem
 //    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc]
 //                                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
 //                                        target:self
@@ -266,7 +266,7 @@
 
 - (void)_searchButtonTouched
 {
-    L(@"search button touched");
+    
 }
 
 - (void)presentModelClass:(Class)modelClass

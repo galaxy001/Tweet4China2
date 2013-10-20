@@ -418,6 +418,13 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
               parameters:@{@"id": @"1"}
                  success:success failure:failure];
 }
+- (void)searchUserWithKeyword:(NSString *)keyword success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendGETWithUrl:url_users_search
+              parameters:@{@"q": keyword, @"page": @1, @"count": @20}
+                 success:success
+                 failure:failure];
+}
 - (void)blockUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:url_blocks_create

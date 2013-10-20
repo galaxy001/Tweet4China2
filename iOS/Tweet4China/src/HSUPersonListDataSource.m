@@ -21,6 +21,7 @@
 
 - (void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    @throw [[NSException alloc] init];
 }
 
 - (void)loadMore
