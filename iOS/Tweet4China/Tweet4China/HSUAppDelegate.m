@@ -9,6 +9,7 @@
 #import "HSUAppDelegate.h"
 #import "HSUTabController.h"
 #import "HSUShadowsocksProxy.h"
+#import "Appirater.h"
 
 static HSUShadowsocksProxy *proxy;
 
@@ -22,6 +23,7 @@ static HSUShadowsocksProxy *proxy;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self startShadowsocks];
+    [self configureAppirater];
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
@@ -30,12 +32,25 @@ static HSUShadowsocksProxy *proxy;
     self.tabController = tabController;
     [self.window makeKeyAndVisible];
     
+    [Appirater appLaunched:YES];
+    
     return YES;
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
     [self startShadowsocks];
+    [Appirater appEnteredForeground:YES];
+}
+
+- (void)configureAppirater
+{
+    [Appirater setAppId:@"445052810"];
+    [Appirater setDaysUntilPrompt:1];
+    [Appirater setUsesUntilPrompt:10];
+    [Appirater setSignificantEventsUntilPrompt:-1];
+    [Appirater setTimeBeforeReminding:2];
+    [Appirater setDebug:YES];
 }
 
 - (BOOL)startShadowsocks

@@ -43,3 +43,6 @@
 [submodule "iOS/Tweet4China/3th-party/SVProgressHUD"]
 	path = iOS/Tweet4China/3th-party/SVProgressHUD
 	url = https://github.com/samvermette/SVProgressHUD.git
+[submodule "iOS/Tweet4China/3th-party/appirater"]
+	path = iOS/Tweet4China/3th-party/appirater
+	url = https://github.com/arashpayan/appirater.git
