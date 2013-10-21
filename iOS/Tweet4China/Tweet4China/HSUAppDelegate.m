@@ -50,7 +50,6 @@ static HSUShadowsocksProxy *proxy;
     [Appirater setUsesUntilPrompt:10];
     [Appirater setSignificantEventsUntilPrompt:-1];
     [Appirater setTimeBeforeReminding:2];
-    [Appirater setDebug:YES];
 }
 
 - (BOOL)startShadowsocks
