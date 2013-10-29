@@ -15,7 +15,7 @@
     self = [super init];
     if (self) {
         self.tintColor = bw(220);
-#ifndef __IPHONE_7_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
         NSDictionary *attributes = @{UITextAttributeTextColor: kWhiteColor,
                                      UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, -1)]};
         NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),

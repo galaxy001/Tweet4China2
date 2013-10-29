@@ -40,7 +40,7 @@
     self.navigationItem.title = @"Loading...";
     self.view.backgroundColor = bw(0xd0);
     
-#ifndef __IPHONE_7_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
     NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                  UITextAttributeTextShadowColor: kWhiteColor,
                                  UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};

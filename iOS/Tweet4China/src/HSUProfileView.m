@@ -310,7 +310,7 @@
     [self.infoBGView setImageWithURL:[NSURL URLWithString:bannerUrl] placeholderImage:[UIImage imageNamed:@"bg_profile_empty"]];
     if ([profile[@"verified"] boolValue]) {
         self.verifyFlag.hidden = NO;
-#ifdef __IPHONE_7_0
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
         NSDictionary *attr = @{NSFontAttributeName: self.nameLabel.font};
         self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithAttributes:attr].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
 #else
