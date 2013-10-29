@@ -20,7 +20,7 @@
 @protocol HSUProfileViewDelegate <NSObject>
 
 - (void)tweetsButtonTouched;
-- (void)followingButtonTouched;
+- (void)followingsButtonTouched;
 - (void)followersButtonTouched;
 - (void)actionsButtonTouched;
 - (void)settingsButtonTouched;

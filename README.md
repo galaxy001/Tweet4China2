@@ -2,6 +2,8 @@
 
 An open source Twitter client using [Shadowsocks](http://www.shadowsocks.com) proxy for chinese citizen.
 
+App Store Link: [Tweet4China](https://itunes.apple.com/cn/app/tweet4china/id445052810?l=en&mt=8)
+
 # Screenshots
 
 ![image](https://github.com/tuoxie007/Tweet4China2/raw/master/Screenshots/1.PNG)
@@ -38,3 +40,7 @@ An open source Twitter client using [Shadowsocks](http://www.shadowsocks.com) pr
 ## Still need help?
 
 Ask me on twitter, [@tuoxie007](https://twitter.com/tuoxie007)
+
+
+# Thanks
+[Icon](http://d.pr/i/sFKW) is designed by [Superoutman](http://dooid.me/superoutman)

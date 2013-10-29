@@ -26,6 +26,7 @@
     searchTF.leftTop = ccp(80, 3);
     searchTF.placeholder = @"Search User";
     searchTF.leftViewMode = UITextFieldViewModeAlways;
+    searchTF.returnKeyType = UIReturnKeySearch;
     searchTF.delegate = self;
     [searchTF addTarget:self action:@selector(searchKeywordChanged:) forControlEvents:UIControlEventEditingChanged];
     
@@ -61,6 +62,12 @@
 {
     ((HSUSearchPersonDataSource *)self.dataSource).keyword = searchTF.text;
     [self.dataSource loadMore];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [textField resignFirstResponder];
+    return NO;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
