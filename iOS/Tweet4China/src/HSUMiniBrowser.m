@@ -40,10 +40,12 @@
     self.navigationItem.title = @"Loading...";
     self.view.backgroundColor = bw(0xd0);
     
+#ifndef __IPHONE_7_0
     NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                  UITextAttributeTextShadowColor: kWhiteColor,
-                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+#endif
     
     // subviews
     UIWebView *webview = [[UIWebView alloc] init];

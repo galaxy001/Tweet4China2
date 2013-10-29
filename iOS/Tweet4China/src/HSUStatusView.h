@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "TTTAttributedLabel.h"
 
-@protocol TTTAttributedLabelDelegate;
 typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
     HSUStatusViewStyle_Default = 0,
     HSUStatusViewStyle_Gallery = 1,

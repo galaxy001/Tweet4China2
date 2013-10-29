@@ -51,10 +51,12 @@
     
     // setup navigation bar
     self.navigationController.navigationBar.tintColor = bw(212);
+#ifndef __IPHONE_7_0
     NSDictionary *attributes = @{UITextAttributeTextColor: bw(30),
                                  UITextAttributeTextShadowColor: kWhiteColor,
-                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
     self.navigationController.navigationBar.titleTextAttributes = attributes;
+#endif
     
     // setup navgation bar buttons
     UIButton *backButton = [[UIButton alloc] init];

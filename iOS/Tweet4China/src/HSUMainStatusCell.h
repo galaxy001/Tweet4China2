@@ -7,8 +7,8 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "TTTAttributedLabel.h"
 
-@protocol TTTAttributedLabelDelegate;
 @interface HSUMainStatusCell : HSUBaseTableCell <TTTAttributedLabelDelegate>
 
 @end

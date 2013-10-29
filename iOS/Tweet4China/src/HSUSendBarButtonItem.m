@@ -15,6 +15,7 @@
     self = [super init];
     if (self) {
         self.tintColor = bw(220);
+#ifndef __IPHONE_7_0
         NSDictionary *attributes = @{UITextAttributeTextColor: kWhiteColor,
                                      UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, -1)]};
         NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
@@ -23,6 +24,7 @@
         [self setTitleTextAttributes:attributes forState:UIControlStateNormal];
         [self setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
         [self setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
+#endif
     }
     return self;
 }
