@@ -64,6 +64,7 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [self.delegate dataSource:self didFinishRefreshWithError:error];
     }];
 }
 

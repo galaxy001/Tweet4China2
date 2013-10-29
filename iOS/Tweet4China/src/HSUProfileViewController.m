@@ -24,6 +24,7 @@
 @interface HSUProfileViewController () <HSUProfileViewDelegate>
 
 @property (nonatomic, strong) HSUProfileView *profileView;
+@property (nonatomic, assign) BOOL isMeTab;
 
 @end
 
@@ -31,7 +32,11 @@
 
 - (id)init
 {
-    return [self initWithScreenName:MyScreenName];
+    self = [self initWithScreenName:MyScreenName];
+    if (self) {
+        self.isMeTab = YES;
+    }
+    return self;
 }
 
 - (id)initWithScreenName:(NSString *)screenName
@@ -43,6 +48,11 @@
         if (self.screenName) {
             self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:screenName];
         }
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(updateScreenName)
+         name:HSUTwiterLoginSuccess
+         object:nil];
     }
     return self;
 }
@@ -72,6 +82,13 @@
     } failure:^(NSError *error) {
         
     }];
+}
+
+- (void)updateScreenName
+{
+    if (self.isMeTab) {
+        self.screenName = MyScreenName;
+    }
 }
 
 - (NSString *)screenName
