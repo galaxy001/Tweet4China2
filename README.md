@@ -23,9 +23,9 @@ App Store Link: [Tweet4China](https://itunes.apple.com/cn/app/tweet4china/id4450
 # Usage
 
 ## Require:
-* An iOS Device, version >= 7.0, may be some problems on simulator
+* An iOS Device or Simulator, version >= 6.0
 * A Shadowsocks server, see [Shadowsocks project](http://www.shadowsocks.com)
-* Build on Xcode 5
+* Build on Xcode 5 with iOS 7 sdk
 
 ## Clone submodule recursively
 
@@ -42,5 +42,5 @@ App Store Link: [Tweet4China](https://itunes.apple.com/cn/app/tweet4china/id4450
 Ask me on twitter, [@tuoxie007](https://twitter.com/tuoxie007)
 
 
-# Thanks
-[Icon](http://d.pr/i/sFKW) is designed by [Superoutman](http://dooid.me/superoutman)
+# Contributors
+[App Icon](http://d.pr/i/sFKW) is designed by [Superoutman](http://dooid.me/superoutman)
