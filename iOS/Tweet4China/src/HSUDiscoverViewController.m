@@ -10,7 +10,7 @@
 #import "NJKWebViewProgress.h"
 #import "HSUComposeViewController.h"
 
-#define StartURL @"http://m.facebook.com"
+#define StartURL @"https://www.google.com"
 
 @interface HSUURLField : UITextField
 
@@ -84,6 +84,8 @@
     urlTextField.delegate = self;
     urlTextField.keyboardType = UIKeyboardTypeURL;
     urlTextField.returnKeyType = UIReturnKeyGo;
+    urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+    urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     urlTextField.placeholder = @"Enter URL";
     urlTextField.backgroundColor = bw(245);

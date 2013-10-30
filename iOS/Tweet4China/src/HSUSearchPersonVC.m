@@ -61,6 +61,9 @@
     searchTF.placeholder = @"Search User";
     searchTF.leftViewMode = UITextFieldViewModeAlways;
     searchTF.returnKeyType = UIReturnKeySearch;
+    searchTF.autocorrectionType = UITextAutocorrectionTypeNo;
+    searchTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    searchTF.clearButtonMode = UITextFieldViewModeWhileEditing;
     searchTF.delegate = self;
     if (RUNNING_ON_IPHONE_7) {
         searchTF.size = ccs(self.width-100, 40);
