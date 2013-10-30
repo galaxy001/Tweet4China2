@@ -122,10 +122,31 @@
         self.title = @"New Tweet";
     }
     
+    if (!RUNNING_ON_IPHONE_7) {
+        self.navigationController.navigationBar.tintColor = bw(212);
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+    }
+    
     UIBarButtonItem *cancelButtonItem = [[UIBarButtonItem alloc] init];
     cancelButtonItem.title = @"Cancel";
     cancelButtonItem.target = self;
     cancelButtonItem.action = @selector(cancelCompose);
+    if (!RUNNING_ON_IPHONE_7) {
+        cancelButtonItem.tintColor = bw(220);
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+        NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
+                                             UITextAttributeTextShadowColor: kWhiteColor,
+                                             UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+        [cancelButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        [cancelButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
+        [cancelButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
+    }
     self.navigationItem.leftBarButtonItem = cancelButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
@@ -133,8 +154,21 @@
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(sendTweet);
     sendButtonItem.enabled = NO;
+    if (!RUNNING_ON_IPHONE_7) {
+        cancelButtonItem.tintColor = bw(220);
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+        NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
+                                             UITextAttributeTextShadowColor: kWhiteColor,
+                                             UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
+        [sendButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
+    }
     self.navigationItem.rightBarButtonItem = sendButtonItem;
-
+    
 //    setup view
     self.view.backgroundColor = kWhiteColor;
     contentTV = [[UITextView alloc] init];
@@ -400,11 +434,12 @@
         contentShadowV.hidden = NO;
         contentTV.height = kSingleLineHeight;
         suggestionsTV.height = self.view.height - suggestionsTV.top - keyboardHeight;
-        // ios7
-        contentTV.top = 54;
-        suggestionsTV.top = contentTV.top + 45;
-        contentShadowV.top = suggestionsTV.top;
-        suggestionsTV.height -= 54;
+        if (RUNNING_ON_IPHONE_7) {
+            contentTV.top = 54;
+            suggestionsTV.top = contentTV.top + 45;
+            contentShadowV.top = suggestionsTV.top;
+            suggestionsTV.height -= 54;
+        }
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;

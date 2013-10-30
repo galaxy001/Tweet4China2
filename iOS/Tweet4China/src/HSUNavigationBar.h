@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface HSUNavitationBar : UINavigationBar
+@interface HSUNavigationBar : UINavigationBar
 
 
 @end

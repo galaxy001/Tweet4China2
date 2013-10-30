@@ -29,6 +29,7 @@
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
 #import "HSUTestViewController.h"
+#import "HSUSearchPersonVC.h"
 
 @interface HSUBaseViewController ()
 
@@ -114,6 +115,21 @@
         self.navigationItem.backBarButtonItem = nil;
     }
     
+    if (RUNNING_ON_IPHONE_7) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                 target:self
+                                                 action:@selector(_addButtonTouched)];
+    } else {
+        UIButton *addFriendButton = [[UIButton alloc] init];
+        [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
+        [addFriendButton sizeToFit];
+        addFriendButton.width *= 1.4;
+        UIBarButtonItem *addFriendBtnItem = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
+        self.navigationItem.leftBarButtonItem = addFriendBtnItem;
+    }
+    
     [super viewDidLoad];
 }
 
@@ -121,8 +137,29 @@
 {
     [super viewWillAppear:animated];
     
-    self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
-    self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+    if (RUNNING_ON_IPHONE_7) {
+        self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
+        self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+    }
+    
+    if (self.navigationController.viewControllers.count > 1) {
+        if (!RUNNING_ON_IPHONE_7) {
+            UIButton *backButton = [[UIButton alloc] init];
+            [backButton addTarget:self action:@selector(backButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBar class]]) {
+                [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_back"] forState:UIControlStateNormal];
+            } else if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBarLight class]]) {
+                [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_back"] forState:UIControlStateNormal];
+            } else {
+                @throw [[NSException alloc] init];
+            }
+            [backButton sizeToFit];
+            backButton.width *= 1.4;
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+        } else {
+            self.navigationItem.leftBarButtonItem = nil;
+        }
+    }
     
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
     self.tableView.frame = self.view.bounds;
@@ -234,19 +271,22 @@
 #pragma mark - base view controller's methods
 - (NSArray *)_createRightBarButtonItems
 {
-    // Search BarButtonItem
-//    UIBarButtonItem *searchBarButton = [[UIBarButtonItem alloc]
-//                                        initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
-//                                        target:self
-//                                        action:@selector(_searchButtonTouched)];
-    
     // Compose BarButtonItem
-    UIBarButtonItem *composeBarButton = [[UIBarButtonItem alloc]
-                                         initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                         target:self
-                                         action:@selector(_composeButtonTouched)];
+    UIBarButtonItem *composeBarButton;
+    if (RUNNING_ON_IPHONE_7) {
+        composeBarButton = [[UIBarButtonItem alloc]
+                            initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                            target:self
+                            action:@selector(_composeButtonTouched)];
+    } else {
+        UIButton *composeButton = [[UIButton alloc] init];
+        [composeButton addTarget:self action:@selector(_composeButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [composeButton setImage:[UIImage imageNamed:@"ic_title_tweet"] forState:UIControlStateNormal];
+        [composeButton sizeToFit];
+        composeButton.width *= 1.4;
+        composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
+    }
     
-//    return @[composeBarButton, searchBarButton];
     return @[composeBarButton];
 }
 
@@ -259,7 +299,7 @@
 - (void)_composeButtonTouched
 {
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -267,6 +307,12 @@
 - (void)_searchButtonTouched
 {
     
+}
+
+- (void)_addButtonTouched
+{
+    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
+    [self.navigationController pushViewController:addFriendVC animated:YES];
 }
 
 - (void)presentModelClass:(Class)modelClass

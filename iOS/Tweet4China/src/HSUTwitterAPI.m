@@ -496,6 +496,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     if (!self.myScreenName) {
         NSLog(@"not authorized");
+        failure(nil);
         [self authorize];
         return;
     }
@@ -527,8 +528,13 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         
         dispatch_async(GCDMainThread, ^{
             if (error) {
-                [self dealWithError:error errTitle:@"Some problems with your network"];
-                failure(error);
+                if ([error code] == 204) { // Error Domain=Twitter successfully processed the request, but did not return any content Code=204 "The operation couldn’t be completed. (Twitter successfully processed the request, but did not return any content error 204.)"
+                    [self dealWithError:nil errTitle:@"Some problems with your network"];
+                    failure(nil);
+                } else {
+                    [self dealWithError:error errTitle:@"Some problems with your network"];
+                    failure(error);
+                }
             } else {
                 if ([responseObj count]) {
                     success(responseObj);

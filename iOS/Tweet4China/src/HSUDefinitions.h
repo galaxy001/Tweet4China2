@@ -30,7 +30,7 @@
 #import "HSUUIEvent.h"
 #import "HSUCommonTools.h"
 #import "HSULoadMoreCell.h"
-#import "HSUNavitationBar.h"
+#import "HSUNavigationBar.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUDraftManager.h"
 #import "NSData+MD5.h"
@@ -78,6 +78,8 @@ _Pragma("clang diagnostic pop") \
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
+#define RUNNING_ON_IPHONE_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
+#define RUNNING_ON_IPHONE_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]

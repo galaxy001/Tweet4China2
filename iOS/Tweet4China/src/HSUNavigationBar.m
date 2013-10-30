@@ -1,14 +1,15 @@
 //
-//  HSUNavigationBarLight.m
+//  HSUNavitationBar.m
 //  Tweet4China
 //
-//  Created by Jason Hsu on 4/29/13.
+//  Created by Jason Hsu on 2/28/13.
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUNavigationBarLight.h"
+#import "HSUNavigationBar.h"
+#import "HSUComposeViewController.h"
 
-@implementation HSUNavigationBarLight
+@implementation HSUNavigationBar
 {
     BOOL set;
 }
@@ -16,7 +17,7 @@
 - (void)layoutSubviews
 {
     if (!set && !RUNNING_ON_IPHONE_7) {
-        [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar_light"] forBarMetrics:UIBarMetricsDefault];
+        [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar"] forBarMetrics:UIBarMetricsDefault];
         set = YES;
     }
     [super layoutSubviews];

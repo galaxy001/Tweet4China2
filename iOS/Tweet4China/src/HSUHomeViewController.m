@@ -10,7 +10,6 @@
 #import "HSUHomeDataSource.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSURefreshControl.h"
-#import "HSUSearchPersonVC.h"
 
 @interface HSUHomeViewController ()
 
@@ -32,17 +31,6 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
-    UIBarButtonItem *addFriendBtnItem = [[UIBarButtonItem alloc]
-                                         initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                         target:self
-                                         action:@selector(_addButtonTouched)];
-    self.navigationItem.leftBarButtonItem = addFriendBtnItem;
-    
-    [super viewDidLoad];
-}
-
 - (void)viewDidAppear:(BOOL)animated
 {
     if (!shadowsocksStarted) {
@@ -52,18 +40,12 @@
         return;
     }
     
-//    if ([HSUTwitterAPI shared].isAuthorized && [HSUAppDelegate shared].shadowsocksStarted) {
-//        [self.refreshControl beginRefreshing];
-//        [self.dataSource refresh];
-//    }
+    if (self.dataSource.count == 0) {
+        [self.refreshControl beginRefreshing];
+        [self.dataSource refresh];
+    }
     
     [super viewDidAppear:animated];
-}
-
-- (void)_addButtonTouched
-{
-    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
-    [self.navigationController pushViewController:addFriendVC animated:YES];
 }
 
 - (void)twitterLoginSuccess:(NSNotification *)notification

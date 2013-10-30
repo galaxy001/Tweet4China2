@@ -12,6 +12,26 @@
 
 #define StartURL @"http://m.facebook.com"
 
+@interface HSUURLField : UITextField
+
+@end
+
+@implementation HSUURLField
+
+// placeholder position
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
+    return CGRectInset(bounds, 4, 4);
+}
+
+// text position
+- (CGRect)editingRectForBounds:(CGRect)bounds
+{
+    return CGRectInset(bounds, 4, 4);
+}
+
+@end
+
 @interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate>
 
 @property (nonatomic, weak) UIWebView *webView;
@@ -21,6 +41,8 @@
 @property (nonatomic, strong) NJKWebViewProgress *progressHandler;
 @property (nonatomic, weak) UIProgressView *progressBar;
 @property (nonatomic, copy) NSString *startUrl;
+@property (nonatomic, weak) UIView *urlTextFieldBackgrondView;
+@property (nonatomic, weak) UIView *progressView;
 
 @end
 
@@ -56,28 +78,54 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    UITextField *urlTextField = [[UITextField alloc] init];
+    UITextField *urlTextField = [[HSUURLField alloc] init];
     [self.navigationController.navigationBar addSubview:urlTextField];
     self.urlTextField = urlTextField;
     urlTextField.delegate = self;
     urlTextField.keyboardType = UIKeyboardTypeURL;
+    urlTextField.returnKeyType = UIReturnKeyGo;
     urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
     urlTextField.placeholder = @"Enter URL";
     urlTextField.backgroundColor = bw(245);
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     
-    UIProgressView *progressBar = [[UIProgressView alloc] init];
-    [self.navigationController.navigationBar addSubview:progressBar];
-    progressBar.trackTintColor = kWhiteColor;
-    progressBar.top = self.navigationController.navigationBar.height - progressBar.height;
-    progressBar.width = self.navigationController.navigationBar.width;
-    self.progressBar = progressBar;
+    if (RUNNING_ON_IPHONE_7) {
+        UIProgressView *progressBar = [[UIProgressView alloc] init];
+        [self.navigationController.navigationBar addSubview:progressBar];
+        progressBar.trackTintColor = kWhiteColor;
+        progressBar.top = self.navigationController.navigationBar.height - progressBar.height;
+        progressBar.width = self.navigationController.navigationBar.width;
+        self.progressBar = progressBar;
+    } else {
+        urlTextField.backgroundColor = kClearColor;
+        UIView *bg = [[UIView alloc] init];
+        self.urlTextFieldBackgrondView = bg;
+        bg.backgroundColor = [UIColor whiteColor];
+        bg.layer.cornerRadius = 3;
+        [self.navigationController.navigationBar insertSubview:bg belowSubview:urlTextField];
+        
+        UIView *progressView = [[UIView alloc] init];
+        self.progressView = progressView;
+        [self.navigationController.navigationBar insertSubview:progressView belowSubview:urlTextField];
+        progressView.backgroundColor = rgba(74, 156, 214, .3);
+    }
     
-    UIBarButtonItem *menuButton = [[UIBarButtonItem alloc]
-                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                   target:self
-                                   action:@selector(menuButtonTouched)];
-    self.navigationItem.rightBarButtonItem = menuButton;
+    if (RUNNING_ON_IPHONE_7) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                  target:self
+                                                  action:@selector(_menuButtonTouched)];
+    } else {
+        UIButton *menuButton = [[UIButton alloc] init];
+        [menuButton setImage:[UIImage imageNamed:@"ic_title_action"] forState:UIControlStateNormal];
+        [menuButton addTarget:self action:@selector(_menuButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [menuButton sizeToFit];
+        menuButton.width *= 1.5;
+        UIBarButtonItem *menuBarButton = [[UIBarButtonItem alloc] initWithCustomView:menuButton];
+        self.navigationItem.rightBarButtonItem = menuBarButton;
+    }
+    
+    self.navigationItem.leftBarButtonItem = nil;
     
     [super viewWillAppear:animated];
 }
@@ -96,6 +144,9 @@
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
     
     self.urlTextField.frame = ccr(10, 7, self.view.width-60, self.navigationController.navigationBar.height-14);
+    self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
+    self.progressView.height = self.urlTextField.height;
+    self.progressView.leftTop = self.urlTextField.leftTop;
     self.urlTextField.layer.cornerRadius = 5;
     
     [super viewDidLayoutSubviews];
@@ -158,6 +209,10 @@
     }
     
     [self.progressBar setProgress:progress animated:NO];
+    [UIView animateWithDuration:.27 animations:^{
+        self.progressView.width = progress*self.urlTextField.width;
+    }];
+    self.urlTextField.backgroundColor = kClearColor;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
@@ -168,7 +223,7 @@
     }
 }
 
-- (void)menuButtonTouched
+- (void)_menuButtonTouched
 {
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
     RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:@"Refresh"];

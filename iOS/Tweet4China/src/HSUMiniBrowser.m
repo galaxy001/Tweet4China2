@@ -147,8 +147,11 @@
 {
     [super viewWillAppear:animated];
     
-    // ios7
-    self.webview.frame = ccr(0, 54, self.width, self.height-54-17);
+    if (RUNNING_ON_IPHONE_7) {
+        self.webview.frame = ccr(0, 54, self.width, self.height-54-17);
+    } else {
+        self.webview.frame = ccr(0, 0, self.width, self.height-17);
+    }
     self.menuView.bottom = self.height;
 }
 

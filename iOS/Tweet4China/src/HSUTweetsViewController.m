@@ -16,6 +16,7 @@
 #import "HSUProfileDataSource.h"
 #import "TTTAttributedLabel.h"
 #import "NSDate+Additions.h"
+#import "HSUStatusCell.h"
 
 @interface HSUTweetsViewController ()
 
@@ -66,11 +67,12 @@
     
     [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
         NSMutableDictionary *newRawData = [rawData mutableCopy];
-        newRawData[@"retweeted"] = [NSNumber numberWithBool:YES];
+        newRawData[@"retweeted"] = @(YES);
         cellData.rawData = newRawData;
         [self.dataSource saveCache];
-        [self.tableView reloadData];
+        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
     } failure:^(NSError *error) {
+        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
         [TWENGINE dealWithError:error errTitle:@"Retweet failed"];
     }];
 }
@@ -349,7 +351,9 @@
     NSURL *url = [arguments objectForKey:@"url"];
     HSUTableCellData *cellData = [arguments objectForKey:@"cell_data"];
     if ([url.absoluteString hasPrefix:@"user://"]) {
-        // Push Profile ViewController
+        NSString *screenName = [url.absoluteString substringFromIndex:7];
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+        [self.navigationController pushViewController:profileVC animated:YES];
         return;
     }
     if ([url.absoluteString hasPrefix:@"tag://"]) {

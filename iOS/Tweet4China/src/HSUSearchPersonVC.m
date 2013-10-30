@@ -10,6 +10,26 @@
 #import "HSUPersonListDataSource.h"
 #import "HSUSearchPersonDataSource.h"
 
+@interface HSUSearchField : UITextField
+
+@end
+
+@implementation HSUSearchField
+
+// placeholder position
+- (CGRect)textRectForBounds:(CGRect)bounds
+{
+    return CGRectInset(bounds, 24, 4);
+}
+
+// text position
+- (CGRect)editingRectForBounds:(CGRect)bounds
+{
+    return CGRectInset(bounds, 24, 4);
+}
+
+@end
+
 @interface HSUSearchPersonVC () <UITextFieldDelegate>
 
 @property (nonatomic, weak) UITextField *searchTF;
@@ -20,16 +40,6 @@
 
 - (void)viewDidLoad
 {
-    UITextField *searchTF = [[UITextField alloc] init];
-    self.searchTF = searchTF;
-    searchTF.size = ccs(self.width-100, 40);
-    searchTF.leftTop = ccp(80, 3);
-    searchTF.placeholder = @"Search User";
-    searchTF.leftViewMode = UITextFieldViewModeAlways;
-    searchTF.returnKeyType = UIReturnKeySearch;
-    searchTF.delegate = self;
-    [searchTF addTarget:self action:@selector(searchKeywordChanged:) forControlEvents:UIControlEventEditingChanged];
-    
     self.hideRightButtons = YES;
     
     self.dataSource = [[HSUSearchPersonDataSource alloc] init];
@@ -41,7 +51,36 @@
 {
     [super viewWillAppear:animated];
     
-    [self.navigationController.navigationBar addSubview:self.searchTF];
+    UITextField *searchTF;
+    if (RUNNING_ON_IPHONE_7) {
+        searchTF = [[UITextField alloc] init];
+    } else {
+        searchTF = [[HSUSearchField alloc] init];
+    }
+    self.searchTF = searchTF;
+    searchTF.placeholder = @"Search User";
+    searchTF.leftViewMode = UITextFieldViewModeAlways;
+    searchTF.returnKeyType = UIReturnKeySearch;
+    searchTF.delegate = self;
+    if (RUNNING_ON_IPHONE_7) {
+        searchTF.size = ccs(self.width-100, 40);
+        searchTF.leftTop = ccp(80, 3);
+    } else {
+        searchTF.font = [UIFont systemFontOfSize:14];
+        searchTF.size = ccs(self.width-55, 25);
+        searchTF.leftTop = ccp(40, 10);
+        searchTF.backgroundColor = bw(255);
+        searchTF.layer.cornerRadius = 3;
+        UIImageView *leftView = [[UIImageView alloc]
+                                 initWithImage:[UIImage imageNamed:@"ic_search"]
+                                 highlightedImage:[UIImage imageNamed:@"ic_search_white"]];
+        leftView.width *= 1.8;
+        leftView.contentMode = UIViewContentModeScaleAspectFit;
+        searchTF.leftView = leftView;
+    }
+    
+    [searchTF addTarget:self action:@selector(searchKeywordChanged:) forControlEvents:UIControlEventEditingChanged];
+    [self.navigationController.navigationBar addSubview:searchTF];
 }
 
 - (void)viewDidAppear:(BOOL)animated

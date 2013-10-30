@@ -213,8 +213,9 @@
 
 - (void)messagesButtonTouched
 {
-    HSUConversationsViewController *messagesVC = [[HSUConversationsViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:messagesVC];
+    HSUConversationsViewController *conversationsVC = [[HSUConversationsViewController alloc] init];
+    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.viewControllers = @[conversationsVC];
     [self.navigationController presentViewController:nav animated:YES completion:nil];
 }
 

@@ -11,7 +11,7 @@
 #import "HSUConnectViewController.h"
 #import "HSUDiscoverViewController.h"
 #import "HSUProfileViewController.h"
-#import "HSUNavitationBar.h"
+#import "HSUNavigationBar.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -28,28 +28,44 @@
 {
     self = [super init];
     if (self) {
-        UINavigationController *homeNav = [[UINavigationController alloc] init];
+        UINavigationController *homeNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
-        homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"icn_tab_home_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
+        if (RUNNING_ON_IPHONE_7) {
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"icn_tab_home_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
+        } else {
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Home" image:[UIImage imageNamed:@"icn_tab_home_selected"] tag:1];
+        }
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
 
-        UINavigationController *connectNav = [[UINavigationController alloc] init];
+        UINavigationController *connectNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
-        connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect" image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
+        if (RUNNING_ON_IPHONE_7) {
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect" image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
+        } else {
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Connect" image:[UIImage imageNamed:@"icn_tab_connect_selected"] tag:2];
+        }
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *discoverNav = [[UINavigationController alloc] init];
+        UINavigationController *discoverNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
-        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Discover" image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
+        if (RUNNING_ON_IPHONE_7) {
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Discover" image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
+        } else {
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Discover" image:[UIImage imageNamed:@"icn_tab_discover_selected"] tag:3];
+        }
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *meNav = [[UINavigationController alloc] init];
+        UINavigationController *meNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
-        meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me" image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
+        if (RUNNING_ON_IPHONE_7) {
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me" image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
+        } else {
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Me" image:[UIImage imageNamed:@"icn_tab_me_selected"] tag:4];
+        }
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
         self.viewControllers = @[homeNav, connectNav, discoverNav, meNav];

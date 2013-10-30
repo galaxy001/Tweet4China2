@@ -59,14 +59,6 @@
 #endif
     
     // setup navgation bar buttons
-    UIButton *backButton = [[UIButton alloc] init];
-    [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_back"] forState:UIControlStateNormal];
-    [backButton sizeToFit];
-    backButton.width *= 1.4;
-    backButton.showsTouchWhenHighlighted = YES;
-    [backButton setTapTarget:self action:@selector(backButtonTouched)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
-    
     UIButton *actionsButton = [[UIButton alloc] init];
     [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
     [actionsButton sizeToFit];
@@ -153,7 +145,9 @@
         weakSelf.textView.top = weakSelf.toolbar.top + 5;
         weakSelf.textView.width = weakSelf.width - weakSelf.textView.left * 2 - weakSelf.wordCountLabel.width;
         
-        weakSelf.tableView.top = 10 + weakSelf.navigationController.navigationBar.height + 10;
+        if (RUNNING_ON_IPHONE_7) {
+            weakSelf.tableView.top = 10 + weakSelf.navigationController.navigationBar.height + 10;
+        }
         weakSelf.tableView.height = weakSelf.toolbar.top - weakSelf.tableView.top;
     };
     if (self.viewDidAppearCount == 0 || self.layoutForTextChanged) {
