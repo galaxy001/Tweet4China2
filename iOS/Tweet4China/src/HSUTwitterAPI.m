@@ -320,6 +320,13 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  success:success
                  failure:failure];
 }
+- (void)oembedStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendGETWithUrl:url_statuses_oembed
+              parameters:@{@"id": statusID}
+                 success:success
+                 failure:failure];
+}
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
@@ -529,8 +536,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         dispatch_async(GCDMainThread, ^{
             if (error) {
                 if ([error code] == 204) { // Error Domain=Twitter successfully processed the request, but did not return any content Code=204 "The operation couldn’t be completed. (Twitter successfully processed the request, but did not return any content error 204.)"
-                    [self dealWithError:nil errTitle:@"Some problems with your network"];
-                    failure(nil);
+                    failure(error);
                 } else {
                     [self dealWithError:error errTitle:@"Some problems with your network"];
                     failure(error);
@@ -577,6 +583,9 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)dealWithError:(NSError *)error errTitle:(NSString *)errTitle;
 {
     if (!error) {
+        return;
+    }
+    if (error.code == 204) {
         return;
     }
     NSLog(@"API Request Error %@", error);

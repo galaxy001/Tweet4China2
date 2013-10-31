@@ -91,8 +91,8 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
-        [self.data.lastObject renderData][@"status"] = error ? @(kLoadMoreCellStatus_Error) : @(kLoadMoreCellStatus_NoMore);
-        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
+        [self.data.lastObject renderData][@"status"] = error.code == 204 ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
+        [self.delegate dataSource:self didFinishLoadMoreWithError:error];
         self.loadingCount --;
     }];
 }
@@ -102,12 +102,24 @@
     if (!self.loadingCount && self.count > 1) {
         HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
         if ([cellData.dataType isEqualToString:kDataType_LoadMore]) {
-            cellData.renderData[@"status"] = @(kLoadMoreCellStatus_Loading);
-            [self loadMore];
+            if (![cellData.renderData[@"status"] intValue] == kLoadMoreCellStatus_NoMore) {
+                cellData.renderData[@"status"] = @(kLoadMoreCellStatus_Loading);
+                [self loadMore];
+            }
         }
     }
     
-    return [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    if (IPAD && indexPath.row == 0) {
+        UIImageView *leftTopCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_left_top"]];
+        UIImageView *rightTopCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_right_top"]];
+        [cell addSubview:leftTopCornerView];
+        [cell addSubview:rightTopCornerView];
+        rightTopCornerView.rightTop = ccp(cell.width, 0);
+    }
+    
+    return cell;
 }
 
 -(void)saveCache

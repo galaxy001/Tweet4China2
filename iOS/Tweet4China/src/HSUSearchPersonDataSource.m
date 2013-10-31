@@ -41,7 +41,7 @@
         }
         
         [self.delegate preprocessDataSourceForRender:self];
-        [self.delegate dataSource:self didFinishRefreshWithError:nil];
+        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Load search result failed"];

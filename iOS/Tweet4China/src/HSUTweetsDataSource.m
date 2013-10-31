@@ -69,8 +69,8 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
-        [self.data.lastObject renderData][@"status"] = error ? @(kLoadMoreCellStatus_Error) : @(kLoadMoreCellStatus_NoMore);
-        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
+        [self.data.lastObject renderData][@"status"] = error.code == 204 ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
+        [self.delegate dataSource:self didFinishLoadMoreWithError:error];
         self.loadingCount --;
     }];
 }

@@ -241,26 +241,18 @@
     [actionSheet addButtonItem:copyLinkToTweetItem];
     count ++;
     
-    NSString *name = rawData[@"user"][@"name"];
-    NSString *screen_name = rawData[@"user"][@"screen_name"];
-    NSString *profile_image_url_https = rawData[@"user"][@"profile_image_url_https"];
-    NSString *text = rawData[@"text"];
-    NSDate *createTime = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];
-    NSString *create_time = createTime.standardTwitterDisplay;
-    
     RIButtonItem *mailTweetItem = [RIButtonItem itemWithLabel:@"Mail Tweet"];
     mailTweetItem.action = ^{
-        NSURL *templatFileURL = [[NSBundle mainBundle] URLForResource:@"mail_tweet_template" withExtension:@"html"];
-        // TODO: replace template placeholders with contents
-        NSString *body = [[NSString alloc] initWithContentsOfURL:templatFileURL encoding:NSUTF8StringEncoding error:nil];;
-        body = [body stringByReplacingOccurrencesOfString:@"${profile_image_url_https}" withString:profile_image_url_https];
-        body = [body stringByReplacingOccurrencesOfString:@"${name}" withString:name];
-        body = [body stringByReplacingOccurrencesOfString:@"${screen_name}" withString:screen_name];
-        body = [body stringByReplacingOccurrencesOfString:@"${id_str}" withString:id_str];
-        body = [body stringByReplacingOccurrencesOfString:@"${create_time}" withString:create_time];
-        body = [body stringByReplacingOccurrencesOfString:@"${html}" withString:text];
-        NSString *subject = @"Link from Twitter";
-        [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
+        [TWENGINE oembedStatus:id_str success:^(id responseObj) {
+            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            NSString *subject = @"Link from Twitter";
+            [HSUCommonTools sendMailWithSubject:subject
+                                           body:responseObj[@"html"]
+                      presentFromViewController:self];
+        } failure:^(NSError *error) {
+            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            [TWENGINE dealWithError:error errTitle:@"Fetch HTML failed"];
+        }];
     };
     [actionSheet addButtonItem:mailTweetItem];
     count ++;

@@ -252,7 +252,8 @@
             
             // accountsButton
             accountsButton = [[UIButton alloc] init];
-//            [buttonsPanel addSubview:accountsButton];
+            // todo accountsButton not implemented
+            // [buttonsPanel addSubview:accountsButton];
             [accountsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                       forState:UIControlStateNormal];
             [accountsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]

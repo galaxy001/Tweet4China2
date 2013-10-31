@@ -31,7 +31,6 @@
 {
     if (!self.loadingCount && self.count > 1) {
         HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
-        NSLog(@"%@", cellData.dataType);
         if ([cellData.dataType isEqualToString:kDataType_LoadMore] &&
             [cellData.renderData[@"status"] integerValue] == kLoadMoreCellStatus_Done) {
             

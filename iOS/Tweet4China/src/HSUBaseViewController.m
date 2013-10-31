@@ -263,11 +263,10 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
 {
-    if (error) {
-        NSLog(@"%@", error);
-    } else {
+    if (error.code == 204) {
         [self.tableView reloadData];
-        [self.refreshControl endRefreshing];
+    } else if (error == nil) {
+        [self.tableView reloadData];
     }
 }
 

@@ -27,6 +27,7 @@
 //@property (nonatomic, assign, getter = isLoading) BOOL loading;
 @property (nonatomic, assign) NSUInteger loadingCount;
 @property (nonatomic, assign) NSUInteger requestCount;
+@property (nonatomic, assign) BOOL noMoreData;
 
 - (NSDictionary *)rawDataAtIndex:(NSInteger)index;
 - (NSMutableDictionary *)renderDataAtIndex:(NSInteger)index;
