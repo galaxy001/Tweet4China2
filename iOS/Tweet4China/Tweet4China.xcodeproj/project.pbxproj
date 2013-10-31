@@ -2758,7 +2758,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/Tweet4China2/iOS/Tweet4China/3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
+					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2784,7 +2784,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/Tweet4China2/iOS/Tweet4China/3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
+					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
