@@ -43,20 +43,23 @@
     self.tableView = tableView;
     
     [super viewDidLoad];
-    self.tableView.backgroundColor = kWhiteColor;
+    
+    if (!IPAD) {
+        self.tableView.backgroundColor = kWhiteColor;
+    }
     
     // setup navigation bar
-    self.navigationController.navigationBar.tintColor = bw(212);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
-    NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
-                                 UITextAttributeTextShadowColor: kWhiteColor,
-                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-#endif
+    if (!RUNNING_ON_IPHONE_7) {
+        self.navigationController.navigationBar.tintColor = bw(212);
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+    }
     
     // setup close button
     UIButton *closeButton = [[UIButton alloc] init];
-    [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+    [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
     [closeButton sizeToFit];
     closeButton.width *= 1.4;
     closeButton.showsTouchWhenHighlighted = YES;

@@ -313,7 +313,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
               parameters:@{@"user_id": [users componentsJoinedByString:@","]}
                  success:success failure:failure];
 }
-- (void)lookupUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)showUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_users_show
               parameters:@{@"screen_name": screenName}

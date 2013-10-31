@@ -10,6 +10,7 @@
 #import "HSUTabController.h"
 #import "HSUShadowsocksProxy.h"
 #import "Appirater.h"
+#import "HSUiPadTabController.h"
 
 static HSUShadowsocksProxy *proxy;
 
@@ -27,7 +28,14 @@ static HSUShadowsocksProxy *proxy;
     
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.backgroundColor = [UIColor blackColor];
-    HSUTabController *tabController = [[HSUTabController alloc] init];
+    
+    UIViewController *tabController;
+    if (IPAD) {
+        tabController = [[HSUiPadTabController alloc] init];
+    } else {
+        tabController = [[HSUTabController alloc] init];
+    }
+    
     self.window.rootViewController = tabController;
     self.tabController = tabController;
     [self.window makeKeyAndVisible];

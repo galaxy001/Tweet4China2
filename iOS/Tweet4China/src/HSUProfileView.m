@@ -160,7 +160,11 @@
         
         UIView *referenceButtonBGView = [[UIView alloc] init];
         [self addSubview:referenceButtonBGView];
-        referenceButtonBGView.backgroundColor = bw(232);
+        if (IPAD) {
+            referenceButtonBGView.backgroundColor = self.superview.backgroundColor;
+        } else {
+            referenceButtonBGView.backgroundColor = bw(232);
+        }
         referenceButtonBGView.frame = ccr(0, infoView.bottom, self.width, 48);
         
         UIButton *tweetsButton = [[UIButton alloc] init];
@@ -220,14 +224,23 @@
         followersCountLabel.textColor = kBlackColor;
         followersCountLabel.leftTop = ccp(10, 9);
         
-        
         UIView *buttonsPanel = [[UIView alloc] init];
         [self addSubview:buttonsPanel];
-        buttonsPanel.frame = ccr(0, referenceButtonBGView.bottom, self.width, 48);
+        if (IPAD) {
+            buttonsPanel.frame = ccr([referenceButtonBGView convertPoint:followersButton.rightTop fromView:self].x, referenceButtonBGView.top, referenceButtonBGView.width-followersButton.right, referenceButtonBGView.height-1);
+        } else {
+            buttonsPanel.frame = ccr(0, referenceButtonBGView.bottom, self.width, 48);
+        }
         buttonsPanel.backgroundColor = kWhiteColor;
         
+        UIButton *settingsButton;
+        UIButton *accountsButton;
+        UIButton *messagesButton;
+        UIButton *actionsButton;
+        UIButton *followButton;
         if ([screenName isEqualToString:MyScreenName]) {
-            UIButton *settingsButton = [[UIButton alloc] init];
+            // settingsButton
+            settingsButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:settingsButton];
             [settingsButton setTapTarget:delegate action:@selector(settingsButtonTouched)];
             [settingsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
@@ -236,9 +249,9 @@
                                       forState:UIControlStateHighlighted];
             [settingsButton setImage:[UIImage imageNamed:@"icn_profile_settings"] forState:UIControlStateNormal];
             settingsButton.size = ccs(42, 30);
-            settingsButton.leftCenter = ccp(10, buttonsPanel.height/2);
             
-            UIButton *accountsButton = [[UIButton alloc] init];
+            // accountsButton
+            accountsButton = [[UIButton alloc] init];
 //            [buttonsPanel addSubview:accountsButton];
             [accountsButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                       forState:UIControlStateNormal];
@@ -246,9 +259,9 @@
                                       forState:UIControlStateHighlighted];
             [accountsButton setImage:[UIImage imageNamed:@"icn_profile_switch_accounts"] forState:UIControlStateNormal];
             accountsButton.size = ccs(42, 30);
-            accountsButton.leftCenter = ccp(settingsButton.right + 10, buttonsPanel.height/2);
             
-            UIButton *messagesButton = [[UIButton alloc] init];
+            // messagesButton
+            messagesButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:messagesButton];
             [messagesButton setTapTarget:delegate action:@selector(messagesButtonTouched)];
             [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
@@ -257,9 +270,9 @@
                                       forState:UIControlStateHighlighted];
             [messagesButton setImage:[UIImage imageNamed:@"icn_profile_messages"] forState:UIControlStateNormal];
             messagesButton.size = ccs(42, 30);
-            messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonsPanel.height/2);
         } else {
-            UIButton *actionsButton = [[UIButton alloc] init];
+            // actionsButton
+            actionsButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:actionsButton];
             self.actionsButton = actionsButton;
             [actionsButton setTapTarget:delegate action:@selector(actionsButtonTouched)];
@@ -269,19 +282,36 @@
                                      forState:UIControlStateHighlighted];
             [actionsButton setImage:[UIImage imageNamed:@"icn_profile_action"] forState:UIControlStateNormal];
             actionsButton.size = ccs(42, 30);
-            actionsButton.leftCenter = ccp(10, buttonsPanel.height/2);
             
-            UIButton *followButton = [[UIButton alloc] init];
+            // followButton
+            followButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:followButton];
             self.followButton = followButton;
             [followButton setTapTarget:delegate action:@selector(followButtonTouched:)];
             followButton.imageEdgeInsets = UIEdgeInsetsMake(0, -5, 0, 0);
             followButton.titleLabel.font = [UIFont boldSystemFontOfSize:13];
             followButton.size = ccs(90, 30);
-            followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonsPanel.height/2);
         }
         
-        self.height = buttonsPanel.bottom;
+        float buttonHeight = buttonsPanel.height/2;
+        if (IPAD) {
+            messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            accountsButton.rightCenter = ccp(messagesButton.left - 10, buttonHeight);
+            // todo accountsButton not implemented
+            settingsButton.rightCenter = ccp(messagesButton.left - 10, buttonHeight);
+            
+            followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            actionsButton.rightCenter = ccp(followButton.left - 10, buttonHeight);
+            self.height = referenceButtonBGView.bottom;
+        } else {
+            settingsButton.leftCenter = ccp(10, buttonHeight);
+            accountsButton.leftCenter = ccp(settingsButton.right + 10, buttonHeight);
+            messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            
+            actionsButton.leftCenter = ccp(10, buttonsPanel.height/2);
+            followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            self.height = buttonsPanel.bottom;
+        }
     }
     return self;
 }
@@ -345,7 +375,7 @@
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_pressed"] stretchableImageFromCenter]
-                                     forState:UIControlStateNormal];
+                                     forState:UIControlStateHighlighted];
         [self.followButton setImage:nil forState:UIControlStateNormal];
         [self.followButton setTitleShadowColor:bw(80) forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, -1);

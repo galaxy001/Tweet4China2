@@ -31,6 +31,7 @@
 {
     if (!self.loadingCount && self.count > 1) {
         HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
+        NSLog(@"%@", cellData.dataType);
         if ([cellData.dataType isEqualToString:kDataType_LoadMore] &&
             [cellData.renderData[@"status"] integerValue] == kLoadMoreCellStatus_Done) {
             
@@ -165,6 +166,9 @@
             NSMutableArray *mData = [NSMutableArray arrayWithCapacity:cacheDataArr.count];
             for (NSDictionary *cacheData in cacheDataArr) {
                 [mData addObject:[[HSUTableCellData alloc] initWithCacheData:cacheData]];
+            }
+            if (![((HSUTableCellData *)mData.lastObject).dataType isEqualToString:kDataType_LoadMore]) {
+                [mData addObject:[[HSUTableCellData alloc] initWithRawData:nil dataType:kDataType_LoadMore]];
             }
             dataSource.data = mData;
         }

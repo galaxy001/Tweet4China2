@@ -73,7 +73,7 @@
 {
     [super viewDidAppear:animated];
     
-    [TWENGINE lookupUser:self.screenName success:^(id responseObj) {
+    [TWENGINE showUser:self.screenName success:^(id responseObj) {
         NSDictionary *profile = responseObj;
         [self.profileView setupWithProfile:profile];
         self.profile = profile;
@@ -82,6 +82,7 @@
     } failure:^(NSError *error) {
         
     }];
+    [self.tableView reloadData];
 }
 
 - (void)updateScreenName

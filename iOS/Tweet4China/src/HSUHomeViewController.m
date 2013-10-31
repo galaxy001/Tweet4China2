@@ -22,7 +22,7 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUHomeDataSource class];
-        [HSUHomeDataSource checkUnreadForViewController:self];
+//        [HSUHomeDataSource checkUnreadForViewController:self];
         [[NSNotificationCenter defaultCenter]
          addObserver:self
          selector:@selector(twitterLoginSuccess:)

@@ -99,7 +99,14 @@
     [tableView registerClass:[HSUMessageCell class] forCellReuseIdentifier:kDataType_Message];
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
+    if (IPAD) {
+        tableView.backgroundColor = kClearColor;
+        tableView.layer.cornerRadius = 5;
+    }
     tableView.backgroundView = nil;
+    UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
+    footerView.backgroundColor = [UIColor clearColor];
+    [self.tableView setTableFooterView:footerView];
     
     if (self.useRefreshControl) {
         HSURefreshControl *refreshControl = [[HSURefreshControl alloc] init];
@@ -161,8 +168,13 @@
         }
     }
     
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
-    self.tableView.frame = self.view.bounds;
+    if (IPAD) {
+        self.view.backgroundColor = rgb(244, 248, 251);
+        self.tableView.frame = ccr(self.view.width/2-kIPADMainViewWidth/2, 15, kIPADMainViewWidth, self.view.height-30);
+    } else {
+        self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
+        self.tableView.frame = self.view.bounds;
+    }
     
     NSIndexPath *selection = [self.tableView indexPathForSelectedRow];
 	if (selection)

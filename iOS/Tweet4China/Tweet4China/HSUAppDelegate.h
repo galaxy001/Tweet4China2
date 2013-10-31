@@ -8,11 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@class HSUTabController;
 @interface HSUAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
-@property (nonatomic, weak) HSUTabController *tabController;
+@property (nonatomic, weak) UIViewController *tabController;
 
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;

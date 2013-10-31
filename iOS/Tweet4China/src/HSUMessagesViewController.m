@@ -50,22 +50,19 @@
     self.tableView.backgroundColor = kWhiteColor;
     
     // setup navigation bar
-    self.navigationController.navigationBar.tintColor = bw(212);
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
-    NSDictionary *attributes = @{UITextAttributeTextColor: bw(30),
-                                 UITextAttributeTextShadowColor: kWhiteColor,
-                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
-    self.navigationController.navigationBar.titleTextAttributes = attributes;
-#endif
+    if (!RUNNING_ON_IPHONE_7) {
+        self.navigationController.navigationBar.tintColor = bw(212);
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(30),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+    }
     
     // setup navgation bar buttons
-    UIButton *actionsButton = [[UIButton alloc] init];
-    [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
-    [actionsButton sizeToFit];
-    actionsButton.width *= 1.4;
-    actionsButton.showsTouchWhenHighlighted = YES;
-    [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
-    self.actionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
+    self.actionsBarButtonItem = [[UIBarButtonItem alloc]
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                 target:self
+                                 action:@selector(_actionsButtonTouched)];
     self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];

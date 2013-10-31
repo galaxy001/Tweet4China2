@@ -10,6 +10,18 @@
 
 @implementation HSUBaseTableCell
 
+- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+{
+    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+    if (self) {
+        if (IPAD) {
+            self.width = kIPADMainViewWidth;
+            self.contentView.width = self.width;
+        }
+    }
+    return self;
+}
+
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key
 {
     [self setupControl:control forKey:key cleanOldEvents:YES];

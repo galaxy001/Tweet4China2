@@ -43,6 +43,7 @@ BOOL shadowsocksStarted;
 
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
+#define kIPADMainViewWidth 626
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 do { \
@@ -80,6 +81,8 @@ _Pragma("clang diagnostic pop") \
 #define TWENGINE [HSUTwitterAPI shared]
 #define RUNNING_ON_IPHONE_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
 #define RUNNING_ON_IPHONE_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
+#define IPAD [HSUCommonTools isIPad]
+#define IPHONE [HSUCommonTools isIPhone]
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]

@@ -92,4 +92,19 @@
 {
 }
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [super tableView:tableView cellForRowAtIndexPath:indexPath];
+    
+    if (IPAD && indexPath.row == 0) {
+        UIImageView *leftTopCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_left_top"]];
+        UIImageView *rightTopCornerView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_right_top"]];
+        [cell addSubview:leftTopCornerView];
+        [cell addSubview:rightTopCornerView];
+        rightTopCornerView.rightTop = ccp(cell.width, 0);
+    }
+    
+    return cell;
+}
+
 @end
