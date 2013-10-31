@@ -71,6 +71,7 @@
         cellData.rawData = newRawData;
         [self.dataSource saveCache];
         notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+        [self.tableView reloadData];
     } failure:^(NSError *error) {
         notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
         [TWENGINE dealWithError:error errTitle:@"Retweet failed"];
