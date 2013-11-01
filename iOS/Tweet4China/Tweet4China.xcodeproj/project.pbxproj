@@ -2301,7 +2301,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = HSU;
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Jason Hsu <support@tuoxie.me>";
 			};
 			buildConfigurationList = 9628174716DE5EDC00ABF0AD /* Build configuration list for PBXProject "Tweet4China" */;
