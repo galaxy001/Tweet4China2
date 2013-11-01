@@ -42,6 +42,12 @@
     HSUTableCellData *cellData = [self dataAtIndexPath:indexPath];
     HSUBaseTableCell *cell = (HSUBaseTableCell *)[tableView dequeueReusableCellWithIdentifier:cellData.dataType];
     [cell setupWithData:cellData];
+    
+    if (IPAD) {
+        if (indexPath.section == 0 && indexPath.row == self.count - 1) {
+            cell.separatorInset = edi(0, tableView.width, 0, 0);
+        }
+    }
     return cell;
 }
 
@@ -167,7 +173,10 @@
                 [mData addObject:[[HSUTableCellData alloc] initWithCacheData:cacheData]];
             }
             if (![((HSUTableCellData *)mData.lastObject).dataType isEqualToString:kDataType_LoadMore]) {
-                [mData addObject:[[HSUTableCellData alloc] initWithRawData:nil dataType:kDataType_LoadMore]];
+                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+                loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
+                loadMoreCellData.dataType = kDataType_LoadMore;
+                [mData addObject:loadMoreCellData];
             }
             dataSource.data = mData;
         }

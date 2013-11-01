@@ -14,6 +14,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.separatorInset = edi(0, 0, 0, 0);
+        
         if (IPAD) {
             self.width = kIPADMainViewWidth;
             self.contentView.width = self.width;

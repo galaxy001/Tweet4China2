@@ -19,10 +19,12 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+        self.separatorInset = edi(0, 0, 0, 0);
+        
         avatarIV = [[UIImageView alloc] init];
         [self addSubview:avatarIV];
         avatarIV.frame = ccr(0, 0, 37, 37);
-
+        
         screenNameL = [[UILabel alloc] init];
         [self addSubview:screenNameL];
         screenNameL.textColor = kBlackColor;

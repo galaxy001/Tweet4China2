@@ -121,6 +121,18 @@
     }
 }
 
++ (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce
+{
+    HSUConversationsDataSource *dataSource = [super dataSourceWithDelegate:delegate useCache:useCahce];
+    HSUTableCellData *lastCellData = dataSource.data.lastObject;
+    if (lastCellData &&
+        [lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
+        
+        [dataSource.data removeLastObject];
+    }
+    return dataSource;
+}
+
 - (void)_conversationBack:(NSNotification *)notification
 {
     NSArray *obj = notification.object;

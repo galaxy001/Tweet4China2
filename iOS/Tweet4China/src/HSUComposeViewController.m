@@ -330,7 +330,6 @@
     suggestionsTV.rowHeight = 37;
     suggestionsTV.backgroundColor = bw(232);
     suggestionsTV.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-    suggestionsTV.separatorColor = bw(217);
     [suggestionsTV registerClass:[HSUSuggestMentionCell class] forCellReuseIdentifier:[[HSUSuggestMentionCell class] description]];
 
     contentShadowV = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"searches-top-shadow.png"] stretchableImageFromCenter]];

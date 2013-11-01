@@ -63,6 +63,11 @@
     
     self.countView.rightCenter = ccp(self.contentView.width - 10, self.contentView.height/2);
     self.countLabel.center = self.countView.center;
+    
+    // ugly code, resolve issue caused by cell.separatorInset = edi(0, tableView.width, 0, 0)
+    self.textLabel.left = 14;
+    [self.textLabel sizeToFit];
+    self.textLabel.leftCenter = ccp(14, self.contentView.height/2);
 }
 
 @end

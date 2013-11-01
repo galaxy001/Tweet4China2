@@ -236,6 +236,9 @@
 {
     [super setupWithData:data];
     
+    actionV = [[HSUStatusActionView alloc] initWithStatus:data.rawData style:HSUStatusActionViewStyle_Default];
+    [self.contentView addSubview:actionV];
+    
     NSDictionary *rawData = data.rawData;
     
     // ambient
