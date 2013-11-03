@@ -36,9 +36,6 @@
 #define retweet_favorite_pannel_H 45
 
 #define retweeted_R @"ic_ambient_retweet"
-#define attr_photo_R @"ic_tweet_attr_photo_default"
-#define attr_convo_R @"ic_tweet_attr_convo_default"
-#define attr_summary_R @"ic_tweet_attr_summary_default"
 
 @implementation HSUMainStatusCell
 {
@@ -49,7 +46,7 @@
     UIButton *avatarB;
     UILabel *nameL;
     UILabel *screenNameL;
-    UILabel *timeL;
+    UILabel *timePlaceL;
     TTTAttributedLabel *textAL;
     
     UIView *actionSeperatorV;
@@ -109,12 +106,12 @@
         screenNameL.highlightedTextColor = kWhiteColor;
         screenNameL.backgroundColor = kClearColor;
         
-        timeL = [[UILabel alloc] init];
-        [contentArea addSubview:timeL];
-        timeL.font = [UIFont systemFontOfSize:12];
-        timeL.textColor = kGrayColor;
-        timeL.highlightedTextColor = kWhiteColor;
-        timeL.backgroundColor = kClearColor;
+        timePlaceL = [[UILabel alloc] init];
+        [contentArea addSubview:timePlaceL];
+        timePlaceL.font = [UIFont systemFontOfSize:12];
+        timePlaceL.textColor = kGrayColor;
+        timePlaceL.highlightedTextColor = kWhiteColor;
+        timePlaceL.backgroundColor = kClearColor;
         
         textAL = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
         [contentArea addSubview:textAL];
@@ -213,10 +210,10 @@
     
     textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, textAL.width, [self.data.renderData[@"text_height"] floatValue]);
     
-    [timeL sizeToFit];
-    timeL.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);
+    [timePlaceL sizeToFit];
+    timePlaceL.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);
     
-    imageView.top = timeL.bottom + time_summary_Distance;
+    imageView.top = timePlaceL.bottom + time_summary_Distance;
     
     actionV.frame = ccr(0, 0, self.contentView.width, actionV_H);
     actionV.bottom = self.contentView.height;
@@ -274,7 +271,14 @@
     
     // time
     NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];
-    timeL.text = createdDate.standardTwitterDisplay;
+    timePlaceL.text = createdDate.standardTwitterDisplay;
+    
+    // place
+    NSDictionary *placeInfo = rawData[@"place"];
+    if ([placeInfo isKindOfClass:[NSDictionary class]]) {
+        NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
+        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, place];
+    }
     
     // text
     NSString *text = [rawData[@"text"] gtm_stringByUnescapingFromHTML];

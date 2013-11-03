@@ -26,9 +26,6 @@
 #define padding_S 10
 
 #define retweeted_R @"ic_ambient_retweet"
-#define attr_photo_R @"ic_tweet_attr_photo_default"
-#define attr_convo_R @"ic_tweet_attr_convo_default"
-#define attr_summary_R @"ic_tweet_attr_summary_default"
 
 @implementation HSUStatusView
 {
@@ -227,13 +224,15 @@
                     forState:UIControlStateNormal];
     
     NSDictionary *geo = rawData[@"geo"];
+    NSDictionary *place = rawData[@"place"];
     
     // attr
     attrI.imageName = nil;
     NSString *attrName = nil;
     if ([rawData[@"in_reply_to_status_id_str"] length]) {
         attrName = @"convo";
-    } else if (entities) {
+    }
+    if (!attrName && entities) {
         NSArray *medias = entities[@"media"];
         NSArray *urls = entities[@"urls"];
         if (medias && medias.count) {
@@ -252,7 +251,9 @@
                 }
             }
         }
-    } else if ([geo isKindOfClass:[NSDictionary class]]) {
+    }
+    if (!attrName && ([geo isKindOfClass:[NSDictionary class]] ||
+                      [place isKindOfClass:[NSDictionary class]])) {
         attrName = @"geo";
     }
     
