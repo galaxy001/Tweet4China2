@@ -260,7 +260,6 @@
     RIButtonItem *RTItem = [RIButtonItem itemWithLabel:@"RT"];
     RTItem.action = ^{
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-        NSDictionary *rawData = [self.dataSource dataAtIndex:0].rawData;
         NSString *authorScreenName = rawData[@"user"][@"screen_name"];
         NSString *text = rawData[@"text"];
         composeVC.defaultText = S(@" RT @%@: %@", authorScreenName, text);
