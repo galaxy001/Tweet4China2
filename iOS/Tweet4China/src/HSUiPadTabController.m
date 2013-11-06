@@ -137,6 +137,9 @@
 
 - (void)iPadTabBarItemTouched:(id)sender
 {
+    if (![TWENGINE isAuthorized]) {
+        return;
+    }
     for (UIButton *tabBarItem in self.tabBarItems) {
         NSString *imageName = self.tabBarItemsData[tabBarItem.tag][@"imageName"];
         if (tabBarItem == sender) {
