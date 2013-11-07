@@ -28,7 +28,6 @@
 #import "HSUDraftsCell.h"
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
-#import "HSUTestViewController.h"
 #import "HSUSearchPersonVC.h"
 
 @interface HSUBaseViewController ()
@@ -100,7 +99,9 @@
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {
-        tableView.backgroundColor = kClearColor;
+        if (RUNNING_ON_IPHONE_7) {
+            tableView.backgroundColor = kClearColor;
+        }
         tableView.layer.cornerRadius = 5;
     }
     tableView.backgroundView = nil;
@@ -309,6 +310,9 @@
 #pragma mark - Actions
 - (void)_composeButtonTouched
 {
+    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
+        return;
+    }
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
@@ -322,6 +326,9 @@
 
 - (void)_addButtonTouched
 {
+    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
+        return;
+    }
     HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
     [self.navigationController pushViewController:addFriendVC animated:YES];
 }

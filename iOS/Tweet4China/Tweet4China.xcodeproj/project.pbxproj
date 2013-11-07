@@ -180,7 +180,6 @@
 		964827A416E261790002345B /* icn_tab_discover_selected@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 964827A216E261790002345B /* icn_tab_discover_selected@2x~ipad.png */; };
 		964827A716E2618C0002345B /* icn_tab_me_default@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 964827A516E2618C0002345B /* icn_tab_me_default@2x~ipad.png */; };
 		964827A816E2618C0002345B /* icn_tab_me_selected@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 964827A616E2618C0002345B /* icn_tab_me_selected@2x~ipad.png */; };
-		964827AA16E379F30002345B /* bg_nav_bar@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 964827A916E379F30002345B /* bg_nav_bar@2x~ipad.png */; };
 		964827AC16E37A5D0002345B /* bg_texture@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 964827AB16E37A5D0002345B /* bg_texture@2x.png */; };
 		964827AF16E37ACF0002345B /* HSUTexturedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 964827AE16E37ACF0002345B /* HSUTexturedView.m */; };
 		964827B216E37C9C0002345B /* HSUBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 964827B116E37C9C0002345B /* HSUBaseViewController.m */; };
@@ -367,7 +366,6 @@
 		96A44FF817D0EDC2002DE9EE /* UIImage+GIF.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A44FF217D0EDC2002DE9EE /* UIImage+GIF.m */; };
 		96A44FF917D0EDC2002DE9EE /* UIImage+MultiFormat.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A44FF417D0EDC2002DE9EE /* UIImage+MultiFormat.m */; };
 		96A44FFA17D0EDC2002DE9EE /* UIImage+WebP.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A44FF617D0EDC2002DE9EE /* UIImage+WebP.m */; };
-		96A4503F17D2E430002DE9EE /* HSUTestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A4503E17D2E430002DE9EE /* HSUTestViewController.m */; };
 		96A5076417D31C44002AABEE /* AppProxyCap.m in Sources */ = {isa = PBXBuildFile; fileRef = 96A5076317D31C44002AABEE /* AppProxyCap.m */; settings = {COMPILER_FLAGS = "-w -fno-objc-arc"; }; };
 		96AE30B8181FCD9C00C35298 /* RETableViewBoolCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AE3071181FCD9C00C35298 /* RETableViewBoolCell.m */; };
 		96AE30B9181FCD9C00C35298 /* RETableViewCreditCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AE3073181FCD9C00C35298 /* RETableViewCreditCardCell.m */; };
@@ -742,7 +740,6 @@
 		964827A216E261790002345B /* icn_tab_discover_selected@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tab_discover_selected@2x~ipad.png"; sourceTree = "<group>"; };
 		964827A516E2618C0002345B /* icn_tab_me_default@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tab_me_default@2x~ipad.png"; sourceTree = "<group>"; };
 		964827A616E2618C0002345B /* icn_tab_me_selected@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tab_me_selected@2x~ipad.png"; sourceTree = "<group>"; };
-		964827A916E379F30002345B /* bg_nav_bar@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_nav_bar@2x~ipad.png"; sourceTree = "<group>"; };
 		964827AB16E37A5D0002345B /* bg_texture@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_texture@2x.png"; sourceTree = "<group>"; };
 		964827AD16E37ACE0002345B /* HSUTexturedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUTexturedView.h; sourceTree = "<group>"; };
 		964827AE16E37ACF0002345B /* HSUTexturedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUTexturedView.m; sourceTree = "<group>"; };
@@ -996,8 +993,6 @@
 		96A44FF417D0EDC2002DE9EE /* UIImage+MultiFormat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MultiFormat.m"; sourceTree = "<group>"; };
 		96A44FF517D0EDC2002DE9EE /* UIImage+WebP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+WebP.h"; sourceTree = "<group>"; };
 		96A44FF617D0EDC2002DE9EE /* UIImage+WebP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+WebP.m"; sourceTree = "<group>"; };
-		96A4503D17D2E430002DE9EE /* HSUTestViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUTestViewController.h; sourceTree = "<group>"; };
-		96A4503E17D2E430002DE9EE /* HSUTestViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUTestViewController.m; sourceTree = "<group>"; };
 		96A5076217D31C44002AABEE /* AppProxyCap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppProxyCap.h; sourceTree = "<group>"; };
 		96A5076317D31C44002AABEE /* AppProxyCap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppProxyCap.m; sourceTree = "<group>"; };
 		96AE3070181FCD9C00C35298 /* RETableViewBoolCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RETableViewBoolCell.h; sourceTree = "<group>"; };
@@ -1470,7 +1465,6 @@
 				96E34B4017006B1C0066CD5E /* bg_dm_count@2x.png */,
 				9605A7EE171C503D0031BA74 /* bg_nav_bar.png */,
 				9648277B16E242290002345B /* bg_nav_bar@2x.png */,
-				964827A916E379F30002345B /* bg_nav_bar@2x~ipad.png */,
 				96924670172E6466007720D4 /* bg_nav_bar_light.png */,
 				96924671172E6466007720D4 /* bg_nav_bar_light@2x.png */,
 				969F2F8918222B5600015765 /* bg_profile_empty@2x~ipad.png */,
@@ -2098,8 +2092,6 @@
 				969B7434173FA8370072EFC0 /* HSUChatStatusCell.m */,
 				96E34B4217015ECD0066CD5E /* HSUComposeViewController.h */,
 				96E34B4317015ECD0066CD5E /* HSUComposeViewController.m */,
-				96A4503D17D2E430002DE9EE /* HSUTestViewController.h */,
-				96A4503E17D2E430002DE9EE /* HSUTestViewController.m */,
 				96D4BC8A172830F700E7BABA /* HSUConnectDataSource.h */,
 				96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */,
 				9628184F16DFAB5000ABF0AD /* HSUConnectViewController.h */,
@@ -2371,7 +2363,6 @@
 				964827A416E261790002345B /* icn_tab_discover_selected@2x~ipad.png in Resources */,
 				964827A716E2618C0002345B /* icn_tab_me_default@2x~ipad.png in Resources */,
 				964827A816E2618C0002345B /* icn_tab_me_selected@2x~ipad.png in Resources */,
-				964827AA16E379F30002345B /* bg_nav_bar@2x~ipad.png in Resources */,
 				964827AC16E37A5D0002345B /* bg_texture@2x.png in Resources */,
 				96BE216316EC711400226799 /* bg_action_shadow.png in Resources */,
 				969F2F8B18222B5600015765 /* bg_profile_empty@2x~ipad.png in Resources */,
@@ -2745,7 +2736,6 @@
 				9639B92216FE1AD20032177F /* UIView+Additions.m in Sources */,
 				96E34B4417015ECD0066CD5E /* HSUComposeViewController.m in Sources */,
 				96A44FF917D0EDC2002DE9EE /* UIImage+MultiFormat.m in Sources */,
-				96A4503F17D2E430002DE9EE /* HSUTestViewController.m in Sources */,
 				603900029BF5678F715D6B1E /* Reachability.m in Sources */,
 				96A44FF817D0EDC2002DE9EE /* UIImage+GIF.m in Sources */,
 				603909459EA4EB003D8703B6 /* UIImage+Additions.m in Sources */,

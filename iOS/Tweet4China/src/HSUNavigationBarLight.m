@@ -16,7 +16,7 @@
 - (void)layoutSubviews
 {
     if (!set && !RUNNING_ON_IPHONE_7) {
-        [self setBackgroundImage:[UIImage imageNamed:@"bg_nav_bar_light"] forBarMetrics:UIBarMetricsDefault];
+        [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar_light"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
         set = YES;
     }
     [super layoutSubviews];

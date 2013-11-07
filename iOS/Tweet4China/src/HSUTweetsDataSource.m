@@ -15,7 +15,11 @@
 {
     [super refresh];
     
+    if (self.count == 0 && [TWENGINE isAuthorized]) {
+        [SVProgressHUD showWithStatus:@"Loading Tweets"];
+    }
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
+        [SVProgressHUD dismiss];
         NSArray *tweets = responseObj;
         if (tweets.count) {
             
@@ -43,6 +47,7 @@
         [self.delegate dataSource:self didFinishRefreshWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
+        [SVProgressHUD dismiss];
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
         [self.delegate dataSource:self didFinishRefreshWithError:error];
     }];

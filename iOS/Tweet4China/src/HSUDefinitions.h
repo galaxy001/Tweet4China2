@@ -14,6 +14,7 @@
 // if you want to use all of the features.
 #define kTwitterAppKey @"JotIXH4moIF1fIJDVJ50eQ"
 #define kTwitterAppSecret @"5TKbyf4fDyjzse0GqJ62YwABgP6zKuZCbCHUeYTqugc"
+#define UseXAuth YES
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"

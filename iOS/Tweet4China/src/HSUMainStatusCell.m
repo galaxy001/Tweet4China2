@@ -177,9 +177,6 @@
         actionSeperatorV.backgroundColor = bw(226);
         [contentArea addSubview:actionSeperatorV];
         
-        actionV = [[HSUStatusActionView alloc] initWithStatus:self.data.rawData style:HSUStatusActionViewStyle_Default];
-        [self.contentView addSubview:actionV];
-        
         // set frames
         contentArea.frame = ccr(padding_S, padding_S, self.contentView.width-padding_S*4, 0);
         CGFloat cw = contentArea.width;

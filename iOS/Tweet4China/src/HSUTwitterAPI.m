@@ -129,13 +129,6 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
     return api;
 }
 
-- (void)shadowsocksStarted
-{
-    if (!self.isAuthorized) {
-        [self authorize];
-    }
-}
-
 - (BOOL)isAuthorized
 {
     return [FHSTwitterEngine sharedEngine].isAuthorized;
@@ -152,6 +145,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 - (void)authorize
 {
     if (shadowsocksStarted && !self.isAuthorizing) {
+        self.authorizing = YES;
         double delayInSeconds = 1.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -162,10 +156,77 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 - (void)authorizeByFHSTwitterEngine
 {
+    if (UseXAuth) {
+        [self authorizeByXAuth];
+    } else {
+        [self authorizeByOAuth];
+    }
+}
+
+- (void)authorizeByXAuth
+{
+    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:@"Login"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login"
+                                                    message:nil
+                                           cancelButtonItem:cancelItem
+                                           otherButtonItems:loginItem, nil];
+    loginItem.action = ^{
+        [SVProgressHUD showWithStatus:@"Please Wait"];
+        dispatch_async(GCDBackgroundThread, ^{
+            NSError *error = [engine getXAuthAccessTokenForUsername:[[alert textFieldAtIndex:0] text]
+                                                           password:[[alert textFieldAtIndex:1] text]];
+            [HSUTwitterAPI shared].authorizing = NO;
+            if (!error) {
+                [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
+                    dispatch_async(GCDMainThread, ^{
+                        [SVProgressHUD showSuccessWithStatus:@"Login Success"];
+                        [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:HSUTwiterLoginSuccess
+                         object:self
+                         userInfo:@{@"success": @YES}];
+                    });
+                } failure:^(NSError *error) {
+                    [SVProgressHUD dismiss];
+                    [TWENGINE dealWithError:error errTitle:@"Login Error"];
+                    dispatch_async(GCDMainThread, ^{
+                        [SVProgressHUD dismiss];
+                        [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
+                        [[NSNotificationCenter defaultCenter]
+                         postNotificationName:HSUTwiterLoginSuccess
+                         object:self
+                         userInfo:@{@"success": @NO, @"error": error}];
+                    });
+                }];
+            } else {
+                dispatch_async(GCDMainThread, ^{
+                    [SVProgressHUD dismiss];
+                    [TWENGINE dealWithError:error errTitle:@"Login Error"];
+                    [[NSNotificationCenter defaultCenter]
+                     postNotificationName:HSUTwiterLoginSuccess
+                     object:self
+                     userInfo:@{@"success": @NO}];
+                });
+            }
+        });
+    };
+    cancelItem.action = ^{
+        [[HSUTwitterAPI shared] authorizeByOAuth];
+    };
+    alert.alertViewStyle = UIAlertViewStyleLoginAndPasswordInput;
+    [alert show];
+}
+
+- (void)authorizeByOAuth
+{
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     [engine showOAuthLoginControllerFromViewController:[HSUAppDelegate shared].window.rootViewController
                                         withCompletion:^(BOOL success)
      {
+         [HSUTwitterAPI shared].authorizing = NO;
          if (success) {
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                  [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
