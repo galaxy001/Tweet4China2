@@ -71,7 +71,7 @@ static HSUShadowsocksProxy *proxy;
             proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
         }
         [proxy stop];
-        return (shadowsocksStarted = [proxy startWithLocalPort:71080]);
+        return (shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort]);
     }
     return (shadowsocksStarted = NO);
 }

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 #endif
     @autoreleasepool {
         [AppProxyCap activate];
-        [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:71080];
+        [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:ShadowSocksPort];
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([HSUAppDelegate class]));
     }
 }

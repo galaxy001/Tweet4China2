@@ -117,5 +117,6 @@ _Pragma("clang diagnostic pop") \
 #define kShadowsocksSettings_Password @"password"
 #define kShadowsocksSettings_Method @"method"
 #define kShadowsocksSettings_Direct @"direct"
+#define ShadowSocksPort 71080
 
 #endif
