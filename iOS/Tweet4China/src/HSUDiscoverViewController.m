@@ -9,6 +9,7 @@
 #import "HSUDiscoverViewController.h"
 #import "NJKWebViewProgress.h"
 #import "HSUComposeViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define StartURL @"https://www.google.com"
 

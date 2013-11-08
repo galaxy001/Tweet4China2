@@ -15,13 +15,19 @@
 {
     self = [super init];
     if (self) {
-        NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];
-        for (NSDictionary *draft in drafts) {
-            HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:draft dataType:kDataType_Draft];
-            [self.data addObject:cellData];
-        }
+        [self refresh];
     }
     return self;
+}
+
+- (void)refresh
+{
+    [self.data removeAllObjects];
+    NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];
+    for (NSDictionary *draft in drafts) {
+        HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:draft dataType:kDataType_Draft];
+        [self.data addObject:cellData];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath

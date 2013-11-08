@@ -102,6 +102,12 @@
     placeButtonItem.width = 200;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.dataSource refresh];
+    [super viewWillAppear:animated];
+}
+
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
