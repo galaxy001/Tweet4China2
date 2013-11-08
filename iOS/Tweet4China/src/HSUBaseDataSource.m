@@ -45,7 +45,7 @@
     
     if (IPAD) {
         if (indexPath.section == 0 && indexPath.row == self.count - 1) {
-            if (RUNNING_ON_IPHONE_7) {
+            if (RUNNING_ON_IOS_7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
         }

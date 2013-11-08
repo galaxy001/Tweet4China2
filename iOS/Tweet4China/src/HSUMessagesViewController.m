@@ -50,7 +50,7 @@
     self.tableView.backgroundColor = kWhiteColor;
     
     // setup navigation bar
-    if (!RUNNING_ON_IPHONE_7) {
+    if (!RUNNING_ON_IOS_7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(30),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -59,13 +59,36 @@
     }
     
     // setup navgation bar buttons
-    self.actionsBarButtonItem = [[UIBarButtonItem alloc]
-                                 initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                 target:self
-                                 action:@selector(_actionsButtonTouched)];
+    UIBarButtonItem *actionsBarButtonItem;
+    if (RUNNING_ON_IOS_7) {
+        actionsBarButtonItem = [[UIBarButtonItem alloc]
+                                initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                target:self
+                                action:@selector(_actionsButtonTouched)];
+    } else {
+        UIButton *actionButton = [[UIButton alloc] init];
+        [actionButton addTarget:self action:@selector(_actionsButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [actionButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
+        [actionButton sizeToFit];
+        actionButton.width *= 1.4;
+        actionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+    }
+    self.actionsBarButtonItem = actionsBarButtonItem;
     self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
+    if (!RUNNING_ON_IOS_7) {
+        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                     UITextAttributeTextShadowColor: kWhiteColor,
+                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
+        self.navigationController.navigationBar.titleTextAttributes = attributes;
+        NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
+                                             UITextAttributeTextShadowColor: kWhiteColor,
+                                             UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
+        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
+        [sendButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
+    }
     self.sendBarButtonItem = sendButtonItem;
     sendButtonItem.title = @"Send";
     sendButtonItem.target = self;
@@ -106,15 +129,15 @@
     
     if (self.textView.width == 0) {
         if (self.textView.hasText) {
-            self.textView.size = ccs(275, 0);
+            self.textView.size = ccs(self.view.width-45, 0);
         } else {
-            self.textView.size = ccs(310, 0);
+            self.textView.size = ccs(self.view.width-10, 0);
         }
     } else {
         if (self.textView.hasText) {
-            self.textView.width = 275;
+            self.textView.width = self.view.width-45;
         } else {
-            self.textView.width = 310;
+            self.textView.width = self.view.width-10;
         }
     }
     self.textView.left = 12;
@@ -142,7 +165,7 @@
         weakSelf.textView.top = weakSelf.toolbar.top + 5;
         weakSelf.textView.width = weakSelf.width - weakSelf.textView.left * 2 - weakSelf.wordCountLabel.width;
         
-        if (RUNNING_ON_IPHONE_7) {
+        if (RUNNING_ON_IOS_7) {
             weakSelf.tableView.top = 10 + weakSelf.navigationController.navigationBar.height + 10;
         }
         weakSelf.tableView.height = weakSelf.toolbar.top - weakSelf.tableView.top;

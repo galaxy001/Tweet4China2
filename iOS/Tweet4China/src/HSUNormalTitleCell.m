@@ -30,7 +30,7 @@
 {
     [super layoutSubviews];
     
-    if (IPAD && RUNNING_ON_IPHONE_7) {
+    if (IPAD && RUNNING_ON_IOS_7) {
         // ugly code, resolve issue caused by cell.separatorInset = edi(0, tableView.width, 0, 0)
         self.textLabel.left = 14;
         [self.textLabel sizeToFit];

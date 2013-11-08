@@ -51,7 +51,7 @@
     }
     
     // setup navigation bar
-    if (!RUNNING_ON_IPHONE_7) {
+    if (!RUNNING_ON_IOS_7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -61,18 +61,33 @@
     
     // setup close button
     UIButton *closeButton = [[UIButton alloc] init];
-    [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
+    if (RUNNING_ON_IOS_7) {
+        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
+    } else {
+        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+    }
     [closeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [closeButton sizeToFit];
     closeButton.width *= 1.4;
     closeButton.showsTouchWhenHighlighted = YES;
     [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                              initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                                              target:self
-                                              action:@selector(_composeButtonTouched)];
+
+    UIBarButtonItem *composeBarButton;
+    if (RUNNING_ON_IOS_7) {
+        composeBarButton = [[UIBarButtonItem alloc]
+                            initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                            target:self
+                            action:@selector(_composeButtonTouched)];
+    } else {
+        UIButton *composeButton = [[UIButton alloc] init];
+        [composeButton addTarget:self action:@selector(_composeButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [composeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_compose_dm"] forState:UIControlStateNormal];
+        [composeButton sizeToFit];
+        composeButton.width *= 1.4;
+        composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
+    }
+    self.navigationItem.rightBarButtonItem = composeBarButton;
     
     // setup toolbar
     UIToolbar *toolbar = [[UIToolbar alloc] init];
@@ -114,7 +129,7 @@
     [super viewDidLayoutSubviews];
     
     self.toolbar.height = toolbar_height;
-    self.toolbar.bottom = self.height;
+    self.toolbar.bottom = self.view.height;
     self.tableView.height = self.toolbar.top;
 }
 

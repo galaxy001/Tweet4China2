@@ -21,7 +21,9 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUConnectDataSource class];
-//        [HSUConnectDataSource checkUnreadForViewController:self];
+#ifndef DEBUG
+        [HSUConnectDataSource checkUnreadForViewController:self];
+#endif
     }
     return self;
 }

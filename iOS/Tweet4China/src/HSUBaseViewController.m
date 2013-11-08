@@ -99,7 +99,7 @@
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {
-        if (RUNNING_ON_IPHONE_7) {
+        if (RUNNING_ON_IOS_7) {
             tableView.backgroundColor = kClearColor;
         }
         tableView.layer.cornerRadius = 5;
@@ -123,7 +123,7 @@
         self.navigationItem.backBarButtonItem = nil;
     }
     
-    if (RUNNING_ON_IPHONE_7) {
+    if (RUNNING_ON_IOS_7) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                  target:self
@@ -145,13 +145,13 @@
 {
     [super viewWillAppear:animated];
     
-    if (RUNNING_ON_IPHONE_7) {
+    if (RUNNING_ON_IOS_7) {
         self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
         self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     }
     
     if (self.navigationController.viewControllers.count > 1) {
-        if (!RUNNING_ON_IPHONE_7) {
+        if (!RUNNING_ON_IOS_7) {
             UIButton *backButton = [[UIButton alloc] init];
             [backButton addTarget:self action:@selector(backButtonTouched) forControlEvents:UIControlEventTouchUpInside];
             if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBar class]]) {
@@ -285,7 +285,7 @@
 {
     // Compose BarButtonItem
     UIBarButtonItem *composeBarButton;
-    if (RUNNING_ON_IPHONE_7) {
+    if (RUNNING_ON_IOS_7) {
         composeBarButton = [[UIBarButtonItem alloc]
                             initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                             target:self

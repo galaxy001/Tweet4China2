@@ -91,7 +91,7 @@
     urlTextField.backgroundColor = bw(245);
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     
-    if (RUNNING_ON_IPHONE_7) {
+    if (RUNNING_ON_IOS_7) {
         UIProgressView *progressBar = [[UIProgressView alloc] init];
         [self.navigationController.navigationBar addSubview:progressBar];
         progressBar.trackTintColor = kWhiteColor;
@@ -112,7 +112,7 @@
         progressView.backgroundColor = rgba(74, 156, 214, .3);
     }
     
-    if (RUNNING_ON_IPHONE_7) {
+    if (RUNNING_ON_IOS_7) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                   target:self

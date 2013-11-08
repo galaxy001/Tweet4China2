@@ -80,8 +80,8 @@ _Pragma("clang diagnostic pop") \
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
-#define RUNNING_ON_IPHONE_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
-#define RUNNING_ON_IPHONE_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
+#define RUNNING_ON_IOS_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
+#define RUNNING_ON_IOS_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
 #define IPAD [HSUCommonTools isIPad]
 #define IPHONE [HSUCommonTools isIPhone]
 

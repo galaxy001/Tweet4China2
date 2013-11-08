@@ -14,7 +14,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        if (RUNNING_ON_IPHONE_7) {
+        if (RUNNING_ON_IOS_7) {
             self.separatorInset = edi(0, 0, 0, 0);
         }
         

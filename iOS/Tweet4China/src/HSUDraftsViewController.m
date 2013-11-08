@@ -49,7 +49,7 @@
     }
     
     // setup navigation bar
-    if (!RUNNING_ON_IPHONE_7) {
+    if (!RUNNING_ON_IOS_7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
