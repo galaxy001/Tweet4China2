@@ -3,3 +3,4 @@ not_on_git/
 .idea
 .DS_Store
 xcshareddata/
+release.patch
