@@ -30,7 +30,7 @@
     section = [RETableViewSection sectionWithHeaderTitle:@"Port"];
     [self.manager addSection:section];
     NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
-    [section addItem:[RENumberItem itemWithTitle:nil value:remotePort ?: @"" placeholder:@"e.g. 8123" format:@"XXXX"]];
+    [section addItem:[RENumberItem itemWithTitle:nil value:remotePort ?: @"" placeholder:@"e.g. 8123" format:@"XXXXX"]];
     
     section = [RETableViewSection sectionWithHeaderTitle:@"Password"];
     [self.manager addSection:section];
