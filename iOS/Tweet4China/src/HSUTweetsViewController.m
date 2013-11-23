@@ -391,6 +391,14 @@
     [self openWebURL:url withCellData:cellData];
 }
 
+- (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData
+{
+    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData image:photo];
+    galleryView.viewController = self;
+    [self.view.window addSubview:galleryView];
+    [galleryView showWithAnimation:YES];
+}
+
 - (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData imageURL:photoURL];

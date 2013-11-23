@@ -140,22 +140,6 @@
     [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
 }
 
-- (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData
-{
-    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData image:photo];
-    [self.view.window addSubview:galleryView];
-    [galleryView showWithAnimation:YES];
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
-- (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData
-{
-    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData imageURL:photoURL];
-    [self.view.window addSubview:galleryView];
-    [galleryView showWithAnimation:YES];
-    [self setNeedsStatusBarAppearanceUpdate];
-}
-
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
 {
     UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];

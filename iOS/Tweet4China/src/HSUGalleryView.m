@@ -80,7 +80,6 @@
     self = [self _initWithData:data];
     if (self) {
         [self.imageView setImage:image];
-        [self.imageView sizeToFit];
         float zoomScale = 0;
         if (self.imageView.width / self.imageView.height > self.width / self.height) {
             zoomScale = self.width / self.imageView.width;
