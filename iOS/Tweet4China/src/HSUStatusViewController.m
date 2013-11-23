@@ -137,7 +137,7 @@
     copyItem.action = ^{
         label.backgroundColor = kClearColor;
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        pasteboard.string = label.text;
+        pasteboard.string = self.mainStatus[@"text"];
     };
     UIActionSheet *linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:copyItem, nil];
     [linkActionSheet showInView:self.view.window];
