@@ -26,6 +26,34 @@
 
 @implementation HSUTweetsViewController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(galleryViewDidAppear)
+     name:HSUGalleryViewDidAppear
+     object:nil];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(galleryViewDidDisappear)
+     name:HSUGalleryViewDidDisappear
+     object:nil];
+}
+
+- (void)galleryViewDidAppear
+{
+    self.statusBarHidden = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)galleryViewDidDisappear
+{
+    self.statusBarHidden = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
 - (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource
 {
     [dataSource addEventWithName:@"reply" target:self action:@selector(reply:) events:UIControlEventTouchUpInside];
@@ -354,13 +382,6 @@
     }
     NSString *attr = cellData.renderData[@"attr"];
     if ([attr isEqualToString:@"photo"]) {
-        if ([url.absoluteString hasPrefix:@"http://instagram.com"] || [url.absoluteString hasPrefix:@"http://instagr.am"]) {
-            NSString *imageUrl = cellData.renderData[@"photo_url"];
-            if (imageUrl) {
-                [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
-                return;
-            }
-        }
         NSString *mediaURLHttps;
         NSArray *medias = cellData.rawData[@"entities"][@"media"];
         for (NSDictionary *media in medias) {

@@ -6,8 +6,7 @@
 
 
 #import "HSUSuggestMentionCell.h"
-#import "UIImageView+AFNetworking.h"
-
+#import "UIImageView+WebCache.h"
 
 @implementation HSUSuggestMentionCell {
 

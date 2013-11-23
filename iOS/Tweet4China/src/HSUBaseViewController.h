@@ -22,6 +22,7 @@
 @property (nonatomic, assign) uint viewDidAppearCount;
 @property (nonatomic, assign) float keyboardHeight;
 @property (nonatomic, assign) BOOL useDefaultStatusView;
+@property (nonatomic, assign) BOOL statusBarHidden;
 
 - (id)initWithDataSource:(HSUBaseDataSource *)dataSource;
 - (Class)cellClassForDataType:(NSString *)dataType;

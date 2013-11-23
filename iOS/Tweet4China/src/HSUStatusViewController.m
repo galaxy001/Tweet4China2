@@ -46,6 +46,17 @@
     }
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
+    
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(galleryViewDidAppear)
+     name:HSUGalleryViewDidAppear
+     object:nil];
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(galleryViewDidDisappear)
+     name:HSUGalleryViewDidDisappear
+     object:nil];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -53,6 +64,18 @@
     [super viewDidAppear:animated];
     
     [self.dataSource loadMore];
+}
+
+- (void)galleryViewDidAppear
+{
+    self.statusBarHidden = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+}
+
+- (void)galleryViewDidDisappear
+{
+    self.statusBarHidden = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
@@ -130,6 +153,7 @@
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData image:photo];
     [self.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData
@@ -137,6 +161,7 @@
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData imageURL:photoURL];
     [self.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
+    [self setNeedsStatusBarAppearanceUpdate];
 }
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData

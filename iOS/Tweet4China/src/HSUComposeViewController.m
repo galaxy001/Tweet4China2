@@ -89,6 +89,7 @@
     
     NSString *textAtFist;
     BOOL contentChanged;
+    NSString *geoCode;
 }
 
 - (void)dealloc
@@ -464,7 +465,7 @@
 {
     if (self.draft) {
         NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
-        [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:contentTV.text imageData:imageData reply:self.inReplyToStatusId locationXY:location];
+        [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:contentTV.text imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
         [self dismissViewControllerAnimated:YES completion:nil];
         return;
     }
@@ -481,7 +482,7 @@
         saveBnt.action = ^{
             NSString *status = contentTV.text;
             NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
-            NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:nil title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location];
+            NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:nil title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
             [[HSUDraftManager shared] activeDraft:draft];
             [self dismissViewControllerAnimated:YES completion:nil];
         };
@@ -500,7 +501,7 @@
     NSString *briefMessage = [contentTV.text substringToIndex:MIN(20, contentTV.text.length)];
     //save draft
     NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
-    NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location];
+    NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
     
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
@@ -721,8 +722,24 @@
             break;
         }
     }];
-
-
+    
+    /*
+    [TWENGINE reverseGeocodeWithLocation:manager.location.coordinate success:^(id responseObj) {
+        NSArray *places = responseObj[@"result"][@"places"];
+        if (places.count) {
+            NSArray *contained = places[0][@"contained_within"];
+            if (contained.count) {
+                NSString *placeName = contained[0][@"full_name"];
+                NSString *placeId = contained[0][@"id"];
+                locationL.text = placeName;
+                geoCode = placeId;
+            }
+        }
+    } failure:^(NSError *error) {
+        
+    }];
+    */
+    
     [geoBnt setImage:[UIImage imageNamed:@"compose-geo-highlighted"] forState:UIControlStateNormal];
     geoBnt.hidden = NO;
     [geoLoadingV stopAnimating];

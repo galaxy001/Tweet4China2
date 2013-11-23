@@ -75,7 +75,7 @@
     self.dataSource.delegate = self;
     
     for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.renderData[@"attributed_label_delegate"] = self;
+        cellData.renderData[@"delegate"] = self;
     }
     
     UITableView *tableView;
@@ -190,6 +190,11 @@
     self.viewDidAppearCount ++;
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return self.statusBarHidden;
+}
+
 - (void)keyboardFrameChanged:(NSNotification *)notification
 {
     NSValue* keyboardFrame = [notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
@@ -253,7 +258,7 @@
         NSLog(@"%@", error);
     } else {
         for (HSUTableCellData *cellData in self.dataSource.allData) {
-            cellData.renderData[@"attributed_label_delegate"] = self;
+            cellData.renderData[@"delegate"] = self;
         }
         
         [self.tableView reloadData];

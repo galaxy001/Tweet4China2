@@ -16,21 +16,22 @@
 
 @interface HSUGalleryView() <UIScrollViewDelegate>
 
+@property (nonatomic, weak) UIActivityIndicatorView *spinner;
+@property (nonatomic, weak) UIImageView *imageView;
+
 @end
 
 @implementation HSUGalleryView
 {
-    UIProgressView *progressBar;
     UIScrollView *imagePanel;
-    UIImageView *imageView;
-    UIView *menuView;
     HSUStatusView *statusView;
-    HSUStatusActionView *actionView;
-    
-    CGFloat menuStartTop;
-    CGFloat startTouchY;
     
     HSUTableCellData *cellData;
+}
+
+- (void)dealloc
+{
+    notification_remove_observer(self);
 }
 
 - (id)_initWithData:(HSUTableCellData *)data
@@ -43,69 +44,21 @@
         self.alpha = 0;
         
         // subviews
-        progressBar = [[UIProgressView alloc] init];
-        [self addSubview:progressBar];
-        progressBar.width = 250;
-        progressBar.progressViewStyle = UIProgressViewStyleBar;
-        progressBar.progressTintColor = kWhiteColor;
-        progressBar.trackTintColor = kBlackColor;
-        
         imagePanel = [[UIScrollView alloc] initWithFrame:self.bounds];
         [self addSubview:imagePanel];
         imagePanel.contentSize = self.size;
         imagePanel.delegate = self;
         
-        imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.bounds];
         [imagePanel addSubview:imageView];
+        self.imageView = imageView;
         imageView.contentMode = UIViewContentModeScaleAspectFit;
         
-        menuView = [[UIView alloc] init];
-        [self addSubview:menuView];
-        menuView.backgroundColor = kBlackColor;
-        menuView.alpha = 0.8;
-        
-        UIView *border = [[UIView alloc] init];
-        [menuView addSubview:border];
-        border.backgroundColor = bwa(255, 0.1);
-        
-        UIImageView *gripperView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_photo_detail_gripper"]];
-        [menuView addSubview:gripperView];
-        
-        CGFloat statusHeight = [HSUStatusView heightForData:data
-                                            constraintWidth:self.width-20];
-        statusView = [[HSUStatusView alloc] initWithFrame:ccr(0, 0, self.width-20, statusHeight)
-                                                    style:HSUStatusViewStyle_Gallery];
-        [menuView addSubview:statusView];
-        statusView.backgroundColor = kClearColor;
-        [statusView setupWithData:data];
-        
-        UIView *sep = [[UIView alloc] init];
-        [menuView addSubview:sep];
-        sep.backgroundColor = bwa(255, .15);
-        
-        actionView = [[HSUStatusActionView alloc] initWithStatus:data.rawData style:HSUStatusActionViewStyle_Gallery];
-        [menuView addSubview:actionView];
-        
-        [actionView.replayB addTarget:self action:@selector(_fireAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionView.retweetB addTarget:self action:@selector(_fireAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionView.favoriteB addTarget:self action:@selector(_fireAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionView.moreB addTarget:self action:@selector(_fireAction:) forControlEvents:UIControlEventTouchUpInside];
-        [actionView.deleteB addTarget:self action:@selector(_fireAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        // set frames
-        sep.size = ccs(self.width-10, 1);
-        actionView.size = ccs(self.width, 38);
-        menuView.size = ccs(self.width, 0);
-        menuView.top = self.height - 17;
-        
-        border.frame = ccr(0, 1, menuView.width, 1);
-        gripperView.topCenter = ccp(menuView.width/2, border.bottom+2);
-        statusView.topCenter = ccp(gripperView.bottomCenter.x, gripperView.bottomCenter.y+5);;
-        sep.topCenter = statusView.bottomCenter;
-        actionView.topCenter = sep.bottomCenter;
-        menuView.height = actionView.bottom + 5;
-        
-        progressBar.center = self.boundsCenter;
+        UIActivityIndicatorView *spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        [self addSubview:spinner];
+        self.spinner = spinner;
+        spinner.transform = CGAffineTransformMakeScale(0.7, 0.7);
+        spinner.center = self.boundsCenter;
         
         // gestures
         UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] init];
@@ -116,15 +69,12 @@
         [longPressGesture addTarget:self action:@selector(_fireLongPressGesture:)];
         [self addGestureRecognizer:longPressGesture];
         
-        UISwipeGestureRecognizer *swipeDownGesture = [[UISwipeGestureRecognizer alloc] init];
-        swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
-        [swipeDownGesture addTarget:self action:@selector(_fireSwipeDownGesture:)];
-        [self addGestureRecognizer:swipeDownGesture];
-        
-        UISwipeGestureRecognizer *swipeUpGesture = [[UISwipeGestureRecognizer alloc] init];
-        swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
-        [swipeUpGesture addTarget:self action:@selector(_fireSwipeUpGesture:)];
-        [self addGestureRecognizer:swipeUpGesture];
+        // rotate
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(deviceOrientationDidChange:)
+         name:UIDeviceOrientationDidChangeNotification
+         object:nil];
     }
     return self;
 }
@@ -133,14 +83,13 @@
 {
     self = [self _initWithData:data];
     if (self) {
-        [progressBar removeFromSuperview];
-        [imageView setImage:image];
-        [imageView sizeToFit];
+        [self.imageView setImage:image];
+        [self.imageView sizeToFit];
         float zoomScale = 0;
-        if (imageView.width / imageView.height > self.width / self.height) {
-            zoomScale = self.width / imageView.width;
+        if (self.imageView.width / self.imageView.height > self.width / self.height) {
+            zoomScale = self.width / self.imageView.width;
         } else {
-            zoomScale = self.height / imageView.height;
+            zoomScale = self.height / self.imageView.height;
         }
         imagePanel.maximumZoomScale = 2 * zoomScale;
         imagePanel.minimumZoomScale = zoomScale;
@@ -153,64 +102,66 @@
 {
     self = [self _initWithData:data];
     if (self) {
-        // load image
-        NSURLRequest *request = [NSURLRequest requestWithURL:imageURL];
-        AFHTTPRequestOperation *downloader = [[AFImageRequestOperation alloc] initWithRequest:request];
-        [downloader setDownloadProgressBlock:^(NSUInteger bytesRead, long long totalBytesRead, long long totalBytesExpectedToRead) {
-            float progress = bytesRead*1.0/totalBytesRead;
-            if (progressBar.progress < progress) {
-                [progressBar setProgress:progress animated:YES];
-            }
-        }];
-        [downloader setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            [progressBar removeFromSuperview];
-            [imageView setImage:responseObject];
+        [self.spinner startAnimating];
+        __weak typeof(&*self)weakSelf = self;
+        [self.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:imageURL] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+            weakSelf.imageView.image = image;
             float zoomScale = 0;
-            if (imageView.width / imageView.height > self.width / self.height) {
-                zoomScale = self.width / imageView.width;
+            if (weakSelf.imageView.width / weakSelf.imageView.height > weakSelf.width / weakSelf.height) {
+                zoomScale = weakSelf.width / weakSelf.imageView.width;
             } else {
-                zoomScale = self.height / imageView.height;
+                zoomScale = weakSelf.height / weakSelf.imageView.height;
             }
             imagePanel.maximumZoomScale = 2 * zoomScale;
             imagePanel.minimumZoomScale = zoomScale;
             imagePanel.zoomScale = zoomScale;
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            [progressBar removeFromSuperview];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Load image failed" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
-            [alert show];
+            [weakSelf.spinner stopAnimating];
+        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+            [weakSelf.spinner stopAnimating];
         }];
-        [downloader start];
     }
     return self;
 }
 
 - (void)showWithAnimation:(BOOL)animation
 {
-    [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    if (!RUNNING_ON_IOS_7) {
+        [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    }
     if (animation) {
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 1;
         } completion:^(BOOL finished) {
-            
+            if (RUNNING_ON_IOS_7) {
+                [[NSNotificationCenter defaultCenter]
+                 postNotificationName:HSUGalleryViewDidAppear
+                 object:nil];
+            }
         }];
     } else {
         self.alpha = 1;
+        if (RUNNING_ON_IOS_7) {
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:HSUGalleryViewDidAppear
+             object:nil];
+        }
     }
 }
 
 - (void)_fireTapGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        BOOL statusViewTapped = [gesture locationInView:self].y > menuView.top;
-        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        if (RUNNING_ON_IOS_7) {
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:HSUGalleryViewDidDisappear
+             object:nil];
+        } else {
+            [[UIApplication sharedApplication] setStatusBarHidden:NO];
+        }
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 0;
         } completion:^(BOOL finished) {
             [self removeFromSuperview];
-            if (statusViewTapped && self.viewController) {
-                HSUStatusViewController *statusVC = [[HSUStatusViewController alloc] initWithStatus:cellData.rawData];
-                [self.viewController.navigationController pushViewController:statusVC animated:YES];
-            }
         }];
     }
 }
@@ -218,63 +169,41 @@
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        if ([gesture locationInView:self].y > menuView.top) {
-            return;
-        }
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
         RIButtonItem *saveItem = [RIButtonItem itemWithLabel:@"Save image"];
         saveItem.action = ^{
-            UIImageWriteToSavedPhotosAlbum(imageView.image, nil, nil, nil);
+            UIImageWriteToSavedPhotosAlbum(self.imageView.image, nil, nil, nil);
         };
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:saveItem, nil];
         [actionSheet showInView:self.window];
     }
 }
 
-- (void)_fireSwipeDownGesture:(UIGestureRecognizer *)gesture
-{
-    if (gesture.state == UIGestureRecognizerStateEnded) {
-        [UIView animateWithDuration:0.2 animations:^{
-            menuView.top = self.height - 17;
-        }];
-    }
-}
-
-- (void)_fireSwipeUpGesture:(UIGestureRecognizer *)gesture
-{
-    if (gesture.state == UIGestureRecognizerStateEnded) {
-        [UIView animateWithDuration:0.2 animations:^{
-            menuView.bottom = self.height;
-        }];
-    }
-}
-
-- (void)_fireAction:(id)sender
-{
-    UIEvent *event = nil;
-    if (sender == actionView.replayB) {
-        event = cellData.renderData[@"reply"];
-    } else if (sender == actionView.retweetB) {
-        event = cellData.renderData[@"retweet"];
-    } else if (sender == actionView.favoriteB) {
-        event = cellData.renderData[@"favorite"];
-    } else if (sender == actionView.moreB) {
-        event = cellData.renderData[@"more"];
-    } else if (sender == actionView.deleteB) {
-        event = cellData.renderData[@"delete"];
-    }
-    [[UIApplication sharedApplication] setStatusBarHidden:NO];
-    [UIView animateWithDuration:.3 animations:^{
-        self.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-        [event performSelector:@selector(fire:) withObject:sender];
-    }];
-}
-
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
 {
-    return imageView;
+    return self.imageView;
+}
+
+- (void)deviceOrientationDidChange:(NSNotification *)notification
+{
+    [UIView animateWithDuration:.3 animations:^{
+        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+        if (orientation == UIDeviceOrientationLandscapeLeft) {
+            imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
+            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+        } else if (orientation == UIDeviceOrientationLandscapeRight) {
+            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI/2);
+            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+        } else if (orientation == UIDeviceOrientationPortrait) {
+            imagePanel.transform = CGAffineTransformMakeRotation(0);
+            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+        } else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
+            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI);
+            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+        }
+        
+        self.imageView.frame = imagePanel.bounds;
+    }];
 }
 
 @end

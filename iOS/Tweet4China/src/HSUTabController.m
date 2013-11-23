@@ -12,6 +12,7 @@
 #import "HSUDiscoverViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUNavigationBar.h"
+#import "HSUGalleryView.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -168,16 +169,6 @@
         }
     }
     return NO;
-}
-
-- (NSUInteger)supportedInterfaceOrientations
-{
-    return UIInterfaceOrientationMaskPortrait | UIInterfaceOrientationMaskPortraitUpsideDown;
-}
-
-- (BOOL)shouldAutorotate
-{
-    return YES;
 }
 
 @end

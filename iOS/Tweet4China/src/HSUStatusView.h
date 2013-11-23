@@ -21,6 +21,7 @@ typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
 @property (nonatomic, strong) HSUTableCellData *data;
 @property (nonatomic, assign) HSUStatusViewStyle style;
 @property (nonatomic, strong) UIButton *avatarB;
+@property (nonatomic, weak) UIButton *imagePreviewButton;
 
 - (id)initWithFrame:(CGRect)frame style:(HSUStatusViewStyle)style;
 

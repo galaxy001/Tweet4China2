@@ -21,14 +21,16 @@
                                 status:(NSString *)status
                          imageFilePath:(NSString *)imageFilePath
                                  reply:(NSString *)reply
-                            locationXY:(CLLocationCoordinate2D)locationXY;
+                            locationXY:(CLLocationCoordinate2D)locationXY
+                               placeId:(NSString *)placeId;
 
 - (NSDictionary *)saveDraftWithDraftID:(NSString *)draftID
                                  title:(NSString *)title
                                 status:(NSString *)status
                              imageData:(NSData *)imageData
                                  reply:(NSString *)reply
-                            locationXY:(CLLocationCoordinate2D)locationXY;
+                            locationXY:(CLLocationCoordinate2D)locationXY
+                               placeId:(NSString *)placeId;
 
 
 - (void)activeDraft:(NSDictionary *)draft;

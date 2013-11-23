@@ -10,7 +10,6 @@
 
 #import "HSUDefaultStatusCell.h"
 #import "TTTAttributedLabel.h"
-#import "UIImageView+AFNetworking.h"
 #import "FHSTwitterEngine.h"
 #import "UIButton+WebCache.h"
 #import "HSUStatusView.h"

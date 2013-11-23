@@ -91,6 +91,8 @@ static NSString * const url_friends_ids = @"https://api.twitter.com/1.1/friends/
 
 static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/place.json";
 
+static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/reverse_geocode.json";
+
 @interface HSUTwitterAPI ()
 
 @property (nonatomic, assign, getter = isAuthorizing) BOOL authorizing;
@@ -388,7 +390,7 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
                  success:success
                  failure:failure];
 }
-- (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location placeId:(NSString *)placeId success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
@@ -397,7 +399,8 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
         id responseObj = [engine postTweet:status
                              withImageData:imageData
                                  inReplyTo:inReplyToID
-                                  location:location];
+                                  location:location
+                                   placeId:placeId];
         NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
         
         dispatch_async(GCDMainThread, ^{
@@ -490,6 +493,13 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 {
     [self sendGETWithUrl:url_users_search
               parameters:@{@"q": keyword, @"page": @1, @"count": @20}
+                 success:success
+                 failure:failure];
+}
+- (void)reverseGeocodeWithLocation:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendGETWithUrl:url_reverse_geocode
+              parameters:@{@"lat": @(location.latitude), @"long": @(location.longitude), @"max_results": @1}
                  success:success
                  failure:failure];
 }

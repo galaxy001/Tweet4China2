@@ -29,6 +29,7 @@
                          imageFilePath:(NSString *)imageFilePath
                                  reply:(NSString *)reply
                             locationXY:(CLLocationCoordinate2D)locationXY
+                               placeId:(NSString *)placeId
 {
     if (!draftID) {
         draftID = [status MD5Hash];
@@ -47,6 +48,7 @@
     if (reply) draft[kTwitterReplyID_ParameterKey] = reply;
     if (locationXY.latitude) draft[@"lat"] = S(@"%g", locationXY.latitude);
     if (locationXY.longitude) draft[@"long"] = S(@"%g", locationXY.longitude);
+    if (placeId) draft[@"place_id"] = placeId;
     draft[@"update_time"] = [NSNumber numberWithDouble:[[NSDate date] timeIntervalSince1970]];
     ((NSMutableDictionary *)drafts)[draftID] = draft;
     [[NSUserDefaults standardUserDefaults] setObject:drafts forKey:@"drafts"];
@@ -60,6 +62,7 @@
                              imageData:(NSData *)imageData
                                  reply:(NSString *)reply
                             locationXY:(CLLocationCoordinate2D)locationXY
+                               placeId:(NSString *)placeId
 {
     NSString *filePath = nil;
     if (imageData) {
@@ -68,7 +71,7 @@
         filePath = dp(S(@"drafts/%@", imageData.md5));
         [imageData writeToFile:filePath atomically:YES];
     }
-    return [self saveDraftWithDraftID:draftID title:title status:status imageFilePath:filePath reply:reply locationXY:locationXY];
+    return [self saveDraftWithDraftID:draftID title:title status:status imageFilePath:filePath reply:reply locationXY:locationXY placeId:placeId];
 }
 
 
@@ -140,7 +143,7 @@
 - (void)sendDraft:(NSDictionary *)draft success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     CLLocationCoordinate2D location = CLLocationCoordinate2DMake([draft[@"lat"] doubleValue], [draft[@"long"] doubleValue]);
-    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitterReplyID_ParameterKey] imageFilePath:draft[@"image_file_path"] location:location success:^(id responseObj) {
+    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitterReplyID_ParameterKey] imageFilePath:draft[@"image_file_path"] location:location placeId:draft[@"place_id"] success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

@@ -51,6 +51,11 @@ static HSUShadowsocksProxy *proxy;
     [Appirater appEnteredForeground:YES];
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application
+{
+    [proxy stop];
+}
+
 - (void)configureAppirater
 {
     [Appirater setAppId:@"445052810"];
@@ -70,8 +75,11 @@ static HSUShadowsocksProxy *proxy;
         if (proxy == nil) {
             proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
         }
-        [proxy stop];
-        return (shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort]);
+        shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort];
+        if (!shadowsocksStarted) {
+            exit(0);
+        }
+        return shadowsocksStarted;
     }
     return (shadowsocksStarted = NO);
 }

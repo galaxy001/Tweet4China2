@@ -89,6 +89,8 @@ _Pragma("clang diagnostic pop") \
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
 #define MyScreenName [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey][@"screen_name"]
 #define DEF_NavitationController_Light [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
+#define kScreenHeight [UIScreen mainScreen].bounds.size.height
+#define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
 
 #define HSUStartRefreshingNotification @"HSUStartRefreshingNotification"
@@ -96,6 +98,8 @@ _Pragma("clang diagnostic pop") \
 #define HSUConversationBackWithIncompletedSendingNotification @"HSUConversationBackWithIncompletedSendingNotification"
 #define HSUDraftsCountChangedNotification @"HSUDraftsCountChangedNotification"
 #define HSUTwiterLoginSuccess @"HSUTwiterLoginSuccess"
+#define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
+#define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_DefaultStatus @"DefaultStatus"

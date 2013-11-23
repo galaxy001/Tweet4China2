@@ -50,6 +50,7 @@
         [SVProgressHUD dismiss];
         [TWENGINE dealWithError:error errTitle:@"Load failed"];
         [self.delegate dataSource:self didFinishRefreshWithError:error];
+        self.loadingCount --;
     }];
 }
 

@@ -12,7 +12,6 @@
 
 #import "HSUStatusCell.h"
 #import "TTTAttributedLabel.h"
-#import "UIImageView+AFNetworking.h"
 #import "NSDate+Additions.h"
 #import "FHSTwitterEngine.h"
 #import "GTMNSString+HTML.h"
@@ -277,6 +276,28 @@
         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, place];
     }
     
+    // attr
+    NSString *attrName = nil;
+    if (entities) {
+        NSArray *medias = entities[@"media"];
+        NSArray *urls = entities[@"urls"];
+        if (medias.count) {
+            NSDictionary *media = medias[0];
+            NSString *type = media[@"type"];
+            if ([type isEqualToString:@"photo"]) {
+                attrName = @"photo";
+            }
+        } else if (urls.count) {
+            for (NSDictionary *urlDict in urls) {
+                NSString *expandedUrl = urlDict[@"expanded_url"];
+                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    attrName = @"photo";
+                    break;
+                }
+            }
+        }
+    }
+    
     // text
     NSString *text = [rawData[@"text"] gtm_stringByUnescapingFromHTML];
     textAL.text = text;
@@ -294,8 +315,13 @@
             for (NSDictionary *urlDict in urlDicts) {
                 NSString *url = urlDict[@"url"];
                 NSString *displayUrl = urlDict[@"display_url"];
+                NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
+                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                        text = [text stringByReplacingOccurrencesOfString:url withString:@""];
+                    } else {
+                        text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
+                    }
                 }
             }
             textAL.text = text;
@@ -404,6 +430,26 @@
     NSDictionary *status = data.rawData;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
     NSDictionary *entities = status[@"entities"];
+    NSString *attrName = nil;
+    if (entities) {
+        NSArray *medias = entities[@"media"];
+        NSArray *urls = entities[@"urls"];
+        if (medias.count) {
+            NSDictionary *media = medias[0];
+            NSString *type = media[@"type"];
+            if ([type isEqualToString:@"photo"]) {
+                attrName = @"photo";
+            }
+        } else if (urls.count) {
+            for (NSDictionary *urlDict in urls) {
+                NSString *expandedUrl = urlDict[@"expanded_url"];
+                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    attrName = @"photo";
+                    break;
+                }
+            }
+        }
+    }
     if (entities) {
         NSArray *urls = entities[@"urls"];
         NSArray *medias = entities[@"media"];
@@ -414,8 +460,13 @@
             for (NSDictionary *urlDict in urls) {
                 NSString *url = urlDict[@"url"];
                 NSString *displayUrl = urlDict[@"display_url"];
+                NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
+                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                        text = [text stringByReplacingOccurrencesOfString:url withString:@""];
+                    } else {
+                        text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
+                    }
                 }
             }
         }
@@ -522,8 +573,8 @@
 #pragma mark - attributtedLabel delegate
 - (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
 {
-    id attributedLabelDelegate = self.data.renderData[@"attributed_label_delegate"];
-    [attributedLabelDelegate performSelector:@selector(attributedLabelDidLongPressed:) withObject:label];
+    id delegate = self.data.renderData[@"delegate"];
+    [delegate performSelector:@selector(attributedLabelDidLongPressed:) withObject:label];
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithURL:(NSURL *)url
@@ -531,8 +582,8 @@
     if (!url) {
         return ;
     }
-    id attributedLabelDelegate = self.data.renderData[@"attributed_label_delegate"];
-    [attributedLabelDelegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    id delegate = self.data.renderData[@"delegate"];
+    [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithURL:(NSURL *)url
@@ -540,8 +591,8 @@
     if (!url) {
         return;
     }
-    id attributedLabelDelegate = self.data.renderData[@"attributed_label_delegate"];
-    [attributedLabelDelegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    id delegate = self.data.renderData[@"delegate"];
+    [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)_downloadPhotoWithURL:(NSURL *)photoURL
