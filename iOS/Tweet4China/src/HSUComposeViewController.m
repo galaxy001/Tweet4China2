@@ -186,7 +186,7 @@
     toolbar =[UIImageView viewStrechedNamed:@"button-bar-background"];
     [self.view addSubview:toolbar];
     toolbar.userInteractionEnabled = YES;
-
+    
     photoBnt = [[UIButton alloc] init];
     [toolbar addSubview:photoBnt];
     [photoBnt addTarget:self action:@selector(photoButtonTouched) forControlEvents:UIControlEventTouchUpInside];
@@ -195,7 +195,7 @@
     [photoBnt sizeToFit];
     photoBnt.center = ccp(25, 20);
     photoBnt.hitTestEdgeInsets = UIEdgeInsetsMake(0, -5, 0, -5);
-
+    
     geoBnt = [[UIButton alloc] init];
     [toolbar addSubview:geoBnt];
     [geoBnt addTarget:self action:@selector(geoButtonTouched) forControlEvents:UIControlEventTouchUpInside];
@@ -204,12 +204,12 @@
     [geoBnt sizeToFit];
     geoBnt.center = ccp(85, 20);
     geoBnt.hitTestEdgeInsets = UIEdgeInsetsMake(0, -5, 0, -5);
-
+    
     geoLoadingV = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     [toolbar addSubview:geoLoadingV];
     geoLoadingV.center = geoBnt.center;
     geoLoadingV.hidesWhenStopped = YES;
-
+    
     mentionBnt = [[UIButton alloc] init];
     [toolbar addSubview:mentionBnt];
     [mentionBnt setTapTarget:self action:@selector(mentionButtonTouched)];
@@ -218,7 +218,7 @@
     [mentionBnt sizeToFit];
     mentionBnt.center = ccp(145, 20);
     mentionBnt.hitTestEdgeInsets = UIEdgeInsetsMake(0, -5, 0, -5);
-
+    
     tagBnt = [[UIButton alloc] init];
     [toolbar addSubview:tagBnt];
     [tagBnt setTapTarget:self action:@selector(tagButtonTouched)];
@@ -227,7 +227,7 @@
     [tagBnt sizeToFit];
     tagBnt.center = ccp(205, 20);
     tagBnt.hitTestEdgeInsets = UIEdgeInsetsMake(0, -5, 0, -5);
-
+    
     wordCountL = [[UILabel alloc] init];
     [toolbar addSubview:wordCountL];
     wordCountL.font = [UIFont systemFontOfSize:14];
@@ -243,7 +243,7 @@
     [toolbar addSubview:nippleIV];
     nippleIV.center = photoBnt.center;
     nippleIV.bottom = toolbar.height + 1;
-
+    
     extraPanelSV = [[UIScrollView alloc] init];
     [self.view addSubview:extraPanelSV];
     extraPanelSV.left = 0;
@@ -254,7 +254,7 @@
     extraPanelSV.showsVerticalScrollIndicator = NO;
     extraPanelSV.backgroundColor = bw(232);
     extraPanelSV.alwaysBounceVertical = NO;
-
+    
     takePhotoBnt = [[UIButton alloc] init];
     [extraPanelSV addSubview:takePhotoBnt];
     [takePhotoBnt setTapTarget:self action:@selector(takePhotoButtonTouched)];
@@ -266,7 +266,7 @@
     [takePhotoBnt sizeToFit];
     takePhotoBnt.width = extraPanelSV.width - 20;
     takePhotoBnt.topCenter = ccp(extraPanelSV.center.x, 11);
-
+    
     selectPhotoBnt = [[UIButton alloc] init];
     [extraPanelSV addSubview:selectPhotoBnt];
     [selectPhotoBnt setTapTarget:self action:@selector(selectPhotoButtonTouched)];
@@ -277,12 +277,12 @@
     selectPhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
     selectPhotoBnt.frame = takePhotoBnt.frame;
     selectPhotoBnt.top = selectPhotoBnt.bottom + 10;
-
+    
     previewIV = [[UIImageView alloc] init];
     [extraPanelSV addSubview:previewIV];
     previewIV.hidden = YES;
     previewIV.layer.cornerRadius = 3;
-
+    
     previewCloseBnt = [[UIButton alloc] init];
     [extraPanelSV addSubview:previewCloseBnt];
     [previewCloseBnt setTapTarget:self action:@selector(previewCloseButtonTouched)];
@@ -290,7 +290,7 @@
     [previewCloseBnt setImage:[UIImage imageNamed:@"UIBlackCloseButton"] forState:UIControlStateNormal];
     [previewCloseBnt setImage:[UIImage imageNamed:@"UIBlackCloseButtonPressed"] forState:UIControlStateHighlighted];
     [previewCloseBnt sizeToFit];
-
+    
     mapView = [[MKMapView alloc] init]; // todo: this MapView make many warning echo
     [extraPanelSV addSubview:mapView];
     mapView.zoomEnabled = NO;
@@ -299,7 +299,7 @@
     mapOutlineIV = [UIImageView viewStrechedNamed:@"compose-map-outline"];
     [extraPanelSV addSubview:mapOutlineIV];
     mapOutlineIV.frame = mapView.frame;
-
+    
     locationL = [[UILabel alloc] init];
     [extraPanelSV addSubview:locationL];
     locationL.backgroundColor = kClearColor;
@@ -715,7 +715,7 @@
         [manager stopUpdatingLocation];
     }
     
-    CLGeocoder * geoCoder = [[CLGeocoder alloc] init];
+    CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
     [geoCoder reverseGeocodeLocation:manager.location completionHandler:^(NSArray *placemarks, NSError *error) {
         for (CLPlacemark * placemark in placemarks) {
             locationL.text = placemark.name;
@@ -723,8 +723,7 @@
         }
     }];
     
-    /*
-    [TWENGINE reverseGeocodeWithLocation:manager.location.coordinate success:^(id responseObj) {
+    [TWENGINE reverseGeocodeWithLocation:manager.location success:^(id responseObj) {
         NSArray *places = responseObj[@"result"][@"places"];
         if (places.count) {
             NSArray *contained = places[0][@"contained_within"];
@@ -738,19 +737,18 @@
     } failure:^(NSError *error) {
         
     }];
-    */
     
     [geoBnt setImage:[UIImage imageNamed:@"compose-geo-highlighted"] forState:UIControlStateNormal];
     geoBnt.hidden = NO;
     [geoLoadingV stopAnimating];
     toggleLocationBnt.tag = 1;
-
+    
     location = manager.location.coordinate;
     MKCoordinateRegion viewRegion = MKCoordinateRegionMakeWithDistance(location, 200, 200);
     MKCoordinateRegion adjustedRegion = [mapView regionThatFits:viewRegion];
     [mapView setRegion:adjustedRegion animated:YES];
     [mapView setCenterCoordinate:location animated:YES];
-
+    
     HSULocationAnnotation *annotation = [[HSULocationAnnotation alloc] init];
     annotation.coordinate = location;
     [mapView removeAnnotations:mapView.annotations];

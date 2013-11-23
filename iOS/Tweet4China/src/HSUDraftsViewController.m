@@ -62,7 +62,6 @@
     [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
     [closeButton sizeToFit];
     closeButton.width *= 1.4;
-    closeButton.showsTouchWhenHighlighted = YES;
     [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     

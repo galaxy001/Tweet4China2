@@ -390,7 +390,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  success:success
                  failure:failure];
 }
-- (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocationCoordinate2D)location placeId:(NSString *)placeId success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocation *)location placeId:(NSString *)placeId success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
@@ -399,7 +399,8 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         id responseObj = [engine postTweet:status
                              withImageData:imageData
                                  inReplyTo:inReplyToID
-                                  location:location];
+                                  location:location
+                                   placeId:placeId];
         NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
         
         dispatch_async(GCDMainThread, ^{
@@ -495,10 +496,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  success:success
                  failure:failure];
 }
-- (void)reverseGeocodeWithLocation:(CLLocationCoordinate2D)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+- (void)reverseGeocodeWithLocation:(CLLocation *)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     [self sendGETWithUrl:url_reverse_geocode
-              parameters:@{@"lat": @(location.latitude), @"long": @(location.longitude), @"max_results": @1}
+              parameters:@{@"lat": @(location.coordinate.latitude), @"long": @(location.coordinate.longitude), @"max_results": @1}
                  success:success
                  failure:failure];
 }

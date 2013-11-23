@@ -66,7 +66,6 @@
     [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
     [closeButton sizeToFit];
     closeButton.width *= 1.2;
-    closeButton.showsTouchWhenHighlighted = YES;
     [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
@@ -74,7 +73,6 @@
     [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
     [actionsButton sizeToFit];
     actionsButton.width *= 1.6;
-    actionsButton.showsTouchWhenHighlighted = YES;
     [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
 }

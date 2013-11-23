@@ -271,9 +271,29 @@
     
     // place
     NSDictionary *placeInfo = rawData[@"place"];
+    NSDictionary *geoInfo = rawData[@"geo"];
     if ([placeInfo isKindOfClass:[NSDictionary class]]) {
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, place];
+        [timePlaceL sizeToFit];
+    } else if ([geoInfo isKindOfClass:[NSDictionary class]]) {
+        if ([geoInfo[@"type"] isEqualToString:@"Point"]) {
+            NSArray *coordinates = geoInfo[@"coordinates"];
+            if (coordinates.count == 2) {
+                CLLocationDirection latitude = [coordinates[0] doubleValue];
+                CLLocationDirection longitude = [coordinates[1] doubleValue];
+                
+                CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+                CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+                [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
+                    for (CLPlacemark * placemark in placemarks) {
+                        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, placemark.name];
+                        [timePlaceL sizeToFit];
+                        break;
+                    }
+                }];
+            }
+        }
     }
     
     // attr

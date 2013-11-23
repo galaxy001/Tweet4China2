@@ -25,7 +25,6 @@
         UIButton *replayB = [[UIButton alloc] init];
         [self addSubview:replayB];
         self.replayB = replayB;
-        replayB.showsTouchWhenHighlighted = YES;
         if (style == HSUStatusActionViewStyle_Default) {
             [replayB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
         } else if (style == HSUStatusActionViewStyle_Gallery) {
@@ -38,7 +37,6 @@
         UIButton *retweetB = [[UIButton alloc] init];
         [self addSubview:retweetB];
         self.retweetB = retweetB;
-        retweetB.showsTouchWhenHighlighted = YES;
         if (isMyTweet) {
             if (style == HSUStatusActionViewStyle_Default) {
                 [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateNormal];
@@ -69,7 +67,6 @@
         UIButton *favoriteB = [[UIButton alloc] init];
         [self addSubview:favoriteB];
         self.favoriteB = favoriteB;
-        favoriteB.showsTouchWhenHighlighted = YES;
         if (favorited) {
             if (style == HSUStatusActionViewStyle_Default) {
                 [favoriteB setImage:[UIImage imageNamed:@"icn_tweet_action_favorite_on"] forState:UIControlStateNormal];
@@ -91,7 +88,6 @@
         UIButton *moreB = [[UIButton alloc] init];
         [self addSubview:moreB];
         self.moreB = moreB;
-        moreB.showsTouchWhenHighlighted = YES;
         if (style == HSUStatusActionViewStyle_Default) {
             [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more"] forState:UIControlStateNormal];
         } else if (style == HSUStatusActionViewStyle_Gallery) {
@@ -104,7 +100,6 @@
         UIButton *deleteB = [[UIButton alloc] init];
         [self addSubview:deleteB];
         self.deleteB = deleteB;
-        deleteB.showsTouchWhenHighlighted = YES;
         if (style == HSUStatusActionViewStyle_Default) {
             [deleteB setImage:[UIImage imageNamed:@"icn_tweet_action_delete"] forState:UIControlStateNormal];
         } else if (style == HSUStatusActionViewStyle_Gallery) {

@@ -501,7 +501,7 @@
 #pragma actions
 - (void)imageButtonTouched
 {
-    if (self.imagePreviewButton.imageView.image) {
+    if ([self.imagePreviewButton imageForState:UIControlStateNormal]) {
         id delegate = self.data.renderData[@"delegate"];
         [delegate performSelector:@selector(openPhotoURL:withCellData:)
                        withObject:[NSURL URLWithString:self.data.renderData[@"photo_url"]]
