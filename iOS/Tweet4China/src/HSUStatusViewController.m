@@ -57,13 +57,13 @@
      selector:@selector(galleryViewDidDisappear)
      name:HSUGalleryViewDidDisappear
      object:nil];
+    
+    [self.dataSource loadMore];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    [self.dataSource loadMore];
 }
 
 - (void)galleryViewDidAppear

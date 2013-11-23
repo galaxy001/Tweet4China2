@@ -79,15 +79,18 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
 }
 
-- (void)viewWillAppear:(BOOL)animated
+- (void)viewDidLayoutSubviews
 {
-    [super viewWillAppear:animated];
-    
     if (RUNNING_ON_IOS_7) {
         self.webview.frame = ccr(0, 54, self.width, self.height-54);
     } else {
         self.webview.frame = ccr(0, 0, self.width, self.height);
     }
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
 }
 
 #pragma mark - webview delegate

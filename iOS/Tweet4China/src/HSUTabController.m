@@ -171,4 +171,15 @@
     return NO;
 }
 
+- (BOOL)shouldAutorotate
+{
+    UIViewController *presentedVC = self.presentedViewController;
+    if ([presentedVC isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)presentedVC;
+        UIViewController *currentVC = nav.viewControllers.lastObject;
+        return currentVC.shouldAutorotate;
+    }
+    return NO;
+}
+
 @end

@@ -32,6 +32,7 @@
             HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
             [self.data insertObject:chatCellData atIndex:0];
             [self.delegate dataSource:self didFinishRefreshWithError:nil];
+            [self performSelector:@selector(loadMore)];
         } failure:^(NSError *error) {
             [self.delegate dataSource:self didFinishRefreshWithError:error];
         }];

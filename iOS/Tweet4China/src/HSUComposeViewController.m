@@ -291,7 +291,7 @@
     [previewCloseBnt setImage:[UIImage imageNamed:@"UIBlackCloseButtonPressed"] forState:UIControlStateHighlighted];
     [previewCloseBnt sizeToFit];
 
-    mapView = [[MKMapView alloc] init];
+    mapView = [[MKMapView alloc] init]; // todo: this MapView make many warning echo
     [extraPanelSV addSubview:mapView];
     mapView.zoomEnabled = NO;
     mapView.scrollEnabled = NO;
