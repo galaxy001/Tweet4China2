@@ -100,6 +100,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUTwiterLoginSuccess @"HSUTwiterLoginSuccess"
 #define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
+#define HSUStatusDidDelete @"HSUStatusDidDelete"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_DefaultStatus @"DefaultStatus"

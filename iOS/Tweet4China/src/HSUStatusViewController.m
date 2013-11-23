@@ -172,4 +172,28 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
+- (void)delete:(HSUTableCellData *)cellData
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    cancelItem.action = ^{
+        [self.tableView reloadData];
+    };
+    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:@"Delete Tweet"];
+    deleteItem.action = ^{
+        NSDictionary *rawData = cellData.rawData;
+        NSString *id_str = rawData[@"id_str"];
+        
+        [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+            [self.navigationController popViewControllerAnimated:YES];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:HSUStatusDidDelete
+             object:id_str];
+        } failure:^(NSError *error) {
+            [TWENGINE dealWithError:error errTitle:@"Delete tweet failed"];
+        }];
+    };
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];
+    [actionSheet showInView:self.view.window];
+}
+
 @end

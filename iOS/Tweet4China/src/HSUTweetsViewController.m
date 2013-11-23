@@ -149,6 +149,9 @@
             [self.dataSource removeCellData:cellData];
             [self.dataSource saveCache];
             [self.tableView reloadData];
+            [[NSNotificationCenter defaultCenter]
+             postNotificationName:HSUStatusDidDelete
+             object:id_str];
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:@"Delete tweet failed"];
         }];

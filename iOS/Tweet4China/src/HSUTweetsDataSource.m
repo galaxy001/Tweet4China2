@@ -11,6 +11,15 @@
 
 @implementation HSUTweetsDataSource
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        notification_add_observer(HSUStatusDidDelete, self, @selector(statusDidDelete:));
+    }
+    return self;
+}
+
 - (void)refresh
 {
     [super refresh];
@@ -111,6 +120,22 @@
     }
     
     return cell;
+}
+
+- (void)statusDidDelete:(NSNotification *)notification
+{
+    NSString *idStr = notification.object;
+    for (int i=0; i<self.count; i++) {
+        HSUTableCellData *cellData = self.data[i];
+        if ([cellData.rawData[@"id_str"] isEqualToString:idStr]) {
+            [self removeCellData:cellData];
+            if ([self.delegate respondsToSelector:@selector(tableView)]) {
+                // todo: ugly code
+                [[self.delegate performSelector:@selector(tableView)] reloadData];
+                break;
+            }
+        }
+    }
 }
 
 @end
