@@ -186,10 +186,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                         [SVProgressHUD showSuccessWithStatus:@"Login Success"];
                         [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
                         [[NSUserDefaults standardUserDefaults] synchronize];
-                        [[NSNotificationCenter defaultCenter]
-                         postNotificationName:HSUTwiterLoginSuccess
-                         object:self
-                         userInfo:@{@"success": @YES}];
+                        notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
                     });
                 } failure:^(NSError *error) {
                     [SVProgressHUD dismiss];
@@ -197,20 +194,14 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                     dispatch_async(GCDMainThread, ^{
                         [SVProgressHUD dismiss];
                         [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
-                        [[NSNotificationCenter defaultCenter]
-                         postNotificationName:HSUTwiterLoginSuccess
-                         object:self
-                         userInfo:@{@"success": @NO, @"error": error}];
+                        notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
                     });
                 }];
             } else {
                 dispatch_async(GCDMainThread, ^{
                     [SVProgressHUD dismiss];
                     [TWENGINE dealWithError:error errTitle:@"Login Error"];
-                    [[NSNotificationCenter defaultCenter]
-                     postNotificationName:HSUTwiterLoginSuccess
-                     object:self
-                     userInfo:@{@"success": @NO}];
+                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
                 });
             }
         });
@@ -233,22 +224,13 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                  [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
                  [[NSUserDefaults standardUserDefaults] synchronize];
-                 [[NSNotificationCenter defaultCenter]
-                  postNotificationName:HSUTwiterLoginSuccess
-                  object:self
-                  userInfo:@{@"success": @YES}];
+                 notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
              } failure:^(NSError *error) {
                  [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
-                 [[NSNotificationCenter defaultCenter]
-                  postNotificationName:HSUTwiterLoginSuccess
-                  object:self
-                  userInfo:@{@"success": @NO, @"error": error}];
+                 notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
              }];
          } else {
-             [[NSNotificationCenter defaultCenter]
-              postNotificationName:HSUTwiterLoginSuccess
-              object:self
-              userInfo:@{@"success": @NO}];
+             notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
          }
      }];
 }

@@ -70,11 +70,7 @@
         [self addGestureRecognizer:longPressGesture];
         
         // rotate
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(deviceOrientationDidChange:)
-         name:UIDeviceOrientationDidChangeNotification
-         object:nil];
+        notification_add_observer(UIDeviceOrientationDidChangeNotification, self, @selector(deviceOrientationDidChange:));
     }
     return self;
 }
@@ -133,17 +129,13 @@
             self.alpha = 1;
         } completion:^(BOOL finished) {
             if (RUNNING_ON_IOS_7) {
-                [[NSNotificationCenter defaultCenter]
-                 postNotificationName:HSUGalleryViewDidAppear
-                 object:nil];
+                notification_post(HSUGalleryViewDidAppear);
             }
         }];
     } else {
         self.alpha = 1;
         if (RUNNING_ON_IOS_7) {
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:HSUGalleryViewDidAppear
-             object:nil];
+            notification_post(HSUGalleryViewDidAppear);
         }
     }
 }
@@ -152,9 +144,7 @@
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
         if (RUNNING_ON_IOS_7) {
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:HSUGalleryViewDidDisappear
-             object:nil];
+            notification_post(HSUGalleryViewDidDisappear);
         } else {
             [[UIApplication sharedApplication] setStatusBarHidden:NO];
         }

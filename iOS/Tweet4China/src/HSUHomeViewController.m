@@ -25,10 +25,7 @@
 #ifndef DEBUG
         [HSUHomeDataSource checkUnreadForViewController:self];
 #endif
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(twitterLoginSuccess:)
-         name:HSUTwiterLoginSuccess object:[HSUTwitterAPI shared]];
+        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
     }
     return self;
 }

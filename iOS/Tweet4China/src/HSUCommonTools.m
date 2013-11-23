@@ -30,6 +30,10 @@ void notification_post_with_object(NSString *name, id object)
     [[NSNotificationCenter defaultCenter] postNotificationName:name object:object];
 }
 
+void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDictionary *userinfo)
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:name object:object userInfo:userinfo];
+}
 
 @interface HSUMailHelper : NSObject <MFMailComposeViewControllerDelegate>
 @property (nonatomic, weak) UIViewController *currentViewController;

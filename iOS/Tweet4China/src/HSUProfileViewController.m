@@ -48,11 +48,7 @@
         if (self.screenName) {
             self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:screenName];
         }
-        [[NSNotificationCenter defaultCenter]
-         addObserver:self
-         selector:@selector(updateScreenName)
-         name:HSUTwiterLoginSuccess
-         object:nil];
+        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(updateScreenName));
     }
     return self;
 }

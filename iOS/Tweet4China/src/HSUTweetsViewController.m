@@ -30,16 +30,8 @@
 {
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(galleryViewDidAppear)
-     name:HSUGalleryViewDidAppear
-     object:nil];
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(galleryViewDidDisappear)
-     name:HSUGalleryViewDidDisappear
-     object:nil];
+    notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
+    notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
 }
 
 - (void)galleryViewDidAppear
@@ -149,9 +141,7 @@
             [self.dataSource removeCellData:cellData];
             [self.dataSource saveCache];
             [self.tableView reloadData];
-            [[NSNotificationCenter defaultCenter]
-             postNotificationName:HSUStatusDidDelete
-             object:id_str];
+            notification_post_with_object(HSUStatusDidDelete, id_str);
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:@"Delete tweet failed"];
         }];

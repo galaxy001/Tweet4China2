@@ -12,6 +12,7 @@ void notification_add_observer(NSString *name, id observer, SEL selector);
 void notification_remove_observer(id observer);
 void notification_post(NSString *name);
 void notification_post_with_object(NSString *name, id object);
+void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDictionary *userinfo);
 
 @interface HSUCommonTools : NSObject
 
