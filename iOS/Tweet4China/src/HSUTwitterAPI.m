@@ -399,8 +399,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         id responseObj = [engine postTweet:status
                              withImageData:imageData
                                  inReplyTo:inReplyToID
-                                  location:location
-                                   placeId:placeId];
+                                  location:location];
         NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
         
         dispatch_async(GCDMainThread, ^{
