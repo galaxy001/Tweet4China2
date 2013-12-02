@@ -102,8 +102,8 @@
     if (!self.loadingCount && self.count > 1) {
         HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
         if ([cellData.dataType isEqualToString:kDataType_LoadMore]) {
-            if (![cellData.renderData[@"status"] intValue] == kLoadMoreCellStatus_NoMore) {
-                cellData.renderData[@"status"] = @(kLoadMoreCellStatus_Loading);
+            if (![cellData.rawData[@"status"] intValue] == kLoadMoreCellStatus_NoMore) {
+                cellData.rawData = @{@"status": @(kLoadMoreCellStatus_Loading)};
                 [self loadMore];
             }
         }

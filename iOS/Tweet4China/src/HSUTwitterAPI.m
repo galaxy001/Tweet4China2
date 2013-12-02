@@ -353,6 +353,14 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                                 success:success
                                 failure:failure];
 }
+- (void)getListsWithScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendByFHSTwitterEngineWithUrl:url_lists_list
+                                 method:@"GET"
+                             parameters:@{@"screen_name": screenName}
+                                success:success
+                                failure:failure];
+}
 - (void)getDetailsForStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_statuses_show

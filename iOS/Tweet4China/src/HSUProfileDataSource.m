@@ -56,15 +56,17 @@
                 @"user_screen_name": self.screenName};
     HSUTableCellData *favoritesCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-//        rawData = @{@"title": @"Lists",
-//                    @"action": kAction_Lists,
-//                    @"user_screen_name": screenName};
-//        HSUTableCellData *listsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
-//                                                                           dataType:kDataType_NormalTitle];
+    rawData = @{@"title": @"Lists",
+                @"action": kAction_Lists,
+                @"user_screen_name": self.screenName};
+    HSUTableCellData *listsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+                                                                       dataType:kDataType_NormalTitle];
+    
     [referencesData addObject:followingCellData];
     [referencesData addObject:followersCellData];
     [referencesData addObject:favoritesCellData];
-//        [referencesData addObject:listsCellData];
+    [referencesData addObject:listsCellData];
+    
     [self.sectionsData addObject:referencesData];
     
     NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];

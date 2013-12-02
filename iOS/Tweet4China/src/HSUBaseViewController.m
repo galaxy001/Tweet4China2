@@ -29,6 +29,7 @@
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
 #import "HSUSearchPersonVC.h"
+#import "HSUListCell.h"
 
 @interface HSUBaseViewController ()
 
@@ -96,6 +97,7 @@
     [tableView registerClass:[HSUDraftsCell class] forCellReuseIdentifier:kDataType_Drafts];
     [tableView registerClass:[HSUConversationCell class] forCellReuseIdentifier:kDataType_Conversation];
     [tableView registerClass:[HSUMessageCell class] forCellReuseIdentifier:kDataType_Message];
+    [tableView registerClass:[HSUListCell class] forCellReuseIdentifier:kDataType_List];
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {

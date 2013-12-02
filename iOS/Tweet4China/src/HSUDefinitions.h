@@ -80,6 +80,7 @@ _Pragma("clang diagnostic pop") \
 #define kWhiteColor [UIColor whiteColor]
 #define kClearColor [UIColor clearColor]
 #define kGrayColor [UIColor grayColor]
+#define kLightBlueColor rgb(141, 157, 168)
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
@@ -115,6 +116,7 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_Draft @"Draft"
 #define kDataType_Message @"Message"
 #define kDataType_Conversation @"Conversation"
+#define kDataType_List @"List"
 
 #define kTwitterReplyID_ParameterKey @"in_reply_to_status_id"
 #define kUserSettings_DBKey @"user_settings"

@@ -20,6 +20,8 @@
 #import "HSUConversationsViewController.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSUFavoritesDataSource.h"
+#import "HSUSubscribedListsViewController.h"
+#import "HSUSubscribedListsDataSource.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate>
 
@@ -114,6 +116,9 @@
         } else if ([rawData[@"action"] isEqualToString:kAction_Favorites]) {
             [self favoritesButtonTouched];
             return;
+        } else if ([rawData[@"action"] isEqualToString:kAction_Lists]) {
+            [self listsButtonTouched];
+            return;
         }
     } else if ([data.dataType isEqualToString:kDataType_Drafts]) {
         if ([rawData[@"action"] isEqualToString:kAction_Drafts]) {
@@ -156,7 +161,10 @@
 
 - (void)listsButtonTouched
 {
-    
+    HSUSubscribedListsDataSource *dataSource = [[HSUSubscribedListsDataSource alloc] initWithScreenName:self.screenName];
+    HSUSubscribedListsViewController *listVC = [[HSUSubscribedListsViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:listVC animated:YES];
+    [dataSource refresh];
 }
 
 - (void)draftsButtonTouched
