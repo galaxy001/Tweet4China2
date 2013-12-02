@@ -22,6 +22,8 @@
 #import "UIActionSheet+Blocks.h"
 #import "UIImage+Additions.h"
 #import "UIButton+Additions.h"
+#import "UIButton+HSUWebCache.h"
+#import "UIImageView+HSUWebCache.h"
 #import "UIView+Additions.h"
 #import "UIViewController+Additions.h"
 #import "HSUTwitterAPI.h"
@@ -36,6 +38,7 @@
 #import "HSUDraftManager.h"
 #import "NSData+MD5.h"
 #import "SVProgressHUD.h"
+#import "HSUNavigationController.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -88,7 +91,7 @@ _Pragma("clang diagnostic pop") \
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
 #define MyScreenName [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey][@"screen_name"]
-#define DEF_NavitationController_Light [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
+#define DEF_NavitationController_Light [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 

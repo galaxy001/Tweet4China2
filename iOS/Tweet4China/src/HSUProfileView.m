@@ -9,8 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "HSUProfileView.h"
-#import "UIButton+WebCache.h"
-#import "UIImageView+WebCache.h"
 #import "AFNetworking.h"
 
 #define kLabelWidth 280
@@ -326,7 +324,7 @@
 {
     NSString *avatarUrl = profile[@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [self.avatarButton setImageWithURL:[NSURL URLWithString:avatarUrl] forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
     self.screenNameLabel.text = [profile[@"screen_name"] twitterScreenName];
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];

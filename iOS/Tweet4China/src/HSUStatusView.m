@@ -11,7 +11,6 @@
 #import "HSUStatusView.h"
 #import "GTMNSString+HTML.h"
 #import "AFNetworking.h"
-#import "UIButton+WebCache.h"
 #import "TTTAttributedLabel.h"
 #import "NSDate+Additions.h"
 
@@ -230,8 +229,10 @@
         screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
     }
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [avatarB setImageWithURL:[NSURL URLWithString:avatarUrl]
-                    forState:UIControlStateNormal];
+//    [avatarB setImageWithURL:[NSURL URLWithString:avatarUrl]
+//                    forState:UIControlStateNormal];
+    [avatarB setImageWithUrlStr:avatarUrl
+                       forState:UIControlStateNormal];
     
     NSDictionary *geo = rawData[@"geo"];
     NSDictionary *place = rawData[@"place"];
@@ -276,8 +277,10 @@
         
         if ([attrName isEqualToString:@"photo"]) {
             self.imagePreviewButton.hidden = NO;
-            [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:self.data.renderData[@"photo_url"]]
-                                            forState:UIControlStateNormal];
+//            [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:self.data.renderData[@"photo_url"]]
+//                                            forState:UIControlStateNormal];
+            [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
+                                               forState:UIControlStateNormal];
         }
     } else {
         attrI.imageName = nil;
@@ -356,8 +359,10 @@
                     self.data.renderData[@"photo_url"] = imageUrl;
                     self.data.renderData[@"photo_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
                     self.imagePreviewButton.hidden = NO;
-                    [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:imageUrl]
-                                                    forState:UIControlStateNormal];
+//                    [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:imageUrl]
+//                                                    forState:UIControlStateNormal];
+                    [self.imagePreviewButton setImageWithUrlStr:imageUrl
+                                                       forState:UIControlStateNormal];
                 }
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {

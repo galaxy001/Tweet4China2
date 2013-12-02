@@ -8,7 +8,6 @@
 
 #import "HSUMessageCell.h"
 #import "TTTAttributedLabel.h"
-#import "UIButton+WebCache.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface HSUMessageCell ()
@@ -148,7 +147,7 @@
     self.contentLabel.text = data.rawData[@"text"];
     NSString *avatarUrl = data.rawData[@"sender"][@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [self.avatarButton setImageWithURL:[NSURL URLWithString:avatarUrl] forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
     CGSize size = [self.contentLabel sizeThatFits:ccs(225, 0)];
     self.contentLabel.size = ccs(MAX(size.width, 30), size.height);
 }

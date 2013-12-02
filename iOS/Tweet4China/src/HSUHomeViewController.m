@@ -34,7 +34,7 @@
 {
     if (!shadowsocksStarted) {
         HSUProxySettingsViewController *psVC = [[HSUProxySettingsViewController alloc] init];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:psVC];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:psVC];
         [self presentViewController:nav animated:YES completion:nil];
         return;
     }

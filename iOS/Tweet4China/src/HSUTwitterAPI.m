@@ -200,8 +200,16 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
             } else {
                 dispatch_async(GCDMainThread, ^{
                     [SVProgressHUD dismiss];
-                    [TWENGINE dealWithError:error errTitle:@"Login Error"];
-                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Use Web" action:^{
+                        [self authorizeByOAuth];
+                    }];
+                    RIButtonItem *retryItem = [RIButtonItem itemWithLabel:@"Retry" action:^{
+                        [self authorizeByXAuth];
+                    }];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login failed" message:@"You want to try again?" cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
+                    [alert show];
+                    
+//                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
                 });
             }
         });

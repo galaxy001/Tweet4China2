@@ -9,7 +9,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "HSUPersonCell.h"
-#import "UIButton+WebCache.h"
 
 @interface HSUPersonCell ()
 
@@ -72,8 +71,7 @@
 {
     [super setupWithData:data];
     
-    [self.avatarButton setImageWithURL:[NSURL URLWithString:data.rawData[@"profile_image_url_https"]]
-                              forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:data.rawData[@"profile_image_url_https"] forState:UIControlStateNormal];
     [self setupControl:self.avatarButton forKey:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];

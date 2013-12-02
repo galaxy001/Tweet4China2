@@ -6,7 +6,6 @@
 
 
 #import "HSUSuggestMentionCell.h"
-#import "UIImageView+WebCache.h"
 
 @implementation HSUSuggestMentionCell {
 
@@ -44,7 +43,7 @@
 }
 
 - (void)setAvatar:(NSString *)avatar name:(NSString *)name screenName:(NSString *)screenName {
-    [avatarIV setImageWithURL:[NSURL URLWithString:avatar]];
+    [avatarIV setImageWithUrlStr:avatar];
     nameL.text = name;
     [nameL sizeToFit];
     screenNameL.text = screenName;

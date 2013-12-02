@@ -237,6 +237,10 @@
 		966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE38174B9B310050F110 /* HSUConversationsDataSource.m */; };
 		966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE3B174B9B3E0050F110 /* HSUMessagesDataSource.m */; };
 		966DEABF17992BA60032ED29 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 966DEABE17992BA60032ED29 /* Accounts.framework */; };
+		966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E18E3184C6CC000B5482C /* HSUNavigationController.m */; };
+		966E18F9184C901300B5482C /* HSUWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E18F2184C901300B5482C /* HSUWebCache.m */; };
+		966E18FC184C901300B5482C /* UIButton+HSUWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E18F6184C901300B5482C /* UIButton+HSUWebCache.m */; };
+		966E18FD184C901300B5482C /* UIImageView+HSUWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E18F8184C901300B5482C /* UIImageView+HSUWebCache.m */; };
 		9670596117E1AE3600C4CB75 /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */; };
 		9670596217E1AE3600C4CB75 /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 9670596017E1AE3600C4CB75 /* SVProgressHUD.m */; };
 		967272581732B66200B6E30A /* icn_profile_messages@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 9672724E1732B66200B6E30A /* icn_profile_messages@2x~iphone.png */; };
@@ -829,6 +833,14 @@
 		966DEABC179927710032ED29 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		966DEABE17992BA60032ED29 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		966DEAC0179947C20032ED29 /* Twitter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Twitter.framework; path = System/Library/Frameworks/Twitter.framework; sourceTree = SDKROOT; };
+		966E18E2184C6CC000B5482C /* HSUNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNavigationController.h; sourceTree = "<group>"; };
+		966E18E3184C6CC000B5482C /* HSUNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNavigationController.m; sourceTree = "<group>"; };
+		966E18F1184C901300B5482C /* HSUWebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUWebCache.h; sourceTree = "<group>"; };
+		966E18F2184C901300B5482C /* HSUWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUWebCache.m; sourceTree = "<group>"; };
+		966E18F5184C901300B5482C /* UIButton+HSUWebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+HSUWebCache.h"; sourceTree = "<group>"; };
+		966E18F6184C901300B5482C /* UIButton+HSUWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+HSUWebCache.m"; sourceTree = "<group>"; };
+		966E18F7184C901300B5482C /* UIImageView+HSUWebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+HSUWebCache.h"; sourceTree = "<group>"; };
+		966E18F8184C901300B5482C /* UIImageView+HSUWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+HSUWebCache.m"; sourceTree = "<group>"; };
 		9670595E17E1AE3600C4CB75 /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		9670595F17E1AE3600C4CB75 /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
 		9670596017E1AE3600C4CB75 /* SVProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVProgressHUD.m; sourceTree = "<group>"; };
@@ -1425,6 +1437,7 @@
 		9628177516DE5FDF00ABF0AD /* 3th-party */ = {
 			isa = PBXGroup;
 			children = (
+				966E18F0184C901300B5482C /* HSUWebCache */,
 				96AE306E181FCD9C00C35298 /* RETableViewManager */,
 				96D91DD31813ACB9001A8188 /* appirater */,
 				9670595D17E1AE3600C4CB75 /* SVProgressHUD */,
@@ -1899,6 +1912,19 @@
 			path = Crytpo;
 			sourceTree = "<group>";
 		};
+		966E18F0184C901300B5482C /* HSUWebCache */ = {
+			isa = PBXGroup;
+			children = (
+				966E18F1184C901300B5482C /* HSUWebCache.h */,
+				966E18F2184C901300B5482C /* HSUWebCache.m */,
+				966E18F5184C901300B5482C /* UIButton+HSUWebCache.h */,
+				966E18F6184C901300B5482C /* UIButton+HSUWebCache.m */,
+				966E18F7184C901300B5482C /* UIImageView+HSUWebCache.h */,
+				966E18F8184C901300B5482C /* UIImageView+HSUWebCache.m */,
+			);
+			path = HSUWebCache;
+			sourceTree = "<group>";
+		};
 		9670595D17E1AE3600C4CB75 /* SVProgressHUD */ = {
 			isa = PBXGroup;
 			children = (
@@ -2179,6 +2205,8 @@
 				96D91E021813B288001A8188 /* HSUSearchPersonVC.m */,
 				96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */,
 				96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */,
+				966E18E2184C6CC000B5482C /* HSUNavigationController.h */,
+				966E18E3184C6CC000B5482C /* HSUNavigationController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2677,6 +2705,7 @@
 				964827AF16E37ACF0002345B /* HSUTexturedView.m in Sources */,
 				964827B216E37C9C0002345B /* HSUBaseViewController.m in Sources */,
 				96AE30BF181FCD9C00C35298 /* RETableViewNumberCell.m in Sources */,
+				966E18F9184C901300B5482C /* HSUWebCache.m in Sources */,
 				96BE216D16EC74AB00226799 /* HSUStatusCell.m in Sources */,
 				96AE310C181FD16100C35298 /* REValidator.m in Sources */,
 				96BE217116EC77BF00226799 /* HSUBaseDataSource.m in Sources */,
@@ -2704,6 +2733,7 @@
 				9664996216F307A700BC901A /* FHSTwitterEngine.m in Sources */,
 				96AE30DB181FCD9C00C35298 /* RETableViewSection.m in Sources */,
 				9664996316F307A700BC901A /* NSString+URLEncoding.m in Sources */,
+				966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */,
 				96AE30CF181FCD9C00C35298 /* RESegmentedItem.m in Sources */,
 				9664996416F307A700BC901A /* Base64TranscoderFHS.c in Sources */,
 				9664996616F307A700BC901A /* OAConsumer.m in Sources */,
@@ -2752,6 +2782,7 @@
 				6039090E01F27B4F0F6A401A /* UIImageView+WebCache.m in Sources */,
 				60390003AFC3032A27F1BBD6 /* MKAnnotationView+WebCache.m in Sources */,
 				96AE3110181FD16100C35298 /* REURLValidator.m in Sources */,
+				966E18FD184C901300B5482C /* UIImageView+HSUWebCache.m in Sources */,
 				603906B4B61250AA14E52B99 /* SDWebImageDownloaderOperation.m in Sources */,
 				96AE30CA181FCD9C00C35298 /* RELongTextItem.m in Sources */,
 				96CFC382171EC82000B6D212 /* TwitterText.m in Sources */,
@@ -2800,6 +2831,7 @@
 				96D291C11743273400AB4F8C /* HSUDraftsViewController.m in Sources */,
 				96D292351743856200AB4F8C /* HSUDraftsDataSource.m in Sources */,
 				96AE30C3181FCD9C00C35298 /* RETableViewTextCell.m in Sources */,
+				966E18FC184C901300B5482C /* UIButton+HSUWebCache.m in Sources */,
 				96D292381743861F00AB4F8C /* HSUDraftCell.m in Sources */,
 				96AE30D7181FCD9C00C35298 /* RETableViewItem.m in Sources */,
 				969F2F8818221E9500015765 /* HSUiPadTabController.m in Sources */,

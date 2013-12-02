@@ -211,7 +211,7 @@
 - (void)messagesButtonTouched
 {
     HSUConversationsViewController *conversationsVC = [[HSUConversationsViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[conversationsVC];
     [self.navigationController presentViewController:nav animated:YES completion:nil];
 }
@@ -319,7 +319,7 @@
     [actionSheet showInView:self.view.window];
     proxySettingsItem.action = ^{
         HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:proxySettingsVC];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:proxySettingsVC];
         [self presentViewController:nav animated:YES completion:nil];
     };
     helpItem.action = ^{
@@ -345,7 +345,7 @@
         composeVC.defaultText = [NSString stringWithFormat:@"@%@ ", self.screenName];
         composeVC.defaultSelectedRange = NSMakeRange(0, composeVC.defaultText.length);
     }
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }

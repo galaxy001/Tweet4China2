@@ -30,7 +30,7 @@
 {
     self = [super init];
     if (self) {
-        UINavigationController *homeNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *homeNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
         if (RUNNING_ON_IOS_7) {
@@ -40,7 +40,7 @@
         }
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *connectNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *connectNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
         if (RUNNING_ON_IOS_7) {
@@ -50,7 +50,7 @@
         }
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *discoverNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
         if (RUNNING_ON_IOS_7) {
@@ -60,7 +60,7 @@
         }
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *meNav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *meNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
         if (RUNNING_ON_IOS_7) {

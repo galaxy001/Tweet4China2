@@ -86,11 +86,6 @@
     }
 }
 
-- (BOOL)shouldAutorotate
-{
-    return YES;
-}
-
 #pragma mark - webview delegate
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {

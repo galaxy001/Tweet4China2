@@ -15,7 +15,6 @@
 #import "NSDate+Additions.h"
 #import "FHSTwitterEngine.h"
 #import "GTMNSString+HTML.h"
-#import "UIButton+WebCache.h"
 #import "NSString+URLEncoding.h"
 #import "HSUStatusActionView.h"
 #import "AFNetworking.h"
@@ -263,7 +262,7 @@
         screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
     }
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [avatarB setImageWithURL:[NSURL URLWithString:avatarUrl] forState:UIControlStateNormal];
+    [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
     
     // time
     NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];

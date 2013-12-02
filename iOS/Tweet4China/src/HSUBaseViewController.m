@@ -319,7 +319,7 @@
         return;
     }
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -344,6 +344,11 @@
     UIViewController *vc = [[modelClass alloc] init];
     nav.viewControllers = @[vc];
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (BOOL)shouldAutorotate
+{
+    return NO;
 }
 
 @end

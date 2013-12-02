@@ -46,3 +46,6 @@
 [submodule "iOS/Tweet4China/3th-party/appirater"]
 	path = iOS/Tweet4China/3th-party/appirater
 	url = https://github.com/arashpayan/appirater.git
+[submodule "iOS/Tweet4China/3th-party/HSUWebCache"]
+	path = iOS/Tweet4China/3th-party/HSUWebCache
+	url = https://github.com/tuoxie007/HSUWebCache.git

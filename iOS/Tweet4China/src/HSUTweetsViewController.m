@@ -76,7 +76,7 @@
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     composeVC.defaultText = S(@" @%@ ", screen_name);
     composeVC.inReplyToStatusId = id_str;
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -284,7 +284,7 @@
         NSString *authorScreenName = rawData[@"user"][@"screen_name"];
         NSString *text = rawData[@"text"];
         composeVC.defaultText = S(@" RT @%@: %@", authorScreenName, text);
-        UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
         nav.viewControllers = @[composeVC];
         [self presentViewController:nav animated:YES completion:nil];
     };
@@ -310,7 +310,7 @@
 {
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     composeVC.defaultText = text;
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self.modelVC ?: self presentViewController:nav animated:YES completion:nil];
 }
@@ -409,7 +409,7 @@
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
 {
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:webURL cellData:cellData];
     miniBrowser.viewController = self;
     nav.viewControllers = @[miniBrowser];

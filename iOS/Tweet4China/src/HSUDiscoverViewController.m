@@ -272,7 +272,7 @@
     shareItem.action = ^{
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
         composeVC.defaultText = S(@" %@", self.urlTextField.text);
-        UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:composeVC];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:composeVC];
         [self presentViewController:nav animated:YES completion:nil];
     };
     

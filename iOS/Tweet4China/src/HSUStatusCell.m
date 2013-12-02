@@ -11,7 +11,6 @@
 #import "HSUStatusCell.h"
 #import "TTTAttributedLabel.h"
 #import "FHSTwitterEngine.h"
-#import "UIButton+WebCache.h"
 #import "HSUStatusView.h"
 #import "HSUStatusActionView.h"
 

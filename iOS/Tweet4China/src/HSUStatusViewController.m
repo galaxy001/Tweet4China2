@@ -113,7 +113,7 @@
         [defaultText appendFormat:@" @%@ ", authorScreenName];
     }
     composeVC.defaultText = defaultText;
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
@@ -142,7 +142,7 @@
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
 {
-    UINavigationController *nav = [[UINavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:webURL cellData:cellData];
     nav.viewControllers = @[miniBrowser];
     [self presentViewController:nav animated:YES completion:nil];

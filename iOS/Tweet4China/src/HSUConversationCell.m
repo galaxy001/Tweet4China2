@@ -7,7 +7,6 @@
 //
 
 #import "HSUConversationCell.h"
-#import "UIImageView+WebCache.h"
 #import <QuartzCore/QuartzCore.h>
 #import "NSDate+Additions.h"
 
@@ -107,7 +106,7 @@
     BOOL waitingReply = [latestMessage[@"sender_screen_name"] isEqualToString:MyScreenName];
     
     self.replyIcon.hidden = !waitingReply;
-    [self.avatarView setImageWithURL:[NSURL URLWithString:avatarUrl]];
+    [self.avatarView setImageWithUrlStr:avatarUrl];
     self.nameLabel.text = name;
     self.snLabel.text = sn;
     self.timeLabel.text = time;

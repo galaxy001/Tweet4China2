@@ -833,4 +833,9 @@
     [self.view setNeedsLayout];
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
 @end
