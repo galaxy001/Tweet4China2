@@ -15,14 +15,4 @@
 
 @implementation HSUListViewController
 
-- (instancetype)initWithDataSource:(HSUListTweetsDataSource *)dataSource
-{
-    self = [super init];
-    if (self) {
-        self.dataSource = dataSource;
-        self.useRefreshControl = YES;
-    }
-    return self;
-}
-
 @end
