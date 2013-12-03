@@ -8,6 +8,8 @@
 
 #import "HSUSubscribedListsViewController.h"
 #import "HSUSubscribedListsDataSource.h"
+#import "HSUListTweetsDataSource.h"
+#import "HSUListViewController.h"
 
 @interface HSUSubscribedListsViewController ()
 
@@ -23,6 +25,21 @@
         self.useRefreshControl = NO;
     }
     return self;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    if ([data.dataType isEqualToString:kDataType_List]) {
+        HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+        HSUListTweetsDataSource *dataSource = [[HSUListTweetsDataSource alloc] initWithListId:cellData.rawData[@"id"]];
+        HSUListViewController *listVC = [[HSUListViewController alloc] initWithDataSource:dataSource];
+        listVC.title = cellData.rawData[@"description"];
+        [self.navigationController pushViewController:listVC animated:YES];
+        [dataSource refresh];
+        return;
+    }
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 @end

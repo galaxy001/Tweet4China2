@@ -6,8 +6,15 @@
 //  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUBaseDataSource.h"
+#import "HSUTweetsDataSource.h"
 
-@interface HSUListTweetsDataSource : HSUBaseDataSource
+@interface HSUListTweetsDataSource : HSUTweetsDataSource
+
+@property (nonatomic, copy) NSString *listId;
+
+- (instancetype)initWithListId:(NSString *)listId;
+
+- (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 @end

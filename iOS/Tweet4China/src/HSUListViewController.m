@@ -7,11 +7,22 @@
 //
 
 #import "HSUListViewController.h"
+#import "HSUListTweetsDataSource.h"
 
 @interface HSUListViewController ()
 
 @end
 
 @implementation HSUListViewController
+
+- (instancetype)initWithDataSource:(HSUListTweetsDataSource *)dataSource
+{
+    self = [super init];
+    if (self) {
+        self.dataSource = dataSource;
+        self.useRefreshControl = NO;
+    }
+    return self;
+}
 
 @end

@@ -361,6 +361,22 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                                 success:success
                                 failure:failure];
 }
+- (void)getListTimelineWithListID:(NSString *)listID maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendByFHSTwitterEngineWithUrl:url_lists_statuses
+                                 method:@"GET"
+                             parameters:@{@"list_id": listID, @"max_id": maxID, @"count": @(count)}
+                                success:success
+                                failure:failure];
+}
+- (void)getListTimelineWithListID:(NSString *)listID sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendByFHSTwitterEngineWithUrl:url_lists_statuses
+                                 method:@"GET"
+                             parameters:@{@"list_id": listID, @"since_id": sinceID, @"count": @(count)}
+                                success:success
+                                failure:failure];
+}
 - (void)getDetailsForStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_statuses_show

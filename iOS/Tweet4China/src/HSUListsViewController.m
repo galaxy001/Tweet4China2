@@ -16,30 +16,4 @@
 
 @implementation HSUListsViewController
 
-- (instancetype)initWithDataSource:(HSUSubscribedListsDataSource *)dataSource
-{
-    self = [super init];
-    if (self) {
-        self.dataSource = dataSource;
-        self.useRefreshControl = NO;
-    }
-    return self;
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    
-    [self.dataSource loadMore];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
-    if ([data.dataType isEqualToString:kDataType_List]) {
-        return;
-    }
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-}
-
 @end
