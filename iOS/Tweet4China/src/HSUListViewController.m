@@ -20,7 +20,7 @@
     self = [super init];
     if (self) {
         self.dataSource = dataSource;
-        self.useRefreshControl = NO;
+        self.useRefreshControl = YES;
     }
     return self;
 }
