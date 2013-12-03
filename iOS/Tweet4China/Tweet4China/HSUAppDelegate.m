@@ -71,6 +71,7 @@ static HSUShadowsocksProxy *proxy;
     NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
     NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
     NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
+    
     if (server && remotePort && passowrd && method) {
         if (proxy == nil) {
             proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];

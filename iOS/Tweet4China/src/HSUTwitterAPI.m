@@ -623,7 +623,6 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                 if ([error code] == 204) { // Error Domain=Twitter successfully processed the request, but did not return any content Code=204 "The operation couldn’t be completed. (Twitter successfully processed the request, but did not return any content error 204.)"
                     failure(error);
                 } else {
-                    [self dealWithError:error errTitle:@"Some problems with your network"];
                     failure(error);
                 }
             } else {
@@ -658,7 +657,6 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
     
     if (error) {
-        [self dealWithError:error errTitle:@"Some problems with your network"];
         return error;
     } else {
         return responseObj;
@@ -670,14 +668,20 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     if (!error) {
         return;
     }
-    if (error.code == 204) {
+    if (error.code == 204) { // error like "no more data"
         return;
     }
     NSLog(@"API Request Error %@", error);
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:@"Error"
-                          message:errTitle
-                          delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+    
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:@"Report" action:^{
+        NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=[Tweet4China][Github2.5]%%20Network%%20Problem"];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+    }];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network Problem"
+                                                    message:@"Report to developer ?"
+                                           cancelButtonItem:cancelItem
+                                           otherButtonItems:reportItem, nil];
     [alert show];
 }
 
