@@ -11,7 +11,7 @@
 #import "HSUStatusView.h"
 #import "GTMNSString+HTML.h"
 #import <AFNetworking/AFNetworking.h>
-#import "TTTAttributedLabel.h"
+#import "HSUAttributedLabel.h"
 #import "NSDate+Additions.h"
 
 #define ambient_H 14
@@ -74,7 +74,7 @@
         timeL = [[UILabel alloc] init];
         [infoArea addSubview:timeL];
         
-        textAL = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [self addSubview:textAL];
         
         UIButton *imagePreviewButton = [[UIButton alloc] init];
@@ -405,7 +405,7 @@
     static TTTAttributedLabel *testSizeLabel = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        TTTAttributedLabel *textAL = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         textAL.font = [UIFont systemFontOfSize:textAL_font_S];
         textAL.backgroundColor = kClearColor;
         textAL.textColor = rgb(38, 38, 38);

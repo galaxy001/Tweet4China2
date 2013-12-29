@@ -186,6 +186,7 @@
 		966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 966498BC16F3041500BC901A /* UIImageView+Additions.m */; };
 		9664996D16F308A100BC901A /* avatar_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9664996C16F308A100BC901A /* avatar_pressed@2x.png */; };
 		9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9664996F16F30BBF00BC901A /* NSDate+Additions.m */; };
+		9666CDDC18702D650044DB0A /* HSUAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		966ACE1A174B9A100050F110 /* bottom-send-button-dm.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0C174B9A100050F110 /* bottom-send-button-dm.png */; };
 		966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */; };
 		966ACE1C174B9A100050F110 /* icn_nav_bar_light_back.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0E174B9A100050F110 /* icn_nav_bar_light_back.png */; };
@@ -665,6 +666,8 @@
 		9664996C16F308A100BC901A /* avatar_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatar_pressed@2x.png"; sourceTree = "<group>"; };
 		9664996E16F30BBF00BC901A /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Additions.h"; sourceTree = "<group>"; };
 		9664996F16F30BBF00BC901A /* NSDate+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Additions.m"; sourceTree = "<group>"; };
+		9666CDDA18702D650044DB0A /* HSUAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAttributedLabel.h; sourceTree = "<group>"; };
+		9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAttributedLabel.m; sourceTree = "<group>"; };
 		966ACE0C174B9A100050F110 /* bottom-send-button-dm.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm.png"; sourceTree = "<group>"; };
 		966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm@2x.png"; sourceTree = "<group>"; };
 		966ACE0E174B9A100050F110 /* icn_nav_bar_light_back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icn_nav_bar_light_back.png; sourceTree = "<group>"; };
@@ -964,8 +967,6 @@
 		96E34B4D170167580066CD5E /* compose-map-toggle-button-pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compose-map-toggle-button-pressed@2x.png"; sourceTree = "<group>"; };
 		96E34B4E170167580066CD5E /* compose-map-toggle-button@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compose-map-toggle-button@2x.png"; sourceTree = "<group>"; };
 		96E34B4F170167580066CD5E /* compose-nipple@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "compose-nipple@2x.png"; sourceTree = "<group>"; };
-		96F92D8216FB02070026284D /* TTTAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTTAttributedLabel.h; sourceTree = "<group>"; };
-		96F92D8316FB02070026284D /* TTTAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTTAttributedLabel.m; sourceTree = "<group>"; };
 		96FA81D117450B6A00DB023A /* HSUDraftsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUDraftsCell.h; sourceTree = "<group>"; };
 		96FA81D217450B6A00DB023A /* HSUDraftsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUDraftsCell.m; sourceTree = "<group>"; };
 		96FAB146174BDBBC00C8C854 /* HSUMessageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUMessageCell.h; sourceTree = "<group>"; };
@@ -1662,14 +1663,14 @@
 				964827AE16E37ACF0002345B /* HSUTexturedView.m */,
 				96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */,
 				96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */,
-				96F92D8216FB02070026284D /* TTTAttributedLabel.h */,
-				96F92D8316FB02070026284D /* TTTAttributedLabel.m */,
 				962AB00416FB324D00D44566 /* HSURefreshControl.h */,
 				962AB00516FB324D00D44566 /* HSURefreshControl.m */,
 				96D291B31742879400AB4F8C /* HSUDraftManager.h */,
 				96D291B41742879400AB4F8C /* HSUDraftManager.m */,
 				967F635917550B4D00CB8730 /* HSUSendBarButtonItem.h */,
 				967F635A17550B4D00CB8730 /* HSUSendBarButtonItem.m */,
+				9666CDDA18702D650044DB0A /* HSUAttributedLabel.h */,
+				9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -2199,6 +2200,7 @@
 				969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */,
 				966E1912184CAF7000B5482C /* HSUListViewController.m in Sources */,
 				969B7438173FB3910072EFC0 /* HSUDefaultStatusCell.m in Sources */,
+				9666CDDC18702D650044DB0A /* HSUAttributedLabel.m in Sources */,
 				96D291B51742879400AB4F8C /* HSUDraftManager.m in Sources */,
 				96D291BE1742924000AB4F8C /* NSData+MD5.m in Sources */,
 				96D291C11743273400AB4F8C /* HSUDraftsViewController.m in Sources */,

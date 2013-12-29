@@ -7,17 +7,15 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
-
 #import "HSUMainStatusCell.h"
-
 #import "HSUStatusCell.h"
-#import "TTTAttributedLabel.h"
 #import "NSDate+Additions.h"
 #import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import "GTMNSString+HTML.h"
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
 #import "HSUStatusActionView.h"
 #import <AFNetworking/AFNetworking.h>
+#import "HSUAttributedLabel.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -111,7 +109,7 @@
         timePlaceL.highlightedTextColor = kWhiteColor;
         timePlaceL.backgroundColor = kClearColor;
         
-        textAL = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [contentArea addSubview:textAL];
         textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
         textAL.backgroundColor = kClearColor;
@@ -495,7 +493,7 @@
     static TTTAttributedLabel *testSizeLabel = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        TTTAttributedLabel *textAL = [[TTTAttributedLabel alloc] initWithFrame:CGRectZero];
+        TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
         textAL.backgroundColor = kClearColor;
         textAL.textColor = rgb(38, 38, 38);

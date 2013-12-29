@@ -34,12 +34,14 @@
         homeNav.viewControllers = @[homeVC];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         if (RUNNING_ON_IOS_7) {
-            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
+                                                               image:[UIImage imageNamed:@"icn_tab_home_selected"]
+                                                       selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
         } else {
+#endif
             homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] tag:1];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         }
-#else
-        homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] tag:1];
 #endif
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
 
@@ -50,10 +52,10 @@
         if (RUNNING_ON_IOS_7) {
             connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         } else {
+#endif
             connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] tag:2];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         }
-#else
-        connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] tag:2];
 #endif
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
@@ -64,10 +66,10 @@
         if (RUNNING_ON_IOS_7) {
             discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         } else {
+#endif
             discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] tag:3];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         }
-#else
-        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] tag:3];
 #endif
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
@@ -78,10 +80,10 @@
         if (RUNNING_ON_IOS_7) {
             meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         } else {
+#endif
             meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] tag:4];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         }
-#else
-        meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] tag:4];
 #endif
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         

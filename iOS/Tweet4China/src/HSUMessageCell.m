@@ -7,8 +7,8 @@
 //
 
 #import "HSUMessageCell.h"
-#import "TTTAttributedLabel.h"
 #import <QuartzCore/QuartzCore.h>
+#import "HSUAttributedLabel.h"
 
 @interface HSUMessageCell ()
 
@@ -41,7 +41,7 @@
         [self.contentView addSubview:contentBackground];
         self.contentBackground = contentBackground;
         
-        TTTAttributedLabel *contentLabel = [[TTTAttributedLabel alloc] init];
+        TTTAttributedLabel *contentLabel = [[HSUAttributedLabel alloc] init];
         [self.contentView addSubview:contentLabel];
         self.contentLabel = contentLabel;
         contentLabel.textColor = rgb(38, 38, 38);
@@ -95,7 +95,7 @@
 
 + (CGFloat)heightForData:(HSUTableCellData *)data
 {
-    TTTAttributedLabel *testSizeLabel = [[TTTAttributedLabel alloc] init];
+    TTTAttributedLabel *testSizeLabel = [[HSUAttributedLabel alloc] init];
     testSizeLabel.textColor = rgb(38, 38, 38);
     testSizeLabel.font = [UIFont systemFontOfSize:14];
     testSizeLabel.backgroundColor = kClearColor;
