@@ -1,51 +1,9 @@
-[submodule "iOS/Tweet4China/3th-party/UIAlertView-Blocks"]
-	path = iOS/Tweet4China/3th-party/UIAlertView-Blocks
-	url = git://github.com/jivadevoe/UIAlertView-Blocks.git
-[submodule "iOS/Tweet4China/3th-party/TTTAttributedLabel"]
-	path = iOS/Tweet4China/3th-party/TTTAttributedLabel
-	url = git://github.com/mattt/TTTAttributedLabel.git
-[submodule "iOS/Tweet4China/3th-party/AFNetworking"]
-	path = iOS/Tweet4China/3th-party/AFNetworking
-	url = git://github.com/AFNetworking/AFNetworking.git
-[submodule "iOS/Tweet4China/3th-party/twitter-text-objc"]
-	path = iOS/Tweet4China/3th-party/twitter-text-objc
-	url = git://github.com/twitter/twitter-text-objc.git
-[submodule "iOS/Tweet4China/3th-party/Reachability"]
-	path = iOS/Tweet4China/3th-party/Reachability
-	url = git://github.com/tonymillion/Reachability.git
-[submodule "iOS/Tweet4China/3th-party/SDWebImage"]
-	path = iOS/Tweet4China/3th-party/SDWebImage
-	url = git://github.com/rs/SDWebImage.git
-[submodule "iOS/Tweet4China/3th-party/NSString-MD5"]
-	path = iOS/Tweet4China/3th-party/NSString-MD5
-	url = git://github.com/H2CO3/NSString-MD5.git
-[submodule "iOS/Tweet4China/3th-party/fishhook"]
-	path = iOS/Tweet4China/3th-party/fishhook
-	url = https://github.com/facebook/fishhook.git
 [submodule "iOS/Tweet4China/3th-party/ShadowWeb"]
 	path = iOS/Tweet4China/3th-party/ShadowWeb
 	url = git@github.com:clowwindy/ShadowWeb.git
 [submodule "iOS/Tweet4China/3th-party/shadowsocks-iOS"]
 	path = iOS/Tweet4China/3th-party/shadowsocks-iOS
 	url = https://github.com/shadowsocks/shadowsocks-iOS.git
-[submodule "iOS/Tweet4China/3th-party/RETableViewManager"]
-	path = iOS/Tweet4China/3th-party/RETableViewManager
-	url = https://github.com/romaonthego/RETableViewManager.git
-[submodule "iOS/Tweet4China/3th-party/FHSTwitterEngine"]
-	path = iOS/Tweet4China/3th-party/FHSTwitterEngine
-	url = git@github.com:tuoxie007/FHSTwitterEngine.git
 [submodule "iOS/Tweet4China/3th-party/CocoaAsyncSocket"]
 	path = iOS/Tweet4China/3th-party/CocoaAsyncSocket
 	url = https://github.com/robbiehanson/CocoaAsyncSocket.git
-[submodule "iOS/Tweet4China/3th-party/NJKWebViewProgress"]
-	path = iOS/Tweet4China/3th-party/NJKWebViewProgress
-	url = https://github.com/ninjinkun/NJKWebViewProgress.git
-[submodule "iOS/Tweet4China/3th-party/SVProgressHUD"]
-	path = iOS/Tweet4China/3th-party/SVProgressHUD
-	url = https://github.com/samvermette/SVProgressHUD.git
-[submodule "iOS/Tweet4China/3th-party/appirater"]
-	path = iOS/Tweet4China/3th-party/appirater
-	url = https://github.com/arashpayan/appirater.git
-[submodule "iOS/Tweet4China/3th-party/HSUWebCache"]
-	path = iOS/Tweet4China/3th-party/HSUWebCache
-	url = https://github.com/tuoxie007/HSUWebCache.git
