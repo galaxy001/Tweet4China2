@@ -148,21 +148,6 @@ static HSUShadowsocksProxy *proxy;
     NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
     NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
     
-    if (!server || !remotePort || !passowrd || !method) {
-        server = @"115.28.20.25";
-        remotePort = @"1024";
-        method = @"table";
-        passowrd = @"ticqoxmp~rxr";
-        
-        char chars3[13];
-        const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
-        for (int i=0; i<12; i++) {
-            chars3[i] = str3[i] - i;
-        }
-        chars3[12] = 0;
-        passowrd = [NSString stringWithCString:chars3 encoding:NSASCIIStringEncoding];
-    }
-    
     if (server && remotePort && passowrd && method) {
         if (proxy == nil) {
             proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
