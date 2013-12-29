@@ -14,7 +14,7 @@
 #import "HSUStatusViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUProfileDataSource.h"
-#import "TTTAttributedLabel.h"
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import "NSDate+Additions.h"
 #import "HSUStatusCell.h"
 

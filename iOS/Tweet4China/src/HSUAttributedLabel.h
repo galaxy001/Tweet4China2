@@ -6,7 +6,7 @@
 //  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "TTTAttributedLabel.h"
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 @protocol HSUAttributedLabelDelegate <TTTAttributedLabelDelegate>
 

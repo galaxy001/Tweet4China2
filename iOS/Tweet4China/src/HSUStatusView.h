@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TTTAttributedLabel.h"
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 
 typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
     HSUStatusViewStyle_Default = 0,

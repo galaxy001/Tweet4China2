@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "HSUStatusCell.h"
-#import "TTTAttributedLabel.h"
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import "HSUStatusView.h"
 #import "HSUStatusActionView.h"
