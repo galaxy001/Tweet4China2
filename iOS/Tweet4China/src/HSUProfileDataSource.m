@@ -41,22 +41,22 @@
 {
     self.sectionsData = [NSMutableArray arrayWithCapacity:2];
     NSMutableArray *referencesData = [NSMutableArray arrayWithCapacity:4];
-    NSDictionary *rawData = @{@"title": @"Following",
+    NSDictionary *rawData = @{@"title": _(@"Following"),
                               @"action": kAction_Following,
                               @"user_screen_name": self.screenName};
     HSUTableCellData *followingCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": @"Followers",
+    rawData = @{@"title": _(@"Followers"),
                 @"action": kAction_Followers,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *followersCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": @"Favorites",
+    rawData = @{@"title": _(@"Favorites"),
                 @"action": kAction_Favorites,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *favoritesCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": @"Lists",
+    rawData = @{@"title": _(@"Lists"),
                 @"action": kAction_Lists,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *listsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
@@ -72,7 +72,7 @@
     NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];
     if ([self.screenName isEqualToString:TWENGINE.myScreenName] && drafts.count) {
         NSMutableArray *draftData = [NSMutableArray arrayWithCapacity:1];
-        rawData = @{@"title": @"Drafts",
+        rawData = @{@"title": _(@"Drafts"),
                     @"count": @(drafts.count),
                     @"action": kAction_Drafts};
         HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
@@ -96,7 +96,7 @@
         }
         [self.delegate preprocessDataSourceForRender:self];
         if (self.count) {
-            NSDictionary *rawData = @{@"title": @"View More Tweets",
+            NSDictionary *rawData = @{@"title": _(@"View More Tweets"),
                                       @"action": kAction_UserTimeline,
                                       @"user_screen_name": self.screenName};
             HSUTableCellData *viewMoreCellData =
@@ -116,9 +116,11 @@
     if (IPAD) {
         if (indexPath.section == self.sectionsData.count &&
             indexPath.row == [self.sectionsData[indexPath.section-1] count] - 1) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
             if (RUNNING_ON_IOS_7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
+#endif
         }
     }
     return cell;
@@ -148,7 +150,7 @@
 
 - (void)_notificationDraftCountChanged
 {
-    NSDictionary *rawData = @{@"title": @"Drafts",
+    NSDictionary *rawData = @{@"title": _(@"Drafts"),
                               @"count": @([[HSUDraftManager shared] draftsSortedByUpdateTime].count),
                               @"action": kAction_Drafts};
     HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData

@@ -11,4 +11,6 @@
 
 @interface HSUDiscoverViewController : HSUBaseViewController
 
+@property (nonatomic, copy) NSString *startUrl;
+
 @end

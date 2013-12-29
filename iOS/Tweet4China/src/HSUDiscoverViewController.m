@@ -7,7 +7,7 @@
 //
 
 #import "HSUDiscoverViewController.h"
-#import "NJKWebViewProgress.h"
+#import <NJKWebViewProgress/NJKWebViewProgress.h>
 #import "HSUComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
@@ -41,7 +41,6 @@
 @property (nonatomic, strong) NSURL *currentURL;
 @property (nonatomic, strong) NJKWebViewProgress *progressHandler;
 @property (nonatomic, weak) UIProgressView *progressBar;
-@property (nonatomic, copy) NSString *startUrl;
 @property (nonatomic, weak) UIView *urlTextFieldBackgrondView;
 @property (nonatomic, weak) UIView *progressView;
 
@@ -55,7 +54,9 @@
     self.progressHandler.webViewProxyDelegate = self;
     self.progressHandler.progressDelegate = self;
     
-    self.startUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kDiscoverHomePage] ?: StartURL;
+    if (!self.startUrl) {
+        self.startUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kDiscoverHomePage] ?: StartURL;
+    }
     
     UIWebView *webView = [[UIWebView alloc] init];
     [self.view addSubview:webView];
@@ -88,7 +89,7 @@
     urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
     urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
     urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    urlTextField.placeholder = @"Enter URL";
+    urlTextField.placeholder = _(@"Enter URL");
     urlTextField.backgroundColor = bw(245);
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     
@@ -228,15 +229,15 @@
 
 - (void)_menuButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:@"Refresh"];
-    RIButtonItem *stopItem = [RIButtonItem itemWithLabel:@"Stop"];
-    RIButtonItem *backwardItem = [RIButtonItem itemWithLabel:@"Backward"];
-    RIButtonItem *forwardItem = [RIButtonItem itemWithLabel:@"Forward"];
-    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:@"Share Link"];
-    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:@"Copy URL"];
-    RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:@"Set as Home"];
-    RIButtonItem *openHomeItem = [RIButtonItem itemWithLabel:@"Open Home"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:_(@"Refresh")];
+    RIButtonItem *stopItem = [RIButtonItem itemWithLabel:_(@"Stop")];
+    RIButtonItem *backwardItem = [RIButtonItem itemWithLabel:_(@"Backward")];
+    RIButtonItem *forwardItem = [RIButtonItem itemWithLabel:_(@"Forward")];
+    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:_(@"Share Link")];
+    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_(@"Copy URL")];
+    RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:_(@"Set as Home")];
+    RIButtonItem *openHomeItem = [RIButtonItem itemWithLabel:_(@"Open Home")];
     UIActionSheet *menu = [[UIActionSheet alloc]
                            initWithTitle:nil
                            cancelButtonItem:cancelItem

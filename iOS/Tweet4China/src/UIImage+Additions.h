@@ -12,5 +12,6 @@
 - (UIImage *)stretchableImageFromCenter;
 - (UIImage*)scaleToWidth:(CGFloat)width;
 -(UIImage *)subImageAtRect:(CGRect)rect;
+- (UIImage *)imageRotatedToUp;
 
 @end

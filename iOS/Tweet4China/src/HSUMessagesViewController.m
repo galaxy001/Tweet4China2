@@ -90,7 +90,7 @@
         [sendButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
     }
     self.sendBarButtonItem = sendButtonItem;
-    sendButtonItem.title = @"Send";
+    sendButtonItem.title = _(@"Send");
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(_sendButtonTouched);
     sendButtonItem.enabled = NO;
@@ -220,21 +220,21 @@
 
 - (void)_actionsButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    RIButtonItem *mailItem = [RIButtonItem itemWithLabel:@"Mail Conversation"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *mailItem = [RIButtonItem itemWithLabel:_(@"Mail Conversation")];
     mailItem.action = ^{
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Forget it"];
-        RIButtonItem *feedbackItem = [RIButtonItem itemWithLabel:@"Feedback"];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Forget it")];
+        RIButtonItem *feedbackItem = [RIButtonItem itemWithLabel:_(@"Feedback")];
         feedbackItem.action = ^{
             [HSUCommonTools sendMailWithSubject:@"[Feedback][Tweet4China][New Feature]" body:@"I need feature \"Mail direct message conversation\"" presentFromViewController:self];
         };
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:@"擦，这个功能还有人用啊！我用不到，所以就没做!==如果你确实需要这个功能请反馈给我。" cancelButtonItem:cancelItem otherButtonItems:feedbackItem, nil];
         [alert show];
     };
-    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:@"Delete conversation"];
+    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_(@"Delete Conversation")];
     deleteItem.action = ^{
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-        RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:@"Delete conversation"];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+        RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_(@"Delete Conversation")];
         deleteItem.action = ^{
             [self.navigationController popViewControllerAnimated:YES];
             [((HSUMessagesDataSource *)self.dataSource) deleteConversation];
@@ -270,14 +270,14 @@
 
 - (void)retry:(HSUTableCellData *)cellData
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    RIButtonItem *retryItem = [RIButtonItem itemWithLabel:@"Retry send"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *retryItem = [RIButtonItem itemWithLabel:_(@"Retry Send")];
     retryItem.action = ^{
         NSMutableDictionary *message = cellData.rawData.mutableCopy;
         cellData.rawData = message;
         [self _retrySendMessage:message];
     };
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Message failed to send" cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:retryItem, nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:_(@"Message failed to send") cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:retryItem, nil];
     [actionSheet showInView:self.view.window];
 }
 
@@ -290,7 +290,7 @@
         [message removeObjectForKey:@"sending"];
         [self.tableView reloadData];
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Failed to send message"];
+        [TWENGINE dealWithError:error errTitle:_(@"Failed to send message")];
         message[@"failed"] = @(YES);
         [self.tableView reloadData];
     }];

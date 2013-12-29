@@ -10,7 +10,7 @@
 
 #import "HSUStatusView.h"
 #import "GTMNSString+HTML.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 #import "TTTAttributedLabel.h"
 #import "NSDate+Additions.h"
 
@@ -229,10 +229,9 @@
         screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
     }
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-//    [avatarB setImageWithURL:[NSURL URLWithString:avatarUrl]
-//                    forState:UIControlStateNormal];
     [avatarB setImageWithUrlStr:avatarUrl
-                       forState:UIControlStateNormal];
+                       forState:UIControlStateNormal
+                    placeHolder:nil];
     
     NSDictionary *geo = rawData[@"geo"];
     NSDictionary *place = rawData[@"place"];
@@ -277,10 +276,9 @@
         
         if ([attrName isEqualToString:@"photo"]) {
             self.imagePreviewButton.hidden = NO;
-//            [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:self.data.renderData[@"photo_url"]]
-//                                            forState:UIControlStateNormal];
             [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
-                                               forState:UIControlStateNormal];
+                                               forState:UIControlStateNormal
+                                            placeHolder:nil];
         }
     } else {
         attrI.imageName = nil;
@@ -292,7 +290,7 @@
     timeL.text = createdDate.twitterDisplay;
     
     // text
-    NSString *text = [rawData[@"text"] gtm_stringByUnescapingFromHTML];
+    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
     textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
@@ -359,10 +357,9 @@
                     self.data.renderData[@"photo_url"] = imageUrl;
                     self.data.renderData[@"photo_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
                     self.imagePreviewButton.hidden = NO;
-//                    [self.imagePreviewButton setImageWithURL:[NSURL URLWithString:imageUrl]
-//                                                    forState:UIControlStateNormal];
                     [self.imagePreviewButton setImageWithUrlStr:imageUrl
-                                                       forState:UIControlStateNormal];
+                                                       forState:UIControlStateNormal
+                                                    placeHolder:nil];
                 }
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {

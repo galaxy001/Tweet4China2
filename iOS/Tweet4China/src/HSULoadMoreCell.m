@@ -29,7 +29,7 @@
         
         title = [[UILabel alloc] init];
         [self.contentView addSubview:title];
-        title.text = @"Network Error";
+        title.text = _(@"Network Error");
         [title sizeToFit];
         // todo: set title styles
     }
@@ -38,7 +38,7 @@
 
 - (void)setupWithData:(HSUTableCellData *)data
 {
-    NSInteger status = [data.renderData[@"status"] integerValue];
+    NSInteger status = [data.rawData[@"status"] integerValue];
     if (status == kLoadMoreCellStatus_Done) {
         icon.hidden = NO;
         [spinner stopAnimating]; spinner.hidden = YES;

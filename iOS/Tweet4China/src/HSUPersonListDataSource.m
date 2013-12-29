@@ -56,7 +56,7 @@
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load followers failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load followers failed")];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
     }];
 }

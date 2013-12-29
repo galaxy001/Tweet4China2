@@ -10,7 +10,7 @@
 
 @interface UIImageView (Additions)
 
-@property (nonatomic, readwrite) NSString *imageName;
+@property (nonatomic, copy, readwrite) NSString *imageName;
 
 + (id)viewNamed:(NSString *)name;
 + (id)viewStrechedNamed:(NSString *)name;

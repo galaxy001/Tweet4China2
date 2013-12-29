@@ -10,6 +10,8 @@
 
 @interface HSUStatusDataSource : HSUBaseDataSource
 
+@property (nonatomic) int loadedRetweetCount;
+
 - (id)initWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate status:(NSDictionary *)status;
 
 @end

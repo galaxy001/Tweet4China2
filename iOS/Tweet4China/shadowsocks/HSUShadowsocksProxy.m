@@ -47,6 +47,7 @@
     NSMutableArray *_pipelines;
     NSString *_host;
     NSInteger _port;
+    NSString *_method;
 }
 
 - (HSUShadowsocksPipeline *)pipelineOfLocalSocket:(GCDAsyncSocket *)localSocket
@@ -88,6 +89,7 @@
         _port = port;
         config_encryption([passoword cStringUsingEncoding:NSASCIIStringEncoding],
                           [method cStringUsingEncoding:NSASCIIStringEncoding]);
+        _method = [method copy];
     }
     return self;
 }
@@ -227,11 +229,27 @@
          tag:3];
         free(replayBytes);
     } else if (tag == 2) {
-        encrypt_buf(&(pipeline->sendEncryptionContext), (char *)data.bytes, &len);
-        [pipeline.remoteSocket writeData:data withTimeout:-1 tag:4];
+        if (![_method isEqualToString:@"table"]) {
+            char *buf = (char *)malloc(data.length + EVP_MAX_IV_LENGTH + EVP_MAX_BLOCK_LENGTH);
+            memcpy(buf, data.bytes, data.length);
+            encrypt_buf(&(pipeline->sendEncryptionContext), buf, &len);
+            NSData *encodedData = [NSData dataWithBytesNoCopy:buf length:len];
+            [pipeline.remoteSocket writeData:encodedData withTimeout:-1 tag:4];
+        } else {
+            encrypt_buf(&(pipeline->sendEncryptionContext), (char *)data.bytes, &len);
+            [pipeline.remoteSocket writeData:data withTimeout:-1 tag:4];
+        }
     } else if (tag == 3) {
-        decrypt_buf(&(pipeline->recvEncryptionContext), (char *)data.bytes, &len);
-        [pipeline.localSocket writeData:data withTimeout:-1 tag:3];
+        if (![_method isEqualToString:@"table"]) {
+            char *buf = (char *)malloc(data.length + EVP_MAX_IV_LENGTH + EVP_MAX_BLOCK_LENGTH);
+            memcpy(buf, data.bytes, data.length);
+            decrypt_buf(&(pipeline->recvEncryptionContext), buf, &len);
+            NSData *encodedData = [NSData dataWithBytesNoCopy:buf length:len];
+            [pipeline.localSocket writeData:encodedData withTimeout:-1 tag:3];
+        } else {
+            decrypt_buf(&(pipeline->recvEncryptionContext), (char *)data.bytes, &len);
+            [pipeline.localSocket writeData:data withTimeout:-1 tag:3];
+        }
     }
     
     return;

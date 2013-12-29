@@ -71,7 +71,7 @@
 {
     [super setupWithData:data];
     
-    [self.avatarButton setImageWithUrlStr:data.rawData[@"profile_image_url_https"] forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:data.rawData[@"profile_image_url_https"] forState:UIControlStateNormal placeHolder:nil];
     [self setupControl:self.avatarButton forKey:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];

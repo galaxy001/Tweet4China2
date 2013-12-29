@@ -7,6 +7,9 @@
 //
 
 #import "HSUListCell.h"
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+#import <QuartzCore/QuartzCore.h>
+#endif
 
 @interface HSUListCell ()
 
@@ -82,7 +85,7 @@
     self.memberCountLabel.text = [NSString stringWithFormat:@"%@ members", memberCount];
     self.descLabel.text = description;
     self.modeIcon.hidden = [mode isEqualToString:@"public"];
-    [self.creatorAvatar setImageWithUrlStr:creatorAvatarUrl];
+    [self.creatorAvatar setImageWithUrlStr:creatorAvatarUrl placeHolder:nil];
 }
 
 + (CGFloat)heightForData:(HSUTableCellData *)data

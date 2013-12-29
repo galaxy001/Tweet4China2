@@ -7,11 +7,12 @@
 //
 
 #import "HSUTwitterAPI.h"
-#import "FHSTwitterEngine.h"
-#import "OAToken.h"
-#import "OARequestParameter.h"
-#import "OAMutableURLRequest.h"
-
+#import <FHSTwitterEngine/FHSTwitterEngine.h>
+#import <FHSTwitterEngine/OAToken.h>
+#import <FHSTwitterEngine/OARequestParameter.h>
+#import <FHSTwitterEngine/OAMutableURLRequest.h>
+#import "HSUMiniBrowser.h"
+#import "HSUProxySettingsViewController.h"
 
 @interface FHSTwitterEngine (Private)
 
@@ -45,6 +46,7 @@ static NSString * const url_statuses_destroy = @"https://api.twitter.com/1.1/sta
 static NSString * const url_statuses_show = @"https://api.twitter.com/1.1/statuses/show.json";
 static NSString * const url_statuses_oembed = @"https://api.twitter.com/1.1/statuses/oembed.json";
 static NSString * const url_statuses_retweet = @"https://api.twitter.com/1.1/statuses/retweet/%@.json";
+static NSString * const url_statuses_retweets = @"https://api.twitter.com/1.1/statuses/retweets/%@.json";
 
 static NSString * const url_blocks_exists = @"https://api.twitter.com/1.1/blocks/exists.json";
 static NSString * const url_blocks_blocking = @"https://api.twitter.com/1.1/blocks/blocking.json";
@@ -158,24 +160,40 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)authorizeByFHSTwitterEngine
 {
-    if (UseXAuth) {
-        [self authorizeByXAuth];
-    } else {
-        [self authorizeByOAuth];
-    }
+    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_(@"Login")];
+    loginItem.action = ^{
+        if (UseXAuth) {
+            [self authorizeByXAuth];
+        } else {
+            [self authorizeByOAuth];
+        }
+    };
+    RIButtonItem *registerItem = [RIButtonItem itemWithLabel:_(@"Register")];
+    registerItem.action = ^{
+        self.authorizing = NO;
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+        HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:[NSURL URLWithString:@"https://mobile.twitter.com/signup"] cellData:nil];
+        nav.viewControllers = @[miniBrowser];
+        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+    };
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login to twitter")
+                                                    message:nil
+                                           cancelButtonItem:nil
+                                           otherButtonItems:loginItem, registerItem, nil];
+    [alert show];
 }
 
 - (void)authorizeByXAuth
 {
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
-    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:@"Login"];
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login"
+    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_(@"Login")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login")
                                                     message:nil
                                            cancelButtonItem:cancelItem
                                            otherButtonItems:loginItem, nil];
     loginItem.action = ^{
-        [SVProgressHUD showWithStatus:@"Please Wait"];
+        [SVProgressHUD showWithStatus:_(@"Please Wait")];
         dispatch_async(GCDBackgroundThread, ^{
             NSError *error = [engine getXAuthAccessTokenForUsername:[[alert textFieldAtIndex:0] text]
                                                            password:[[alert textFieldAtIndex:1] text]];
@@ -183,30 +201,32 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
             if (!error) {
                 [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                     dispatch_async(GCDMainThread, ^{
-                        [SVProgressHUD showSuccessWithStatus:@"Login Success"];
+                        [SVProgressHUD showSuccessWithStatus:_(@"Login Success")];
                         [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
                     });
                 } failure:^(NSError *error) {
                     [SVProgressHUD dismiss];
-                    [TWENGINE dealWithError:error errTitle:@"Login Error"];
+                    [TWENGINE dealWithError:error errTitle:_(@"Login Error")];
                     dispatch_async(GCDMainThread, ^{
                         [SVProgressHUD dismiss];
-                        [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
+                        [[HSUTwitterAPI shared] dealWithError:error errTitle:_(@"Fetch account info failed")];
                         notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
                     });
                 }];
             } else {
                 dispatch_async(GCDMainThread, ^{
                     [SVProgressHUD dismiss];
-                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Use Web" action:^{
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Use Web")];
+                    cancelItem.action = ^{
                         [self authorizeByOAuth];
-                    }];
-                    RIButtonItem *retryItem = [RIButtonItem itemWithLabel:@"Retry" action:^{
+                    };
+                    RIButtonItem *retryItem = [RIButtonItem itemWithLabel:_(@"Retry")];
+                    retryItem.action = ^{
                         [self authorizeByXAuth];
-                    }];
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login failed" message:@"You want to try again?" cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
+                    };
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login failed") message:_(@"You want to try again?" )cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
                     [alert show];
                     
 //                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
@@ -234,7 +254,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  [[NSUserDefaults standardUserDefaults] synchronize];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
              } failure:^(NSError *error) {
-                 [[HSUTwitterAPI shared] dealWithError:error errTitle:@"Fetch account info failed"];
+                 [[HSUTwitterAPI shared] dealWithError:error errTitle:_(@"Fetch account info failed")];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
              }];
          } else {
@@ -403,6 +423,12 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
               parameters:@{@"id": statusID}
                  success:success
                  failure:failure];
+}
+- (void)getRetweetsForStatus:(NSString *)statusID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [self sendGETWithUrl:[NSString stringWithFormat:url_statuses_retweets, statusID]
+              parameters:@{@"count": @(count)}
+                 success:success failure:failure];
 }
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocation *)location placeId:(NSString *)placeId success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -598,6 +624,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
+#ifdef DEBUG
+    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
+#endif
     FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
     NSURL *baseURL = [NSURL URLWithString:url];
     OAMutableURLRequest *request = [OAMutableURLRequest requestWithURL:baseURL consumer:engine.consumer token:engine.accessToken];
@@ -665,23 +694,38 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)dealWithError:(NSError *)error errTitle:(NSString *)errTitle;
 {
+#if DEBUG
+    if (error) {
+        NSLog(@"API Request Error %@", error);
+    }
+#endif
     if (!error) {
         return;
     }
     if (error.code == 204) { // error like "no more data"
         return;
     }
-    NSLog(@"API Request Error %@", error);
     
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:@"Report" action:^{
-        NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=[Tweet4China][Github2.5]%%20Network%%20Problem"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:_(@"Report to developer")];
+    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:_(@"Use my own shadowsocks")];
+    reportItem.action = ^{
+        NSString *subject = @"[Tweet4China][AppStore2.6] Network Problem";
+        NSString *body = _(@"\nDescribe the problem please");
+        NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=%@&body=%@",
+                         [subject stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
+                         [body stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-    }];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Network Problem"
-                                                    message:@"Report to developer ?"
+    };
+    proxySettingsItem.action = ^{
+        HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:proxySettingsVC];
+        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+    };
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
+                                                    message:_(@"Service unavailable temporarily, please try again later.")
                                            cancelButtonItem:cancelItem
-                                           otherButtonItems:reportItem, nil];
+                                           otherButtonItems:reportItem, proxySettingsItem, nil];
     [alert show];
 }
 

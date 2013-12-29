@@ -63,7 +63,7 @@
         [self.delegate dataSource:self didFinishRefreshWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
         [self.delegate dataSource:self didFinishRefreshWithError:error];
     }];
 }
@@ -84,13 +84,13 @@
         }
         [self.data addObject:loadMoreCellData];
         
-        [self saveCache];
         [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
+        [self saveCache];
         [self.delegate preprocessDataSourceForRender:self];
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
         [self.data.lastObject renderData][@"status"] = error.code == 204 ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
         self.loadingCount --;

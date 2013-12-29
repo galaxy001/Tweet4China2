@@ -18,12 +18,12 @@
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
-#import "UIAlertView+Blocks.h"
-#import "UIActionSheet+Blocks.h"
+#import <UIAlertView-Blocks/UIAlertView+Blocks.h>
+#import <UIAlertView-Blocks/UIActionSheet+Blocks.h>
 #import "UIImage+Additions.h"
 #import "UIButton+Additions.h"
-#import "UIButton+HSUWebCache.h"
-#import "UIImageView+HSUWebCache.h"
+#import <HSUWebCache/UIButton+HSUWebCache.h>
+#import <HSUWebCache/UIImageView+HSUWebCache.h>
 #import "UIView+Additions.h"
 #import "UIViewController+Additions.h"
 #import "HSUTwitterAPI.h"
@@ -37,7 +37,7 @@
 #import "HSUNavigationBarLight.h"
 #import "HSUDraftManager.h"
 #import "NSData+MD5.h"
-#import "SVProgressHUD.h"
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "HSUNavigationController.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
@@ -58,6 +58,10 @@ _Pragma("clang diagnostic pop") \
 } while (0)
 
 
+
+#ifndef _
+#define _(s) NSLocalizedString(s, nil)
+#endif
 #define GCDBackgroundThread dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 #define GCDMainThread dispatch_get_main_queue()
 #define dp(filename) [([NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]) stringByAppendingPathComponent:filename]
@@ -84,8 +88,13 @@ _Pragma("clang diagnostic pop") \
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
-#define RUNNING_ON_IOS_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
 #define RUNNING_ON_IOS_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
+#define RUNNING_ON_IOS_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
+#else
+#define RUNNING_ON_IOS_7 NO
+#define RUNNING_ON_IOS_6 YES
+#endif
 #define IPAD [HSUCommonTools isIPad]
 #define IPHONE [HSUCommonTools isIPhone]
 
@@ -129,5 +138,7 @@ _Pragma("clang diagnostic pop") \
 #define kShadowsocksSettings_Method @"method"
 #define kShadowsocksSettings_Direct @"direct"
 #define ShadowSocksPort 71080
+
+#define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 
 #endif

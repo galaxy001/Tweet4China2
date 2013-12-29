@@ -7,7 +7,7 @@
 //
 
 #import "HSUTweetsDataSource.h"
-#import "Reachability.h"
+#import <Reachability/Reachability.h>
 
 @implementation HSUTweetsDataSource
 
@@ -25,7 +25,7 @@
     [super refresh];
     
     if (self.count == 0 && [TWENGINE isAuthorized]) {
-        [SVProgressHUD showWithStatus:@"Loading Tweets"];
+        [SVProgressHUD showWithStatus:_(@"Loading Tweets")];
     }
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
         [SVProgressHUD dismiss];
@@ -57,7 +57,7 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
-        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
         [self.delegate dataSource:self didFinishRefreshWithError:error];
         self.loadingCount --;
     }];
@@ -77,14 +77,14 @@
         }
         [self.data addObject:loadMoreCellData];
         
-        [self saveCache];
         [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
+        [self saveCache];
         [self.delegate preprocessDataSourceForRender:self];
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load failed"];
-        [self.data.lastObject renderData][@"status"] = error.code == 204 ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
+        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [self.data.lastObject renderData][@"status"] = (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
         self.loadingCount --;
     }];

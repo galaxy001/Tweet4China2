@@ -147,10 +147,12 @@
 {
     [super viewWillAppear:animated];
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (RUNNING_ON_IOS_7) {
         self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
         self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     }
+#endif
     
     if (self.navigationController.viewControllers.count > 1) {
         if (!RUNNING_ON_IOS_7) {

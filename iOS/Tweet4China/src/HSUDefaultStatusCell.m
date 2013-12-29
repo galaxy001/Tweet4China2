@@ -10,7 +10,7 @@
 
 #import "HSUDefaultStatusCell.h"
 #import "TTTAttributedLabel.h"
-#import "FHSTwitterEngine.h"
+#import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import "HSUStatusView.h"
 #import "HSUStatusActionView.h"
 

@@ -52,7 +52,7 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
-        [TWENGINE dealWithError:error errTitle:@"Load failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
         [self.delegate dataSource:self didFinishRefreshWithError:error];
         self.loadingCount --;
     }];

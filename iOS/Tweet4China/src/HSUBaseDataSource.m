@@ -45,9 +45,11 @@
     
     if (IPAD) {
         if (indexPath.section == 0 && indexPath.row == self.count - 1) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
             if (RUNNING_ON_IOS_7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
+#endif
         }
     }
     return cell;
@@ -145,7 +147,9 @@
     NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
     for (HSUTableCellData *cellData in self.data) {
         if (cacheDataArr.count < cacheSize) {
-            [cacheDataArr addObject:cellData.cacheData];
+            if (![cellData.dataType isEqualToString:kDataType_LoadMore]) {
+                [cacheDataArr addObject:cellData.cacheData];
+            }
         } else {
             break;
         }

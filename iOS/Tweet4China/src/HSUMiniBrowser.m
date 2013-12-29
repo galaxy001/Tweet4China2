@@ -35,7 +35,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"Loading...";
+    self.navigationItem.title = _(@"Loading...");
     self.view.backgroundColor = bw(0xd0);
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
@@ -69,18 +69,20 @@
     [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
-    UIButton *actionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
-    [actionsButton sizeToFit];
-    actionsButton.width *= 1.6;
-    [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
+    if (self.cellData) {
+        UIButton *actionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
+        [actionsButton sizeToFit];
+        actionsButton.width *= 1.6;
+        [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
+    }
 }
 
 - (void)viewDidLayoutSubviews
 {
     if (RUNNING_ON_IOS_7) {
-        self.webview.frame = ccr(0, 54, self.width, self.height-54);
+        self.webview.frame = ccr(0, 64, self.width, self.height-64);
     } else {
         self.webview.frame = ccr(0, 0, self.width, self.height);
     }

@@ -7,9 +7,9 @@
 //
 
 #import "HSUDraftManager.h"
-#import "NSString+MD5.h"
+#import <NSString-MD5/NSString+MD5.h>
 #import "HSUDraftsViewController.h"
-#import "OARequestParameter.h"
+#import <FHSTwitterEngine/OARequestParameter.h>
 #import "HSUTabController.h"
 
 @implementation HSUDraftManager

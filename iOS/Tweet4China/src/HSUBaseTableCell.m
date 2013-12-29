@@ -14,9 +14,11 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         if (RUNNING_ON_IOS_7) {
             self.separatorInset = edi(0, 0, 0, 0);
         }
+#endif
         
         if (IPAD) {
             self.width = kIPADMainViewWidth;

@@ -7,11 +7,15 @@
 //
 
 #import "HSUProxySettingsViewController.h"
-#import "RETableViewManager.h"
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+#import <RETableViewManager/RETableViewManager.h>
+#endif
 
 @interface HSUProxySettingsViewController ()
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 @property (nonatomic, strong) RETableViewManager *manager;
+#endif
 
 @end
 
@@ -19,25 +23,26 @@
 
 - (void)viewDidLoad
 {
-    self.title = @"shadowsocks settings";
+    self.title = _(@"shadowsocks settings");
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
-    RETableViewSection *section = [RETableViewSection sectionWithHeaderTitle:@"Host"];
+    RETableViewSection *section = [RETableViewSection sectionWithHeaderTitle:_(@"Host")];
     [self.manager addSection:section];
     NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Server];
     [section addItem:[RETextItem itemWithTitle:nil value:server placeholder:@"IP or Domain"]];
     
-    section = [RETableViewSection sectionWithHeaderTitle:@"Port"];
+    section = [RETableViewSection sectionWithHeaderTitle:_(@"Port")];
     [self.manager addSection:section];
     NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
     [section addItem:[RENumberItem itemWithTitle:nil value:remotePort ?: @"" placeholder:@"e.g. 8123" format:@"XXXXX"]];
     
-    section = [RETableViewSection sectionWithHeaderTitle:@"Password"];
+    section = [RETableViewSection sectionWithHeaderTitle:_(@"Password")];
     [self.manager addSection:section];
     NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
     [section addItem:[RETextItem itemWithTitle:nil value:passowrd placeholder:@"e.g. shadow.1989.6.31"]];
     
-    section = [RETableViewSection sectionWithHeaderTitle:@"Encryption Method"];
+    section = [RETableViewSection sectionWithHeaderTitle:_(@"Encryption Method")];
     [self.manager addSection:section];
     NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
     for (NSString *value in @[@"Table", @"AES-256-CFB", @"AES-192-CFB", @"AES-128-CFB", @"BF-CFB"]) {
@@ -69,10 +74,12 @@
                                               action:@selector(done)];
     
     [super viewDidLoad];
+#endif
 }
 
 - (void)done
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     RETableViewSection *section  = self.manager.sections[0];
     RETextItem *item = section.items[0];
     
@@ -89,14 +96,15 @@
     
     if (![[HSUAppDelegate shared] startShadowsocks]) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                        message:@"Finish Settings or Tap Cancel"
+                                                        message:_(@"Finish Settings or Tap Cancel")
                                                        delegate:nil
-                                              cancelButtonTitle:@"OK"
+                                              cancelButtonTitle:_(@"OK")
                                               otherButtonTitles:nil, nil];
         [alert show];
     } else {
         [self dismiss];
     }
+#endif
 }
 
 @end

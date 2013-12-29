@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "HSUGalleryView.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 #import "HSUStatusActionView.h"
 #import "HSUStatusView.h"
 #import "HSUStatusViewController.h"
@@ -158,8 +158,8 @@
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-        RIButtonItem *saveItem = [RIButtonItem itemWithLabel:@"Save image"];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+        RIButtonItem *saveItem = [RIButtonItem itemWithLabel:_(@"Save Image")];
         saveItem.action = ^{
             UIImageWriteToSavedPhotosAlbum(self.imageView.image, nil, nil, nil);
         };

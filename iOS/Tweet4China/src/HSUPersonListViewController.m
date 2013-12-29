@@ -67,7 +67,7 @@
             cellData.rawData = rawData;
             [self.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Unfollow failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Unfollow failed")];
         }];
     } else {
         [TWENGINE followUser:screenName success:^(id responseObj) {
@@ -77,7 +77,7 @@
             cellData.rawData = rawData;
             [self.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Follow failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Follow failed")];
         }];
     }
 }

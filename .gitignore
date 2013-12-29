@@ -4,3 +4,6 @@ not_on_git/
 .DS_Store
 xcshareddata/
 release.patch
+Podfile.lock
+Pods/
+Tweet4China.xcworkspace

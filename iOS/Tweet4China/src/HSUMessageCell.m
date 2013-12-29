@@ -123,10 +123,10 @@
     self.retryButton.hidden = YES;
     if ([data.rawData[@"sending"] boolValue]) {
         if ([data.rawData[@"failed"] boolValue]) {
-            self.timeLabel.text = @"Failed";
+            self.timeLabel.text = _(@"Failed");
             self.retryButton.hidden = NO;
         } else {
-            self.timeLabel.text = @"Sending...";
+            self.timeLabel.text = _(@"Sending...");
         }
     } else {
         NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
@@ -147,7 +147,7 @@
     self.contentLabel.text = data.rawData[@"text"];
     NSString *avatarUrl = data.rawData[@"sender"][@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     CGSize size = [self.contentLabel sizeThatFits:ccs(225, 0)];
     self.contentLabel.size = ccs(MAX(size.width, 30), size.height);
 }

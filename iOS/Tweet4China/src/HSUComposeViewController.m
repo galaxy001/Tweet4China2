@@ -8,13 +8,17 @@
 
 #import <QuartzCore/QuartzCore.h>
 #import "HSUComposeViewController.h"
-#import "FHSTwitterEngine.h"
-#import "OARequestParameter.h"
-#import "OAMutableURLRequest.h"
+#import <FHSTwitterEngine/FHSTwitterEngine.h>
+#import <FHSTwitterEngine/OARequestParameter.h>
+#import <FHSTwitterEngine/OAMutableURLRequest.h>
 #import "HSUSuggestMentionCell.h"
+#import "UIImage+Additions.h"
 #import <MapKit/MapKit.h>
 #import "HSUSendBarButtonItem.h"
-#import "TwitterText.h"
+#import <twitter-text-objc/TwitterText.h>
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+#import <OpenCam/OpenCam.h>
+#endif
 
 #define kMaxWordLen 140
 #define kSingleLineHeight 45
@@ -47,7 +51,12 @@
 
 @end
 
-@interface HSUComposeViewController () <UITextViewDelegate, UIScrollViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface HSUComposeViewController () <UITextViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+,OCMCameraViewControllerDelegate>
+#else
+,UIImagePickerControllerDelegate>
+#endif
 
 @end
 
@@ -65,8 +74,6 @@
     UILabel *wordCountL;
     UIImageView *nippleIV;
     UIScrollView *extraPanelSV;
-    UIButton *takePhotoBnt;
-    UIButton *selectPhotoBnt;
     UIImageView *previewIV;
     UIButton *previewCloseBnt;
     MKMapView *mapView;
@@ -120,7 +127,7 @@
     if (self.defaultTitle) {
         self.title = self.defaultTitle;
     } else {
-        self.title = @"New Tweet";
+        self.title = _(@"New Tweet");
     }
     
     if (!RUNNING_ON_IOS_7) {
@@ -132,7 +139,7 @@
     }
     
     UIBarButtonItem *cancelButtonItem = [[UIBarButtonItem alloc] init];
-    cancelButtonItem.title = @"Cancel";
+    cancelButtonItem.title = _(@"Cancel");
     cancelButtonItem.target = self;
     cancelButtonItem.action = @selector(cancelCompose);
     if (!RUNNING_ON_IOS_7) {
@@ -151,7 +158,7 @@
     self.navigationItem.leftBarButtonItem = cancelButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
-    sendButtonItem.title = @"Tweet";
+    sendButtonItem.title = _(@"Tweet");
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(sendTweet);
     sendButtonItem.enabled = NO;
@@ -178,6 +185,9 @@
     contentTV.delegate = self;
     if (self.defaultText) {
         contentTV.text = self.defaultText;
+        if (self.defaultSelectedRange.location == 0 && self.defaultSelectedRange.length == 0) {
+            self.defaultSelectedRange = NSMakeRange(self.defaultText.length, 0);
+        }
         contentTV.selectedRange = self.defaultSelectedRange;
     } else {
         contentTV.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"draft"];
@@ -255,29 +265,6 @@
     extraPanelSV.backgroundColor = bw(232);
     extraPanelSV.alwaysBounceVertical = NO;
     
-    takePhotoBnt = [[UIButton alloc] init];
-    [extraPanelSV addSubview:takePhotoBnt];
-    [takePhotoBnt setTapTarget:self action:@selector(takePhotoButtonTouched)];
-    [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
-    [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-    [takePhotoBnt setTitle:@"Take photo or video..." forState:UIControlStateNormal];
-    [takePhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
-    takePhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-    [takePhotoBnt sizeToFit];
-    takePhotoBnt.width = extraPanelSV.width - 20;
-    takePhotoBnt.topCenter = ccp(extraPanelSV.center.x, 11);
-    
-    selectPhotoBnt = [[UIButton alloc] init];
-    [extraPanelSV addSubview:selectPhotoBnt];
-    [selectPhotoBnt setTapTarget:self action:@selector(selectPhotoButtonTouched)];
-    [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
-    [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-    [selectPhotoBnt setTitle:@"Choose from library..." forState:UIControlStateNormal];
-    [selectPhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
-    selectPhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-    selectPhotoBnt.frame = takePhotoBnt.frame;
-    selectPhotoBnt.top = selectPhotoBnt.bottom + 10;
-    
     previewIV = [[UIImageView alloc] init];
     [extraPanelSV addSubview:previewIV];
     previewIV.hidden = YES;
@@ -307,7 +294,11 @@
     locationL.textColor = bw(140);
     locationL.shadowColor = kWhiteColor;
     locationL.shadowOffset = ccs(0, 1);
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     locationL.textAlignment = NSTextAlignmentCenter;
+#else
+    locationL.textAlignment = UITextAlignmentCenter;
+#endif
     locationL.numberOfLines = 1;
     locationL.frame = ccr(mapView.left, mapView.bottom, mapView.width, 30);
 
@@ -316,10 +307,11 @@
     [toggleLocationBnt setTapTarget:self action:@selector(toggleLocationButtonTouched)];
     [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
     [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-    [toggleLocationBnt setTitle:@"Turn off location" forState:UIControlStateNormal];
+    [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
     [toggleLocationBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
     toggleLocationBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-    toggleLocationBnt.frame = takePhotoBnt.frame;
+    [toggleLocationBnt sizeToFit];
+    toggleLocationBnt.width = extraPanelSV.width - 20;
     toggleLocationBnt.left += extraPanelSV.width;
 
     suggestionsTV = [[UITableView alloc] init];
@@ -331,8 +323,10 @@
     suggestionsTV.rowHeight = 37;
     suggestionsTV.backgroundColor = bw(232);
     suggestionsTV.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     [suggestionsTV registerClass:[HSUSuggestMentionCell class] forCellReuseIdentifier:[[HSUSuggestMentionCell class] description]];
-
+#endif
+    
     contentShadowV = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"searches-top-shadow.png"] stretchableImageFromCenter]];
     [self.view addSubview:contentShadowV];
     contentShadowV.hidden = YES;
@@ -374,7 +368,9 @@
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     locationManager.pausesLocationUpdatesAutomatically = YES;
+#endif
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
     [TWENGINE getFriendsWithSuccess:^(id responseObj) {
@@ -401,7 +397,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+#endif
     
     [super viewWillDisappear:animated];
 }
@@ -418,7 +416,7 @@
     
     CGFloat toolbar_height = 40;
     
-    contentTV.frame = ccr(0, 0, self.view.width, self.view.height- MAX(keyboardHeight, 216)-toolbar_height);
+    contentTV.frame = ccr(0, 0, self.view.width, self.view.height - MAX(keyboardHeight, 216)-toolbar_height);
     toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbar_height);
     extraPanelSV.top = toolbar.bottom;
     extraPanelSV.height = self.view.height - extraPanelSV.top;
@@ -440,6 +438,7 @@
             contentShadowV.top = suggestionsTV.top;
             suggestionsTV.height -= 54;
         }
+        [contentTV scrollRangeToVisible:NSMakeRange(contentTV.text.length, 0)];
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
@@ -473,12 +472,12 @@
         if ([textAtFist isEqualToString:contentTV.text]) {
             return;
         }
-        RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:@"Cancel"];
-        RIButtonItem *giveUpBnt = [RIButtonItem itemWithLabel:@"Don't save"];
+        RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:_(@"Cancel")];
+        RIButtonItem *giveUpBnt = [RIButtonItem itemWithLabel:_(@"Don't Save")];
         giveUpBnt.action = ^{
             [self dismissViewControllerAnimated:YES completion:nil];
         };
-        RIButtonItem *saveBnt = [RIButtonItem itemWithLabel:@"Save draft"];
+        RIButtonItem *saveBnt = [RIButtonItem itemWithLabel:_(@"Save Draft")];
         saveBnt.action = ^{
             NSString *status = contentTV.text;
             NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
@@ -508,12 +507,12 @@
         [SVProgressHUD showSuccessWithStatus:S(@"Sent\n%@", briefMessage)];
     } failure:^(NSError *error) {
         [[HSUDraftManager shared] activeDraft:draft];
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-        RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:@"Drafts"];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+        RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:_(@"Drafts")];
         draftsItem.action = ^{
             [[HSUDraftManager shared] presentDraftsViewController];
         };
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tweet not sent"
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Tweet not sent")
                                                         message:error.userInfo[@"message"]
                                                cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
         dispatch_async(GCDMainThread, ^{
@@ -606,7 +605,7 @@
 #pragma mark - Actions
 - (void)photoButtonTouched {
     if (postImage && !previewIV.image) {
-        [self imagePickerController:nil didFinishPickingMediaWithInfo:@{UIImagePickerControllerOriginalImage: postImage}];
+        [self photoSelected:postImage];
     }
     if (contentTV.isFirstResponder || extraPanelSV.contentOffset.x > 0) {
         [contentTV resignFirstResponder];
@@ -614,43 +613,22 @@
     } else {
         [contentTV becomeFirstResponder];
     }
+    if (!postImage) {
+        [self selectPhoto];
+    }
 }
 
-- (void)takePhotoButtonTouched {
-    UIImagePickerController *pickerController = [[UIImagePickerController alloc] init];
-    pickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-    pickerController.delegate = self;
-    [self presentViewController:pickerController animated:YES completion:nil];
-}
-
-- (void)selectPhotoButtonTouched {
-    UIImagePickerController *pickerController = [[UIImagePickerController alloc] init];
-    pickerController.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-    pickerController.delegate = self;
-    [self presentViewController:pickerController animated:YES completion:nil];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-    UIImage *image = info[UIImagePickerControllerOriginalImage];
-    image = [image scaleToWidth:640];
-    
-    postImage = image;
-    CGFloat height = previewIV.height / previewIV.width * image.size.width;
-    CGFloat top = image.size.height/2 - height/2;
-    CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, ccr(0, top, image.size.width, height));
+- (void)photoSelected:(UIImage *)photo {
+    postImage = photo;
+    CGFloat height = previewIV.height / previewIV.width * photo.size.width;
+    CGFloat top = photo.size.height/2 - height/2;
+    CGImageRef imageRef = CGImageCreateWithImageInRect(photo.CGImage, ccr(0, top, photo.size.width, height));
     previewIV.image = [UIImage imageWithCGImage:imageRef];
     CGImageRelease(imageRef);
-    takePhotoBnt.hidden = YES;
-    selectPhotoBnt.hidden = YES;
     previewIV.hidden = NO;
     previewCloseBnt.hidden = NO;
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera-glow"] forState:UIControlStateNormal];
-
-    [picker dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-    [self dismissViewControllerAnimated:YES completion:nil];
+    UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
 }
 
 - (void)previewCloseButtonTouched {
@@ -663,14 +641,13 @@
         postImage = nil;
         previewIV.image = nil;
         previewIV.hidden = YES;
-        takePhotoBnt.hidden = NO;
-        selectPhotoBnt.hidden = NO;
         previewIV.transform = CGAffineTransformMakeTranslation(1, 1);
         previewIV.alpha = 1;
         previewIV.center = extraPanelSV.boundsCenter;
     }];
 
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera"] forState:UIControlStateNormal];
+    [self selectPhoto];
 }
 
 - (void)geoButtonTouched {
@@ -679,7 +656,7 @@
             [locationManager startUpdatingLocation];
             geoBnt.hidden = YES;
             [geoLoadingV startAnimating];
-            [toggleLocationBnt setTitle:@"Turn off location" forState:UIControlStateNormal];
+            [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
             mapOutlineIV.backgroundColor = kClearColor;
         }
 
@@ -696,7 +673,7 @@
         [geoBnt setImage:[UIImage imageNamed:@"compose-geo"] forState:UIControlStateNormal];
         geoBnt.hidden = NO;
         [locationManager stopUpdatingLocation];
-        [toggleLocationBnt setTitle:@"Turn on location" forState:UIControlStateNormal];
+        [toggleLocationBnt setTitle:_(@"Turn on location") forState:UIControlStateNormal];
         [mapView removeAnnotations:mapView.annotations];
         mapOutlineIV.backgroundColor = rgba(1, 1, 1, 0.2);
         toggleLocationBnt.tag = 0;
@@ -705,7 +682,7 @@
         [locationManager startUpdatingLocation];
         geoBnt.hidden = YES;
         [geoLoadingV startAnimating];
-        [toggleLocationBnt setTitle:@"Turn off location" forState:UIControlStateNormal];
+        [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
         mapOutlineIV.backgroundColor = kClearColor;
     }
 }
@@ -826,8 +803,8 @@
     NSRange range = NSMakeRange(filterLocation, contentTV.selectedRange.location - filterLocation);
     if ([self textView:contentTV shouldChangeTextInRange:range replacementText:replacement]) {
         contentTV.text = [contentTV.text stringByReplacingCharactersInRange:range withString:replacement];
+        [self textViewDidChange:contentTV];
     }
-    [self textViewDidChange:contentTV];
     suggestionType = 0;
     filteredSuggestions = nil;
     [self.view setNeedsLayout];
@@ -836,6 +813,64 @@
 - (BOOL)shouldAutorotate
 {
     return NO;
+}
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+- (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
+{
+    if (cameraViewController.photo) {
+        [self photoSelected:cameraViewController.photo];
+    } else {
+        [contentTV becomeFirstResponder];
+    }
+}
+#endif
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+    [contentTV becomeFirstResponder];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    UIImage *image = info[UIImagePickerControllerEditedImage] ?: info[UIImagePickerControllerOriginalImage];
+    image = image.imageRotatedToUp;
+    [self photoSelected:image];
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)selectPhoto
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+    OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
+    cameraVC.maxWidth = 640;
+    cameraVC.delegate = self;
+    [self presentViewController:cameraVC animated:YES completion:nil];
+#else
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_(@"Select From Camera")];
+    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_(@"Take a Picture")];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
+    [actionSheet showInView:self.view.window];
+    cancelItem.action = ^{
+        [contentTV becomeFirstResponder];
+    };
+    photoItem.action = ^{
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.editing = YES;
+        picker.delegate = self;
+        [self.navigationController presentViewController:picker animated:YES completion:nil];
+    };
+    captureItem.action = ^{
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.editing = YES;
+        picker.delegate = self;
+        [self.navigationController presentViewController:picker animated:YES completion:nil];
+    };
+#endif
 }
 
 @end

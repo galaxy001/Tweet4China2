@@ -87,6 +87,7 @@
 {
     if (self.isMeTab) {
         self.screenName = MyScreenName;
+        self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:self.screenName];
     }
 }
 
@@ -176,8 +177,8 @@
 {
     followButton.enabled = NO;
     if ([self.profile[@"blocked"] boolValue]) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:@"Unblock"];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
         unblockItem.action = ^{
             [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = self.profile.mutableCopy;
@@ -186,7 +187,7 @@
                 self.profile = profile;
                 [self.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:@"Unblock failed"];
+                [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
             }];
         };
         UIActionSheet *blockActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:unblockItem otherButtonItems:nil, nil];
@@ -199,7 +200,7 @@
             [self.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Unfollow failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Unfollow failed")];
             followButton.enabled = YES;
         }];
     } else {
@@ -210,7 +211,7 @@
             [self.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Follow failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Follow failed")];
             followButton.enabled = YES;
         }];
     }
@@ -232,13 +233,13 @@
     /*
     if ([self.profile[@"following"] boolValue]) {
         if ([self.profile[@"notifications"] boolValue]) {
-            RIButtonItem *turnOffNotiItem = [RIButtonItem itemWithLabel:@"Turn off notifications"];
+            RIButtonItem *turnOffNotiItem = [RIButtonItem itemWithLabel:_(@"Turn off notifications")];
             turnOffNotiItem.action = ^{
                 
             };
             [actionSheet addButtonItem:turnOffNotiItem];
         } else {
-            RIButtonItem *turnOnNotiItem = [RIButtonItem itemWithLabel:@"Turn on notifications"];
+            RIButtonItem *turnOnNotiItem = [RIButtonItem itemWithLabel:_(@"Turn on notifications")];
             turnOnNotiItem.action = ^{
                 
             };
@@ -247,13 +248,13 @@
         count ++;
         
         if ([self.profile[@"retweets"] boolValue]) {
-            RIButtonItem *turnOffRetweetsItem = [RIButtonItem itemWithLabel:@"Turn off Retweets"];
+            RIButtonItem *turnOffRetweetsItem = [RIButtonItem itemWithLabel:_(@"Turn off Retweets")];
             turnOffRetweetsItem.action = ^{
                 
             };
             [actionSheet addButtonItem:turnOffRetweetsItem];
         } else {
-            RIButtonItem *turnOnRetweetsItem = [RIButtonItem itemWithLabel:@"Turn on Retweets"];
+            RIButtonItem *turnOnRetweetsItem = [RIButtonItem itemWithLabel:_(@"Turn on Retweets")];
             turnOnRetweetsItem.action = ^{
                 
             };
@@ -263,19 +264,19 @@
     }
     */
     
-    RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:@"Report spam"];
+    RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:_(@"Report Spam")];
     reportSpamItem.action = ^{
         [TWENGINE reportUserAsSpam:self.screenName success:^(id responseObj) {
             
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Report spam failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Report Spam failed")];
         }];
     };
     [actionSheet addButtonItem:reportSpamItem];
     count ++;
     
     if ([self.profile[@"blocked"] boolValue]) {
-        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:@"Unblock"];
+        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
         unblockItem.action = ^{
             [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = self.profile.mutableCopy;
@@ -284,12 +285,12 @@
                 self.profile = profile;
                 [self.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:@"Unblock failed"];
+                [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
             }];
         };
         [actionSheet addButtonItem:unblockItem];
     } else {
-        RIButtonItem *blockItem = [RIButtonItem itemWithLabel:@"Block"];
+        RIButtonItem *blockItem = [RIButtonItem itemWithLabel:_(@"Block")];
         blockItem.action = ^{
             [TWENGINE blockUser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = self.profile.mutableCopy;
@@ -298,7 +299,7 @@
                 self.profile = profile;
                 [self.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:@"Block failed"];
+                [TWENGINE dealWithError:error errTitle:_(@"Block failed")];
             }];
         };
         [actionSheet addButtonItem:blockItem];
@@ -306,7 +307,7 @@
     [actionSheet setDestructiveButtonIndex:count];
     count ++;
     
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
     [actionSheet addButtonItem:cancelItem];
     [actionSheet setCancelButtonIndex:count];
     count ++;
@@ -316,10 +317,10 @@
 
 - (void)settingsButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:@"Cancel"];
-    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:@"Proxy Settings"];
-    RIButtonItem *helpItem = [RIButtonItem itemWithLabel:@"Help"];
-    RIButtonItem *signOutItem = [RIButtonItem itemWithLabel:@"Sign Out"];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:_(@"Proxy Settings")];
+    RIButtonItem *helpItem = [RIButtonItem itemWithLabel:_(@"Help")];
+    RIButtonItem *signOutItem = [RIButtonItem itemWithLabel:_(@"Sign Out")];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                      cancelButtonItem:cancelItem
                                                 destructiveButtonItem:nil
@@ -334,7 +335,7 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/tuoxie007/Tweet4China2"]];
     };
     signOutItem.action = ^{
-        RIButtonItem *doSignOutItem = [RIButtonItem itemWithLabel:@"Sign Out"];
+        RIButtonItem *doSignOutItem = [RIButtonItem itemWithLabel:_(@"Sign Out")];
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                          cancelButtonItem:cancelItem
                                                     destructiveButtonItem:doSignOutItem

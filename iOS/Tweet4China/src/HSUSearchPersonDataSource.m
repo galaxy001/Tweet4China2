@@ -44,7 +44,7 @@
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load search result failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load search result failed")];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
     }];
 }

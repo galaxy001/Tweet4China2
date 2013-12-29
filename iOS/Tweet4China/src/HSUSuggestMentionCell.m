@@ -17,7 +17,11 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.separatorInset = edi(0, 0, 0, 0);
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+        if (RUNNING_ON_IOS_7) {
+            self.separatorInset = edi(0, 0, 0, 0);
+        }
+#endif
         
         avatarIV = [[UIImageView alloc] init];
         [self addSubview:avatarIV];
@@ -43,7 +47,7 @@
 }
 
 - (void)setAvatar:(NSString *)avatar name:(NSString *)name screenName:(NSString *)screenName {
-    [avatarIV setImageWithUrlStr:avatar];
+    [avatarIV setImageWithUrlStr:avatar placeHolder:nil];
     nameL.text = name;
     [nameL sizeToFit];
     screenNameL.text = screenName;

@@ -9,7 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "HSUProfileView.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 
 #define kLabelWidth 280
 #define kNormalTextSize 13
@@ -173,7 +173,7 @@
         [tweetsButton setTitleColor:bw(153) forState:UIControlStateNormal];
         tweetsButton.titleLabel.font = [UIFont systemFontOfSize:8];
         [tweetsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -55, 0, 0)];
-        [tweetsButton setTitle:@"TWEETS" forState:UIControlStateNormal];
+        [tweetsButton setTitle:_(@"TWEETS") forState:UIControlStateNormal];
         [tweetsButton setTapTarget:delegate action:@selector(tweetsButtonTouched)];
         
         UILabel *tweetsCountLabel = [[UILabel alloc] init];
@@ -192,7 +192,7 @@
         [followingButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followingButton.titleLabel.font = [UIFont systemFontOfSize:8];
         [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -38.5, 0, 0)];
-        [followingButton setTitle:@"FOLLOWING" forState:UIControlStateNormal];
+        [followingButton setTitle:_(@"FOLLOWING") forState:UIControlStateNormal];
         [followingButton setTapTarget:delegate action:@selector(followingsButtonTouched)];
         
         UILabel *followingCountLabel = [[UILabel alloc] init];
@@ -211,7 +211,7 @@
         [followersButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followersButton.titleLabel.font = [UIFont systemFontOfSize:8];
         [followersButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -37.5, 0, 0)];
-        [followersButton setTitle:@"FOLLOWERS" forState:UIControlStateNormal];
+        [followersButton setTitle:_(@"FOLLOWERS") forState:UIControlStateNormal];
         [followersButton setTapTarget:delegate action:@selector(followersButtonTouched)];
         
         UILabel *followersCountLabel = [[UILabel alloc] init];
@@ -324,7 +324,7 @@
 {
     NSString *avatarUrl = profile[@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     self.screenNameLabel.text = [profile[@"screen_name"] twitterScreenName];
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];
@@ -336,12 +336,16 @@
     self.siteLabel.topCenter = ccp(self.infoView.width/2*3, self.siteLabel.top);
     self.pager.hidden = NO;
     NSString *bannerUrl = [profile[@"profile_banner_url"] stringByAppendingString:@"/mobile_retina"];
-    [self.infoBGView setImageWithURL:[NSURL URLWithString:bannerUrl] placeholderImage:[UIImage imageNamed:@"bg_profile_empty"]];
+    [self.infoBGView setImageWithUrlStr:bannerUrl placeHolder:[UIImage imageNamed:@"bg_profile_empty"]];
     if ([profile[@"verified"] boolValue]) {
         self.verifyFlag.hidden = NO;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 70000
-        NSDictionary *attr = @{NSFontAttributeName: self.nameLabel.font};
-        self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithAttributes:attr].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+        if ([self.nameLabel.text respondsToSelector:@selector(sizeWithAttributes:)]) {
+            NSDictionary *attr = @{NSFontAttributeName: self.nameLabel.font};
+            self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithAttributes:attr].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
+        } else {
+            self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithFont:self.nameLabel.font].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
+        }
 #else
         self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithFont:self.nameLabel.font].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
 #endif
@@ -369,7 +373,7 @@
         [self.followButton setTitleShadowColor:kWhiteColor forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, 1);
         [self.followButton setTitleColor:bw(51) forState:UIControlStateNormal];
-        [self.followButton setTitle:@"Blocked" forState:UIControlStateNormal];
+        [self.followButton setTitle:_(@"Blocked") forState:UIControlStateNormal];
     } else if ([profile[@"following"] boolValue]) {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
@@ -379,7 +383,7 @@
         [self.followButton setTitleShadowColor:bw(80) forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, -1);
         [self.followButton setTitleColor:kWhiteColor forState:UIControlStateNormal];
-        [self.followButton setTitle:@"Following" forState:UIControlStateNormal];
+        [self.followButton setTitle:_(@"Following") forState:UIControlStateNormal];
     } else {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
@@ -390,7 +394,7 @@
         [self.followButton setTitleShadowColor:kWhiteColor forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, 1);
         [self.followButton setTitleColor:bw(51) forState:UIControlStateNormal];
-        [self.followButton setTitle:@"Follow" forState:UIControlStateNormal];
+        [self.followButton setTitle:_(@"Follow") forState:UIControlStateNormal];
     }
     
     self.followButton.enabled = ![profile[@"following"] isKindOfClass:[NSString class]];

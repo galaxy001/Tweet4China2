@@ -106,7 +106,7 @@
     BOOL waitingReply = [latestMessage[@"sender_screen_name"] isEqualToString:MyScreenName];
     
     self.replyIcon.hidden = !waitingReply;
-    [self.avatarView setImageWithUrlStr:avatarUrl];
+    [self.avatarView setImageWithUrlStr:avatarUrl placeHolder:nil];
     self.nameLabel.text = name;
     self.snLabel.text = sn;
     self.timeLabel.text = time;

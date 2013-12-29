@@ -13,11 +13,11 @@
 #import "HSUStatusCell.h"
 #import "TTTAttributedLabel.h"
 #import "NSDate+Additions.h"
-#import "FHSTwitterEngine.h"
+#import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import "GTMNSString+HTML.h"
-#import "NSString+URLEncoding.h"
+#import <FHSTwitterEngine/NSString+URLEncoding.h>
 #import "HSUStatusActionView.h"
-#import "AFNetworking.h"
+#import <AFNetworking/AFNetworking.h>
 
 #define ambient_H 14
 #define info_H 16
@@ -55,7 +55,7 @@
     
     UIView *retweetFavoriteCountSeperatorV;
     UILabel *retweetCountL;
-    UILabel *retweetCountWordL;
+    UIButton *retweetsButton;
     UILabel *favoriteCountL;
     UILabel *favoriteCountWordL;
     UIView *retweetFavoritePannel;
@@ -152,11 +152,12 @@
         retweetCountL.textColor = kBlackColor;
         retweetCountL.hidden = YES;
         
-        retweetCountWordL = [[UILabel alloc] init];
-        [retweetFavoritePannel addSubview:retweetCountWordL];
-        retweetCountWordL.font = [UIFont systemFontOfSize:12];
-        retweetCountWordL.textColor = kGrayColor;
-        retweetCountWordL.hidden = YES;
+        retweetsButton = [[UIButton alloc] init];
+        [retweetFavoritePannel addSubview:retweetsButton];
+        retweetsButton.titleLabel.font = [UIFont systemFontOfSize:12];
+        [retweetsButton setTitleColor:kGrayColor forState:UIControlStateNormal];
+        retweetsButton.hidden = YES;
+        [retweetsButton addTarget:self action:@selector(retweetsButtonTouched) forControlEvents:UIControlEventTouchUpInside];
         
         favoriteCountL = [[UILabel alloc] init];
         [retweetFavoritePannel addSubview:favoriteCountL];
@@ -219,7 +220,7 @@
     retweetFavoritePannel.backgroundColor = kClearColor;
     retweetFavoriteCountSeperatorV.frame = ccr(0, 0, retweetFavoritePannel.width, 1);
     retweetCountL.leftCenter = ccp(retweetCountL.left, retweetFavoritePannel.height/2);
-    retweetCountWordL.leftCenter = ccp(retweetCountWordL.left, retweetFavoritePannel.height/2);
+    retweetsButton.leftCenter = ccp(retweetsButton.left, retweetFavoritePannel.height/2);
     favoriteCountL.leftCenter = ccp(favoriteCountL.left, retweetFavoritePannel.height/2);
     favoriteCountWordL.leftCenter = ccp(favoriteCountWordL.left, retweetFavoritePannel.height/2);
 }
@@ -262,7 +263,7 @@
         screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
     }
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal];
+    [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     
     // time
     NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];
@@ -318,7 +319,7 @@
     }
     
     // text
-    NSString *text = [rawData[@"text"] gtm_stringByUnescapingFromHTML];
+    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
     textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
@@ -416,12 +417,12 @@
         retweetCountL.hidden = NO;
         retweetCountL.text = S(@"%d", retweetCount);
         [retweetCountL sizeToFit];
-        retweetCountWordL.hidden = NO;
-        retweetCountWordL.text = retweetCount > 1 ? @"RETWEETS" : @"RETWEET";
-        [retweetCountWordL sizeToFit];
-        retweetCountWordL.left = retweetCountL.right + 3;
+        retweetsButton.hidden = NO;
+        [retweetsButton setTitle:retweetCount > 1 ? @"RETWEETS" : @"RETWEET" forState:UIControlStateNormal];
+        [retweetsButton sizeToFit];
+        retweetsButton.left = retweetCountL.right + 3;
         
-        favoriteLeft += retweetCountWordL.right + 10;
+        favoriteLeft += retweetsButton.right + 10;
     }
     if (favoriteCount) {
         retweetFavoritePannel.hidden = NO;
@@ -587,6 +588,12 @@
 - (TTTAttributedLabel *)contentLabel
 {
     return textAL;
+}
+
+- (void)retweetsButtonTouched
+{
+//    id delegate = self.data.renderData[@"delegate"];
+//    [delegate performSelector:@selector(retweetsButtonTouched)];
 }
 
 #pragma mark - attributtedLabel delegate

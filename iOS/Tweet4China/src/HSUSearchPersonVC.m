@@ -9,6 +9,9 @@
 #import "HSUSearchPersonVC.h"
 #import "HSUPersonListDataSource.h"
 #import "HSUSearchPersonDataSource.h"
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+#import <QuartzCore/QuartzCore.h>
+#endif
 
 @interface HSUSearchField : UITextField
 
@@ -58,7 +61,7 @@
         searchTF = [[HSUSearchField alloc] init];
     }
     self.searchTF = searchTF;
-    searchTF.placeholder = @"Search User";
+    searchTF.placeholder = _(@"Search User");
     searchTF.leftViewMode = UITextFieldViewModeAlways;
     searchTF.returnKeyType = UIReturnKeySearch;
     searchTF.autocorrectionType = UITextAutocorrectionTypeNo;

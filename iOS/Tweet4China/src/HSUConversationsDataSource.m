@@ -97,10 +97,10 @@
             [self.delegate dataSource:self didFinishRefreshWithError:nil];
             self.loadingCount --;
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:@"Load Messages failed"];
+            [TWENGINE dealWithError:error errTitle:_(@"Load Messages failed")];
         }];
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:@"Load Messages failed"];
+        [TWENGINE dealWithError:error errTitle:_(@"Load Messages failed")];
     }];
 }
 
