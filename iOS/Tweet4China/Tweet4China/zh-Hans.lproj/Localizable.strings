@@ -102,6 +102,7 @@
 "Report to Developer ?" = "报告给开发者，让我来帮助你解决问题";
 "Just post a photo." = "就发张图";
 "Loading Tweets" = "正在加载推文";
+"Loading Lists" = "正在加载列表";
 "Select From Camera" = "从手机相册选择";
 "Take a Picture" = "拍照";
 "Register" = "注册";
@@ -109,3 +110,9 @@
 "Report to developer" = "报告给开发者";
 "\nDescribe the problem please" = "\n留下問題的描述，以便帮您更好的定位问题";
 "Service unavailable temporarily, please try again later." = "服务临时不可用，请稍后再试";
+"Login to twitter" = "登录到推特";
+"RT" = "RT";
+"Settings" = "设置";
+"Accounts" = "账户";
+"About" = "关于";
+"Report Problem" = "报告问题";

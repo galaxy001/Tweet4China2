@@ -24,7 +24,7 @@
     [super refresh];
     
     if (self.count == 0 && [TWENGINE isAuthorized]) {
-        [SVProgressHUD showWithStatus:@"Loading Lists"];
+        [SVProgressHUD showWithStatus:_(@"Loading Lists")];
     }
     [TWENGINE getListsWithScreenName:self.screenName success:^(id responseObj) {
         [SVProgressHUD dismiss];
@@ -40,7 +40,11 @@
             HSUTableCellData *lastCellData = self.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
                 HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
-                loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_NoMore)};
+                if (lists.count < self.requestCount) {
+                    loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_NoMore)};
+                } else {
+                    loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
+                }
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [self.data addObject:loadMoreCellData];
             }
@@ -56,6 +60,11 @@
         [self.delegate dataSource:self didFinishRefreshWithError:error];
         self.loadingCount --;
     }];
+}
+
+- (void)loadMore
+{
+    NSLog(@"!!! Not Implemented");
 }
 
 @end

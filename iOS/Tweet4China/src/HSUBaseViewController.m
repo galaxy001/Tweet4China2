@@ -166,7 +166,7 @@
                 @throw [[NSException alloc] init];
             }
             [backButton sizeToFit];
-            backButton.width *= 1.4;
+            backButton.width *= 2;
             self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
         } else {
             self.navigationItem.leftBarButtonItem = nil;
@@ -309,6 +309,24 @@
     }
     
     return @[composeBarButton];
+    
+//    // Action BarButtonItem
+//    UIBarButtonItem *actionBarButton;
+//    if (RUNNING_ON_IOS_7) {
+//        actionBarButton = [[UIBarButtonItem alloc]
+//                           initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+//                           target:self
+//                           action:@selector(_actionButtonTouched)];
+//    } else {
+//        UIButton *actionButton = [[UIButton alloc] init];
+//        [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+//        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
+//        [actionButton sizeToFit];
+//        actionButton.width *= 1.4;
+//        actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+//    }
+//    
+//    return @[composeBarButton, actionBarButton];
 }
 
 - (void)backButtonTouched
@@ -340,6 +358,30 @@
     }
     HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
     [self.navigationController pushViewController:addFriendVC animated:YES];
+}
+
+- (void)_actionButtonTouched
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *settingsItem = [RIButtonItem itemWithLabel:_(@"Settings")];
+    RIButtonItem *accountsItem = [RIButtonItem itemWithLabel:_(@"Accounts")];
+    RIButtonItem *aboutItem = [RIButtonItem itemWithLabel:_(@"About")];
+    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:_(@"Report Problem")];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:settingsItem, aboutItem, reportItem, accountsItem, nil];
+    [actionSheet showInView:[HSUAppDelegate shared].tabController.view];
+    
+    settingsItem.action = ^{
+        
+    };
+    accountsItem.action = ^{
+        
+    };
+    aboutItem.action = ^{
+        
+    };
+    reportItem.action = ^{
+        
+    };
 }
 
 - (void)presentModelClass:(Class)modelClass

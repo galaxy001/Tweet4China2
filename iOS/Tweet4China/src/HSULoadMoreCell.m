@@ -29,7 +29,6 @@
         
         title = [[UILabel alloc] init];
         [self.contentView addSubview:title];
-        title.text = _(@"Network Error");
         [title sizeToFit];
         // todo: set title styles
     }

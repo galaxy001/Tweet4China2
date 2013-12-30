@@ -296,7 +296,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     NSMutableDictionary *params = [@{} mutableCopy];
-    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
+    if (maxID) params[@"max_id"] = @([maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_home_timeline
               parameters:params
@@ -315,7 +315,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 {
     NSMutableDictionary *params = [@{} mutableCopy];
     if (sinceID) params[@"since_id"] = sinceID;
-    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
+    if (maxID) params[@"max_id"] = @([maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_metions_timeline
               parameters:params
@@ -335,7 +335,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 {
     NSMutableDictionary *params = [@{} mutableCopy];
     if (screenName) params[@"screen_name"] = screenName;
-    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
+    if (maxID) params[@"max_id"] = @([maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_statuses_user_timeline
               parameters:params
@@ -355,7 +355,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 {
     NSMutableDictionary *params = [@{} mutableCopy];
     if (screenName) params[@"screen_name"] = screenName;
-    if (maxID) params[@"max_id"] = S(@"%lld", [maxID longLongValue] - 1);
+    if (maxID) params[@"max_id"] = @([maxID longLongValue] - 1);
     if (count) params[@"count"] = @(count);
     [self sendGETWithUrl:url_favorites_list
               parameters:params
@@ -383,6 +383,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)getListTimelineWithListID:(NSString *)listID maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    if (maxID) maxID = S(@"%lld", [maxID longLongValue] - 1);
     [self sendByFHSTwitterEngineWithUrl:url_lists_statuses
                                  method:@"GET"
                              parameters:@{@"list_id": listID, @"max_id": maxID, @"count": @(count)}

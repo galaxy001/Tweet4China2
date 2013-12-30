@@ -14,6 +14,13 @@
 
 @implementation HSUNavigationController
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
+}
+
 - (BOOL)shouldAutorotate
 {
     return [self.viewControllers.lastObject shouldAutorotate];

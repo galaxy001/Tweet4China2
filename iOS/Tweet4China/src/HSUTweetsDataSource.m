@@ -77,14 +77,14 @@
         }
         [self.data addObject:loadMoreCellData];
         
-        [self.data.lastObject renderData][@"status"] = @(kLoadMoreCellStatus_Done);
+        [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
         [self saveCache];
         [self.delegate preprocessDataSourceForRender:self];
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.data.lastObject renderData][@"status"] = (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error);
+        [self.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
         self.loadingCount --;
     }];
