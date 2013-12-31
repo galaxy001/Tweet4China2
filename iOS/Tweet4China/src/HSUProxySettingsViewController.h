@@ -10,4 +10,6 @@
 
 @interface HSUProxySettingsViewController : UITableViewController
 
+@property (nonatomic, strong) NSDictionary *shadowsocks;
+
 @end

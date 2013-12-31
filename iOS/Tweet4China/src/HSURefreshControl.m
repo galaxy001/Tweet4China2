@@ -27,19 +27,23 @@
 
 - (void)startRefreshing
 {
-    NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"psst1" ofType:@"wav"];
-    SystemSoundID soundID;
-    AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
-    AudioServicesPlaySystemSound(soundID);
+    if ([GlobalSettings[HSUSettingSoundEffect] boolValue]) {
+        NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"psst1" ofType:@"wav"];
+        SystemSoundID soundID;
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
+        AudioServicesPlaySystemSound(soundID);
+    }
 }
 
 - (void)endRefreshing
 {
     [super endRefreshing];
-    NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"pop" ofType:@"wav"];
-    SystemSoundID soundID;
-    AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
-    AudioServicesPlaySystemSound(soundID);
+    if ([GlobalSettings[HSUSettingSoundEffect] boolValue]) {
+        NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"pop" ofType:@"wav"];
+        SystemSoundID soundID;
+        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
+        AudioServicesPlaySystemSound(soundID);
+    }
 }
 
 @end

@@ -49,6 +49,7 @@
 
 @protocol HSUBaseDataSourceDelegate <NSObject>
 
+- (void)reloadData;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error;
 - (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource;

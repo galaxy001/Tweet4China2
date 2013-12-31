@@ -12,8 +12,10 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, weak) UIViewController *tabController;
+@property (nonatomic, strong) NSDictionary *globalSettings;
 
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;
+- (void)stopShadowsocks;
 
 @end

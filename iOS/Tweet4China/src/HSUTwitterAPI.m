@@ -13,6 +13,7 @@
 #import <FHSTwitterEngine/OAMutableURLRequest.h>
 #import "HSUMiniBrowser.h"
 #import "HSUProxySettingsViewController.h"
+#import "HSULoginViewController.h"
 
 @interface FHSTwitterEngine (Private)
 
@@ -95,9 +96,10 @@ static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/
 
 static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/reverse_geocode.json";
 
-@interface HSUTwitterAPI ()
+@interface HSUTwitterAPI () <FHSTwitterEngineAccessTokenDelegate>
 
 @property (nonatomic, assign, getter = isAuthorizing) BOOL authorizing;
+@property (nonatomic, copy) NSString *accessToken;
 
 @end
 
@@ -113,7 +115,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 #endif
     self = [super init];
     if (self) {
-        FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+        FHSTwitterEngine *engine = self.engine;
         [engine permanentlySetConsumerKey:kTwitterAppKey andSecret:kTwitterAppSecret];
         [engine loadAccessToken];
         if (!self.isAuthorized) {
@@ -133,21 +135,108 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     return api;
 }
 
-- (BOOL)isAuthorized
+- (void)storeAccessToken:(NSString *)accessToken
 {
-    return [FHSTwitterEngine sharedEngine].isAuthorized;
+    if (accessToken.length) { // add
+        self.accessToken = accessToken;
+    } else if ([accessToken isEqualToString:@""]) { // remove
+        [self removeAccount:self.myScreenName];
+    }
 }
 
-- (void)signOut
+- (NSString *)loadAccessToken
 {
-    [[FHSTwitterEngine sharedEngine] clearAccessToken];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:kUserSettings_DBKey];
+    return [self mySettings][@"access_token"];
+}
+
+- (void)removeAccount:(NSString *)screenName
+{
+    NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy];
+    [userSettings removeObjectForKey:self.myScreenName];
+    [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
+    if ([screenName isEqualToString:self.myScreenName]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:HSUCurrentScreenName];
+        [[NSNotificationCenter defaultCenter] postNotificationName:HSUTwiterLogout object:nil];
+    }
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [self authorize];
+}
+
+- (void)loadAccount:(NSString *)screenName
+{
+    [[NSUserDefaults standardUserDefaults] setObject:screenName forKey:HSUCurrentScreenName];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.engine loadAccessToken];
+    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
+}
+
+- (BOOL)isAuthorized
+{
+    return self.engine.isAuthorized;
+}
+
+- (FHSTwitterEngine *)engine
+{
+    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    engine.delegate = self;
+    return engine;
+}
+
+- (void)loginWithScreenName:(NSString *)screenName andPassword:(NSString *)password success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    [SVProgressHUD showWithStatus:_(@"Please Wait")];
+    dispatch_async(GCDBackgroundThread, ^{
+        NSError *error = [self.engine getXAuthAccessTokenForUsername:screenName password:password];
+        if (!error) {
+            [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
+                dispatch_async(GCDMainThread, ^{
+                    [SVProgressHUD showSuccessWithStatus:_(@"Login Success")];
+                    NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
+                    NSMutableDictionary *us = [responseObj mutableCopy];
+                    us[@"access_token"] = TWENGINE.accessToken;
+                    userSettings[us[@"screen_name"]] = us;
+                    [[NSUserDefaults standardUserDefaults] setObject:us[@"screen_name"] forKey:HSUCurrentScreenName];
+                    [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    success(nil);
+                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
+                });
+            } failure:^(NSError *error) {
+                [SVProgressHUD dismiss];
+                [TWENGINE dealWithError:error errTitle:_(@"Login Error")];
+                dispatch_async(GCDMainThread, ^{
+                    [SVProgressHUD dismiss];
+                    [[HSUTwitterAPI shared] dealWithError:error errTitle:_(@"Fetch account info failed")];
+                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
+                });
+            }];
+        } else {
+            dispatch_async(GCDMainThread, ^{
+                [SVProgressHUD dismiss];
+                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Use Web")];
+                cancelItem.action = ^{
+                    [self authorizeByOAuth];
+                };
+                RIButtonItem *retryItem = [RIButtonItem itemWithLabel:_(@"Retry")];
+                retryItem.action = ^{
+                    [self authorizeByXAuth];
+                };
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login failed") message:_(@"You want to try again?")cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
+                [alert show];
+            });
+        }
+    });
 }
 
 - (void)authorize
 {
+    if (shadowsocksStarted) {
+        HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
+        HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:loginVC];
+        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+        return;
+    }
+    
+    
     if (shadowsocksStarted && !self.isAuthorizing) {
         self.authorizing = YES;
         double delayInSeconds = 1.0;
@@ -185,7 +274,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)authorizeByXAuth
 {
-    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    FHSTwitterEngine *engine = self.engine;
     RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_(@"Login")];
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login")
@@ -202,7 +291,12 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                 [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                     dispatch_async(GCDMainThread, ^{
                         [SVProgressHUD showSuccessWithStatus:_(@"Login Success")];
-                        [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
+                        NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
+                        NSMutableDictionary *us = [responseObj mutableCopy];
+                        us[@"access_token"] = TWENGINE.accessToken;
+                        userSettings[us[@"screen_name"]] = us;
+                        [[NSUserDefaults standardUserDefaults] setObject:us[@"screen_name"] forKey:HSUCurrentScreenName];
+                        [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
                         [[NSUserDefaults standardUserDefaults] synchronize];
                         notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
                     });
@@ -226,10 +320,8 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                     retryItem.action = ^{
                         [self authorizeByXAuth];
                     };
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login failed") message:_(@"You want to try again?" )cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login failed") message:_(@"You want to try again?")cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
                     [alert show];
-                    
-//                    notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
                 });
             }
         });
@@ -243,14 +335,20 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)authorizeByOAuth
 {
-    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
-    [engine showOAuthLoginControllerFromViewController:[HSUAppDelegate shared].window.rootViewController
+    FHSTwitterEngine *engine = self.engine;
+    UIViewController *viewController = [HSUAppDelegate shared].window.rootViewController.presentedViewController ?: [HSUAppDelegate shared].window.rootViewController;
+    [engine showOAuthLoginControllerFromViewController:viewController
                                         withCompletion:^(BOOL success)
      {
          [HSUTwitterAPI shared].authorizing = NO;
          if (success) {
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
-                 [[NSUserDefaults standardUserDefaults] setObject:responseObj forKey:kUserSettings_DBKey];
+                 NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
+                 NSMutableDictionary *us = [responseObj mutableCopy];
+                 us[@"access_token"] = TWENGINE.accessToken;
+                 userSettings[us[@"screen_name"]] = us;
+                 [[NSUserDefaults standardUserDefaults] setObject:us[@"screen_name"] forKey:HSUCurrentScreenName];
+                 [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
                  [[NSUserDefaults standardUserDefaults] synchronize];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
              } failure:^(NSError *error) {
@@ -265,12 +363,13 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (NSString *)myScreenName
 {
-    return [self mySettings][@"screen_name"];
+    return [[NSUserDefaults standardUserDefaults] objectForKey:HSUCurrentScreenName];
 }
 
 - (NSDictionary *)mySettings
 {
-    return [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey];
+    NSDictionary *userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings];
+    return userSettings[self.myScreenName];
 }
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
@@ -367,36 +466,32 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     params[@"since_id"] = sinceID ?: @"-1";
     params[@"count"] = @"200";
     params[@"skip_status"] = @"true";
-    [self sendByFHSTwitterEngineWithUrl:url_direct_messages
-                                 method:@"GET"
-                             parameters:params
-                                success:success
-                                failure:failure];
+    [self sendGETWithUrl:url_direct_messages
+              parameters:params
+                 success:success
+                 failure:failure];
 }
 - (void)getListsWithScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [self sendByFHSTwitterEngineWithUrl:url_lists_list
-                                 method:@"GET"
-                             parameters:@{@"screen_name": screenName}
-                                success:success
-                                failure:failure];
+    [self sendGETWithUrl:url_lists_list
+              parameters:@{@"screen_name": screenName}
+                 success:success
+                 failure:failure];
 }
 - (void)getListTimelineWithListID:(NSString *)listID maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     if (maxID) maxID = S(@"%lld", [maxID longLongValue] - 1);
-    [self sendByFHSTwitterEngineWithUrl:url_lists_statuses
-                                 method:@"GET"
-                             parameters:@{@"list_id": listID, @"max_id": maxID, @"count": @(count)}
-                                success:success
-                                failure:failure];
+    [self sendGETWithUrl:url_lists_statuses
+              parameters:@{@"list_id": listID, @"max_id": maxID, @"count": @(count)}
+                 success:success
+                 failure:failure];
 }
 - (void)getListTimelineWithListID:(NSString *)listID sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [self sendByFHSTwitterEngineWithUrl:url_lists_statuses
-                                 method:@"GET"
-                             parameters:@{@"list_id": listID, @"since_id": sinceID, @"count": @(count)}
-                                success:success
-                                failure:failure];
+    [self sendGETWithUrl:url_lists_statuses
+              parameters:@{@"list_id": listID, @"since_id": sinceID, @"count": @(count)}
+                 success:success
+                 failure:failure];
 }
 - (void)getDetailsForStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -433,7 +528,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)sendStatus:(NSString *)status inReplyToID:(NSString *)inReplyToID imageFilePath:(NSString *)imageFilePath location:(CLLocation *)location placeId:(NSString *)placeId success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    FHSTwitterEngine *engine = self.engine;
     NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
     
     dispatch_async(GCDBackgroundThread, ^{
@@ -455,16 +550,17 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)sendDirectMessage:(NSString *)message toUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendByFHSTwitterEngineWithUrl:url_direct_messages_new
-                                 method:@"POST"
-                             parameters:@{@"text": message, @"screen_name": screenName}
-                                success:success
-                                failure:failure];
+    [self sendPOSTWithUrl:url_direct_messages_new
+               parameters:@{@"text": message, @"screen_name": screenName}
+                  success:success
+                  failure:failure];
 }
 - (void)sendRetweetWithStatusID:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:[NSString stringWithFormat:url_statuses_retweet, statusID]
-               parameters:nil success:success failure:failure];
+               parameters:nil
+                  success:success
+                  failure:failure];
 }
 - (void)getFollowersSinceId:(NSString *)sinceID forUserScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -518,11 +614,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)getSentMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendByFHSTwitterEngineWithUrl:url_direct_messages_sent
-                                 method:@"GET"
-                             parameters:@{@"since_id": sinceID ?: @"-1"}
-                                success:success
-                                failure:failure];
+    [self sendGETWithUrl:url_direct_messages_sent
+              parameters:@{@"since_id": sinceID ?: @"-1"}
+                 success:success
+                 failure:failure];
 }
 - (void)getTrendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -588,11 +683,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)deleteDirectMessage:(NSString *)messageID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self sendByFHSTwitterEngineWithUrl:url_direct_messages_destroy
-                                 method:@"POST"
-                             parameters:@{@"id": messageID}
-                                success:success
-                                failure:failure];
+    [self sendPOSTWithUrl:url_direct_messages_destroy
+               parameters:@{@"id": messageID}
+                  success:success
+                  failure:failure];
 }
 - (void)destroyStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -628,7 +722,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 #ifdef DEBUG
     NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
-    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];
     OAMutableURLRequest *request = [OAMutableURLRequest requestWithURL:baseURL consumer:engine.consumer token:engine.accessToken];
     
@@ -639,7 +733,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         [params addObject:param];
     }
     dispatch_async(GCDBackgroundThread, ^{
-        FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+        FHSTwitterEngine *engine = TWENGINE.engine;
         id responseObj;
         if ([method isEqualToString:@"GET"]) {
             responseObj = [engine sendGETRequest:request withParameters:params];
@@ -668,7 +762,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (id)syncSendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters
 {
-    FHSTwitterEngine *engine = [FHSTwitterEngine sharedEngine];
+    FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];
     OAMutableURLRequest *request = [OAMutableURLRequest requestWithURL:baseURL consumer:engine.consumer token:engine.accessToken];
     
@@ -711,7 +805,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     RIButtonItem *reportItem = [RIButtonItem itemWithLabel:_(@"Report to developer")];
     RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:_(@"Use my own shadowsocks")];
     reportItem.action = ^{
-        NSString *subject = @"[Tweet4China][AppStore2.6] Network Problem";
+        NSString *subject = @"[Tweet4China 2.6] Network Problem";
         NSString *body = _(@"\nDescribe the problem please");
         NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=%@&body=%@",
                          [subject stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
@@ -730,8 +824,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     [alert show];
 }
 
-- (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate {
-    return [[FHSTwitterEngine sharedEngine] getDateFromTwitterCreatedAt:twitterDate];
+- (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate
+{
+    return [self.engine getDateFromTwitterCreatedAt:twitterDate];
 }
 
 @end

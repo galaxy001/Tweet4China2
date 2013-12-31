@@ -50,7 +50,7 @@
     self.tableView.backgroundColor = kWhiteColor;
     
     // setup navigation bar
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(30),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -60,7 +60,7 @@
     
     // setup navgation bar buttons
     UIBarButtonItem *actionsBarButtonItem;
-    if (RUNNING_ON_IOS_7) {
+    if (iOS_Ver >= 7) {
         actionsBarButtonItem = [[UIBarButtonItem alloc]
                                 initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                 target:self
@@ -77,7 +77,7 @@
     self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
                                      UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
@@ -165,7 +165,7 @@
         weakSelf.textView.top = weakSelf.toolbar.top + 5;
         weakSelf.textView.width = weakSelf.width - weakSelf.textView.left * 2 - weakSelf.wordCountLabel.width;
         
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             weakSelf.tableView.top = 10 + weakSelf.navigationController.navigationBar.height + 10;
         }
         weakSelf.tableView.height = weakSelf.toolbar.top - weakSelf.tableView.top;

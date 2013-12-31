@@ -120,20 +120,20 @@
 
 - (void)showWithAnimation:(BOOL)animation
 {
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
     if (animation) {
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 1;
         } completion:^(BOOL finished) {
-            if (RUNNING_ON_IOS_7) {
+            if (iOS_Ver >= 7) {
                 notification_post(HSUGalleryViewDidAppear);
             }
         }];
     } else {
         self.alpha = 1;
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             notification_post(HSUGalleryViewDidAppear);
         }
     }
@@ -142,7 +142,7 @@
 - (void)_fireTapGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             notification_post(HSUGalleryViewDidDisappear);
         } else {
             [[UIApplication sharedApplication] setStatusBarHidden:NO];

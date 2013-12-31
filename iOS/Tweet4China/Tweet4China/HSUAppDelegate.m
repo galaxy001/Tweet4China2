@@ -31,6 +31,11 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
+    if (!self.globalSettings) {
+        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14"};
+    }
+    
     [self startShadowsocks];
     [self configureAppirater];
     
@@ -143,22 +148,35 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)startShadowsocks
 {
-    NSString *server = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Server];
-    NSString *remotePort = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_RemotePort];
-    NSString *passowrd = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Password];
-    NSString *method = [[NSUserDefaults standardUserDefaults] objectForKey:kShadowsocksSettings_Method];
+    NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
     
-    if (server && remotePort && passowrd && method) {
-        if (proxy == nil) {
-            proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
+    for (NSDictionary *ss in sss) {
+        if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
+            NSString *server = ss[HSUShadowsocksSettings_Server];
+            NSString *remotePort = ss[HSUShadowsocksSettings_RemotePort];
+            NSString *passowrd = ss[HSUShadowsocksSettings_Password];
+            NSString *method = ss[HSUShadowsocksSettings_Method];
+            
+            if (server && remotePort && passowrd && method) {
+                if (proxy == nil) {
+                    proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
+                }
+                shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort];
+                if (!shadowsocksStarted) {
+                    exit(0);
+                }
+                return shadowsocksStarted;
+            }
+            return (shadowsocksStarted = NO);
         }
-        shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort];
-        if (!shadowsocksStarted) {
-            exit(0);
-        }
-        return shadowsocksStarted;
     }
-    return (shadowsocksStarted = NO);
+    return NO;
+}
+
+- (void)stopShadowsocks
+{
+    [proxy stop];
+    shadowsocksStarted = NO;
 }
 
 @end

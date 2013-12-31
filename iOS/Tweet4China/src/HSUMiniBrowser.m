@@ -63,9 +63,12 @@
     diandian.alpha = 0.2;
     
     UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+    if (iOS_Ver >= 7) {
+        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
+    } else {
+        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+    }
     [closeButton sizeToFit];
-    closeButton.width *= 1.2;
     [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
@@ -73,7 +76,6 @@
         UIButton *actionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
         [actionsButton sizeToFit];
-        actionsButton.width *= 1.6;
         [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
     }
@@ -81,7 +83,9 @@
 
 - (void)viewDidLayoutSubviews
 {
-    if (RUNNING_ON_IOS_7) {
+    [super viewDidLayoutSubviews];
+    
+    if (iOS_Ver >= 7) {
         self.webview.frame = ccr(0, 64, self.width, self.height-64);
     } else {
         self.webview.frame = ccr(0, 0, self.width, self.height);

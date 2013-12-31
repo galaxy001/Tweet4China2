@@ -119,6 +119,11 @@
 		9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9664996F16F30BBF00BC901A /* NSDate+Additions.m */; };
 		9666CDDC18702D650044DB0A /* HSUAttributedLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */; settings = {COMPILER_FLAGS = "-w"; }; };
 		9666CDDE18705CD50044DB0A /* icn_nav_action@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDDD18705CD50044DB0A /* icn_nav_action@2x.png */; };
+		9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE0187129100044DB0A /* HSUSettingsViewController.m */; };
+		9666CDE418719AE10044DB0A /* HSUAccountsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */; };
+		9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */; };
+		9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE91872C3040044DB0A /* HSULoginViewController.m */; };
+		9666CDEC1872C9720044DB0A /* bg_login_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */; };
 		966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */; };
 		966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */; };
 		966ACE1F174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */; };
@@ -454,6 +459,15 @@
 		9666CDDA18702D650044DB0A /* HSUAttributedLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAttributedLabel.h; sourceTree = "<group>"; };
 		9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAttributedLabel.m; sourceTree = "<group>"; };
 		9666CDDD18705CD50044DB0A /* icn_nav_action@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_action@2x.png"; sourceTree = "<group>"; };
+		9666CDDF187129100044DB0A /* HSUSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSettingsViewController.h; sourceTree = "<group>"; };
+		9666CDE0187129100044DB0A /* HSUSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSettingsViewController.m; sourceTree = "<group>"; };
+		9666CDE218719AE10044DB0A /* HSUAccountsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAccountsViewController.h; sourceTree = "<group>"; };
+		9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAccountsViewController.m; sourceTree = "<group>"; };
+		9666CDE518719B180044DB0A /* HSUShadowsocksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUShadowsocksViewController.h; sourceTree = "<group>"; };
+		9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUShadowsocksViewController.m; sourceTree = "<group>"; };
+		9666CDE81872C3040044DB0A /* HSULoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoginViewController.h; sourceTree = "<group>"; };
+		9666CDE91872C3040044DB0A /* HSULoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSULoginViewController.m; sourceTree = "<group>"; };
+		9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_login_btn@2x.png"; sourceTree = "<group>"; };
 		966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm@2x.png"; sourceTree = "<group>"; };
 		966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_back@2x.png"; sourceTree = "<group>"; };
 		966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_compose_dm@2x.png"; sourceTree = "<group>"; };
@@ -850,6 +864,7 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */,
 				9666CDDD18705CD50044DB0A /* icn_nav_action@2x.png */,
 				966E191D184CB31200B5482C /* icn_locked_pressed@2x.png */,
 				966E191F184CB31200B5482C /* icn_locked_pressed~ipad@2x.png */,
@@ -1197,14 +1212,22 @@
 				967272B81733E3E400B6E30A /* HSUUserHomeDataSource.m */,
 				960DFEE617E426F700D6BEB1 /* HSUFavoritesDataSource.h */,
 				960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */,
-				96A11F1F17D0BFB600F98ABD /* HSUProxySettingsViewController.h */,
-				96A11F2017D0BFB600F98ABD /* HSUProxySettingsViewController.m */,
 				96D91E011813B288001A8188 /* HSUSearchPersonVC.h */,
 				96D91E021813B288001A8188 /* HSUSearchPersonVC.m */,
 				96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */,
 				96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */,
 				966E18E2184C6CC000B5482C /* HSUNavigationController.h */,
 				966E18E3184C6CC000B5482C /* HSUNavigationController.m */,
+				9666CDDF187129100044DB0A /* HSUSettingsViewController.h */,
+				9666CDE0187129100044DB0A /* HSUSettingsViewController.m */,
+				9666CDE218719AE10044DB0A /* HSUAccountsViewController.h */,
+				9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */,
+				9666CDE518719B180044DB0A /* HSUShadowsocksViewController.h */,
+				9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */,
+				96A11F1F17D0BFB600F98ABD /* HSUProxySettingsViewController.h */,
+				96A11F2017D0BFB600F98ABD /* HSUProxySettingsViewController.m */,
+				9666CDE81872C3040044DB0A /* HSULoginViewController.h */,
+				9666CDE91872C3040044DB0A /* HSULoginViewController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1392,6 +1415,7 @@
 				96E34B57170167580066CD5E /* compose-map-outline@2x.png in Resources */,
 				96E34B58170167580066CD5E /* compose-map-toggle-button-pressed@2x.png in Resources */,
 				96E34B59170167580066CD5E /* compose-map-toggle-button@2x.png in Resources */,
+				9666CDEC1872C9720044DB0A /* bg_login_btn@2x.png in Resources */,
 				969F2FD61823D69500015765 /* btn_floating_segment_pressed@2x~iphone.png in Resources */,
 				969F2FA71822517B00015765 /* btn_following_default@2x~ipad.png in Resources */,
 				96E34B5A170167580066CD5E /* compose-nipple@2x.png in Resources */,
@@ -1552,6 +1576,7 @@
 				9628184E16DFAB3D00ABF0AD /* HSUHomeViewController.m in Sources */,
 				9628185116DFAB5000ABF0AD /* HSUConnectViewController.m in Sources */,
 				9628185416DFAB8100ABF0AD /* HSUDiscoverViewController.m in Sources */,
+				9666CDE418719AE10044DB0A /* HSUAccountsViewController.m in Sources */,
 				9628185716DFABE700ABF0AD /* HSUProfileViewController.m in Sources */,
 				9628185A16DFACEC00ABF0AD /* HSUCommonTools.m in Sources */,
 				9628185D16DFAE2A00ABF0AD /* HSUNavigationBar.m in Sources */,
@@ -1564,6 +1589,7 @@
 				96BE217416EC8FDA00226799 /* HSUBaseTableCell.m in Sources */,
 				968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */,
 				968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */,
+				9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */,
 				9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */,
 				96D91E031813B288001A8188 /* HSUSearchPersonVC.m in Sources */,
 				966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */,
@@ -1590,6 +1616,7 @@
 				966E1903184CAACC00B5482C /* HSUListsViewController.m in Sources */,
 				969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */,
 				969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */,
+				9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */,
 				96A2127117204F3200BC1D09 /* HSUContextStatusCell.m in Sources */,
 				966E1915184CAFE200B5482C /* HSUSubscribedListsViewController.m in Sources */,
 				96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */,
@@ -1612,6 +1639,7 @@
 				967272B31733CC2100B6E30A /* HSUTweetsViewController.m in Sources */,
 				967272B61733CCB500B6E30A /* HSUTweetsDataSource.m in Sources */,
 				96A11F2117D0BFB600F98ABD /* HSUProxySettingsViewController.m in Sources */,
+				9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */,
 				967272B91733E3E500B6E30A /* HSUUserHomeDataSource.m in Sources */,
 				969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */,
 				966E1912184CAF7000B5482C /* HSUListViewController.m in Sources */,

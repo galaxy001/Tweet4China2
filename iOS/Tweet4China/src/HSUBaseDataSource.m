@@ -22,6 +22,9 @@
     if (self) {
         self.requestCount = 200;
         self.data = [[NSMutableArray alloc] init];
+        notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
+        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
+        notification_add_observer(HSUTwiterLogout, self, @selector(twitterLogout));
     }
     return self;
 }
@@ -46,7 +49,7 @@
     if (IPAD) {
         if (indexPath.section == 0 && indexPath.row == self.count - 1) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-            if (RUNNING_ON_IOS_7) {
+            if (iOS_Ver >= 7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
 #endif
@@ -156,8 +159,10 @@
     }
     if (cacheDataArr.count) {
         [[NSUserDefaults standardUserDefaults] setObject:cacheDataArr forKey:self.class.cacheKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:self.class.cacheKey];
     }
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (NSString *)cacheKey
@@ -169,8 +174,9 @@
 {
     HSUBaseDataSource *dataSource = [[self alloc] init];
     dataSource.delegate = delegate;
-    // TODO crash reset policy
-//    return dataSource;
+    if (!TWENGINE.isAuthorized) {
+        return dataSource;
+    }
     if (useCahce) {
         NSArray *cacheDataArr = [[NSUserDefaults standardUserDefaults] arrayForKey:self.cacheKey];
         if (cacheDataArr) {
@@ -194,6 +200,28 @@
 - (void)removeCellData:(HSUTableCellData *)cellData
 {
     [self.data removeObject:cellData];
+}
+
+- (void)settingsUpdated:(NSNotification *)notification
+{
+    for (HSUTableCellData *data in self.data) {
+        [data.renderData removeObjectForKey:@"text_height"];
+        [data.renderData removeObjectForKey:@"height"];
+    }
+    [self.delegate reloadData];
+}
+
+- (void)twitterLoginSuccess:(NSNotification *)notification
+{
+    [self.data removeAllObjects];
+    [self saveCache];
+    [self.delegate reloadData];
+}
+
+- (void)twitterLogout
+{
+    [self.data removeAllObjects];
+    [self.delegate reloadData];
 }
 
 @end

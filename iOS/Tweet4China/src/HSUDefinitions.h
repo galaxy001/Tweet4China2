@@ -88,19 +88,13 @@ _Pragma("clang diagnostic pop") \
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-#define RUNNING_ON_IOS_7 ([[UIDevice currentDevice].systemVersion compare:@"7"] >= NSOrderedDescending)
-#define RUNNING_ON_IOS_6 ([[UIDevice currentDevice].systemVersion compare:@"7"] == NSOrderedAscending)
-#else
-#define RUNNING_ON_IOS_7 NO
-#define RUNNING_ON_IOS_6 YES
-#endif
+#define iOS_Ver MIN([[UIDevice currentDevice].systemVersion floatValue], __IPHONE_OS_VERSION_MAX_ALLOWED/10000.0)
 #define IPAD [HSUCommonTools isIPad]
 #define IPHONE [HSUCommonTools isIPhone]
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
-#define MyScreenName [[NSUserDefaults standardUserDefaults] objectForKey:kUserSettings_DBKey][@"screen_name"]
+#define MyScreenName [TWENGINE myScreenName]
 #define DEF_NavitationController_Light [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
@@ -111,6 +105,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUConversationBackWithIncompletedSendingNotification @"HSUConversationBackWithIncompletedSendingNotification"
 #define HSUDraftsCountChangedNotification @"HSUDraftsCountChangedNotification"
 #define HSUTwiterLoginSuccess @"HSUTwiterLoginSuccess"
+#define HSUTwiterLogout @"HSUTwiterLogout"
 #define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
 #define HSUStatusDidDelete @"HSUStatusDidDelete"
@@ -128,17 +123,31 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_List @"List"
 
 #define kTwitterReplyID_ParameterKey @"in_reply_to_status_id"
-#define kUserSettings_DBKey @"user_settings"
-#define kUserProfile_DBKey @"user_profile"
+#define HSUUserSettings @"HSUUserSettings"
+#define HSUCurrentScreenName @"HSUCurrentScreenName"
+#define HSUUserProfiles @"HSUUserProfiles"
 #define kDiscoverHomePage @"HSUDiscoverHomePage"
 
-#define kShadowsocksSettings_Server @"server"
-#define kShadowsocksSettings_RemotePort @"remote_port"
-#define kShadowsocksSettings_Password @"password"
-#define kShadowsocksSettings_Method @"method"
-#define kShadowsocksSettings_Direct @"direct"
+#define HSUShadowsocksSettings_Server @"server"
+#define HSUShadowsocksSettings_RemotePort @"remote_port"
+#define HSUShadowsocksSettings_Password @"password"
+#define HSUShadowsocksSettings_Method @"method"
+#define HSUShadowsocksSettings_Direct @"direct"
+#define HSUShadowsocksSettings_Selected @"selected"
+#define HSUShadowsocksSettings_Buildin @"buildin"
+#define HSUShadowsocksSettings @"HSUShadowsocksSettings"
 #define ShadowSocksPort 71080
 
 #define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
+
+#define GlobalSettings ([HSUAppDelegate shared].globalSettings)
+#define HSUSettings @"HSUSettings"
+#define HSUSettingsUpdatedNotification @"HSUSettingsUpdatedNotification"
+#define HSUSettingSoundEffect @"sound_effect"
+#define HSUSettingPhotoPreview @"photo_preview"
+#define HSUSettingTextSize @"text_size"
+
+#define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
+#define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"
 
 #endif

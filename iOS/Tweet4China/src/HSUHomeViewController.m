@@ -25,7 +25,7 @@
 #ifndef DEBUG
         [HSUHomeDataSource checkUnreadForViewController:self];
 #endif
-        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
+//        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
     }
     return self;
 }

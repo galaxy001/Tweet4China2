@@ -16,7 +16,6 @@
 
 #define ambient_H 14
 #define info_H 16
-#define textAL_font_S 14
 #define margin_W 10
 #define avatar_S 48
 #define ambient_S 20
@@ -41,10 +40,17 @@
 
 @synthesize avatarB;
 
+- (void)dealloc
+{
+    notification_remove_observer(self);
+}
+
 - (id)initWithFrame:(CGRect)frame style:(HSUStatusViewStyle)style
 {
     self = [super initWithFrame:frame];
     if (self) {
+        notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
+        
         self.style = style;
         
         ambientArea = [[UIView alloc] init];
@@ -91,14 +97,14 @@
 {
     ambientL.textColor = kGrayColor;
     ambientL.font = [UIFont systemFontOfSize:13];
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         ambientL.highlightedTextColor = kWhiteColor;
     }
     ambientL.backgroundColor = kClearColor;
     
     nameL.textColor = kBlackColor;
     nameL.font = [UIFont boldSystemFontOfSize:14];
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         nameL.highlightedTextColor = kWhiteColor;
     }
     nameL.backgroundColor = kClearColor;
@@ -109,22 +115,22 @@
     
     screenNameL.textColor = kGrayColor;
     screenNameL.font = [UIFont systemFontOfSize:12];
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         screenNameL.highlightedTextColor = kWhiteColor;
     }
     screenNameL.backgroundColor = kClearColor;
     
     timeL.textColor = kGrayColor;
     timeL.font = [UIFont systemFontOfSize:12];
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         timeL.highlightedTextColor = kWhiteColor;
     }
     timeL.backgroundColor = kClearColor;
     
     textAL.textColor = rgb(38, 38, 38);
-    textAL.font = [UIFont systemFontOfSize:textAL_font_S];
+    textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
     textAL.backgroundColor = kClearColor;
-    if (!RUNNING_ON_IOS_7) {
+    if (iOS_Ver < 7) {
         textAL.highlightedTextColor = kWhiteColor;
     }
     textAL.lineBreakMode = NSLineBreakByWordWrapping;
@@ -162,7 +168,6 @@
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
     
     // set frames
     CGFloat cw = self.width;
@@ -274,7 +279,7 @@
         attrI.imageName = S(@"ic_tweet_attr_%@_default", attrName);
         self.data.renderData[@"attr"] = attrName;
         
-        if ([attrName isEqualToString:@"photo"]) {
+        if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
                                                forState:UIControlStateNormal
@@ -308,7 +313,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -336,11 +341,17 @@
 {
     if ([url hasPrefix:@"http://4sq.com"] ||
         [url hasPrefix:@"http://youtube.com"]) {
+        
         return @"summary";
+        
     } else if ([url hasPrefix:@"http://youtube.com"] ||
                [url hasPrefix:@"http://snpy.tv"]) {
+        
         return @"video";
-    } else if ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"]) {
+        
+    } else if ([GlobalSettings[HSUSettingPhotoPreview] boolValue] &&
+               ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
+        
         NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
         self.data.renderData[@"instagram_url"] = instagramAPIUrl;
@@ -392,7 +403,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -406,7 +417,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
-        textAL.font = [UIFont systemFontOfSize:textAL_font_S];
+        textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
         textAL.backgroundColor = kClearColor;
         textAL.textColor = rgb(38, 38, 38);
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
@@ -423,6 +434,7 @@
     testSizeLabel.text = text;
     
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(constraintWidth, 0)].height;
+    textHeight *= [GlobalSettings[HSUSettingTextSize] integerValue] / 14.0;
     data.renderData[@"text_height"] = @(textHeight);
     return textHeight;
 }
@@ -461,7 +473,7 @@
             }
         }
     }
-    if ([attrName isEqualToString:@"photo"]) {
+    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
         if (IPHONE) {
             height += 120 + 10;
         } else {
@@ -509,6 +521,11 @@
                        withObject:[self.imagePreviewButton imageForState:UIControlStateNormal]
                        withObject:self.data];
     }
+}
+
+- (void)settingsUpdated:(NSNotification *)notification
+{
+    [self _setupStyle];
 }
 
 @end

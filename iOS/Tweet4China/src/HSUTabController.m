@@ -33,7 +33,7 @@
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
                                                                image:[UIImage imageNamed:@"icn_tab_home_selected"]
                                                        selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
@@ -49,7 +49,7 @@
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         } else {
 #endif
@@ -63,7 +63,7 @@
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         } else {
 #endif
@@ -77,7 +77,7 @@
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         } else {
 #endif

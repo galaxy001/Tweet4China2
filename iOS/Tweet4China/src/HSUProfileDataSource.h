@@ -21,4 +21,6 @@
 
 - (id)initWithScreenName:(NSString *)screenName;
 
+- (void)refreshLocalData;
+
 @end

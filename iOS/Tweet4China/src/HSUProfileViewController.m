@@ -71,11 +71,16 @@
 {
     [super viewDidAppear:animated];
     
+    [((HSUProfileDataSource *)self.dataSource) refreshLocalData];
+    
     [TWENGINE showUser:self.screenName success:^(id responseObj) {
         NSDictionary *profile = responseObj;
         [self.profileView setupWithProfile:profile];
         self.profile = profile;
-        [[NSUserDefaults standardUserDefaults] setObject:self.profile forKey:kUserProfile_DBKey];
+        
+        NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
+        profiles[TWENGINE.myScreenName] = profile;
+        [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
         [[NSUserDefaults standardUserDefaults] synchronize];
     } failure:^(NSError *error) {
         
@@ -317,34 +322,6 @@
 
 - (void)settingsButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:_(@"Proxy Settings")];
-    RIButtonItem *helpItem = [RIButtonItem itemWithLabel:_(@"Help")];
-    RIButtonItem *signOutItem = [RIButtonItem itemWithLabel:_(@"Sign Out")];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                     cancelButtonItem:cancelItem
-                                                destructiveButtonItem:nil
-                                                     otherButtonItems:proxySettingsItem, helpItem, signOutItem, nil];
-    [actionSheet showInView:self.view.window];
-    proxySettingsItem.action = ^{
-        HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:proxySettingsVC];
-        [self presentViewController:nav animated:YES completion:nil];
-    };
-    helpItem.action = ^{
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/tuoxie007/Tweet4China2"]];
-    };
-    signOutItem.action = ^{
-        RIButtonItem *doSignOutItem = [RIButtonItem itemWithLabel:_(@"Sign Out")];
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                         cancelButtonItem:cancelItem
-                                                    destructiveButtonItem:doSignOutItem
-                                                         otherButtonItems:nil];
-        [actionSheet showInView:self.view.window];
-        doSignOutItem.action = ^{
-            [TWENGINE signOut];
-        };
-    };
 }
 
 - (void)_composeButtonTouched

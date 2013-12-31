@@ -30,6 +30,7 @@
 #import "HSUMessageCell.h"
 #import "HSUSearchPersonVC.h"
 #import "HSUListCell.h"
+#import "HSUSettingsViewController.h"
 
 @interface HSUBaseViewController ()
 
@@ -101,7 +102,7 @@
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {
-        if (RUNNING_ON_IOS_7) {
+        if (iOS_Ver >= 7) {
             tableView.backgroundColor = kClearColor;
         }
         tableView.layer.cornerRadius = 5;
@@ -124,21 +125,7 @@
     if (self.hideBackButton) {
         self.navigationItem.backBarButtonItem = nil;
     }
-    
-    if (RUNNING_ON_IOS_7) {
-        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                 target:self
-                                                 action:@selector(_addButtonTouched)];
-    } else {
-        UIButton *addFriendButton = [[UIButton alloc] init];
-        [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
-        [addFriendButton sizeToFit];
-        addFriendButton.width *= 1.4;
-        UIBarButtonItem *addFriendBtnItem = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
-        self.navigationItem.leftBarButtonItem = addFriendBtnItem;
-    }
+    self.navigationItem.leftBarButtonItems = [self _createLeftBarButtonItems];
     
     [super viewDidLoad];
 }
@@ -148,14 +135,14 @@
     [super viewWillAppear:animated];
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-    if (RUNNING_ON_IOS_7) {
+    if (iOS_Ver >= 7) {
         self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
         self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     }
 #endif
     
     if (self.navigationController.viewControllers.count > 1) {
-        if (!RUNNING_ON_IOS_7) {
+        if (iOS_Ver < 7) {
             UIButton *backButton = [[UIButton alloc] init];
             [backButton addTarget:self action:@selector(backButtonTouched) forControlEvents:UIControlEventTouchUpInside];
             if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBar class]]) {
@@ -290,11 +277,31 @@
 }
 
 #pragma mark - base view controller's methods
+- (NSArray *)_createLeftBarButtonItems
+{
+    // Action BarButtonItem
+    UIBarButtonItem *actionBarButton;
+    if (iOS_Ver >= 7) {
+        actionBarButton = [[UIBarButtonItem alloc]
+                           initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                           target:self
+                           action:@selector(_actionButtonTouched)];
+    } else {
+        UIButton *actionButton = [[UIButton alloc] init];
+        [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
+        [actionButton sizeToFit];
+        actionButton.width *= 1.4;
+        actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+    }
+    
+    return @[actionBarButton];
+}
 - (NSArray *)_createRightBarButtonItems
 {
     // Compose BarButtonItem
     UIBarButtonItem *composeBarButton;
-    if (RUNNING_ON_IOS_7) {
+    if (iOS_Ver >= 7) {
         composeBarButton = [[UIBarButtonItem alloc]
                             initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                             target:self
@@ -308,25 +315,23 @@
         composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
     }
     
-    return @[composeBarButton];
+    // Add Friend BarButtonItem
+    UIBarButtonItem *addFriendBarButton;
+    if (iOS_Ver >= 7) {
+        addFriendBarButton = [[UIBarButtonItem alloc]
+                              initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                              target:self
+                              action:@selector(_addButtonTouched)];
+    } else {
+        UIButton *addFriendButton = [[UIButton alloc] init];
+        [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
+        [addFriendButton sizeToFit];
+        addFriendButton.width *= 1.4;
+        addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
+    }
     
-//    // Action BarButtonItem
-//    UIBarButtonItem *actionBarButton;
-//    if (RUNNING_ON_IOS_7) {
-//        actionBarButton = [[UIBarButtonItem alloc]
-//                           initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-//                           target:self
-//                           action:@selector(_actionButtonTouched)];
-//    } else {
-//        UIButton *actionButton = [[UIButton alloc] init];
-//        [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-//        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
-//        [actionButton sizeToFit];
-//        actionButton.width *= 1.4;
-//        actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
-//    }
-//    
-//    return @[composeBarButton, actionBarButton];
+    return @[composeBarButton, addFriendBarButton];
 }
 
 - (void)backButtonTouched
@@ -362,26 +367,10 @@
 
 - (void)_actionButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *settingsItem = [RIButtonItem itemWithLabel:_(@"Settings")];
-    RIButtonItem *accountsItem = [RIButtonItem itemWithLabel:_(@"Accounts")];
-    RIButtonItem *aboutItem = [RIButtonItem itemWithLabel:_(@"About")];
-    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:_(@"Report Problem")];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:settingsItem, aboutItem, reportItem, accountsItem, nil];
-    [actionSheet showInView:[HSUAppDelegate shared].tabController.view];
-    
-    settingsItem.action = ^{
-        
-    };
-    accountsItem.action = ^{
-        
-    };
-    aboutItem.action = ^{
-        
-    };
-    reportItem.action = ^{
-        
-    };
+    HSUSettingsViewController *settingsVC = [[HSUSettingsViewController alloc] init];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.viewControllers = @[settingsVC];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)presentModelClass:(Class)modelClass
@@ -395,6 +384,11 @@
 - (BOOL)shouldAutorotate
 {
     return NO;
+}
+
+- (void)reloadData
+{
+    [self.tableView reloadData];
 }
 
 @end

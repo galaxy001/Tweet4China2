@@ -88,6 +88,7 @@
     [super refresh];
     
     [self refreshLocalData];
+    
     [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         for (NSDictionary *tweet in tweets) {
@@ -117,7 +118,7 @@
         if (indexPath.section == self.sectionsData.count &&
             indexPath.row == [self.sectionsData[indexPath.section-1] count] - 1) {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-            if (RUNNING_ON_IOS_7) {
+            if (iOS_Ver >= 7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
 #endif

@@ -129,11 +129,8 @@
         HSUTableCellData *cellData = self.data[i];
         if ([cellData.rawData[@"id_str"] isEqualToString:idStr]) {
             [self removeCellData:cellData];
-            if ([self.delegate respondsToSelector:@selector(tableView)]) {
-                // todo: ugly code
-                [[self.delegate performSelector:@selector(tableView)] reloadData];
-                break;
-            }
+            [self.delegate reloadData];
+            break;
         }
     }
 }
