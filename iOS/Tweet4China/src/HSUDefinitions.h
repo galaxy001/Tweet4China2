@@ -150,4 +150,6 @@ _Pragma("clang diagnostic pop") \
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"
 
+BOOL statusViewTestLabelInited;
+
 #endif

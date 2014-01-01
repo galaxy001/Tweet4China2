@@ -414,8 +414,8 @@
     }
     
     static TTTAttributedLabel *testSizeLabel = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    if (!statusViewTestLabelInited || testSizeLabel) {
+        statusViewTestLabelInited = YES;
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
         textAL.backgroundColor = kClearColor;
@@ -430,11 +430,10 @@
         textAL.lineHeightMultiple = textAL_LHM;
         
         testSizeLabel = textAL;
-    });
+    }
     testSizeLabel.text = text;
     
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(constraintWidth, 0)].height;
-    textHeight *= [GlobalSettings[HSUSettingTextSize] integerValue] / 14.0;
     data.renderData[@"text_height"] = @(textHeight);
     return textHeight;
 }

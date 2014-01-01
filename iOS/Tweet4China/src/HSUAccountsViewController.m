@@ -43,7 +43,7 @@
         NSString *title = S(@"@%@", screenName);
         NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
         if (userProfiles[screenName]) {
-            title = S(@"%@ (%@)", us[@"name"], title);
+            title = S(@"%@ (%@)", userProfiles[screenName][@"name"], title);
         }
         UITableViewCellAccessoryType accessorType = [TWENGINE.myScreenName isEqualToString:screenName] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
         RETableViewItem *item =

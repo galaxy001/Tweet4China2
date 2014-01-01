@@ -204,6 +204,7 @@
 
 - (void)settingsUpdated:(NSNotification *)notification
 {
+    statusViewTestLabelInited = NO;
     for (HSUTableCellData *data in self.data) {
         [data.renderData removeObjectForKey:@"text_height"];
         [data.renderData removeObjectForKey:@"height"];

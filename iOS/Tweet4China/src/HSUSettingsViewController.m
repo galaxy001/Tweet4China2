@@ -54,6 +54,8 @@
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
+          [item deselectRowAnimated:YES];
+          
           HSUAccountsViewController *accountsVC = [[HSUAccountsViewController alloc] init];
           [self.navigationController pushViewController:accountsVC animated:YES];
       }]];
@@ -65,6 +67,8 @@
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
+          [item deselectRowAnimated:YES];
+          
           HSUShadowsocksViewController *shadowsocksVC = [[HSUShadowsocksViewController alloc] init];
           [self.navigationController pushViewController:shadowsocksVC animated:YES];
       }]];

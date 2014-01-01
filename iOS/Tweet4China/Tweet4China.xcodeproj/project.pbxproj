@@ -124,6 +124,7 @@
 		9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */; };
 		9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE91872C3040044DB0A /* HSULoginViewController.m */; };
 		9666CDEC1872C9720044DB0A /* bg_login_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */; };
+		9666CDF01873EFBE0044DB0A /* icn_nav_action_ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */; };
 		966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */; };
 		966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */; };
 		966ACE1F174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */; };
@@ -468,6 +469,7 @@
 		9666CDE81872C3040044DB0A /* HSULoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoginViewController.h; sourceTree = "<group>"; };
 		9666CDE91872C3040044DB0A /* HSULoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSULoginViewController.m; sourceTree = "<group>"; };
 		9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_login_btn@2x.png"; sourceTree = "<group>"; };
+		9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_action_ios7@2x.png"; sourceTree = "<group>"; };
 		966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm@2x.png"; sourceTree = "<group>"; };
 		966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_back@2x.png"; sourceTree = "<group>"; };
 		966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_compose_dm@2x.png"; sourceTree = "<group>"; };
@@ -864,6 +866,7 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */,
 				9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */,
 				9666CDDD18705CD50044DB0A /* icn_nav_action@2x.png */,
 				966E191D184CB31200B5482C /* icn_locked_pressed@2x.png */,
@@ -1390,6 +1393,7 @@
 				966498AC16F22F1C00BC901A /* ic_tweet_attr_video_default@2x.png in Resources */,
 				966498B416F22F7F00BC901A /* ic_ambient_dm@2x.png in Resources */,
 				966498B516F22F7F00BC901A /* ic_ambient_favorite@2x.png in Resources */,
+				9666CDF01873EFBE0044DB0A /* icn_nav_action_ios7@2x.png in Resources */,
 				966498B616F22F7F00BC901A /* ic_ambient_follow@2x.png in Resources */,
 				969F2FD21823D69500015765 /* btn_floating_segment_default@2x~iphone.png in Resources */,
 				966498B716F22F7F00BC901A /* ic_ambient_list@2x.png in Resources */,

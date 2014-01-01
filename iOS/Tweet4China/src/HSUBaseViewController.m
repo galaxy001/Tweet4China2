@@ -280,23 +280,20 @@
 - (NSArray *)_createLeftBarButtonItems
 {
     // Action BarButtonItem
-    UIBarButtonItem *actionBarButton;
+    UIButton *actionButton = [[UIButton alloc] init];
+    [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     if (iOS_Ver >= 7) {
-        actionBarButton = [[UIBarButtonItem alloc]
-                           initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                           target:self
-                           action:@selector(_actionButtonTouched)];
+        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
     } else {
-        UIButton *actionButton = [[UIButton alloc] init];
-        [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
         [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
-        [actionButton sizeToFit];
-        actionButton.width *= 1.4;
-        actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
+    [actionButton sizeToFit];
+    actionButton.width *= 1.4;
+    UIBarButtonItem *actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     
     return @[actionBarButton];
 }
+
 - (NSArray *)_createRightBarButtonItems
 {
     // Compose BarButtonItem

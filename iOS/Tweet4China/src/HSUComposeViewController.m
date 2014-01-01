@@ -117,6 +117,7 @@
     if (self.draft) {
         self.defaultTitle = self.draft[@"title"];
         self.defaultText = self.draft[@"status"];
+        self.defaultSelectedRange = NSMakeRange(self.defaultText.length, 0);
         self.inReplyToStatusId = self.draft[kTwitterReplyID_ParameterKey];
         self.defaultImage = [UIImage imageWithContentsOfFile:self.draft[@"image_file_path"]];
     }
@@ -185,9 +186,6 @@
     contentTV.delegate = self;
     if (self.defaultText) {
         contentTV.text = self.defaultText;
-        if (self.defaultSelectedRange.location == 0 && self.defaultSelectedRange.length == 0) {
-            self.defaultSelectedRange = NSMakeRange(self.defaultText.length, 0);
-        }
         contentTV.selectedRange = self.defaultSelectedRange;
     } else {
         contentTV.text = [[NSUserDefaults standardUserDefaults] objectForKey:@"draft"];

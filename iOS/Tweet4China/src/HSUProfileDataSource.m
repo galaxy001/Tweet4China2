@@ -17,11 +17,6 @@
 
 @implementation HSUProfileDataSource
 
-- (void)dealloc
-{
-    notification_remove_observer(self);
-}
-
 - (id)init
 {
     return [self initWithScreenName:MyScreenName];

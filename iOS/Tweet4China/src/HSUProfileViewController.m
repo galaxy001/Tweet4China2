@@ -27,6 +27,7 @@
 
 @property (nonatomic, strong) HSUProfileView *profileView;
 @property (nonatomic, assign) BOOL isMeTab;
+@property (nonatomic) NSTimeInterval lastUpdateTime;
 
 @end
 
@@ -73,18 +74,25 @@
     
     [((HSUProfileDataSource *)self.dataSource) refreshLocalData];
     
-    [TWENGINE showUser:self.screenName success:^(id responseObj) {
-        NSDictionary *profile = responseObj;
-        [self.profileView setupWithProfile:profile];
-        self.profile = profile;
-        
-        NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
-        profiles[TWENGINE.myScreenName] = profile;
-        [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } failure:^(NSError *error) {
-        
-    }];
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    if (now - self.lastUpdateTime > 60) {
+        self.lastUpdateTime = now;
+        self.navigationItem.title = _(@"Loading...");
+        __weak typeof(self) weakSelf = self;
+        [TWENGINE showUser:self.screenName success:^(id responseObj) {
+            weakSelf.navigationItem.title = nil;
+            NSDictionary *profile = responseObj;
+            [weakSelf.profileView setupWithProfile:profile];
+            weakSelf.profile = profile;
+            
+            NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
+            profiles[TWENGINE.myScreenName] = profile;
+            [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        } failure:^(NSError *error) {
+            weakSelf.navigationItem.title = nil;
+        }];
+    }
     [self.tableView reloadData];
 }
 
@@ -93,6 +101,7 @@
     if (self.isMeTab) {
         self.screenName = MyScreenName;
         self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:self.screenName];
+        self.tableView.dataSource = self.dataSource;
     }
 }
 
