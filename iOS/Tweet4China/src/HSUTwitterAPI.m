@@ -695,6 +695,54 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                   success:success failure:failure];
 }
 
+- (void)updateAvatar:(UIImage *)avatar success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    dispatch_async(GCDBackgroundThread, ^{
+        id response = [self.engine setProfileImageWithImageData:UIImageJPEGRepresentation(avatar, .92)];
+        dispatch_async(GCDMainThread, ^{
+            if ([response isKindOfClass:[NSError class]]) {
+                failure(response);
+            } else {
+                success(response); // error is profile dictionary
+            }
+        });
+    });
+}
+
+- (void)updateBanner:(UIImage *)banner success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    dispatch_async(GCDBackgroundThread, ^{
+        id response = [self.engine setBannerImageWithImageData:UIImageJPEGRepresentation(banner, .92)];
+        dispatch_async(GCDMainThread, ^{
+            if ([response isKindOfClass:[NSError class]]) {
+                NSError *error = response;
+                if (error.code != 204) {
+                    failure(response);
+                    return ;
+                }
+            }
+            success(response);
+        });
+    });
+}
+
+- (void)updateProfile:(NSDictionary *)profile success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    dispatch_async(GCDBackgroundThread, ^{
+        id response = [self.engine updateUserProfileWithDictionary:profile];
+        dispatch_async(GCDMainThread, ^{
+            if ([response isKindOfClass:[NSError class]]) {
+                NSError *error = response;
+                if (error.code != 204) {
+                    failure(response);
+                    return ;
+                }
+            }
+            success(response);
+        });
+    });
+}
+
 - (void)sendGETWithUrl:(NSString *)url parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendWithUrl:url method:@"GET" parameters:parameters success:success failure:failure];

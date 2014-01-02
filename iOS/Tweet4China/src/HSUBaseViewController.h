@@ -24,6 +24,10 @@
 @property (nonatomic, assign) BOOL useDefaultStatusView;
 @property (nonatomic, assign) BOOL statusBarHidden;
 
+@property (nonatomic, readonly) UIBarButtonItem *actionBarButton;
+@property (nonatomic, readonly) UIBarButtonItem *addFriendBarButton;
+@property (nonatomic, readonly) UIBarButtonItem *composeBarButton;
+
 - (id)initWithDataSource:(HSUBaseDataSource *)dataSource;
 - (Class)cellClassForDataType:(NSString *)dataType;
 - (void)presentModelClass:(Class)modelClass;

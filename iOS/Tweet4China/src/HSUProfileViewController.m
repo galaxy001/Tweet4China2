@@ -22,12 +22,15 @@
 #import "HSUFavoritesDataSource.h"
 #import "HSUSubscribedListsViewController.h"
 #import "HSUSubscribedListsDataSource.h"
+#import <OpenCam/OpenCam.h>
+#import "HSUEditProfileViewController.h"
 
-@interface HSUProfileViewController () <HSUProfileViewDelegate>
+@interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, strong) HSUProfileView *profileView;
-@property (nonatomic, assign) BOOL isMeTab;
 @property (nonatomic) NSTimeInterval lastUpdateTime;
+@property (nonatomic) BOOL presenting;
+@property (nonatomic) BOOL selectPhotoForAvatar; // YES for avatar, NO for banner
 
 @end
 
@@ -35,11 +38,7 @@
 
 - (id)init
 {
-    self = [self initWithScreenName:MyScreenName];
-    if (self) {
-        self.isMeTab = YES;
-    }
-    return self;
+    return [self initWithScreenName:MyScreenName];
 }
 
 - (id)initWithScreenName:(NSString *)screenName
@@ -72,36 +71,56 @@
 {
     [super viewDidAppear:animated];
     
+    if (self.isMe) { // me tab
+        self.navigationItem.rightBarButtonItems = @[self.addFriendBarButton];
+    } else {
+        self.navigationItem.rightBarButtonItems = nil;
+    }
+    
+    if (!self.presenting) {
+        [self refreshData];
+    }
+    self.presenting = NO;
+}
+
+- (void)refreshData
+{
     [((HSUProfileDataSource *)self.dataSource) refreshLocalData];
     
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     if (now - self.lastUpdateTime > 60) {
         self.lastUpdateTime = now;
-        self.navigationItem.title = _(@"Loading...");
+        self.navigationItem.title = self.profile ? _(@"Updating...") : _(@"Loading...");
         __weak typeof(self) weakSelf = self;
         [TWENGINE showUser:self.screenName success:^(id responseObj) {
             weakSelf.navigationItem.title = nil;
-            NSDictionary *profile = responseObj;
-            [weakSelf.profileView setupWithProfile:profile];
-            weakSelf.profile = profile;
-            
-            NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
-            profiles[TWENGINE.myScreenName] = profile;
-            [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
-            [[NSUserDefaults standardUserDefaults] synchronize];
+            [weakSelf updateProfile:responseObj];
         } failure:^(NSError *error) {
-            weakSelf.navigationItem.title = nil;
+            weakSelf.navigationItem.title = _(@"Error Occurred");
+            weakSelf.lastUpdateTime = 0;
         }];
     }
     [self.tableView reloadData];
 }
 
+- (void)updateProfile:(NSDictionary *)profile
+{
+    [self.profileView setupWithProfile:profile];
+    self.profile = profile;
+    
+    NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
+    profiles[TWENGINE.myScreenName] = profile;
+    [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)updateScreenName
 {
-    if (self.isMeTab) {
+    if (self.isMe) {
         self.screenName = MyScreenName;
         self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:self.screenName];
         self.tableView.dataSource = self.dataSource;
+        [self reloadData];
     }
 }
 
@@ -331,6 +350,80 @@
 
 - (void)settingsButtonTouched
 {
+    if (self.profile) {
+        if ((self.profile[@"profile_image_url_https"] == nil || self.profileView.avatarImage) &&
+            (self.profile[@"profile_banner_url"] == nil || self.profileView.bannerImage)) {
+            
+            HSUEditProfileViewController *editProfileVC = [[HSUEditProfileViewController alloc] init];
+            editProfileVC.profile = self.profile;
+            editProfileVC.avatarImage = self.profileView.avatarImage;
+            editProfileVC.bannerImage = self.profileView.bannerImage;
+            editProfileVC.profileVC = self;
+            HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:editProfileVC];
+            [self presentViewController:nav animated:YES completion:nil];
+            self.presenting = YES;
+        }
+    }
+}
+
+- (void)selectPhotoForAvatar:(BOOL)forAvatar
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+    OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
+    if (forAvatar) {
+        cameraVC.maxWidth = 640;
+    } else {
+        cameraVC.maxWidth = 1280;
+    }
+    cameraVC.delegate = self;
+    [self presentViewController:cameraVC animated:YES completion:nil];
+    self.selectPhotoForAvatar = forAvatar;
+#else
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_(@"Select From Camera")];
+    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_(@"Take a Picture")];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
+    [actionSheet showInView:self.view.window];
+    cancelItem.action = ^{
+        [contentTV becomeFirstResponder];
+    };
+    photoItem.action = ^{
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        picker.editing = YES;
+        picker.delegate = self;
+        [self.navigationController presentViewController:picker animated:YES completion:nil];
+        self.selectPhotoForAvatar = forAvatar;
+    };
+    captureItem.action = ^{
+        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.editing = YES;
+        picker.delegate = self;
+        [self.navigationController presentViewController:picker animated:YES completion:nil];
+        self.selectPhotoForAvatar = forAvatar;
+    };
+#endif
+}
+
+- (void)avatarButtonTouched
+{
+    if (self.isMe) {
+        [self selectPhotoForAvatar:YES];
+    } else {
+        NSString *url = self.profile[@"profile_image_url_https"];
+        if (url) {
+            url = [url stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
+            [self openPhotoURL:[NSURL URLWithString:url] withCellData:nil];
+        }
+    }
+}
+
+- (void)bannerButtonTouched
+{
+    if (self.isMe) {
+        [self selectPhotoForAvatar:NO];
+    }
 }
 
 - (void)_composeButtonTouched
@@ -343,6 +436,54 @@
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
+{
+    UIImage *image = cameraViewController.photo;
+    if (image) {
+        __weak typeof(self) weakSelf = self;
+        [SVProgressHUD showWithStatus:_(@"Uploading...")];
+        // get center square
+        if (image.size.width > image.size.height) {
+            image = [image subImageAtRect:ccr(image.size.width/2-image.size.height/2, 0, image.size.height, image.size.height)];
+        } else if (image.size.width < image.size.height) {
+            image = [image subImageAtRect:ccr(0, image.size.height/2-image.size.width/2, image.size.width, image.size.width)];
+        }
+        if (self.selectPhotoForAvatar) {
+            [TWENGINE updateAvatar:image success:^(id responseObj) {
+                [weakSelf reloadData];
+                [SVProgressHUD dismiss];
+            } failure:^(NSError *error) {
+                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+            }];
+        } else {
+            // get center rectangle
+            if (image.size.width > image.size.height * 2) {
+                image = [image subImageAtRect:ccr(image.size.width/2-image.size.height, 0, image.size.height*2, image.size.height)];
+            } else if (image.size.width < image.size.height * 2) {
+                image = [image subImageAtRect:ccr(0, image.size.height-image.size.width/2, image.size.width, image.size.width/2)];
+            }
+            [TWENGINE updateBanner:image success:^(id responseObj) {
+                [weakSelf reloadData];
+                [SVProgressHUD dismiss];
+            } failure:^(NSError *error) {
+                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+            }];
+        }
+        self.selectPhotoForAvatar = NO;
+    }
+}
+
+- (void)reloadData
+{
+    self.lastUpdateTime = 0;
+    [self refreshData];
+}
+
+- (BOOL)isMe
+{
+    return [self.profile[@"screen_name"] isEqualToString:TWENGINE.myScreenName];
 }
 
 @end

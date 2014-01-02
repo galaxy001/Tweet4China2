@@ -68,6 +68,8 @@
         infoView.showsHorizontalScrollIndicator = NO;
         infoView.showsVerticalScrollIndicator = NO;
         infoView.delegate = self;
+        UIGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:delegate action:@selector(bannerButtonTouched)];
+        [infoView addGestureRecognizer:gesture];
         
         UIView *avatarBGView = [[UIView alloc] init];
         [infoView addSubview:avatarBGView];
@@ -84,6 +86,7 @@
         avatarButton.layer.cornerRadius = 4;
         avatarButton.size = ccs(60, 60);
         avatarButton.center = avatarBGView.boundsCenter;
+        [avatarButton setTapTarget:delegate action:@selector(avatarButtonTouched)];
         
         UILabel *nameLabel = [[UILabel alloc] init];
         [infoView addSubview:nameLabel];
@@ -171,7 +174,7 @@
         tweetsButton.backgroundColor = kWhiteColor;
         tweetsButton.frame = ccr(0, 1, 107, referenceButtonBGView.height-2);
         [tweetsButton setTitleColor:bw(153) forState:UIControlStateNormal];
-        tweetsButton.titleLabel.font = [UIFont systemFontOfSize:8];
+        tweetsButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [tweetsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -55, 0, 0)];
         [tweetsButton setTitle:_(@"TWEETS") forState:UIControlStateNormal];
         [tweetsButton setTapTarget:delegate action:@selector(tweetsButtonTouched)];
@@ -190,7 +193,7 @@
         followingButton.backgroundColor = kWhiteColor;
         followingButton.frame = ccr(tweetsButton.right+1, 1, 105, tweetsButton.height);
         [followingButton setTitleColor:bw(153) forState:UIControlStateNormal];
-        followingButton.titleLabel.font = [UIFont systemFontOfSize:8];
+        followingButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -38.5, 0, 0)];
         [followingButton setTitle:_(@"FOLLOWING") forState:UIControlStateNormal];
         [followingButton setTapTarget:delegate action:@selector(followingsButtonTouched)];
@@ -209,7 +212,7 @@
         followersButton.backgroundColor = kWhiteColor;
         followersButton.frame = ccr(followingButton.right+1, 1, 106, followingButton.height);
         [followersButton setTitleColor:bw(153) forState:UIControlStateNormal];
-        followersButton.titleLabel.font = [UIFont systemFontOfSize:8];
+        followersButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [followersButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -37.5, 0, 0)];
         [followersButton setTitle:_(@"FOLLOWERS") forState:UIControlStateNormal];
         [followersButton setTapTarget:delegate action:@selector(followersButtonTouched)];
@@ -413,6 +416,16 @@
                 stringByReplacingOccurrencesOfString:@"https://" withString:@""];
     }
     return nil;
+}
+
+- (UIImage *)avatarImage
+{
+    return [self.avatarButton imageForState:UIControlStateNormal];
+}
+
+- (UIImage *)bannerImage
+{
+    return self.infoBGView.image;
 }
 
 @end

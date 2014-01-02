@@ -39,6 +39,7 @@
 "Message failed to send" = "消息傳送失敗了";
 "Failed to send message" = "消息傳送失敗了";
 "Loading..." = "載入中...";
+"Updating..." = "更新中...";
 "Load followers failed" = "加載關注者失敗了";
 "Unfollow failed" = "取消關注失敗了";
 "Follow failed" = "關注失敗了";
@@ -134,3 +135,13 @@
 "Password" = "密碼";
 "You want to try again?" = "你可以用同樣的方法再試一次，或者換用網頁登錄（OAuth授權）";
 "Application Version" = "應用版本";
+"Name" = "名稱";
+"Location" = "位置";
+"Site" = "網站";
+"Introduce yourself" = "自我介紹";
+"Upload failed" = "上載失敗了";
+"Uploading..." = "上載中...";
+"Avatar" = "頭像";
+"Banner" = "橫幅";
+"Save" = "存儲";
+"Edit Profile" = "編輯個人資料";

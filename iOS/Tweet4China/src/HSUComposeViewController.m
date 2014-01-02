@@ -311,7 +311,7 @@
     [toggleLocationBnt sizeToFit];
     toggleLocationBnt.width = extraPanelSV.width - 20;
     toggleLocationBnt.left += extraPanelSV.width;
-
+    
     suggestionsTV = [[UITableView alloc] init];
     [self.view addSubview:suggestionsTV];
     suggestionsTV.hidden = YES;
@@ -370,6 +370,7 @@
     locationManager.pausesLocationUpdatesAutomatically = YES;
 #endif
     
+    // todo use cache
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
     [TWENGINE getFriendsWithSuccess:^(id responseObj) {
         friends = responseObj[@"users"];
@@ -436,10 +437,17 @@
             contentShadowV.top = suggestionsTV.top;
             suggestionsTV.height -= 54;
         }
-        [contentTV scrollRangeToVisible:NSMakeRange(contentTV.text.length, 0)];
+        [contentTV scrollRangeToVisible:contentTV.selectedRange];
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
+        NSRange selectedRange = contentTV.selectedRange;
+        NSString *text = contentTV.text;
+        contentTV.text = nil;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            contentTV.text = text;
+            contentTV.selectedRange = selectedRange;
+        });
     }
 }
 
@@ -802,6 +810,7 @@
     if ([self textView:contentTV shouldChangeTextInRange:range replacementText:replacement]) {
         contentTV.text = [contentTV.text stringByReplacingCharactersInRange:range withString:replacement];
         [self textViewDidChange:contentTV];
+        contentTV.selectedRange = NSMakeRange(range.location+replacement.length, 0);
     }
     suggestionType = 0;
     filteredSuggestions = nil;

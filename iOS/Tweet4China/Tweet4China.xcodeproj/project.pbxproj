@@ -125,6 +125,7 @@
 		9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE91872C3040044DB0A /* HSULoginViewController.m */; };
 		9666CDEC1872C9720044DB0A /* bg_login_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */; };
 		9666CDF01873EFBE0044DB0A /* icn_nav_action_ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */; };
+		9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */; };
 		966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */; };
 		966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */; };
 		966ACE1F174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */; };
@@ -470,6 +471,8 @@
 		9666CDE91872C3040044DB0A /* HSULoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSULoginViewController.m; sourceTree = "<group>"; };
 		9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_login_btn@2x.png"; sourceTree = "<group>"; };
 		9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_action_ios7@2x.png"; sourceTree = "<group>"; };
+		9666CDF318752A5F0044DB0A /* HSUEditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUEditProfileViewController.h; sourceTree = "<group>"; };
+		9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUEditProfileViewController.m; sourceTree = "<group>"; };
 		966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm@2x.png"; sourceTree = "<group>"; };
 		966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_back@2x.png"; sourceTree = "<group>"; };
 		966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_compose_dm@2x.png"; sourceTree = "<group>"; };
@@ -1169,6 +1172,8 @@
 				9628E6D51730F45E005A9EC9 /* HSUProfileView.m */,
 				9628185516DFABE700ABF0AD /* HSUProfileViewController.h */,
 				9628185616DFABE700ABF0AD /* HSUProfileViewController.m */,
+				9666CDF318752A5F0044DB0A /* HSUEditProfileViewController.h */,
+				9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */,
 				96DABC74172AF5BE001AD70A /* HSUStatusActionView.h */,
 				96DABC75172AF5BE001AD70A /* HSUStatusActionView.m */,
 				96BE216B16EC74AB00226799 /* HSUStatusCell.h */,
@@ -1613,6 +1618,7 @@
 				966E1906184CAB0D00B5482C /* HSUListTweetsDataSource.m in Sources */,
 				603909459EA4EB003D8703B6 /* UIImage+Additions.m in Sources */,
 				60390DA90C44901CEEB0F319 /* UIButton+Additions.m in Sources */,
+				9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */,
 				603905961F1A442FC872C8B3 /* HSUSuggestMentionCell.m in Sources */,
 				603909172DE0FB7D7730FFEB /* HSUSuggestTagCell.m in Sources */,
 				9631AD191714738F006A4C0F /* GTMNSString+HTML.m in Sources */,

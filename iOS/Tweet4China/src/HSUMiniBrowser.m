@@ -73,11 +73,15 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
     if (self.cellData) {
-        UIButton *actionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
-        [actionsButton sizeToFit];
-        [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
+        if (iOS_Ver >= 7) {
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(_actionsButtonTouched)];
+        } else {
+            UIButton *actionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            [actionsButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_actions"] forState:UIControlStateNormal];
+            [actionsButton sizeToFit];
+            [actionsButton setTapTarget:self action:@selector(_actionsButtonTouched)];
+            self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionsButton];
+        }
     }
 }
 

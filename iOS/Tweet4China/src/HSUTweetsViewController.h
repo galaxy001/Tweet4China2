@@ -15,6 +15,7 @@
 - (void)favorite:(HSUTableCellData *)cellData;
 - (void)more:(HSUTableCellData *)cellData;
 
+- (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData;
 - (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData;
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData;
 

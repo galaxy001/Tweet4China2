@@ -11,7 +11,6 @@
 @interface HSUProfileViewController : HSUTweetsViewController
 
 @property (nonatomic, strong) NSDictionary *profile;
-
 @property (nonatomic, copy) NSString *screenName;
 
 - (id)initWithScreenName:(NSString *)screenName;

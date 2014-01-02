@@ -39,6 +39,11 @@
 @end
 
 @implementation HSUBaseViewController
+{
+    UIBarButtonItem *_actionBarButton;
+    UIBarButtonItem *_addFriendBarButton;
+    UIBarButtonItem *_composeBarButton;
+}
 
 #pragma mark - Liftstyle
 - (void)dealloc
@@ -120,12 +125,12 @@
     }
     
     if (!self.hideRightButtons) {
-        self.navigationItem.rightBarButtonItems = [self _createRightBarButtonItems];
+        self.navigationItem.rightBarButtonItems = @[self.composeBarButton];
     }
     if (self.hideBackButton) {
         self.navigationItem.backBarButtonItem = nil;
     }
-    self.navigationItem.leftBarButtonItems = [self _createLeftBarButtonItems];
+    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
     
     [super viewDidLoad];
 }
@@ -277,58 +282,58 @@
 }
 
 #pragma mark - base view controller's methods
-- (NSArray *)_createLeftBarButtonItems
+- (UIBarButtonItem *)actionBarButton
 {
-    // Action BarButtonItem
-    UIButton *actionButton = [[UIButton alloc] init];
-    [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-    if (iOS_Ver >= 7) {
-        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
-    } else {
-        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
+    if (!_actionBarButton) {
+        UIButton *actionButton = [[UIButton alloc] init];
+        [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+        if (iOS_Ver >= 7) {
+            [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
+        } else {
+            [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
+        }
+        [actionButton sizeToFit];
+        _actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
-    [actionButton sizeToFit];
-    actionButton.width *= 1.4;
-    UIBarButtonItem *actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
-    
-    return @[actionBarButton];
+    return _actionBarButton;
 }
-
-- (NSArray *)_createRightBarButtonItems
+- (UIBarButtonItem *)addFriendBarButton
 {
-    // Compose BarButtonItem
-    UIBarButtonItem *composeBarButton;
-    if (iOS_Ver >= 7) {
-        composeBarButton = [[UIBarButtonItem alloc]
-                            initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                            target:self
-                            action:@selector(_composeButtonTouched)];
-    } else {
-        UIButton *composeButton = [[UIButton alloc] init];
-        [composeButton addTarget:self action:@selector(_composeButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        [composeButton setImage:[UIImage imageNamed:@"ic_title_tweet"] forState:UIControlStateNormal];
-        [composeButton sizeToFit];
-        composeButton.width *= 1.4;
-        composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
+    if (!_addFriendBarButton) {
+        if (iOS_Ver >= 7) {
+            _addFriendBarButton = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                   target:self
+                                   action:@selector(_addButtonTouched)];
+        } else {
+            UIButton *addFriendButton = [[UIButton alloc] init];
+            [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
+            [addFriendButton sizeToFit];
+            addFriendButton.width *= 1.4;
+            _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
+        }
     }
-    
-    // Add Friend BarButtonItem
-    UIBarButtonItem *addFriendBarButton;
-    if (iOS_Ver >= 7) {
-        addFriendBarButton = [[UIBarButtonItem alloc]
-                              initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                              target:self
-                              action:@selector(_addButtonTouched)];
-    } else {
-        UIButton *addFriendButton = [[UIButton alloc] init];
-        [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
-        [addFriendButton sizeToFit];
-        addFriendButton.width *= 1.4;
-        addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
+    return _addFriendBarButton;
+}
+- (UIBarButtonItem *)composeBarButton
+{
+    if (!_composeBarButton) {
+        if (iOS_Ver >= 7) {
+            _composeBarButton = [[UIBarButtonItem alloc]
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
+                                 target:self
+                                 action:@selector(_composeButtonTouched)];
+        } else {
+            UIButton *composeButton = [[UIButton alloc] init];
+            [composeButton addTarget:self action:@selector(_composeButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            [composeButton setImage:[UIImage imageNamed:@"ic_title_tweet"] forState:UIControlStateNormal];
+            [composeButton sizeToFit];
+            composeButton.width *= 1.4;
+            _composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
+        }
     }
-    
-    return @[composeBarButton, addFriendBarButton];
+    return _composeBarButton;
 }
 
 - (void)backButtonTouched

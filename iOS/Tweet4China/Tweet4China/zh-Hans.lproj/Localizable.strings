@@ -39,6 +39,7 @@
 "Message failed to send" = "消息发送失败了";
 "Failed to send message" = "消息发送失败了";
 "Loading..." = "加载中...";
+"Updating..." = "更新中...";
 "Load followers failed" = "加载关注者失败了";
 "Unfollow failed" = "取消关注失败了";
 "Follow failed" = "关注失败了";
@@ -134,3 +135,13 @@
 "Password" = "密码";
 "You want to try again?" = "你可以用同样的方法再试一次，或者换用网页登录（OAuth授权）";
 "Application Version" = "应用版本";
+"Name" = "名称";
+"Location" = "位置";
+"Site" = "网站";
+"Introduce yourself" = "自我介绍";
+"Upload failed" = "上传失败了";
+"Uploading..." = "上传中...";
+"Avatar" = "头像";
+"Banner" = "横幅";
+"Save" = "保存";
+"Edit Profile" = "编辑个人资料";

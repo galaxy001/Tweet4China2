@@ -11,6 +11,9 @@
 @protocol HSUProfileViewDelegate;
 @interface HSUProfileView : UIView <UIScrollViewDelegate>
 
+@property (nonatomic, readonly) UIImage *avatarImage;
+@property (nonatomic, readonly) UIImage *bannerImage;
+
 - (id)initWithScreenName:(NSString *)screenName delegate:(id<HSUProfileViewDelegate>)delegate;
 
 - (void)setupWithProfile:(NSDictionary *)profile;
@@ -26,5 +29,7 @@
 - (void)settingsButtonTouched;
 - (void)followButtonTouched:(UIButton *)followButton;
 - (void)messagesButtonTouched;
+- (void)avatarButtonTouched;
+- (void)bannerButtonTouched;
 
 @end
