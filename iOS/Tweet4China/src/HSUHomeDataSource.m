@@ -13,7 +13,7 @@
 
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
 {
-    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
     if (!latestIdStr) {
         latestIdStr = @"1";
     }

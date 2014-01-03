@@ -39,6 +39,7 @@
 #import "NSData+MD5.h"
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "HSUNavigationController.h"
+#import "Flurry.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -128,6 +129,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUUserProfiles @"HSUUserProfiles"
 #define kDiscoverHomePage @"HSUDiscoverHomePage"
 
+#define HSUShadowsocksSettings_Desc @"desc"
 #define HSUShadowsocksSettings_Server @"server"
 #define HSUShadowsocksSettings_RemotePort @"remote_port"
 #define HSUShadowsocksSettings_Password @"password"
@@ -149,6 +151,13 @@ _Pragma("clang diagnostic pop") \
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"
+#define HSUCheckUnreadTimeNotification @"HSUCheckUnreadTimeNotification"
+
+#define HSUActionBarTouched @"HSUActionBarTouched"
+#define HSUAddFriendBarTouched @"HSUAddFriendBarTouched"
+#define HSUTabControllerDidSelectViewControllerNotification @"HSUTabControllerDidSelectViewControllerNotification"
+
+#define NetWorkStatus [TWENGINE networkStatus]
 
 BOOL statusViewTestLabelInited;
 

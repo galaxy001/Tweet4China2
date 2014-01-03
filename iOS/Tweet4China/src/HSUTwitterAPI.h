@@ -14,12 +14,15 @@ typedef void (^HSUTwitterAPIFailureBlock)(NSError *error);
 
 @interface HSUTwitterAPI : NSObject
 
+@property (nonatomic, readonly) NSDictionary *networkStatus;
+
 + (instancetype)shared;
 - (BOOL)isAuthorized;
 - (NSString *)myScreenName;
 - (void)removeAccount:(NSString *)screenName;
 - (void)loadAccount:(NSString *)screenName;
 - (void)loginWithScreenName:(NSString *)screenName andPassword:(NSString *)password success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)authorizeByOAuth;
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)getHomeTimelineWithMaxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

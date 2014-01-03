@@ -32,8 +32,9 @@
         [TWENGINE getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
             HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
             [weakSelf.data insertObject:chatCellData atIndex:0];
-            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
-            [weakSelf performSelector:@selector(refresh)];
+//            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+            [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:1];
+            [weakSelf refresh];
         } failure:^(NSError *error) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         }];

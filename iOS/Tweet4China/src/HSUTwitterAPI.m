@@ -14,6 +14,10 @@
 #import "HSUMiniBrowser.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSULoginViewController.h"
+#import "HSUShadowsocksViewController.h"
+#import <Reachability/Reachability.h>
+
+#define API_URL ([url substringFromIndex:28])
 
 @interface FHSTwitterEngine (Private)
 
@@ -218,7 +222,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                 };
                 RIButtonItem *retryItem = [RIButtonItem itemWithLabel:_(@"Retry")];
                 retryItem.action = ^{
-                    [self authorizeByXAuth];
+                    
                 };
                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login failed") message:_(@"You want to try again?")cancelButtonItem:cancelItem otherButtonItems:retryItem, nil];
                 [alert show];
@@ -230,9 +234,20 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)authorize
 {
     if (shadowsocksStarted) {
-        HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
-        HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:loginVC];
-        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+        if (self.authorizing) {
+            return;
+        }
+        self.authorizing = YES;
+        [UIApplication sharedApplication].keyWindow.userInteractionEnabled = NO;
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
+            [TWENGINE authorizeByOAuth];
+        });
+//        HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
+//        HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:loginVC];
+//        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
         return;
     }
     
@@ -351,12 +366,12 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
                  [[NSUserDefaults standardUserDefaults] synchronize];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
+                 [Flurry logEvent:@"authorize_by_oauth_success" withParameters:@{@"network": NetWorkStatus}];
              } failure:^(NSError *error) {
                  [[HSUTwitterAPI shared] dealWithError:error errTitle:_(@"Fetch account info failed")];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
+                 [Flurry logEvent:@"authorize_by_oauth_failed" withParameters:@{@"network": NetWorkStatus}];
              }];
-         } else {
-             notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO});
          }
      }];
 }
@@ -463,13 +478,35 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)getDirectMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     NSMutableDictionary *params = [@{} mutableCopy];
-    params[@"since_id"] = sinceID ?: @"-1";
+    if (sinceID) params[@"since_id"] = sinceID;
     params[@"count"] = @"200";
     params[@"skip_status"] = @"true";
     [self sendGETWithUrl:url_direct_messages
               parameters:params
                  success:success
-                 failure:failure];
+                 failure:^(NSError *error) {
+                     if (error.code != 204) {
+                         failure(error);
+                     } else {
+                         success(@[]);
+                     }
+                 }];
+}
+- (void)getSentMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"since_id"] = sinceID;
+    params[@"count"] = @"200";
+    [self sendGETWithUrl:url_direct_messages_sent
+              parameters:params
+                 success:success
+                 failure:^(NSError *error) {
+                     if (error.code != 204) {
+                         failure(error);
+                     } else {
+                         success(@[]);
+                     }
+                 }];
 }
 - (void)getListsWithScreenName:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
@@ -611,13 +648,6 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
              success(usersDict);
          } failure:failure];
      } failure:failure];
-}
-- (void)getSentMessagesSinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
-{
-    [self sendGETWithUrl:url_direct_messages_sent
-              parameters:@{@"since_id": sinceID ?: @"-1"}
-                 success:success
-                 failure:failure];
 }
 - (void)getTrendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
@@ -794,15 +824,14 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
             if (error) {
                 if ([error code] == 204) { // Error Domain=Twitter successfully processed the request, but did not return any content Code=204 "The operation couldn’t be completed. (Twitter successfully processed the request, but did not return any content error 204.)"
                     failure(error);
+                    [Flurry logEvent:@"twitter_api_request_failed" withParameters:@{@"url": API_URL, @"network": NetWorkStatus}];
                 } else {
                     failure(error);
+                    [Flurry logEvent:@"twitter_api_request_failed" withParameters:@{@"url": API_URL, @"network": NetWorkStatus}];
                 }
             } else {
-                if ([responseObj count]) {
-                    success(responseObj);
-                } else {
-                    failure(nil);
-                }
+                success(responseObj);
+                [Flurry logEvent:@"twitter_api_request_success" withParameters:@{@"url": API_URL, @"network": NetWorkStatus}];
             }
         });
     });
@@ -829,8 +858,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
     
     if (error) {
+        [Flurry logEvent:@"twitter_api_request_failed" withParameters:@{@"url": API_URL, @"network": NetWorkStatus}];
         return error;
     } else {
+        [Flurry logEvent:@"twitter_api_request_success" withParameters:@{@"url": API_URL, @"network": NetWorkStatus}];
         return responseObj;
     }
 }
@@ -849,32 +880,41 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         return;
     }
     
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *reportItem = [RIButtonItem itemWithLabel:_(@"Report to developer")];
-    RIButtonItem *proxySettingsItem = [RIButtonItem itemWithLabel:_(@"Use my own shadowsocks")];
-    reportItem.action = ^{
-        NSString *subject = @"[Tweet4China 2.6] Network Problem";
-        NSString *body = _(@"\nDescribe the problem please");
-        NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=%@&body=%@",
-                         [subject stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
-                         [body stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
-    };
-    proxySettingsItem.action = ^{
-        HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:proxySettingsVC];
-        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
-    };
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                    message:_(@"Service unavailable temporarily, please try again later.")
-                                           cancelButtonItem:cancelItem
-                                           otherButtonItems:reportItem, proxySettingsItem, nil];
-    [alert show];
+    if (1) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Retry Later")];
+        RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_(@"Change Server")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Connection failed")
+                                                        message:nil
+                                               cancelButtonItem:cancelItem
+                                               otherButtonItems:changeServerItem, nil];
+        changeServerItem.action = ^{
+            HSUShadowsocksViewController *ssVC = [[HSUShadowsocksViewController alloc] init];
+            HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:ssVC];
+            [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+        };
+        [alert show];
+    } else {
+        [SVProgressHUD showErrorWithStatus:_(@"Check your network")];
+    }
 }
 
 - (NSDate *)getDateFromTwitterCreatedAt:(NSString *)twitterDate
 {
     return [self.engine getDateFromTwitterCreatedAt:twitterDate];
+}
+
+- (NSDictionary *)networkStatus
+{
+    NSString *networkType = @"none";
+    if ([Reachability reachabilityForInternetConnection].isReachableViaWiFi) {
+        networkType = @"WiFi";
+    } else if ([Reachability reachabilityForInternetConnection].isReachableViaWWAN) {
+        networkType = @"WWAN";
+    }
+    
+    NSString *ss = [HSUAppDelegate shared].shadwosocksServer ?: @"";
+    
+    return @{@"reachability": networkType, @"ssserver": ss, @"ssstarted": @(shadowsocksStarted)};
 }
 
 @end

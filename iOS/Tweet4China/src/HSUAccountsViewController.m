@@ -10,6 +10,8 @@
 #import <RETableViewManager/RETableViewManager.h>
 #import "HSUProxySettingsViewController.h"
 #import "HSULoginViewController.h"
+#import "HSUConversationsDataSource.h"
+#import "HSUProfileDataSource.h"
 
 @interface HSUAccountsViewController ()
 
@@ -53,7 +55,10 @@
          {
              if (![screenName isEqualToString:TWENGINE.myScreenName]) {
                  [TWENGINE loadAccount:screenName];
-                 // clear old timeline data
+                 // clear old dm cache
+                 [[NSUserDefaults standardUserDefaults] removeObjectForKey:[HSUConversationsDataSource cacheKey]];
+                 [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str", [HSUProfileDataSource cacheKey])];
+                 [[NSUserDefaults standardUserDefaults] synchronize];
                  [self.navigationController popViewControllerAnimated:YES];
              }
              [item deselectRowAnimated:YES];
@@ -62,6 +67,9 @@
         item.editingStyle = UITableViewCellEditingStyleDelete;
         item.deletionHandler = ^(RETableViewItem *item) {
             [TWENGINE removeAccount:screenName];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:[HSUConversationsDataSource cacheKey]];
+            [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str", [HSUProfileDataSource cacheKey])];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         };
     }
     
@@ -70,8 +78,9 @@
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
-          HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
-          [self.navigationController pushViewController:loginVC animated:YES];
+          [TWENGINE authorizeByOAuth];
+//          HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
+//          [self.navigationController pushViewController:loginVC animated:YES];
       }]];
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;

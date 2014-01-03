@@ -25,7 +25,7 @@
 {
     [super viewDidLoad];
     
-    self.title = _(@"Shadowsocks");
+    self.title = @"Shadowsocks";
     self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
 }
 
@@ -45,7 +45,10 @@
         NSString *ssport = ss[HSUShadowsocksSettings_RemotePort];
         NSString *title = ssserver ? S(@"%@:%@", ssserver, ssport) : _(@"Default");
         if (ss[HSUShadowsocksSettings_Buildin]) {
-            title = S(@"Buildin Server %d", ([sss indexOfObject:ss] + 1));
+            title = S(@"%@ %d", _(@"Buildin Server"), ([sss indexOfObject:ss] + 1));
+            if (ss[HSUShadowsocksSettings_Desc]) {
+                title = S(@"%@ (%@)", title, ss[HSUShadowsocksSettings_Desc]);
+            }
         } else {
             self.navigationItem.rightBarButtonItem = self.editButtonItem;
         }
@@ -67,8 +70,13 @@
              }
              [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
              [[NSUserDefaults standardUserDefaults] synchronize];
-             [self.navigationController popViewControllerAnimated:YES];
              [[HSUAppDelegate shared] stopShadowsocks];
+             if (self.navigationController.viewControllers.count > 1) {
+                 [self.navigationController popViewControllerAnimated:YES];
+             } else {
+                 [self dismiss];
+                 [[HSUAppDelegate shared] startShadowsocks];
+             }
          }];
         if (!ss[HSUShadowsocksSettings_Selected] && !ss[HSUShadowsocksSettings_Buildin]) {
             item.editingStyle = UITableViewCellEditingStyleDelete;
@@ -98,6 +106,10 @@
           [self.navigationController pushViewController:proxySettingsVC animated:YES];
       }]];
 #endif
+    
+    if (self.navigationController.viewControllers.count == 1) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismiss)];
+    }
 }
 
 @end

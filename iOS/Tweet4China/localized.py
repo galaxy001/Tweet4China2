@@ -21,5 +21,5 @@ old_str = file("Tweet4China/zh-Hant.lproj/Localizable.strings").read()
 
 for dis in distincted_lines:
   if not old_str.count(dis):
-    print '%s = %s' % (dis, '""')
+    print '%s = %s;' % (dis, '""')
 

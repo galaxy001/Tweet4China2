@@ -63,7 +63,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Shadowsocks")
+     [RETableViewItem itemWithTitle:@"Shadowsocks"
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {

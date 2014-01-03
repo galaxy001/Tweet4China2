@@ -25,6 +25,11 @@
 
 @implementation HSUTabController
 
+- (void)dealloc
+{
+    notification_remove_observer(self);
+}
+
 - (id)init
 {
     self = [super init];
@@ -91,6 +96,9 @@
         
         self.delegate = self;
         self.lastSelectedTabBarItem = homeNav.tabBarItem;
+        
+        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(hideUnreadIndicators));
+        notification_add_observer(HSUTwiterLogout, self, @selector(hideUnreadIndicators));
     }
     return self;
 }
@@ -101,8 +109,9 @@
     
     self.tabBarItemsData = @[@{@"title": _(@"Home"), @"imageName": @"home"},
                              @{@"title": _(@"Connect"), @"imageName": @"connect"},
-                             @{@"title": _(@"Discover"), @"imageName": @"discover"},
-                             @{@"title": _(@"Me"), @"imageName": @"me"}];
+                             @{@"title": _(@"Me"), @"imageName": @"me"},
+                             @{@"title": _(@"Message"), @"imageName": @"me"},
+                             @{@"title": _(@"Discover"), @"imageName": @"discover"}];
     
     self.tabBar.frame = CGRectMake(0, kWinHeight-kTabBarHeight, kWinWidth, kTabBarHeight);
     ((UIView *)[self.view.subviews objectAtIndex:0]).frame = CGRectMake(0, 0, kWinWidth, kWinHeight-kTabBarHeight);
@@ -110,7 +119,11 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
 {
-    return [TWENGINE isAuthorized];
+    if ([TWENGINE isAuthorized]) {
+        notification_post_with_object(HSUTabControllerDidSelectViewControllerNotification, viewController);
+        return YES;
+    }
+    return NO;
 }
 
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
@@ -129,13 +142,13 @@
         return;
     }
     
-    UIImage *indicatorImage = [UIImage imageNamed:@"ic_glow"];
+    UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
     UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
     uint curIdx = 0;
     for (UIView *subView in self.tabBar.subviews) {
         if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
             if (idx == curIdx) {
-                indicator.bottomCenter = ccp(subView.width/2, subView.height);
+                indicator.rightTop = ccp(subView.width-15, 0);
                 [subView addSubview:indicator];
                 break;
             } else {
@@ -187,6 +200,14 @@
         }
     }
     return NO;
+}
+
+- (void)hideUnreadIndicators
+{
+    for (UITabBarItem *item in self.tabBar.items) {
+        [self hideUnreadIndicatorOnTabBarItem:item];
+    }
+    notification_post(HSUCheckUnreadTimeNotification);
 }
 
 - (BOOL)shouldAutorotate

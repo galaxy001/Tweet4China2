@@ -43,6 +43,7 @@
 + (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce;
 + (NSString *)cacheKey;
 - (void)removeCellData:(HSUTableCellData *)cellData;
++ (void)checkUnreadForViewController:(HSUBaseViewController *)viewController;
 
 @end
 
@@ -50,6 +51,7 @@
 @protocol HSUBaseDataSourceDelegate <NSObject>
 
 - (void)reloadData;
+- (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error;
 - (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource;

@@ -27,39 +27,45 @@
     if (self.count == 0 && [TWENGINE isAuthorized]) {
         [SVProgressHUD showWithStatus:_(@"Loading Tweets")];
     }
+    
+    __weak typeof(self)weakSelf = self;
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
         [SVProgressHUD dismiss];
         NSArray *tweets = responseObj;
         if (tweets.count) {
             
-            if (tweets.count >= self.requestCount) {
-                [self.data removeAllObjects];
+            if (tweets.count >= weakSelf.requestCount) {
+                [weakSelf.data removeAllObjects];
             }
             
             for (int i=tweets.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
-                [self.data insertObject:cellData atIndex:0];
+                [weakSelf.data insertObject:cellData atIndex:0];
             }
             
-            HSUTableCellData *lastCellData = self.data.lastObject;
+            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
                 HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
-                [self.data addObject:loadMoreCellData];
+                [weakSelf.data addObject:loadMoreCellData];
             }
             
-            [self saveCache];
-            [self.delegate preprocessDataSourceForRender:self];
+            [weakSelf saveCache];
+            [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        [self.delegate dataSource:self didFinishRefreshWithError:nil];
-        self.loadingCount --;
+        if (tweets.count >= weakSelf.requestCount) {
+            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        } else {
+            [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];
+        }
+        weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.delegate dataSource:self didFinishRefreshWithError:error];
-        self.loadingCount --;
+        [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
+        weakSelf.loadingCount --;
     }];
 }
 
@@ -67,26 +73,29 @@
 {
     [super loadMore];
     
+    __weak typeof(self)weakSelf = self;
     [self fetchMoreDataWithSuccess:^(id responseObj) {
-        id loadMoreCellData = self.data.lastObject;
-        [self.data removeLastObject];
+        id loadMoreCellData = weakSelf.data.lastObject;
+        [weakSelf.data removeLastObject];
+        NSUInteger oldCount = weakSelf.count;
         for (NSDictionary *tweet in responseObj) {
             HSUTableCellData *cellData =
             [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
-            [self.data addObject:cellData];
+            [weakSelf.data addObject:cellData];
         }
-        [self.data addObject:loadMoreCellData];
+        [weakSelf.data addObject:loadMoreCellData];
         
-        [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
-        [self saveCache];
-        [self.delegate preprocessDataSourceForRender:self];
-        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
-        self.loadingCount --;
+        [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+        [weakSelf saveCache];
+        [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
+//        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:nil];
+        [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:[responseObj count]];
+        weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
-        [self.delegate dataSource:self didFinishLoadMoreWithError:error];
-        self.loadingCount --;
+        [weakSelf.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
+        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:error];
+        weakSelf.loadingCount --;
     }];
 }
 

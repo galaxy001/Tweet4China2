@@ -61,6 +61,8 @@ static HSUShadowsocksProxy *proxy;
     [Flurry logEvent:@"Launch" timed:YES];
 #endif
     
+    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(checkUnread) userInfo:nil repeats:YES];
+    
     return YES;
 }
 
@@ -71,6 +73,7 @@ static HSUShadowsocksProxy *proxy;
 #ifndef DEBUG
     [Flurry logEvent:@"EnterForeground" timed:YES];
 #endif
+    [self checkUnread];
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
@@ -107,6 +110,11 @@ static HSUShadowsocksProxy *proxy;
         return YES;
     }
     return NO;
+}
+
+- (void)checkUnread
+{
+    notification_post(HSUCheckUnreadTimeNotification);
 }
 
 - (BOOL)postWithMessage:(NSString *)message image:(UIImage *)image
@@ -149,29 +157,6 @@ static HSUShadowsocksProxy *proxy;
 - (BOOL)startShadowsocks
 {
     NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
-    if (!sss) {
-        sss = @[@{HSUShadowsocksSettings_Selected: @YES,
-                  HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Server: @"106.187.45.148",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Password: @"ticqoxmp~rxr",
-                  HSUShadowsocksSettings_Method: @"Table"},
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Server: @"115.28.20.25",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Password: @"ticqoxmp~rxr",
-                  HSUShadowsocksSettings_Method: @"Table"},
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Password: @"ticqoxmp~rxr",
-                  HSUShadowsocksSettings_Method: @"Table"}
-                ];
-        [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
     
     for (NSDictionary *ss in sss) {
         if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
@@ -180,24 +165,17 @@ static HSUShadowsocksProxy *proxy;
             NSString *passowrd = ss[HSUShadowsocksSettings_Password];
             NSString *method = ss[HSUShadowsocksSettings_Method];
             
-            if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
-                char chars3[13];
-                const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
-                for (int i=0; i<12; i++) {
-                    chars3[i] = str3[i] - i;
-                }
-                chars3[12] = 0;
-                passowrd = [NSString stringWithCString:chars3 encoding:NSASCIIStringEncoding];
-            }
-            
             if (server && remotePort && passowrd && method) {
                 if (proxy == nil) {
                     proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
                 }
                 shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort];
                 if (!shadowsocksStarted) {
+                    [Flurry logEvent:@"ss_start_failed" withParameters:@{@"ssserver": server}];
                     exit(0);
                 }
+                [Flurry logEvent:@"ss_start_success" withParameters:@{@"ssserver": server}];
+                self.shadwosocksServer = server;
                 return shadowsocksStarted;
             }
             return (shadowsocksStarted = NO);

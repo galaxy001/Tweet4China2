@@ -38,6 +38,8 @@
 @property (nonatomic, strong) UIButton *actionsButton;
 @property (nonatomic, strong) UIButton *followButton;
 
+@property (nonatomic, strong) UIButton *messagesButton;
+
 @end
 
 @implementation HSUProfileView
@@ -264,6 +266,7 @@
             
             // messagesButton
             messagesButton = [[UIButton alloc] init];
+            self.messagesButton = messagesButton;
             [buttonsPanel addSubview:messagesButton];
             [messagesButton setTapTarget:delegate action:@selector(messagesButtonTouched)];
             [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
@@ -426,6 +429,22 @@
 - (UIImage *)bannerImage
 {
     return self.infoBGView.image;
+}
+
+- (void)showDMIndicator
+{
+    if (!self.dmIndicator) {
+        UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+        UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+        [self.messagesButton.superview addSubview:indicator];
+        indicator.rightTop = self.messagesButton.rightTop;
+        self.dmIndicator = indicator;
+    }
+}
+
+- (void)hideDMIndicator
+{
+    [self.dmIndicator removeFromSuperview];
 }
 
 @end

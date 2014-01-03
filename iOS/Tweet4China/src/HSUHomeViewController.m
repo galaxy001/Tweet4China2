@@ -10,6 +10,7 @@
 #import "HSUHomeDataSource.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSURefreshControl.h"
+#import "HSUTabController.h"
 
 @interface HSUHomeViewController ()
 
@@ -22,10 +23,9 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUHomeDataSource class];
-#ifndef DEBUG
-        [HSUHomeDataSource checkUnreadForViewController:self];
-#endif
-//        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
+        [self checkUnread];
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
+        notification_add_observer(HSUTabControllerDidSelectViewControllerNotification, self, @selector(tabDidSelected:));
     }
     return self;
 }
@@ -33,9 +33,7 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     if (!shadowsocksStarted) {
-        HSUProxySettingsViewController *psVC = [[HSUProxySettingsViewController alloc] init];
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:psVC];
-        [self presentViewController:nav animated:YES completion:nil];
+        [[HSUAppDelegate shared] startShadowsocks];
         return;
     }
     
@@ -45,6 +43,36 @@
     }
     
     [super viewDidAppear:animated];
+}
+
+- (void)tabDidSelected:(NSNotification *)notification
+{
+    if (self.navigationController == notification.object) {
+        if (self.view.window) {
+            if (self.tableView.contentOffset.y > 0) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            } else {
+                [self.refreshControl beginRefreshing];
+                [self.dataSource refresh];
+                [self.tableView setContentOffset:ccp(0, -100) animated:YES];
+            }
+        }
+    }
+}
+
+- (void)checkUnread
+{
+    if (!self.dataSource ||
+        (self.dataSource.count &&
+         ![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem])) {
+            
+            [HSUHomeDataSource checkUnreadForViewController:self];
+#ifndef DEBUG
+            [HSUHomeDataSource checkUnread];
+#endif
+        }
+
 }
 
 - (void)twitterLoginSuccess:(NSNotification *)notification

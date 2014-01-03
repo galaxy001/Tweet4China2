@@ -31,6 +31,7 @@
 #import "HSUSearchPersonVC.h"
 #import "HSUListCell.h"
 #import "HSUSettingsViewController.h"
+#import "HSUTableView.h"
 
 @interface HSUBaseViewController ()
 
@@ -43,6 +44,7 @@
     UIBarButtonItem *_actionBarButton;
     UIBarButtonItem *_addFriendBarButton;
     UIBarButtonItem *_composeBarButton;
+    UIImageView *_addFriendButtonIndicator;
 }
 
 #pragma mark - Liftstyle
@@ -89,7 +91,7 @@
     if (self.tableView) {
         tableView = self.tableView;
     } else {
-        tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        tableView = [[HSUTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [self.view addSubview:tableView];
         self.tableView = tableView;
     }
@@ -247,6 +249,26 @@
     return NSClassFromString([NSString stringWithFormat:@"HSU%@Cell", dataType]);
 }
 
+- (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
+{
+    [self.refreshControl endRefreshing];
+    for (HSUTableCellData *cellData in self.dataSource.allData) {
+        cellData.renderData[@"delegate"] = self;
+    }
+    
+    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+    for (int i=fromIndex; i<fromIndex+length; i++) {
+        [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+    }
+    if (fromIndex == 0) {
+        ((HSUTableView *)self.tableView).offsetLocked = YES;
+    }
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    ((HSUTableView *)self.tableView).offsetLocked = NO;
+    
+    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+}
+
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
 {
     [self.refreshControl endRefreshing];
@@ -293,6 +315,14 @@
             [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
         }
         [actionButton sizeToFit];
+        
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
+            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+            [actionButton addSubview:indicator];
+            indicator.leftTop = ccp(actionButton.width-10, 0);
+        }
+        
         _actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
     return _actionBarButton;
@@ -313,9 +343,18 @@
             addFriendButton.width *= 1.4;
             _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
         }
+        
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
+            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+            [self.navigationController.navigationBar addSubview:indicator];
+            _addFriendButtonIndicator = indicator;
+            indicator.leftTop = ccp(self.navigationController.navigationBar.width-23, 0);
+        }
     }
     return _addFriendBarButton;
 }
+
 - (UIBarButtonItem *)composeBarButton
 {
     if (!_composeBarButton) {
@@ -365,6 +404,12 @@
     }
     HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
     [self.navigationController pushViewController:addFriendVC animated:YES];
+    
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUAddFriendBarTouched];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [_addFriendButtonIndicator removeFromSuperview];
+    }
 }
 
 - (void)_actionButtonTouched
@@ -373,6 +418,13 @@
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[settingsVC];
     [self presentViewController:nav animated:YES completion:nil];
+    
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUActionBarTouched];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        _actionBarButton = nil;
+        self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    }
 }
 
 - (void)presentModelClass:(Class)modelClass

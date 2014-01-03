@@ -33,6 +33,7 @@
             break;
         }
     }
+    [SVProgressHUD showWithStatus:_(self.count ? @"Updating..." : @"Loading...")];
     [TWENGINE getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
         [TWENGINE getSentMessagesSinceID:sinceId success:^(id responseObj) {
@@ -96,11 +97,13 @@
             [self.delegate preprocessDataSourceForRender:self];
             [self.delegate dataSource:self didFinishRefreshWithError:nil];
             self.loadingCount --;
+            
+            [SVProgressHUD dismiss];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Load Messages failed")];
+            [SVProgressHUD showErrorWithStatus:_(@"Load Messages failed")];
         }];
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load Messages failed")];
+        [SVProgressHUD showErrorWithStatus:_(@"Load Messages failed")];
     }];
 }
 

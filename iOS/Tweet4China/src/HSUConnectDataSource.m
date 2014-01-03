@@ -14,10 +14,7 @@
 
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
 {
-#ifdef AUTHOR_jason
-    return;
-#endif
-    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.cacheKey)];
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
     if (!latestIdStr) {
         latestIdStr = @"1";
     }

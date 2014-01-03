@@ -106,6 +106,7 @@
 "Loading Lists" = "正在加载列表";
 "Select From Camera" = "从手机相册选择";
 "Take a Picture" = "拍照";
+"No twitter account? Sign up now!" = "还没有账号？现在去注册！";
 "Register" = "注册";
 "Use my own shadowsocks" = "用自己的shadowsocks";
 "Report to developer" = "报告给开发者";
@@ -145,3 +146,11 @@
 "Banner" = "横幅";
 "Save" = "保存";
 "Edit Profile" = "编辑个人资料";
+"Buildin Server" = "内置服务器";
+"Update failed" = "更新失败了";
+"Error Occurred" = "发生了错误";
+"Message" = "消息";
+"Retry Later" = "稍后再试";
+"Change Server" = "切换服务器";
+"Connection failed" = "连接失败了";
+"Check your network" = "请检查您的网络连接";

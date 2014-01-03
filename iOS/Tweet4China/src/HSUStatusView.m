@@ -271,7 +271,13 @@
     }
     if (!attrName && ([geo isKindOfClass:[NSDictionary class]] ||
                       [place isKindOfClass:[NSDictionary class]])) {
-        attrName = @"geo";
+        if ([geo isKindOfClass:[NSDictionary class]]) {
+            if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
+                attrName = @"geo";
+            }
+        } else if ([place isKindOfClass:[NSDictionary class]]) {
+            attrName = @"geo";
+        }
     }
     
     self.imagePreviewButton.hidden = YES;

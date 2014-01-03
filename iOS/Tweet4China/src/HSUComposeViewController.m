@@ -512,6 +512,14 @@
         [[HSUDraftManager shared] removeDraft:draft];
         [SVProgressHUD showSuccessWithStatus:S(@"Sent\n%@", briefMessage)];
     } failure:^(NSError *error) {
+        if (error.code == 204) {
+            [[HSUDraftManager shared] removeDraft:draft];
+            [SVProgressHUD showErrorWithStatus:_(@"Duplicated status")];
+            return ;
+        }
+        if (!shadowsocksStarted) {
+            [[HSUAppDelegate shared] startShadowsocks];
+        }
         [[HSUDraftManager shared] activeDraft:draft];
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
         RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:_(@"Drafts")];

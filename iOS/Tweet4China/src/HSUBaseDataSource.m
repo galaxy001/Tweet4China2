@@ -225,4 +225,9 @@
     [self.delegate reloadData];
 }
 
++ (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
+{
+    
+}
+
 @end

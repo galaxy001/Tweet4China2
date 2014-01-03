@@ -9,6 +9,7 @@
 #import "HSUConnectViewController.h"
 #import "HSUConnectDataSource.h"
 #import "HSURefreshControl.h"
+#import "HSUTabController.h"
 
 @interface HSUConnectViewController ()
 
@@ -21,9 +22,9 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUConnectDataSource class];
-#ifndef DEBUG
-        [HSUConnectDataSource checkUnreadForViewController:self];
-#endif
+        [self checkUnread];
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
+        notification_add_observer(HSUTabControllerDidSelectViewControllerNotification, self, @selector(tabDidSelected:));
     }
     return self;
 }
@@ -35,6 +36,35 @@
     if (self.dataSource.count == 0) {
         [self.refreshControl beginRefreshing];
         [self.dataSource refresh];
+    }
+}
+
+- (void)tabDidSelected:(NSNotification *)notification
+{
+    if (self.navigationController == notification.object) {
+        if (self.view.window) {
+            if (self.tableView.contentOffset.y > 0) {
+                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            } else {
+                [self.refreshControl beginRefreshing];
+                [self.dataSource refresh];
+                [self.tableView setContentOffset:ccp(0, -100) animated:YES];
+            }
+        }
+    }
+}
+
+- (void)checkUnread
+{
+    if (!self.dataSource ||
+        (self.dataSource.count &&
+        ![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem])) {
+            
+            [HSUConnectDataSource checkUnreadForViewController:self];
+#ifndef DEBUG
+            [HSUConnectDataSource checkUnread];
+#endif
     }
 }
 

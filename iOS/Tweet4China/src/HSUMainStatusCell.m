@@ -16,6 +16,7 @@
 #import "HSUStatusActionView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
+#import "HSUMiniBrowser.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -44,6 +45,8 @@
     UILabel *screenNameL;
     UILabel *timePlaceL;
     TTTAttributedLabel *textAL;
+    UILabel *viaLabel;
+    UIButton *sourceButton;
     
     UIView *actionSeperatorV;
     HSUStatusActionView *actionV;
@@ -169,6 +172,19 @@
         favoriteCountWordL.textColor = kGrayColor;
         favoriteCountWordL.hidden = YES;
         
+        viaLabel = [[UILabel alloc] init];
+        [retweetFavoritePannel addSubview:viaLabel];
+        viaLabel.font = [UIFont systemFontOfSize:12];
+        viaLabel.textColor = kBlackColor;
+        viaLabel.text = @"via";
+        [viaLabel sizeToFit];
+        
+        sourceButton = [[UIButton alloc] init];
+        [retweetFavoritePannel addSubview:sourceButton];
+        [sourceButton setTitleColor:kGrayColor forState:UIControlStateNormal];
+        sourceButton.titleLabel.font = [UIFont systemFontOfSize:12];
+        [sourceButton setTapTarget:self action:@selector(_sourceButtonTouched)];
+        
         // action buttons
         actionSeperatorV = [[UIView alloc] init];
         actionSeperatorV.backgroundColor = bw(226);
@@ -221,6 +237,14 @@
     retweetsButton.leftCenter = ccp(retweetsButton.left, retweetFavoritePannel.height/2);
     favoriteCountL.leftCenter = ccp(favoriteCountL.left, retweetFavoritePannel.height/2);
     favoriteCountWordL.leftCenter = ccp(favoriteCountWordL.left, retweetFavoritePannel.height/2);
+    
+    if (sourceButton.superview == contentArea) {
+        sourceButton.rightCenter = ccp(contentArea.width, timePlaceL.center.y);
+    } else if (sourceButton.superview == retweetFavoritePannel) {
+        sourceButton.rightCenter = ccp(retweetFavoritePannel.width, retweetFavoritePannel.height/2);
+    }
+    viaLabel.rightCenter = sourceButton.leftCenter;
+    viaLabel.left -= 3;
 }
 
 - (void)setupWithData:(HSUTableCellData *)data
@@ -267,6 +291,13 @@
     NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];
     timePlaceL.text = createdDate.standardTwitterDisplay;
     
+    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
+    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
+    if ((retweetCount && favoriteCount) || (!retweetCount && !favoriteCount)) {
+        [contentArea addSubview:viaLabel];
+        [contentArea addSubview:sourceButton];
+    }
+    
     // place
     NSDictionary *placeInfo = rawData[@"place"];
     NSDictionary *geoInfo = rawData[@"geo"];
@@ -274,6 +305,8 @@
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, place];
         [timePlaceL sizeToFit];
+        viaLabel.hidden = YES;
+        sourceButton.hidden = YES;
     } else if ([geoInfo isKindOfClass:[NSDictionary class]]) {
         if ([geoInfo[@"type"] isEqualToString:@"Point"]) {
             NSArray *coordinates = geoInfo[@"coordinates"];
@@ -287,6 +320,8 @@
                     for (CLPlacemark * placemark in placemarks) {
                         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, placemark.name];
                         [timePlaceL sizeToFit];
+                        viaLabel.hidden = YES;
+                        sourceButton.hidden = YES;
                         break;
                     }
                 }];
@@ -312,6 +347,22 @@
                     attrName = @"photo";
                     break;
                 }
+            }
+        }
+    }
+    
+    // source
+    NSString *sourceHTML = rawData[@"source"];
+    if (sourceHTML) {
+        NSRange r1 = [sourceHTML rangeOfString:@"\">"];
+        NSRange r2 = [sourceHTML rangeOfString:@"</a>"];
+        if (r1.location != NSNotFound && r2.location != NSNotFound) {
+            int n1 = r1.location + 2;
+            int n2 = r2.location;
+            if (n1 > 0 && n2 > 0 && n1 < n2) {
+                NSString *source = [sourceHTML substringWithRange:NSMakeRange(n1, n2-n1)];
+                [sourceButton setTitle:source forState:UIControlStateNormal];
+                [sourceButton sizeToFit];
             }
         }
     }
@@ -407,8 +458,6 @@
     }
     
     // retweets & favorites
-    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
-    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
     CGFloat favoriteLeft = 0;
     if (retweetCount) {
         retweetFavoritePannel.hidden = NO;
@@ -683,6 +732,26 @@
             [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:self.data.renderData[@"photo_url"] withObject:self.data];
         }
     }
+}
+
+- (void)_sourceButtonTouched
+{
+    NSString *sourceHTML = self.data.rawData[@"source"];
+    if (sourceHTML) {
+        NSRange r1 = [sourceHTML rangeOfString:@"href=\"http"];
+        NSRange r2 = [sourceHTML rangeOfString:@"\" rel="];
+        if (r1.location != NSNotFound && r2.location != NSNotFound) {
+            int n1 = r1.location + 6;
+            int n2 = r2.location;
+            if (n1 > 0 && n2 > 0 && n1 < n2) {
+                NSString *url = [sourceHTML substringWithRange:NSMakeRange(n1, n2-n1)];
+                HSUMiniBrowser *browser = [[HSUMiniBrowser alloc] initWithURL:[NSURL URLWithString:url] cellData:nil];
+                HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:browser];
+                [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+            }
+        }
+    }
+    
 }
 
 @end

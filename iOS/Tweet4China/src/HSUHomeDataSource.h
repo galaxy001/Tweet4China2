@@ -10,6 +10,4 @@
 
 @interface HSUHomeDataSource : HSUTweetsDataSource
 
-+ (void)checkUnreadForViewController:(HSUBaseViewController *)viewController;
-
 @end

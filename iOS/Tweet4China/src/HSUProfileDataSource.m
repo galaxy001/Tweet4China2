@@ -8,6 +8,7 @@
 
 #import "HSUProfileDataSource.h"
 #import "HSUBaseTableCell.h"
+#import "HSUBaseViewController.h"
 
 @interface HSUProfileDataSource ()
 
@@ -155,6 +156,30 @@
     [self.sectionsData.lastObject addObject:draftsCellData];
     
     [self.delegate dataSource:self didFinishRefreshWithError:nil];
+}
+
++ (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
+{
+    // check dm
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
+    [TWENGINE getDirectMessagesSinceID:latestIdStr success:^(id responseObj) {
+        id rMsgs = responseObj;
+        [TWENGINE getSentMessagesSinceID:latestIdStr success:^(id responseObj) {
+            id sMsgs = responseObj;
+            // merge received messages & sent messages
+            NSArray *messages = [[NSArray arrayWithArray:rMsgs] arrayByAddingObjectsFromArray:sMsgs];
+            if (messages.count) { // updated
+                NSString *firstIdStr = messages[0][@"id_str"];
+                [[NSUserDefaults standardUserDefaults] setObject:firstIdStr forKey:S(@"%@_first_id_str", self.class.cacheKey)];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [viewController dataSourceDidFindUnread:nil];
+            }
+        } failure:^(NSError *error) {
+            
+        }];
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 @end

@@ -54,7 +54,7 @@
     [self.manager addSection:section];
     
     RETableViewItem *buttonItem =
-    [RETableViewItem itemWithTitle:_(@"Register")
+    [RETableViewItem itemWithTitle:_(@"No twitter account? Sign up now!")
                      accessoryType:UITableViewCellAccessoryNone
                   selectionHandler:^(RETableViewItem *item)
     {

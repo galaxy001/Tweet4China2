@@ -24,6 +24,7 @@
 #import "HSUSubscribedListsDataSource.h"
 #import <OpenCam/OpenCam.h>
 #import "HSUEditProfileViewController.h"
+#import "HSUTabController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -49,8 +50,10 @@
         self.useRefreshControl = NO;
         if (self.screenName) {
             self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:screenName];
+            [self checkUnread];
         }
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(updateScreenName));
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }
     return self;
 }
@@ -81,6 +84,27 @@
         [self refreshData];
     }
     self.presenting = NO;
+    
+    if (self.isMe &&
+        [((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]) {
+            
+        [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+        [self.profileView showDMIndicator];
+    }
+}
+
+- (void)checkUnread
+{
+    if (!self.dataSource ||
+        (![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] &&
+         !self.profileView.dmIndicator)) {
+            
+            [HSUProfileDataSource checkUnreadForViewController:self];
+#ifndef DEBUG
+            [HSUProfileDataSource checkUnread];
+#endif
+        }
+
 }
 
 - (void)refreshData
@@ -108,10 +132,12 @@
     [self.profileView setupWithProfile:profile];
     self.profile = profile;
     
-    NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
-    profiles[TWENGINE.myScreenName] = profile;
-    [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    if (self.isMe) {
+        NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
+        profiles[TWENGINE.myScreenName] = profile;
+        [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 - (void)updateScreenName
@@ -256,6 +282,7 @@
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[conversationsVC];
     [self.navigationController presentViewController:nav animated:YES completion:nil];
+    [self.profileView hideDMIndicator];
 }
 
 - (void)actionsButtonTouched
@@ -483,7 +510,16 @@
 
 - (BOOL)isMe
 {
-    return [self.profile[@"screen_name"] isEqualToString:TWENGINE.myScreenName];
+    return [self.profile[@"screen_name"] isEqualToString:MyScreenName] || self.navigationController.viewControllers.count == 1;
+}
+
+- (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource
+{
+    if (!self.view.window) {
+        [super dataSourceDidFindUnread:dataSource];
+    } else {
+        [self.profileView showDMIndicator];
+    }
 }
 
 @end
