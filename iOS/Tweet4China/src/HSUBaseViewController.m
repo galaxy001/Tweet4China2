@@ -87,7 +87,7 @@
         cellData.renderData[@"delegate"] = self;
     }
     
-    UITableView *tableView;
+    HSUTableView *tableView;
     if (self.tableView) {
         tableView = self.tableView;
     } else {
@@ -260,11 +260,8 @@
     for (int i=fromIndex; i<fromIndex+length; i++) {
         [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
     }
-    if (fromIndex == 0) {
-        ((HSUTableView *)self.tableView).offsetLocked = YES;
-    }
+    ((HSUTableView *)self.tableView).offsetLocked = (fromIndex == 0);
     [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
-    ((HSUTableView *)self.tableView).offsetLocked = NO;
     
     [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
 }
@@ -279,6 +276,7 @@
             cellData.renderData[@"delegate"] = self;
         }
         
+        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     }
 
@@ -288,8 +286,10 @@
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
 {
     if (error.code == 204) {
+        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     } else if (error == nil) {
+        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     }
 }

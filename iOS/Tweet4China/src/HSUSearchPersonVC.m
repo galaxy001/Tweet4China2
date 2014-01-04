@@ -43,11 +43,14 @@
 
 - (void)viewDidLoad
 {
+    self.useRefreshControl = NO;
     self.hideRightButtons = YES;
     
     self.dataSource = [[HSUSearchPersonDataSource alloc] init];
     
     [super viewDidLoad];
+    
+    self.navigationItem.rightBarButtonItem = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -105,8 +108,20 @@
 
 - (void)searchKeywordChanged:(UITextField *)searchTF
 {
-    ((HSUSearchPersonDataSource *)self.dataSource).keyword = searchTF.text;
-    [self.dataSource loadMore];
+    __weak typeof(self) weakSelf = self;
+    dispatch_async(GCDMainThread, ^{
+        [weakSelf.dataSource.data removeAllObjects];
+        [weakSelf.tableView reloadData];
+        
+        ((HSUSearchPersonDataSource *)weakSelf.dataSource).keyword = searchTF.text;
+        [weakSelf.dataSource loadMore];
+    });
+}
+
+- (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
+{
+    [super dataSource:dataSource didFinishLoadMoreWithError:error];
+    [((UIRefreshControl *)self.refreshControl) endRefreshing];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

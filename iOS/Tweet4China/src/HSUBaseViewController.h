@@ -15,7 +15,7 @@
 @property (nonatomic, strong) Class dataSourceClass;
 @property (nonatomic, strong) HSUBaseDataSource *dataSource;
 @property (nonatomic, weak) HSURefreshControl *refreshControl;
-@property (nonatomic, weak) UITableView *tableView;
+@property (nonatomic, weak) HSUTableView *tableView;
 @property (nonatomic, assign) BOOL hideBackButton;
 @property (nonatomic, assign) BOOL hideRightButtons;
 @property (nonatomic, assign) BOOL useRefreshControl;

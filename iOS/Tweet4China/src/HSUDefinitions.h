@@ -15,6 +15,9 @@
 #define kTwitterAppKey @"JotIXH4moIF1fIJDVJ50eQ"
 #define kTwitterAppSecret @"5TKbyf4fDyjzse0GqJ62YwABgP6zKuZCbCHUeYTqugc"
 #define UseXAuth YES
+#define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
+
+#define JailBreakSupported
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
@@ -40,6 +43,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "HSUNavigationController.h"
 #import "Flurry.h"
+#import "HSUTableView.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -140,14 +144,13 @@ _Pragma("clang diagnostic pop") \
 #define HSUShadowsocksSettings @"HSUShadowsocksSettings"
 #define ShadowSocksPort 71080
 
-#define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
-
 #define GlobalSettings ([HSUAppDelegate shared].globalSettings)
 #define HSUSettings @"HSUSettings"
 #define HSUSettingsUpdatedNotification @"HSUSettingsUpdatedNotification"
 #define HSUSettingSoundEffect @"sound_effect"
 #define HSUSettingPhotoPreview @"photo_preview"
 #define HSUSettingTextSize @"text_size"
+#define HSUSettingCacheSize @"cache_size"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"

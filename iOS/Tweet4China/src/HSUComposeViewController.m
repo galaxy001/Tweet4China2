@@ -97,6 +97,8 @@
     NSString *textAtFist;
     BOOL contentChanged;
     NSString *geoCode;
+    
+    BOOL suggested;
 }
 
 - (void)dealloc
@@ -346,6 +348,10 @@
     toggleLocationBnt.bottom = extraPanelSV.height - 10;
     suggestionsTV.top = contentTV.top + 45;
     contentShadowV.top = suggestionsTV.top;
+    
+    if (postImage) {
+        [self photoButtonTouched];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -427,6 +433,7 @@
     contentShadowV.top = suggestionsTV.top;
     
     if (suggestionType) {
+        suggested = YES;
         suggestionsTV.hidden = NO;
         contentShadowV.hidden = NO;
         contentTV.height = kSingleLineHeight;
@@ -441,13 +448,15 @@
     } else {
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
-        NSRange selectedRange = contentTV.selectedRange;
-        NSString *text = contentTV.text;
-        contentTV.text = nil;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            contentTV.text = text;
-            contentTV.selectedRange = selectedRange;
-        });
+        if (suggested) {
+            NSRange selectedRange = contentTV.selectedRange;
+            NSString *text = contentTV.text;
+            contentTV.text = nil;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                contentTV.text = text;
+                contentTV.selectedRange = selectedRange;
+            });
+        }
     }
 }
 
@@ -474,8 +483,12 @@
         [self dismissViewControllerAnimated:YES completion:nil];
         return;
     }
-    if (contentChanged) {
+    if (contentChanged || postImage) {
         if ([textAtFist isEqualToString:contentTV.text]) {
+            return;
+        }
+        if (contentTV.text.length == 0 && !postImage) {
+            [self dismiss];
             return;
         }
         RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:_(@"Cancel")];
@@ -495,7 +508,7 @@
         actionSheet.destructiveButtonIndex = 0;
         [actionSheet showInView:self.view.window];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismiss];
     }
 }
 
@@ -538,6 +551,9 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
     NSString *newText = [contentTV.text stringByReplacingCharactersInRange:range withString:text];
+    if (newText.length < textView.text.length) { // return YES for deleting text
+        return YES;
+    }
     return ([TwitterText tweetLength:newText] <= 140);
 }
 
@@ -642,7 +658,7 @@
     previewIV.hidden = NO;
     previewCloseBnt.hidden = NO;
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera-glow"] forState:UIControlStateNormal];
-    UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
+//    UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
 }
 
 - (void)previewCloseButtonTouched {
@@ -659,7 +675,7 @@
         previewIV.alpha = 1;
         previewIV.center = extraPanelSV.boundsCenter;
     }];
-
+    
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera"] forState:UIControlStateNormal];
     [self selectPhoto];
 }

@@ -354,16 +354,21 @@
     // source
     NSString *sourceHTML = rawData[@"source"];
     if (sourceHTML) {
-        NSRange r1 = [sourceHTML rangeOfString:@"\">"];
-        NSRange r2 = [sourceHTML rangeOfString:@"</a>"];
-        if (r1.location != NSNotFound && r2.location != NSNotFound) {
-            int n1 = r1.location + 2;
-            int n2 = r2.location;
-            if (n1 > 0 && n2 > 0 && n1 < n2) {
-                NSString *source = [sourceHTML substringWithRange:NSMakeRange(n1, n2-n1)];
-                [sourceButton setTitle:source forState:UIControlStateNormal];
-                [sourceButton sizeToFit];
+        if ([sourceHTML rangeOfString:@"<a"].location != NSNotFound) {
+            NSRange r1 = [sourceHTML rangeOfString:@"\">"];
+            NSRange r2 = [sourceHTML rangeOfString:@"</a>"];
+            if (r1.location != NSNotFound && r2.location != NSNotFound) {
+                int n1 = r1.location + 2;
+                int n2 = r2.location;
+                if (n1 > 0 && n2 > 0 && n1 < n2) {
+                    NSString *source = [sourceHTML substringWithRange:NSMakeRange(n1, n2-n1)];
+                    [sourceButton setTitle:source forState:UIControlStateNormal];
+                    [sourceButton sizeToFit];
+                }
             }
+        } else {
+            [sourceButton setTitle:sourceHTML forState:UIControlStateNormal];
+            [sourceButton sizeToFit];
         }
     }
     
@@ -745,9 +750,10 @@
             int n2 = r2.location;
             if (n1 > 0 && n2 > 0 && n1 < n2) {
                 NSString *url = [sourceHTML substringWithRange:NSMakeRange(n1, n2-n1)];
-                HSUMiniBrowser *browser = [[HSUMiniBrowser alloc] initWithURL:[NSURL URLWithString:url] cellData:nil];
-                HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:browser];
-                [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+                NSURL *URL = [NSURL URLWithString:url];
+                if (URL) {
+                    [[UIApplication sharedApplication] openURL:URL];
+                }
             }
         }
     }

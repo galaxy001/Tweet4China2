@@ -32,6 +32,7 @@
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
         [SVProgressHUD dismiss];
         NSArray *tweets = responseObj;
+        BOOL oldCount = self.count;
         if (tweets.count) {
             
             if (tweets.count >= weakSelf.requestCount) {
@@ -55,7 +56,7 @@
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        if (tweets.count >= weakSelf.requestCount) {
+        if (tweets.count >= weakSelf.requestCount || oldCount == 0) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         } else {
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];

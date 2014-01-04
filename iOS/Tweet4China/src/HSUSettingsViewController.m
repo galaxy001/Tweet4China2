@@ -12,6 +12,7 @@
 #import "HSUAccountsViewController.h"
 #import "HSUShadowsocksViewController.h"
 #import <Appirater/Appirater.h>
+#import <HSUWebCache/HSUWebCache.h>
 
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
@@ -82,6 +83,27 @@
         [item deselectRowAnimated:YES];
         
         NSArray *options = @[@"12", @"14", @"16"];
+        
+        RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
+            [weakSelf.navigationController popViewControllerAnimated:YES];
+            
+            [item reloadRowWithAnimation:UITableViewRowAnimationNone];
+        }];
+        
+        optionsController.delegate = weakSelf;
+        optionsController.style = section.style;
+        if (weakSelf.tableView.backgroundView == nil) {
+            optionsController.tableView.backgroundColor = weakSelf.tableView.backgroundColor;
+            optionsController.tableView.backgroundView = nil;
+        }
+        
+        [weakSelf.navigationController pushViewController:optionsController animated:YES];
+    }]];
+    
+    [section addItem:[RERadioItem itemWithTitle:_(@"Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
+        [item deselectRowAnimated:YES];
+        
+        NSArray *options = @[@"16MB", @"32MB", @"64MB", @"128MB", @"256MB", @"512MB", @"1GB", @"2GB", @"4GB"];
         
         RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
             [weakSelf.navigationController popViewControllerAnimated:YES];
@@ -174,11 +196,15 @@
     RETextItem *textSizeItem = section.items[2];
     NSString *textSize = textSizeItem.value;
     
-    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize};
+    RETextItem *cacheSizeItem = section.items[3];
+    NSString *cacheSize = cacheSizeItem.value;
+    
+    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize, HSUSettingCacheSize: cacheSize};
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         [[NSUserDefaults standardUserDefaults] setValue:GlobalSettings forKey:HSUSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [[NSNotificationCenter defaultCenter] postNotificationName:HSUSettingsUpdatedNotification object:GlobalSettings];
+        notification_post_with_object(HSUSettingsUpdatedNotification, GlobalSettings);
+        [[HSUAppDelegate shared] updateImageCacheSize];
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

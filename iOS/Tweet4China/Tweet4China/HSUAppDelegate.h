@@ -18,5 +18,7 @@
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;
 - (void)stopShadowsocks;
+- (void)updateImageCacheSize;
+- (BOOL)isJailBreak;
 
 @end

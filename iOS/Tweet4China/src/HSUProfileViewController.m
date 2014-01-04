@@ -54,6 +54,7 @@
         }
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(updateScreenName));
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
+        notification_add_observer(HSUTabControllerDidSelectViewControllerNotification, self, @selector(tabDidSelected:));
     }
     return self;
 }
@@ -81,7 +82,7 @@
     }
     
     if (!self.presenting) {
-        [self refreshData];
+        [self refreshDataIfNeed];
     }
     self.presenting = NO;
     
@@ -93,6 +94,18 @@
     }
 }
 
+- (void)tabDidSelected:(NSNotification *)notification
+{
+    if (self.navigationController == notification.object) {
+        if (self.view.window) {
+            if (self.tableView.contentOffset.y <= 0) {
+                [self refreshData];
+            }
+            [self.tableView setContentOffset:ccp(0, -120)];
+        }
+    }
+}
+
 - (void)checkUnread
 {
     if (!self.dataSource ||
@@ -100,14 +113,10 @@
          !self.profileView.dmIndicator)) {
             
             [HSUProfileDataSource checkUnreadForViewController:self];
-#ifndef DEBUG
-            [HSUProfileDataSource checkUnread];
-#endif
         }
-
 }
 
-- (void)refreshData
+- (void)refreshDataIfNeed
 {
     [((HSUProfileDataSource *)self.dataSource) refreshLocalData];
     
@@ -146,7 +155,7 @@
         self.screenName = MyScreenName;
         self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:self.screenName];
         self.tableView.dataSource = self.dataSource;
-        [self reloadData];
+        [self refreshData];
     }
 }
 
@@ -479,7 +488,7 @@
         }
         if (self.selectPhotoForAvatar) {
             [TWENGINE updateAvatar:image success:^(id responseObj) {
-                [weakSelf reloadData];
+                [weakSelf refreshData];
                 [SVProgressHUD dismiss];
             } failure:^(NSError *error) {
                 [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
@@ -492,7 +501,7 @@
                 image = [image subImageAtRect:ccr(0, image.size.height-image.size.width/2, image.size.width, image.size.width/2)];
             }
             [TWENGINE updateBanner:image success:^(id responseObj) {
-                [weakSelf reloadData];
+                [weakSelf refreshData];
                 [SVProgressHUD dismiss];
             } failure:^(NSError *error) {
                 [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
@@ -502,10 +511,10 @@
     }
 }
 
-- (void)reloadData
+- (void)refreshData
 {
     self.lastUpdateTime = 0;
-    [self refreshData];
+    [self refreshDataIfNeed];
 }
 
 - (BOOL)isMe

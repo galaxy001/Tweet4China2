@@ -40,7 +40,7 @@
 {
     notification_add_observer(HSUDeleteConversationNotification, self, @selector(_conversationDeleted:));
     
-    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    HSUTableView *tableView = [[HSUTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.view addSubview:tableView];
     self.tableView = tableView;
     

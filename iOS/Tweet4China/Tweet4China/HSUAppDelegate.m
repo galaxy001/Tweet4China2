@@ -19,6 +19,7 @@
 #ifndef DEBUG
 #import "Flurry.h"
 #endif
+#import <HSUWebCache/HSUWebCache.h>
 
 static HSUShadowsocksProxy *proxy;
 
@@ -33,7 +34,7 @@ static HSUShadowsocksProxy *proxy;
 {
     self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
     if (!self.globalSettings) {
-        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14"};
+        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
     }
     
     [self startShadowsocks];
@@ -53,6 +54,7 @@ static HSUShadowsocksProxy *proxy;
     self.tabController = tabController;
     [self.window makeKeyAndVisible];
     
+    [Appirater setOpenInAppStore:YES];
     [Appirater appLaunched:YES];
 #ifndef DEBUG
     [Flurry setLogLevel:FlurryLogLevelNone];
@@ -63,7 +65,24 @@ static HSUShadowsocksProxy *proxy;
     
     [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(checkUnread) userInfo:nil repeats:YES];
     
+    [self updateImageCacheSize];
+    [self logJailBreak];
+    
     return YES;
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+#ifndef JailBreakSupported
+    if (self.isJailBreak) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"OK")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Jailbreak Device") message:_(@"jailbreak_alert_message") cancelButtonItem:cancelItem otherButtonItems:nil, nil];
+        [alert show];
+        cancelItem.action = ^{
+            [Appirater rateApp];
+        };
+    }
+#endif
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -188,6 +207,44 @@ static HSUShadowsocksProxy *proxy;
 {
     [proxy stop];
     shadowsocksStarted = NO;
+}
+
+- (void)updateImageCacheSize
+{
+    NSString *cacheSize = GlobalSettings[HSUSettingCacheSize];
+    if ([cacheSize hasSuffix:@"MB"]) {
+        size_t size = [[cacheSize substringToIndex:cacheSize.length-2] longLongValue] * 1000 * 1000;
+        [HSUWebCache setImageCacheSize:size];
+    } else if ([cacheSize hasSuffix:@"GB"]) {
+        size_t size = [[cacheSize substringToIndex:cacheSize.length-2] longLongValue] * 1000 * 1000 * 1000;
+        [HSUWebCache setImageCacheSize:size];
+    }
+}
+
+- (void)logJailBreak
+{
+    if (self.isJailBreak) {
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:@"log_jail_break"] boolValue]) {
+            [Flurry logEvent:@"jail_break"];
+            [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:@"log_jail_break"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        }
+    }
+}
+
+- (BOOL)isJailBreak
+{
+#if TARGET_IPHONE_SIMULATOR
+    return NO;
+#endif
+    FILE *f = fopen("/bin/bash", "r");
+    BOOL isbash = NO;
+    if (f != NULL)
+    {
+        isbash = YES;
+    }
+    fclose(f);
+    return isbash;
 }
 
 @end

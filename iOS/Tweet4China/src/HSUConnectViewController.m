@@ -43,14 +43,12 @@
 {
     if (self.navigationController == notification.object) {
         if (self.view.window) {
-            if (self.tableView.contentOffset.y > 0) {
-                NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
-            } else {
+            if (self.tableView.contentOffset.y <= 0) {
                 [self.refreshControl beginRefreshing];
                 [self.dataSource refresh];
-                [self.tableView setContentOffset:ccp(0, -100) animated:YES];
             }
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
+            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
         }
     }
 }
@@ -62,9 +60,6 @@
         ![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem])) {
             
             [HSUConnectDataSource checkUnreadForViewController:self];
-#ifndef DEBUG
-            [HSUConnectDataSource checkUnread];
-#endif
     }
 }
 

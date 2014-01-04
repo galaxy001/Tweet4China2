@@ -26,7 +26,7 @@
     [super viewDidLoad];
     
     self.title = _(@"Accounts");
-    self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+    self.tableView = [[HSUTableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -78,6 +78,10 @@
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
+          NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+          for (NSHTTPCookie *each in cookieStorage.cookies) {
+              [cookieStorage deleteCookie:each];
+          }
           [TWENGINE authorizeByOAuth];
 //          HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
 //          [self.navigationController pushViewController:loginVC animated:YES];

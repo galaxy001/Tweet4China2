@@ -10,6 +10,7 @@
 #import <NJKWebViewProgress/NJKWebViewProgress.h>
 #import "HSUComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
 #define StartURL @"https://www.google.com"
 
@@ -200,13 +201,13 @@
 - (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
     if (progress == 0.0) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+        [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
         self.progressBar.progress = 0;
         [UIView animateWithDuration:0.27 animations:^{
             self.progressBar.alpha = 1.0;
         }];
     } else if (progress == 1.0) {
-        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
+        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
         [UIView animateWithDuration:0.27 delay:progress - self.progressBar.progress options:0 animations:^{
             self.progressBar.alpha = 0.0;
         } completion:nil];

@@ -16,6 +16,7 @@
 #import "HSULoginViewController.h"
 #import "HSUShadowsocksViewController.h"
 #import <Reachability/Reachability.h>
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
 #define API_URL ([url substringFromIndex:28])
 
@@ -810,6 +811,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         OARequestParameter *param = [OARequestParameter requestParameterWithName:key value:value];
         [params addObject:param];
     }
+    
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     dispatch_async(GCDBackgroundThread, ^{
         FHSTwitterEngine *engine = TWENGINE.engine;
         id responseObj;
@@ -821,6 +825,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         NSError *error = [responseObj isKindOfClass:[NSError class]] ? responseObj : nil;
         
         dispatch_async(GCDMainThread, ^{
+            
+            [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
+            
             if (error) {
                 if ([error code] == 204) { // Error Domain=Twitter successfully processed the request, but did not return any content Code=204 "The operation couldn’t be completed. (Twitter successfully processed the request, but did not return any content error 204.)"
                     failure(error);
@@ -880,11 +887,11 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         return;
     }
     
-    if (1) {
+    if ([Reachability reachabilityForInternetConnection].isReachable) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Retry Later")];
         RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_(@"Change Server")];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Connection failed")
-                                                        message:nil
+                                                        message:_(@"api_request_failed_alert_message")
                                                cancelButtonItem:cancelItem
                                                otherButtonItems:changeServerItem, nil];
         changeServerItem.action = ^{
