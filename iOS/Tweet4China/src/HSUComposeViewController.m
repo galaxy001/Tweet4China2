@@ -402,7 +402,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if SDK_Ver >= 70000
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 #endif
     

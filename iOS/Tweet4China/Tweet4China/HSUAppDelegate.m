@@ -176,6 +176,29 @@ static HSUShadowsocksProxy *proxy;
 - (BOOL)startShadowsocks
 {
     NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
+    if (!sss) {
+        sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"东京",
+                  HSUShadowsocksSettings_Server: @"106.187.45.148",
+                  HSUShadowsocksSettings_RemotePort: @"1024",
+                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"青岛",
+                  HSUShadowsocksSettings_Server: @"115.28.20.25",
+                  HSUShadowsocksSettings_RemotePort: @"1024",
+                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"旧金山",
+                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_RemotePort: @"1024",
+                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
+                ];
+        sss[arc4random_uniform(3)][HSUShadowsocksSettings_Selected] = @YES;
+        [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     
     for (NSDictionary *ss in sss) {
         if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
@@ -183,6 +206,19 @@ static HSUShadowsocksProxy *proxy;
             NSString *remotePort = ss[HSUShadowsocksSettings_RemotePort];
             NSString *passowrd = ss[HSUShadowsocksSettings_Password];
             NSString *method = ss[HSUShadowsocksSettings_Method];
+            
+            if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
+                if (!passowrd) {
+                    passowrd = @"ticqoxmp~rxr";
+                }
+                char chars3[13];
+                const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
+                for (int i=0; i<12; i++) {
+                    chars3[i] = str3[i] - i;
+                }
+                chars3[12] = 0;
+                passowrd = [NSString stringWithCString:chars3 encoding:NSASCIIStringEncoding];
+            }
             
             if (server && remotePort && passowrd && method) {
                 if (proxy == nil) {

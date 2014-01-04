@@ -14,7 +14,7 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if SDK_Ver >= 70000
         if (iOS_Ver >= 7) {
             self.separatorInset = edi(0, 0, 0, 0);
         }

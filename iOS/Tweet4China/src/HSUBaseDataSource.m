@@ -48,7 +48,7 @@
     
     if (IPAD) {
         if (indexPath.section == 0 && indexPath.row == self.count - 1) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if SDK_Ver >= 70000
             if (iOS_Ver >= 7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }

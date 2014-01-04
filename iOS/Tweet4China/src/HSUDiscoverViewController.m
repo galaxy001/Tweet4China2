@@ -23,13 +23,16 @@
 // placeholder position
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
-    return CGRectInset(bounds, 4, 4);
+    if (iOS_Ver >= 7) {
+        return CGRectInset(bounds, 4, 4);
+    }
+    return CGRectInset(bounds, 2, 2);
 }
 
 // text position
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
-    return CGRectInset(bounds, 4, 4);
+    return [self textRectForBounds:bounds];
 }
 
 @end
@@ -149,6 +152,10 @@
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
     
     self.urlTextField.frame = ccr(10, 7, self.view.width-60, self.navigationController.navigationBar.height-14);
+    if (iOS_Ver < 7) {
+        self.urlTextField.height = self.navigationController.navigationBar.height-20;
+        self.urlTextField.top = 10;
+    }
     self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
     self.progressView.height = self.urlTextField.height;
     self.progressView.leftTop = self.urlTextField.leftTop;

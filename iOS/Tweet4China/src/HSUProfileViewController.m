@@ -25,6 +25,7 @@
 #import <OpenCam/OpenCam.h>
 #import "HSUEditProfileViewController.h"
 #import "HSUTabController.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -87,9 +88,11 @@
     self.presenting = NO;
     
     if (self.isMe &&
-        [((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]) {
+        ([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
+         [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController])) {
             
         [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+        [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController];
         [self.profileView showDMIndicator];
     }
 }
@@ -109,7 +112,8 @@
 - (void)checkUnread
 {
     if (!self.dataSource ||
-        (![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] &&
+        (!([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
+           [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]) &&
          !self.profileView.dmIndicator)) {
             
             [HSUProfileDataSource checkUnreadForViewController:self];

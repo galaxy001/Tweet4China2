@@ -11,6 +11,7 @@
 #import "HSUProxySettingsViewController.h"
 #import "HSURefreshControl.h"
 #import "HSUTabController.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUHomeViewController ()
 
@@ -63,7 +64,8 @@
 {
     if (!self.dataSource ||
         (self.dataSource.count &&
-         ![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem])) {
+         !([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
+           [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]))) {
             
             [HSUHomeDataSource checkUnreadForViewController:self];
         }

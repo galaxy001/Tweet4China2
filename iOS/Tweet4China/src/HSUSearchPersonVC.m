@@ -76,7 +76,7 @@
         searchTF.leftTop = ccp(80, 3);
     } else {
         searchTF.font = [UIFont systemFontOfSize:14];
-        searchTF.size = ccs(self.width-55, 25);
+        searchTF.size = ccs(self.width-75, 25);
         searchTF.leftTop = ccp(40, 10);
         searchTF.backgroundColor = bw(255);
         searchTF.layer.cornerRadius = 3;

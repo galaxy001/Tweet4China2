@@ -166,7 +166,7 @@
         [item deselectRowAnimated:YES];
     }]];
     RETableViewItem *item =
-    [RETableViewItem itemWithTitle:S(@"%@ (2.6)", _(@"Application Version"))
+    [RETableViewItem itemWithTitle:S(@"%@ (%@)", _(@"Application Version"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"])
                      accessoryType:UITableViewCellAccessoryNone
                   selectionHandler:nil];
     item.selectionStyle = UITableViewCellSelectionStyleNone;

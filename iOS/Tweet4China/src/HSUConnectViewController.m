@@ -10,6 +10,7 @@
 #import "HSUConnectDataSource.h"
 #import "HSURefreshControl.h"
 #import "HSUTabController.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUConnectViewController ()
 
@@ -57,7 +58,8 @@
 {
     if (!self.dataSource ||
         (self.dataSource.count &&
-        ![((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem])) {
+        !([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
+          [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]))) {
             
             [HSUConnectDataSource checkUnreadForViewController:self];
     }

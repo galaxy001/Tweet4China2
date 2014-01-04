@@ -10,4 +10,8 @@
 
 @interface HSUiPadTabController : UIViewController
 
+- (void)showUnreadIndicatorOnViewController:(UIViewController *)viewController;
+- (void)hideUnreadIndicatorOnViewController:(UIViewController *)viewController;
+- (BOOL)hasUnreadIndicatorOnViewController:(UIViewController *)viewController;
+
 @end

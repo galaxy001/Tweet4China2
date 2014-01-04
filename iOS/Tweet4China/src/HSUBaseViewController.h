@@ -28,6 +28,8 @@
 @property (nonatomic, readonly) UIBarButtonItem *addFriendBarButton;
 @property (nonatomic, readonly) UIBarButtonItem *composeBarButton;
 
+@property (nonatomic, weak) id tabController;
+
 - (id)initWithDataSource:(HSUBaseDataSource *)dataSource;
 - (Class)cellClassForDataType:(NSString *)dataType;
 - (void)presentModelClass:(Class)modelClass;

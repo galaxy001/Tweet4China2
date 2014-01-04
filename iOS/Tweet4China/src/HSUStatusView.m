@@ -482,7 +482,7 @@
         if (IPHONE) {
             height += 120 + 10;
         } else {
-            height += 150 + 10; // todo
+            height += 530/2 + 10;
         }
     }
     

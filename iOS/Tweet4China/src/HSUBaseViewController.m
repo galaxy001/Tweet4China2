@@ -32,6 +32,7 @@
 #import "HSUListCell.h"
 #import "HSUSettingsViewController.h"
 #import "HSUTableView.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUBaseViewController ()
 
@@ -141,10 +142,12 @@
 {
     [super viewWillAppear:animated];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if SDK_Ver >= 70000
     if (iOS_Ver >= 7) {
-        self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
-        self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+        if (IPHONE) {
+            self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
+            self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+        }
     }
 #endif
     
@@ -261,9 +264,10 @@
         [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
     }
     ((HSUTableView *)self.tableView).offsetLocked = (fromIndex == 0);
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationNone];
+    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
     
-    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
+    [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
 }
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
@@ -280,7 +284,8 @@
         [self.tableView reloadData];
     }
 
-    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
+    [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
 }
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
@@ -296,7 +301,8 @@
 
 - (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource
 {
-    [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+    [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
+    [((HSUiPadTabController *)self.tabController) showUnreadIndicatorOnViewController:self.navigationController]; // for iPad
 }
 
 - (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource

@@ -16,8 +16,16 @@
 
 - (void)layoutSubviews
 {
-    if (!set && iOS_Ver < 7) {
-        [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
+    if (!set) {
+        if (iOS_Ver < 7) {
+            [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
+        } else {
+            if (IPAD) {
+                UIView *statusCover = [[UIView alloc] initWithFrame:ccr(0, -20, self.width, 20)];
+                statusCover.backgroundColor = kBlackColor;
+                [self addSubview:statusCover];
+            }
+        }
         set = YES;
     }
     [super layoutSubviews];
