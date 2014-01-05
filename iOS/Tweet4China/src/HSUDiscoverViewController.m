@@ -12,7 +12,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
-#define StartURL @"https://www.google.com"
+#define StartURL @"https://www.google.com/ncr"
 
 @interface HSUURLField : UITextField
 

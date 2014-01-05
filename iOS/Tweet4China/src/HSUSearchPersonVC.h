@@ -10,4 +10,6 @@
 
 @interface HSUSearchPersonVC : HSUPersonListViewController
 
+@property (nonatomic, weak) UITextField *searchTF;
+
 @end

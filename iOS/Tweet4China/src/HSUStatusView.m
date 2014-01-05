@@ -21,6 +21,7 @@
 #define ambient_S 20
 #define textAL_LHM 1.3
 #define padding_S 10
+#define PhotoPreviewMaxWidth 530
 
 #define retweeted_R @"ic_ambient_retweet"
 
@@ -36,6 +37,8 @@
     UIImageView *attrI; // photo/video/geo/summary/audio/convo
     UILabel *timeL;
     TTTAttributedLabel *textAL;
+    
+    BOOL hasPhoto;
 }
 
 @synthesize avatarB;
@@ -196,7 +199,7 @@
     [screenNameL sizeToFit];
     screenNameL.frame = ccr(nameL.right+3, -1, attrI.left-nameL.right, screenNameL.height);
     
-    self.imagePreviewButton.frame = ccr(textAL.left, textAL.bottom+5, textAL.width, textAL.width/2);
+    self.imagePreviewButton.frame = ccr(textAL.left, textAL.bottom+5, MIN(textAL.width, PhotoPreviewMaxWidth), MIN(textAL.width, PhotoPreviewMaxWidth)/2);
 }
 
 - (void)setupWithData:(HSUTableCellData *)cellData
@@ -242,19 +245,25 @@
     NSDictionary *place = rawData[@"place"];
     
     // attr
+    [self.data.renderData removeObjectForKey:@"instagram_url"];
+    [self.data.renderData removeObjectForKey:@"photo_url"];
+    hasPhoto = NO;
     attrI.imageName = nil;
     NSString *attrName = nil;
     if ([rawData[@"in_reply_to_status_id_str"] length]) {
         attrName = @"convo";
     }
-    if (!attrName && entities) {
+    if (entities) {
         NSArray *medias = entities[@"media"];
         NSArray *urls = entities[@"urls"];
         if (medias.count) {
             NSDictionary *media = medias[0];
             NSString *type = media[@"type"];
             if ([type isEqualToString:@"photo"]) {
-                attrName = @"photo";
+                if (!attrName) {
+                    attrName = @"photo";
+                }
+                hasPhoto = YES;
                 self.data.renderData[@"photo_url"] = media[@"media_url_https"];
                 self.data.renderData[@"photo_size"] = media[@"sizes"][@"large"];
                 
@@ -262,8 +271,14 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                attrName = [self _attrForUrl:expandedUrl];
-                if (attrName) {
+                NSString *aName = [self _attrForUrl:expandedUrl];
+                if (!attrName) {
+                    attrName = aName;
+                }
+                if ([aName isEqualToString:@"photo"]) {
+                    hasPhoto = YES;
+                }
+                if (aName) {
                     break;
                 }
             }
@@ -280,20 +295,20 @@
         }
     }
     
-    self.imagePreviewButton.hidden = YES;
     if (attrName) {
         attrI.imageName = S(@"ic_tweet_attr_%@_default", attrName);
         self.data.renderData[@"attr"] = attrName;
-        
-        if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
-            self.imagePreviewButton.hidden = NO;
-            [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
-                                               forState:UIControlStateNormal
-                                            placeHolder:nil];
-        }
     } else {
         attrI.imageName = nil;
         [self.data.renderData removeObjectForKey:@"attr"];
+    }
+    
+    self.imagePreviewButton.hidden = YES;
+    if (hasPhoto && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+        self.imagePreviewButton.hidden = NO;
+        [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
+                                           forState:UIControlStateNormal
+                                        placeHolder:nil];
     }
     
     // time
@@ -361,6 +376,7 @@
         NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
         NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
         self.data.renderData[@"instagram_url"] = instagramAPIUrl;
+        __weak typeof(self) weakSelf = self;
         AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
                                                JSONRequestOperationWithRequest:request
                                                success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
@@ -368,15 +384,17 @@
             if ([JSON isKindOfClass:[NSDictionary class]]) {
                 NSString *imageUrl = JSON[@"url"];
                 if ([imageUrl hasSuffix:@".mp4"]) {
-                    self.data.renderData[@"video_url"] = imageUrl;
-                    self.data.renderData[@"video_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
+                    weakSelf.data.renderData[@"video_url"] = imageUrl;
+                    weakSelf.data.renderData[@"video_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
                 } else {
-                    self.data.renderData[@"photo_url"] = imageUrl;
-                    self.data.renderData[@"photo_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
-                    self.imagePreviewButton.hidden = NO;
-                    [self.imagePreviewButton setImageWithUrlStr:imageUrl
-                                                       forState:UIControlStateNormal
-                                                    placeHolder:nil];
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
+                        weakSelf.data.renderData[@"photo_url"] = imageUrl;
+                        weakSelf.data.renderData[@"photo_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
+                        weakSelf.imagePreviewButton.hidden = NO;
+                        [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl
+                                                               forState:UIControlStateNormal
+                                                            placeHolder:nil];
+                    }
                 }
             }
         } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
@@ -482,7 +500,7 @@
         if (IPHONE) {
             height += 120 + 10;
         } else {
-            height += 530/2 + 10;
+            height += PhotoPreviewMaxWidth/2 + 10;
         }
     }
     

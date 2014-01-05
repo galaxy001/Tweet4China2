@@ -17,7 +17,15 @@
 #define UseXAuth YES
 #define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 
-#define JailBreakSupported
+#define FreeApp
+#define FreeAppleID @"445052810"
+#define ProAppleID @"791880602"
+
+#ifdef FreeApp
+#define AppleID FreeAppleID
+#else
+#define AppleID ProAppleID
+#endif
 
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
@@ -52,7 +60,7 @@ BOOL shadowsocksStarted;
 
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
-#define kIPADMainViewWidth 626
+#define kIPADMainViewPadding (IPAD ? 29 : 0)
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 do { \
@@ -61,7 +69,6 @@ _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
 Stuff; \
 _Pragma("clang diagnostic pop") \
 } while (0)
-
 
 
 #ifndef _

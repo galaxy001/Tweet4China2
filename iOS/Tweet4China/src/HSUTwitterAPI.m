@@ -636,25 +636,44 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                    } failure:failure];
      } failure:failure];
 }
-- (void)getFriendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)getFriendsSinceId:(NSString *)sinceId count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceId) params[@"cursor"] = sinceId;
+    if (count) params[@"count"] = @(count); // max 5000
     [self sendGETWithUrl:url_friends_ids
-              parameters:@{@"count": @"100"}
+              parameters:params
                  success:^(id responseObj)
      {
          NSMutableDictionary *usersDict = [responseObj mutableCopy];
          [self lookupUsers:usersDict[@"ids"]
                    success:^(id responseObj) {
-             usersDict[@"users"] = responseObj;
-             success(usersDict);
-         } failure:failure];
+                       usersDict[@"users"] = responseObj;
+                       success(usersDict);
+                   } failure:failure];
      } failure:failure];
+}
+- (void)getFriendsWithCount:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self getFriendsSinceId:nil count:count success:success failure:failure];
+}
+- (void)getFriendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self getFriendsWithCount:100 success:success failure:failure];
 }
 - (void)getTrendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendGETWithUrl:url_trends_place
               parameters:@{@"id": @"1"}
                  success:success failure:failure];
+}
+- (void)lookupFriendshipsWithScreenNames:(NSArray *)screenNames success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSString *screenName = [screenNames componentsJoinedByString:@","];
+    [self sendGETWithUrl:url_friendships_lookup
+              parameters:@{@"screen_name": screenName}
+                 success:success
+                 failure:failure];
 }
 - (void)searchUserWithKeyword:(NSString *)keyword success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
@@ -799,7 +818,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
 #ifdef DEBUG
-    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
+//    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
     FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];

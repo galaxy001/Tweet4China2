@@ -158,3 +158,11 @@
 "jailbreak_alert_message" = "出于安全的考虑，Tweet4China Pro暂不支持越狱设备，请前往下载免费版";
 "Jailbreak Device" = "越狱设备";
 "Cache Size" = "图片缓存大小";
+"pro_alert_title" = "购买Pro版";
+"pro_message_title" = "更快的网络，更多的功能！";
+"pro_alert_cancel_item" = "以后再说";
+"pro_alert_buy_item" = "购买Pro版";
+"You can not send direct message to" = "你不能发送私信给";
+"is not following you." = "还没有关注你呢";
+"Duplicated status" = "连续发送了相同的内容";
+"Finding" = "正在查询";

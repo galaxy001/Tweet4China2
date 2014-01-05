@@ -29,10 +29,15 @@
     [super loadMore];
     
     [self fetchDataWithSuccess:^(id responseObj) {
-        NSDictionary *dict = responseObj;
-        self.nextCursor = dict[@"next_cursor_str"];
-        self.prevCursor = dict[@"previous_cursor_str"];
-        NSArray *users = dict[@"users"];
+        NSArray *users = responseObj;
+        self.nextCursor = nil;
+        self.prevCursor = nil;
+        if ([responseObj isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *dict = responseObj;
+            self.nextCursor = dict[@"next_cursor_str"];
+            self.prevCursor = dict[@"previous_cursor_str"];
+            users = dict[@"users"];
+        }
         if (users.count) {
             HSUTableCellData *loadMoreCellData = self.data.lastObject;
             [self.data removeLastObject];

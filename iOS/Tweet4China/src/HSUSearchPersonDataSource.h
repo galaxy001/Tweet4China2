@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUBaseDataSource.h"
+#import "HSUPersonListDataSource.h"
 
-@interface HSUSearchPersonDataSource : HSUBaseDataSource
+@interface HSUSearchPersonDataSource : HSUPersonListDataSource
 
 @property (nonatomic, strong) NSString *keyword;
 

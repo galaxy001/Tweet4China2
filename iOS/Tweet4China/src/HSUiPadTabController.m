@@ -21,6 +21,7 @@
 @property (nonatomic, weak) UIButton *selectedTabBarItem;
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
 @property (nonatomic, weak) UIViewController *mainVC;
+@property (nonatomic, weak) UIView *tabBar;
 
 @end
 
@@ -102,6 +103,7 @@
     self.view.backgroundColor = kBlackColor;
     UIView *tabBar = [[UIView alloc] initWithFrame:ccr(0, iOS_Ver >= 7 ? 20 : 0, kIPadTabBarWidth, self.view.height)];
     [self.view addSubview:tabBar];
+    self.tabBar = tabBar;
     tabBar.backgroundColor = kBlackColor;
     
     CGFloat paddingTop = 24;
@@ -144,11 +146,6 @@
         [tabBarItem addTarget:self action:@selector(iPadTabBarItemTouched:) forControlEvents:UIControlEventTouchDown];
     }
     
-    for (UIViewController *childVC in self.viewControllers) {
-        childVC.left = tabBar.right;
-        childVC.width -= childVC.left;
-        [self addChildViewController:childVC];
-    }
     self.mainVC = self.viewControllers[0];
     [self.view addSubview:self.mainVC.view];
     
@@ -180,6 +177,21 @@
     self.selectedTabBarItem = sender;
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    for (UIViewController *childVC in self.viewControllers) {
+        childVC.left = self.tabBar.right;
+        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) { // portrait
+            childVC.width = 768 - childVC.left;
+        } else { // landscap
+            childVC.width = 1024 - childVC.left;
+        }
+        [self addChildViewController:childVC];
+    }
+}
+
 - (BOOL)shouldAutorotate
 {
     UIViewController *presentedVC = self.presentedViewController;
@@ -188,14 +200,14 @@
         UIViewController *currentVC = nav.viewControllers.lastObject;
         return currentVC.shouldAutorotate;
     }
-    return NO;
+    
+    return self.mainVC.shouldAutorotate;
 }
 
 - (UIStatusBarStyle)preferredStatusBarStyle
 {
     return UIStatusBarStyleBlackOpaque;
 }
-
 
 - (void)showUnreadIndicatorOnViewController:(UIViewController *)viewController
 {

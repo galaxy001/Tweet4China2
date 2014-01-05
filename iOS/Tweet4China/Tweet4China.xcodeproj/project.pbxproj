@@ -241,6 +241,9 @@
 		96BE216D16EC74AB00226799 /* HSUStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE216C16EC74AB00226799 /* HSUStatusCell.m */; };
 		96BE217116EC77BF00226799 /* HSUBaseDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE217016EC77BF00226799 /* HSUBaseDataSource.m */; };
 		96BE217416EC8FDA00226799 /* HSUBaseTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE217316EC8FDA00226799 /* HSUBaseTableCell.m */; };
+		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
+		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
+		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
 		96D291B51742879400AB4F8C /* HSUDraftManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D291B41742879400AB4F8C /* HSUDraftManager.m */; };
 		96D291BE1742924000AB4F8C /* NSData+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D291BD1742924000AB4F8C /* NSData+MD5.m */; };
 		96D291C11743273400AB4F8C /* HSUDraftsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D291C01743273400AB4F8C /* HSUDraftsViewController.m */; };
@@ -643,6 +646,12 @@
 		96BE217016EC77BF00226799 /* HSUBaseDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUBaseDataSource.m; sourceTree = "<group>"; };
 		96BE217216EC8FDA00226799 /* HSUBaseTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUBaseTableCell.h; sourceTree = "<group>"; };
 		96BE217316EC8FDA00226799 /* HSUBaseTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUBaseTableCell.m; sourceTree = "<group>"; };
+		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
+		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
+		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
+		96C951F518795A6300D3AC9A /* HSUSearchField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchField.m; sourceTree = "<group>"; };
+		96C951F718795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUDirectMessagePersonsDataSource.h; sourceTree = "<group>"; };
+		96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUDirectMessagePersonsDataSource.m; sourceTree = "<group>"; };
 		96D291B31742879400AB4F8C /* HSUDraftManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUDraftManager.h; sourceTree = "<group>"; };
 		96D291B41742879400AB4F8C /* HSUDraftManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUDraftManager.m; sourceTree = "<group>"; };
 		96D291BC1742924000AB4F8C /* NSData+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MD5.h"; sourceTree = "<group>"; };
@@ -1174,6 +1183,10 @@
 				967272AF1733C29B00B6E30A /* HSUPersonListDataSource.m */,
 				967272661732C59800B6E30A /* HSUPersonListViewController.h */,
 				967272671732C59800B6E30A /* HSUPersonListViewController.m */,
+				96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */,
+				96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */,
+				96C951F718795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.h */,
+				96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */,
 				9628E6DA17312B8E005A9EC9 /* HSUProfileDataSource.h */,
 				9628E6DB17312B8E005A9EC9 /* HSUProfileDataSource.m */,
 				9628E6D41730F45E005A9EC9 /* HSUProfileView.h */,
@@ -1230,6 +1243,8 @@
 				960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */,
 				96D91E011813B288001A8188 /* HSUSearchPersonVC.h */,
 				96D91E021813B288001A8188 /* HSUSearchPersonVC.m */,
+				96C951F418795A6300D3AC9A /* HSUSearchField.h */,
+				96C951F518795A6300D3AC9A /* HSUSearchField.m */,
 				96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */,
 				96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */,
 				966E18E2184C6CC000B5482C /* HSUNavigationController.h */,
@@ -1629,6 +1644,7 @@
 				603909459EA4EB003D8703B6 /* UIImage+Additions.m in Sources */,
 				60390DA90C44901CEEB0F319 /* UIButton+Additions.m in Sources */,
 				9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */,
+				96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */,
 				603905961F1A442FC872C8B3 /* HSUSuggestMentionCell.m in Sources */,
 				603909172DE0FB7D7730FFEB /* HSUSuggestTagCell.m in Sources */,
 				9631AD191714738F006A4C0F /* GTMNSString+HTML.m in Sources */,
@@ -1667,6 +1683,7 @@
 				9666CDDC18702D650044DB0A /* HSUAttributedLabel.m in Sources */,
 				96D291B51742879400AB4F8C /* HSUDraftManager.m in Sources */,
 				96D291BE1742924000AB4F8C /* NSData+MD5.m in Sources */,
+				96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */,
 				96D291C11743273400AB4F8C /* HSUDraftsViewController.m in Sources */,
 				96D292351743856200AB4F8C /* HSUDraftsDataSource.m in Sources */,
 				96D292381743861F00AB4F8C /* HSUDraftCell.m in Sources */,
@@ -1677,6 +1694,7 @@
 				966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */,
 				966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */,
 				96FAB148174BDBBC00C8C854 /* HSUMessageCell.m in Sources */,
+				96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */,
 				96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */,
 				9633E5E9174D2258009062B7 /* HSUConversationCell.m in Sources */,
 				967F635B17550B4D00CB8730 /* HSUSendBarButtonItem.m in Sources */,
@@ -1797,7 +1815,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
@@ -1824,7 +1842,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "32CA7DC8-3976-4639-9EDD-1823D481385A";
 				SDKROOT = iphoneos;

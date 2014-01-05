@@ -39,34 +39,39 @@
         // ask follow author
         if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"asked_follow_author"] boolValue]) {
             NSString *authorScreenName = @"tuoxie007";
-            if ([TWENGINE.myScreenName isEqualToString:authorScreenName]) {
-                return ;
+            if (![TWENGINE.myScreenName isEqualToString:authorScreenName]) {
+                [TWENGINE showUser:authorScreenName success:^(id responseObj) {
+                    NSDictionary *profile = responseObj;
+                    if (![profile[@"following"] boolValue]) {
+                        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+                        RIButtonItem *followItem = [RIButtonItem itemWithLabel:_(@"OK")];
+                        followItem.action = ^{
+                            [TWENGINE followUser:authorScreenName success:^(id responseObj) {
+                            } failure:^(NSError *error) {
+                            }];
+                        };
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Follow Author @tuoxie007")
+                                                                        message:_(@"Get the latest activities about Tweet4China")
+                                                               cancelButtonItem:cancelItem
+                                                               otherButtonItems:followItem, nil];
+                        [alert show];
+                        [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"asked_follow_author"];
+                        [[NSUserDefaults standardUserDefaults] synchronize];
+                    }
+                } failure:^(NSError *error) {
+                    
+                }];
             }
-            [TWENGINE showUser:authorScreenName success:^(id responseObj) {
-                NSDictionary *profile = responseObj;
-                if (![profile[@"following"] boolValue]) {
-                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-                    RIButtonItem *followItem = [RIButtonItem itemWithLabel:_(@"OK")];
-                    followItem.action = ^{
-                        [TWENGINE followUser:authorScreenName success:^(id responseObj) {
-                        } failure:^(NSError *error) {
-                        }];
-                    };
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Follow Author @tuoxie007")
-                                                                    message:_(@"Get the latest activities about Tweet4China")
-                                                           cancelButtonItem:cancelItem
-                                                           otherButtonItems:followItem, nil];
-                    [alert show];
-                    [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"asked_follow_author"];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                }
-            } failure:^(NSError *error) {
-                
-            }];
         }
         // end ask
+        
+        [[HSUAppDelegate shared] buyProAppIfOverCount];
+        
     } failure:^(NSError *error) {
         failure(error);
+        if (!error || error.code == 204) { // no err, no data
+            [[HSUAppDelegate shared] buyProAppIfOverCount];
+        }
     }];
 }
 

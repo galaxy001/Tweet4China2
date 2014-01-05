@@ -78,13 +78,17 @@
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
+          [item deselectRowAnimated:YES];
+          
+          if (![[HSUAppDelegate shared] buyProApp]) {
+              return ;
+          }
+          
           NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
           for (NSHTTPCookie *each in cookieStorage.cookies) {
               [cookieStorage deleteCookie:each];
           }
           [TWENGINE authorizeByOAuth];
-//          HSULoginViewController *loginVC = [[HSULoginViewController alloc] init];
-//          [self.navigationController pushViewController:loginVC animated:YES];
       }]];
     
     self.navigationItem.rightBarButtonItem = self.editButtonItem;

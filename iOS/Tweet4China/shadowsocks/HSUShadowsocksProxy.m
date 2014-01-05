@@ -112,7 +112,8 @@
 - (void)stop
 {
     [_serverSocket disconnect];
-    [_pipelines enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    NSArray *ps = [NSArray arrayWithArray:_pipelines];
+    [ps enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         HSUShadowsocksPipeline *pipeline = obj;
         [pipeline.localSocket disconnect];
         [pipeline.remoteSocket disconnect];

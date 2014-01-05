@@ -21,7 +21,7 @@
 #endif
         
         if (IPAD) {
-            self.width = kIPADMainViewWidth;
+            self.width = kWinWidth - kIPadTabBarWidth - kIPADMainViewPadding*2;
             self.contentView.width = self.width;
         }
     }

@@ -376,9 +376,8 @@
     locationManager.pausesLocationUpdatesAutomatically = YES;
 #endif
     
-    // todo use cache
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
-    [TWENGINE getFriendsWithSuccess:^(id responseObj) {
+    [TWENGINE getFriendsWithCount:100 success:^(id responseObj) {
         friends = responseObj[@"users"];
         [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
         [[NSUserDefaults standardUserDefaults] synchronize];

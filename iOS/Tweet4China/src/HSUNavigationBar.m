@@ -21,7 +21,7 @@
             [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
         } else {
             if (IPAD) {
-                UIView *statusCover = [[UIView alloc] initWithFrame:ccr(0, -20, self.width, 20)];
+                UIView *statusCover = [[UIView alloc] initWithFrame:ccr(0, -20, 1024, 20)];
                 statusCover.backgroundColor = kBlackColor;
                 [self addSubview:statusCover];
             }

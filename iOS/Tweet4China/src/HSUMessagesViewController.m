@@ -74,7 +74,7 @@
         actionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
     self.actionsBarButtonItem = actionsBarButtonItem;
-    self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
+//    self.navigationItem.rightBarButtonItem = self.actionsBarButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
     if (iOS_Ver < 7) {
@@ -121,6 +121,18 @@
     wordCountLabel.shadowColor = kWhiteColor;
     wordCountLabel.shadowOffset = ccs(0, 1);
     wordCountLabel.backgroundColor = kClearColor;
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (self.navigationController.viewControllers.count == 1) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemDone
+                                                 target:self
+                                                 action:@selector(dismiss)];
+    }
 }
 
 - (void)viewDidLayoutSubviews

@@ -52,8 +52,13 @@
     [section addItem:avatarItem];
     __weak typeof(self) weakSelf = self;
     avatarItem.selectionHandler = ^(RETableViewItem *item) {
-        [weakSelf avatarTouched];
         [item deselectRowAnimated:YES];
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
+        
+        [weakSelf avatarTouched];
     };
     
     section = [RETableViewSection section];
@@ -66,8 +71,13 @@
     self.bannerItem = bannerItem;
     [section addItem:bannerItem];
     bannerItem.selectionHandler = ^(RETableViewItem *item) {
-        [weakSelf bannerTouched];
         [item deselectRowAnimated:YES];
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
+        
+        [weakSelf bannerTouched];
     };
     
     section = [RETableViewSection section];
@@ -230,10 +240,15 @@
 
 - (void)save
 {
+    if (![[HSUAppDelegate shared] buyProApp]) {
+        return ;
+    }
+    
     if (!self.updated) {
         [self dismiss];
         return;
     }
+    
     [SVProgressHUD showWithStatus:_(@"Updating...")];
     NSMutableDictionary *profile = [NSMutableDictionary dictionary];
     if (self.nameItem.value) {

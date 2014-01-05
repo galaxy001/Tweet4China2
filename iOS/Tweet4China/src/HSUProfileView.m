@@ -44,13 +44,15 @@
 
 @implementation HSUProfileView
 
-- (id)initWithScreenName:(NSString *)screenName delegate:(id<HSUProfileViewDelegate>)delegate
+- (id)initWithScreenName:(NSString *)screenName width:(CGFloat)width delegate:(id<HSUProfileViewDelegate>)delegate
 {
     self = [super init];
     if (self) {
         UIImageView *infoBGView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_profile_empty"]];
         [self addSubview:infoBGView];
         self.infoBGView = infoBGView;
+        
+        infoBGView.width = width;
         
         UIPageControl *pager = [[UIPageControl alloc] init];
         [infoBGView addSubview:pager];
@@ -263,20 +265,9 @@
                                       forState:UIControlStateHighlighted];
             [accountsButton setImage:[UIImage imageNamed:@"icn_profile_switch_accounts"] forState:UIControlStateNormal];
             accountsButton.size = ccs(42, 30);
-            
-            // messagesButton
-            messagesButton = [[UIButton alloc] init];
-            self.messagesButton = messagesButton;
-            [buttonsPanel addSubview:messagesButton];
-            [messagesButton setTapTarget:delegate action:@selector(messagesButtonTouched)];
-            [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
-                                      forState:UIControlStateNormal];
-            [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]
-                                      forState:UIControlStateHighlighted];
-            [messagesButton setImage:[UIImage imageNamed:@"icn_profile_messages"] forState:UIControlStateNormal];
-            messagesButton.size = ccs(42, 30);
         } else {
             // actionsButton
+            /*
             actionsButton = [[UIButton alloc] init];
             [buttonsPanel addSubview:actionsButton];
             self.actionsButton = actionsButton;
@@ -287,6 +278,7 @@
                                      forState:UIControlStateHighlighted];
             [actionsButton setImage:[UIImage imageNamed:@"icn_profile_action"] forState:UIControlStateNormal];
             actionsButton.size = ccs(42, 30);
+            */
             
             // followButton
             followButton = [[UIButton alloc] init];
@@ -298,9 +290,25 @@
             followButton.size = ccs(90, 30);
         }
         
+        // messagesButton
+        messagesButton = [[UIButton alloc] init];
+        self.messagesButton = messagesButton;
+        [buttonsPanel addSubview:messagesButton];
+        [messagesButton setTapTarget:delegate action:@selector(messagesButtonTouched)];
+        [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
+                                  forState:UIControlStateNormal];
+        [messagesButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]
+                                  forState:UIControlStateHighlighted];
+        [messagesButton setImage:[UIImage imageNamed:@"icn_profile_messages"] forState:UIControlStateNormal];
+        messagesButton.size = ccs(42, 30);
+        
         float buttonHeight = buttonsPanel.height/2;
         if (IPAD) {
-            messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            if ([screenName isEqualToString:MyScreenName]) {
+                messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            } else {
+                messagesButton.leftCenter = ccp(10, buttonHeight);
+            }
             accountsButton.rightCenter = ccp(messagesButton.left - 10, buttonHeight);
             // todo accountsButton not implemented
             settingsButton.rightCenter = ccp(messagesButton.left - 10, buttonHeight);
@@ -311,7 +319,11 @@
         } else {
             settingsButton.leftCenter = ccp(10, buttonHeight);
             accountsButton.leftCenter = ccp(settingsButton.right + 10, buttonHeight);
-            messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            if ([screenName isEqualToString:MyScreenName]) {
+                messagesButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
+            } else {
+                messagesButton.leftCenter = ccp(10, buttonHeight);
+            }
             
             actionsButton.leftCenter = ccp(10, buttonsPanel.height/2);
             followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);

@@ -53,7 +53,7 @@
 {
     [super layoutSubviews];
     
-    self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.statusView.width, self.contentView.height-padding_S*2);
+    self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.contentView.width-padding_S*4, self.contentView.height-padding_S*2);
 }
 
 - (void)setupWithData:(HSUTableCellData *)data

@@ -15,7 +15,7 @@
 @property (nonatomic, readonly) UIImage *bannerImage;
 @property (nonatomic, weak) UIImageView *dmIndicator;
 
-- (id)initWithScreenName:(NSString *)screenName delegate:(id<HSUProfileViewDelegate>)delegate;
+- (id)initWithScreenName:(NSString *)screenName width:(CGFloat)width delegate:(id<HSUProfileViewDelegate>)delegate;
 - (void)setupWithProfile:(NSDictionary *)profile;
 - (void)showDMIndicator;
 - (void)hideDMIndicator;

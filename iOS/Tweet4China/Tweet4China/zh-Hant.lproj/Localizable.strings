@@ -33,7 +33,7 @@
 "Send" = "傳送";
 "Mail Conversation" = "用郵件傳送會話";
 "Forget it" = "不要了吧";
-"Feedback" = "反饋";
+"Feedback" = "回報";
 "Delete Conversation" = "刪除會話";
 "Retry Send" = "重新傳送";
 "Message failed to send" = "消息傳送失敗了";
@@ -44,7 +44,7 @@
 "Unfollow failed" = "取消關注失敗了";
 "Follow failed" = "關注失敗了";
 "Followers" = "關注者";
-"Favorites" = "我的最愛";
+"Favorites" = "收藏";
 "Lists" = "列表";
 "View More Tweets" = "查看更多推文";
 "TWEETS" = "推文";
@@ -125,7 +125,7 @@
 "Small" = "小";
 "Middle" = "中";
 "Large" = "大";
-"Help & Feedback (Email)" = "幫助與反饋 (Email)";
+"Help & Feedback (Email)" = "幫助與回報 (Email)";
 "OpenSource Code (Github)" = "開源程式碼 (Github)";
 "Official Blog (Tumblr)" = "官方博客 (Tumblr)";
 "Add New" = "新添";
@@ -158,3 +158,11 @@
 "jailbreak_alert_message" = "出於安全的考慮，Tweet4China Pro暫不支援越獄設備，請前往下載免費版";
 "Jailbreak Device" = "越獄設備";
 "Cache Size" = "圖片緩存大小";
+"pro_alert_title" = "購買Pro版";
+"pro_message_title" = "更快的網路，更多的功能！";
+"pro_alert_cancel_item" = "以後再說";
+"pro_alert_buy_item" = "購買Pro版";
+"You can not send direct message to" = "你不能發送訊息給";
+"is not following you." = "還沒有關注你呢";
+"Duplicated status" = "连续发送了相同的内容";
+"Finding" = "正在查询";

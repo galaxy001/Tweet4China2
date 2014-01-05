@@ -20,5 +20,7 @@
 - (void)stopShadowsocks;
 - (void)updateImageCacheSize;
 - (BOOL)isJailBreak;
+- (BOOL)buyProApp;
+- (void)buyProAppIfOverCount;
 
 @end

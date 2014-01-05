@@ -29,7 +29,7 @@
 
 - (void)loadMore
 {
-    [super loadMore];
+    self.loadingCount ++;
     
     [self fetchDataWithSuccess:^(id responseObj) {
         NSArray *users = responseObj;

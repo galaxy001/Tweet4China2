@@ -33,6 +33,7 @@
 #import "HSUSettingsViewController.h"
 #import "HSUTableView.h"
 #import "HSUiPadTabController.h"
+#import "HSUSearchPersonDataSource.h"
 
 @interface HSUBaseViewController ()
 
@@ -172,7 +173,7 @@
     
     if (IPAD) {
         self.view.backgroundColor = rgb(244, 248, 251);
-        self.tableView.frame = ccr(self.view.width/2-kIPADMainViewWidth/2, 15, kIPADMainViewWidth, self.view.height-30);
+        self.tableView.frame = ccr(kIPADMainViewPadding, 15, self.view.width-kIPADMainViewPadding*2, self.view.height-30);
     } else {
         self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
         self.tableView.frame = self.view.bounds;
@@ -189,6 +190,17 @@
     [super viewDidAppear:animated];
     
     self.viewDidAppearCount ++;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (IPAD) {
+        self.view.backgroundColor = rgb(244, 248, 251);
+        self.tableView.frame = ccr(kIPADMainViewPadding, 15, self.view.width-kIPADMainViewPadding*2, self.view.height-30);
+        [self.tableView reloadData];
+    }
 }
 
 - (BOOL)prefersStatusBarHidden
@@ -408,7 +420,8 @@
     if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
         return;
     }
-    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] init];
+    HSUSearchPersonDataSource *dataSource = [[HSUSearchPersonDataSource alloc] init];
+    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] initWithDataSource:dataSource];
     [self.navigationController pushViewController:addFriendVC animated:YES];
     
     if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
@@ -443,7 +456,7 @@
 
 - (BOOL)shouldAutorotate
 {
-    return NO;
+    return IPAD;
 }
 
 - (void)reloadData

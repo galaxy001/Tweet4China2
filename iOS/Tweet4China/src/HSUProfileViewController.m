@@ -26,6 +26,8 @@
 #import "HSUEditProfileViewController.h"
 #import "HSUTabController.h"
 #import "HSUiPadTabController.h"
+#import "HSUMessagesDataSource.h"
+#import "HSUMessagesViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -33,6 +35,7 @@
 @property (nonatomic) NSTimeInterval lastUpdateTime;
 @property (nonatomic) BOOL presenting;
 @property (nonatomic) BOOL selectPhotoForAvatar; // YES for avatar, NO for banner
+@property (nonatomic) UIInterfaceOrientation orientation;
 
 @end
 
@@ -64,12 +67,7 @@
 {
     [super viewDidLoad];
     
-    HSUProfileView *profileView = [[HSUProfileView alloc] initWithScreenName:self.screenName delegate:self];
-    if (self.profile) {
-        [profileView setupWithProfile:self.profile];
-    }
-    self.tableView.tableHeaderView = profileView;
-    self.profileView = profileView;
+    self.orientation = self.interfaceOrientation;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -97,6 +95,32 @@
     }
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    // 偷懒
+    if (UIInterfaceOrientationIsPortrait(self.orientation) != UIInterfaceOrientationIsPortrait(self.interfaceOrientation) ||
+        !self.profileView) {
+        
+        HSUProfileView *profileView = [[HSUProfileView alloc] initWithScreenName:self.screenName width:self.view.width-kIPADMainViewPadding*2 delegate:self];
+        if (self.profile) {
+            [profileView setupWithProfile:self.profile];
+        }
+        self.tableView.tableHeaderView = profileView;
+        self.profileView = profileView;
+    }
+    
+    self.orientation = self.interfaceOrientation;
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    self.navigationItem.title = nil;
+}
+
 - (void)tabDidSelected:(NSNotification *)notification
 {
     if (self.navigationController == notification.object) {
@@ -104,7 +128,9 @@
             if (self.tableView.contentOffset.y <= 0) {
                 [self refreshData];
             }
-            [self.tableView setContentOffset:ccp(0, -120)];
+            if (iOS_Ver >= 7) {
+                [self.tableView setContentOffset:ccp(0, -120)];
+            }
         }
     }
 }
@@ -291,51 +317,68 @@
 
 - (void)messagesButtonTouched
 {
-    HSUConversationsViewController *conversationsVC = [[HSUConversationsViewController alloc] init];
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[conversationsVC];
-    [self.navigationController presentViewController:nav animated:YES completion:nil];
-    [self.profileView hideDMIndicator];
+    if (self.isMe) {
+        HSUConversationsViewController *conversationsVC = [[HSUConversationsViewController alloc] init];
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+        nav.viewControllers = @[conversationsVC];
+        [self.navigationController presentViewController:nav animated:YES completion:nil];
+        [self.profileView hideDMIndicator];
+    } else {
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return;
+        }
+        
+        [SVProgressHUD showWithStatus:_(@"Please Wait")];
+        __weak typeof(self)weakSelf = self;
+        NSString *screenName = self.screenName;
+        [TWENGINE lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
+            NSDictionary *ship = responseObj[0];
+            NSArray *connections = ship[@"connections"];
+            BOOL followedMe = NO;
+            if ([connections isKindOfClass:[NSArray class]]) {
+                for (NSString *connection in connections) {
+                    if ([connection isEqualToString:@"followed_by"]) {
+                        followedMe = YES;
+                        break;
+                    }
+                }
+            }
+            if (followedMe) {
+                HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:nil];
+                HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
+                HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
+                messagesVC.herProfile = weakSelf.profile;
+                messagesVC.myProfile = nil;
+                NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
+                if (userProfiles[MyScreenName]) {
+                    messagesVC.myProfile = userProfiles[MyScreenName];
+                    [SVProgressHUD dismiss];
+                    [weakSelf presentViewController:nav animated:YES completion:nil];
+                } else {
+                    [TWENGINE showUser:MyScreenName success:^(id responseObj) {
+                        [SVProgressHUD dismiss];
+                        messagesVC.myProfile = responseObj;
+                        [weakSelf presentViewController:nav animated:YES completion:nil];
+                    } failure:^(NSError *error) {
+                        [SVProgressHUD dismiss];
+                    }];
+                }
+            } else {
+                [SVProgressHUD dismiss];
+                NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _(@"You can not send direct message to"), screenName, screenName, _(@"is not following you.")];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_(@"OK") otherButtonTitles:nil, nil];
+                [alert show];
+            }
+        } failure:^(NSError *error) {
+            [SVProgressHUD dismiss];
+        }];
+    }
 }
 
 - (void)actionsButtonTouched
 {
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil];
     uint count = 0;
-    
-    /*
-    if ([self.profile[@"following"] boolValue]) {
-        if ([self.profile[@"notifications"] boolValue]) {
-            RIButtonItem *turnOffNotiItem = [RIButtonItem itemWithLabel:_(@"Turn off notifications")];
-            turnOffNotiItem.action = ^{
-                
-            };
-            [actionSheet addButtonItem:turnOffNotiItem];
-        } else {
-            RIButtonItem *turnOnNotiItem = [RIButtonItem itemWithLabel:_(@"Turn on notifications")];
-            turnOnNotiItem.action = ^{
-                
-            };
-            [actionSheet addButtonItem:turnOnNotiItem];
-        }
-        count ++;
-        
-        if ([self.profile[@"retweets"] boolValue]) {
-            RIButtonItem *turnOffRetweetsItem = [RIButtonItem itemWithLabel:_(@"Turn off Retweets")];
-            turnOffRetweetsItem.action = ^{
-                
-            };
-            [actionSheet addButtonItem:turnOffRetweetsItem];
-        } else {
-            RIButtonItem *turnOnRetweetsItem = [RIButtonItem itemWithLabel:_(@"Turn on Retweets")];
-            turnOnRetweetsItem.action = ^{
-                
-            };
-            [actionSheet addButtonItem:turnOnRetweetsItem];
-        }
-        count ++;
-    }
-    */
     
     RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:_(@"Report Spam")];
     reportSpamItem.action = ^{
@@ -449,6 +492,9 @@
 - (void)avatarButtonTouched
 {
     if (self.isMe) {
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
         [self selectPhotoForAvatar:YES];
     } else {
         NSString *url = self.profile[@"profile_image_url_https"];
@@ -462,6 +508,9 @@
 - (void)bannerButtonTouched
 {
     if (self.isMe) {
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
         [self selectPhotoForAvatar:NO];
     }
 }

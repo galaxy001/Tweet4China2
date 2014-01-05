@@ -34,7 +34,11 @@ static HSUShadowsocksProxy *proxy;
 {
     self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
     if (!self.globalSettings) {
+#ifdef FreeApp
         self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
+#else
+        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @NO, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
+#endif
     }
     
     [self startShadowsocks];
@@ -73,16 +77,9 @@ static HSUShadowsocksProxy *proxy;
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-#ifndef JailBreakSupported
-    if (self.isJailBreak) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"OK")];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Jailbreak Device") message:_(@"jailbreak_alert_message") cancelButtonItem:cancelItem otherButtonItems:nil, nil];
-        [alert show];
-        cancelItem.action = ^{
-            [Appirater rateApp];
-        };
-    }
-#endif
+    [Appirater setAppId:AppleID];
+    
+    [self alertJailbreak];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -165,7 +162,7 @@ static HSUShadowsocksProxy *proxy;
 - (void)configureAppirater
 {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-    [Appirater setAppId:@"445052810"];
+    [Appirater setAppId:AppleID];
     [Appirater setDaysUntilPrompt:1];
     [Appirater setUsesUntilPrompt:10];
     [Appirater setSignificantEventsUntilPrompt:-1];
@@ -178,24 +175,30 @@ static HSUShadowsocksProxy *proxy;
     NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
     if (!sss) {
         sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"东京",
-                  HSUShadowsocksSettings_Server: @"106.187.45.148",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy,
+                  HSUShadowsocksSettings_Desc: @"旧金山1",
+                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_RemotePort: @"1026",
+                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"旧金山",
+                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_RemotePort: @"1026",
+                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"旧金山",
+                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_RemotePort: @"1026",
+                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
                 
                 @{HSUShadowsocksSettings_Buildin: @YES,
                   HSUShadowsocksSettings_Desc: @"青岛",
                   HSUShadowsocksSettings_Server: @"115.28.20.25",
                   HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山",
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
                   HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
                 ];
-        sss[arc4random_uniform(3)][HSUShadowsocksSettings_Selected] = @YES;
+        sss[arc4random_uniform(2)][HSUShadowsocksSettings_Selected] = @YES;
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -266,6 +269,54 @@ static HSUShadowsocksProxy *proxy;
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }
+}
+
+- (void)buyProAppIfOverCount
+{
+#ifdef FreeApp // free app is restrict for using time
+    NSUInteger timelineLoadCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"timeline_load_count"] unsignedIntegerValue];
+    if (timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) {
+        [self buyProApp];
+    }
+    timelineLoadCount ++;
+    [[NSUserDefaults standardUserDefaults] setObject:@(timelineLoadCount) forKey:@"timeline_load_count"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+#endif
+}
+
+// yes if pro, no if free
+- (BOOL)buyProApp
+{
+#ifndef FreeApp // free app is restrict for using time
+    return YES;
+#endif
+    NSString *title = _(@"pro_alert_title");
+    NSString *message = _(@"pro_message_title");
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"pro_alert_cancel_item")];
+    RIButtonItem *buyItem = [RIButtonItem itemWithLabel:_(@"pro_alert_buy_item")];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message cancelButtonItem:cancelItem otherButtonItems:buyItem, nil];
+    [alert show];
+    buyItem.action = ^{
+        [Appirater setAppId:ProAppleID];
+        [Appirater rateApp];
+    };
+    return NO;
+}
+
+- (void)alertJailbreak
+{
+    return;
+#ifndef FreeApp
+    if (self.isJailBreak) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"OK")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Jailbreak Device") message:_(@"jailbreak_alert_message") cancelButtonItem:cancelItem otherButtonItems:nil, nil];
+        [alert show];
+        cancelItem.action = ^{
+            [Appirater setAppId:FreeAppleID];
+            [Appirater rateApp];
+        };
+    }
+#endif
 }
 
 - (BOOL)isJailBreak

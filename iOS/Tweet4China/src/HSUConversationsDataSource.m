@@ -120,6 +120,7 @@
             }];
         }
         [self removeCellData:cellData];
+        [self saveCache];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }
 }

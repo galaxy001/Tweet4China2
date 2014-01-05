@@ -10,6 +10,8 @@
 #import "HSUConversationsDataSource.h"
 #import "HSUMessagesViewController.h"
 #import "HSUMessagesDataSource.h"
+#import "HSUCreateDirectMessageViewController.h"
+#import "HSUDirectMessagePersonsDataSource.h"
 
 #define toolbar_height 44
 
@@ -138,7 +140,9 @@
 
 - (void)_composeButtonTouched
 {
-    
+    HSUDirectMessagePersonsDataSource *dataSource = [[HSUDirectMessagePersonsDataSource alloc] init];
+    HSUCreateDirectMessageViewController *createDMVC = [[HSUCreateDirectMessageViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:createDMVC animated:YES];
 }
 
 - (void)_editButtonTouched
@@ -157,8 +161,7 @@
     HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
     
     HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:cellData.rawData];
-    HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] init];
-    messagesVC.dataSource = dataSource;
+    HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
     
     NSDictionary *conversation = cellData.rawData;
     NSArray *messages = conversation[@"messages"];

@@ -12,30 +12,9 @@
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
 #import <QuartzCore/QuartzCore.h>
 #endif
-
-@interface HSUSearchField : UITextField
-
-@end
-
-@implementation HSUSearchField
-
-// placeholder position
-- (CGRect)textRectForBounds:(CGRect)bounds
-{
-    return CGRectInset(bounds, 24, 4);
-}
-
-// text position
-- (CGRect)editingRectForBounds:(CGRect)bounds
-{
-    return CGRectInset(bounds, 24, 4);
-}
-
-@end
+#import "HSUSearchField.h"
 
 @interface HSUSearchPersonVC () <UITextFieldDelegate>
-
-@property (nonatomic, weak) UITextField *searchTF;
 
 @end
 
@@ -45,8 +24,6 @@
 {
     self.useRefreshControl = NO;
     self.hideRightButtons = YES;
-    
-    self.dataSource = [[HSUSearchPersonDataSource alloc] init];
     
     [super viewDidLoad];
     

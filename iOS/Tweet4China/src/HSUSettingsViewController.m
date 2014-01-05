@@ -76,11 +76,35 @@
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
-    [section addItem:[REBoolItem itemWithTitle:_(@"Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]]];
-    [section addItem:[REBoolItem itemWithTitle:_(@"Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]]];
-    __weak __typeof(&*self) weakSelf = self;
+    REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_(@"Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
+    [section addItem:soundEffectItem];
+    __weak typeof(self) weakSelf = self;
+    soundEffectItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = YES;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
+    
+    REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_(@"Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
+    [section addItem:photoPreviewItem];
+    photoPreviewItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
+    
     [section addItem:[RERadioItem itemWithTitle:_(@"Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
         
         NSArray *options = @[@"12", @"14", @"16"];
         
@@ -102,6 +126,10 @@
     
     [section addItem:[RERadioItem itemWithTitle:_(@"Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            return ;
+        }
         
         NSArray *options = @[@"16MB", @"32MB", @"64MB", @"128MB", @"256MB", @"512MB", @"1GB", @"2GB", @"4GB"];
         

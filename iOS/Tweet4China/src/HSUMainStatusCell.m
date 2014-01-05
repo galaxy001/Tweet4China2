@@ -182,6 +182,7 @@
         sourceButton = [[UIButton alloc] init];
         [retweetFavoritePannel addSubview:sourceButton];
         [sourceButton setTitleColor:kGrayColor forState:UIControlStateNormal];
+        [sourceButton setTitleColor:kBlackColor forState:UIControlStateHighlighted];
         sourceButton.titleLabel.font = [UIFont systemFontOfSize:12];
         [sourceButton setTapTarget:self action:@selector(_sourceButtonTouched)];
         
