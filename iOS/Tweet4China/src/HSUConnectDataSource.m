@@ -81,7 +81,11 @@
         }
         [self.data addObject:loadMoreCellData];
         
-        [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+        if ([responseObj count]) {
+            [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+        } else {
+            [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+        }
         [self saveCache];
         [self.delegate preprocessDataSourceForRender:self];
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];

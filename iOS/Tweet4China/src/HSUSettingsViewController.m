@@ -193,8 +193,14 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         [item deselectRowAnimated:YES];
     }]];
+    NSString *verNum = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+#ifdef FreeApp
+    NSString *verion = [NSString stringWithFormat:@"Free %@", verNum];
+#else
+    NSString *verion = [NSString stringWithFormat:@"Pro %@", verNum];
+#endif
     RETableViewItem *item =
-    [RETableViewItem itemWithTitle:S(@"%@ (%@)", _(@"Application Version"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"])
+    [RETableViewItem itemWithTitle:S(@"%@ (%@)", _(@"Application Version"), verion)
                      accessoryType:UITableViewCellAccessoryNone
                   selectionHandler:nil];
     item.selectionStyle = UITableViewCellSelectionStyleNone;

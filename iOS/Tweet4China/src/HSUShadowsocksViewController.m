@@ -44,7 +44,7 @@
         NSString *ssserver = ss[HSUShadowsocksSettings_Server];
         NSString *ssport = ss[HSUShadowsocksSettings_RemotePort];
         NSString *title = ssserver ? S(@"%@:%@", ssserver, ssport) : _(@"Default");
-        if (ss[HSUShadowsocksSettings_Buildin]) {
+        if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
             title = S(@"%@ %d", _(@"Buildin Server"), ([sss indexOfObject:ss] + 1));
             if (ss[HSUShadowsocksSettings_Desc]) {
                 title = S(@"%@ (%@)", title, ss[HSUShadowsocksSettings_Desc]);
@@ -78,7 +78,7 @@
                  [[HSUAppDelegate shared] startShadowsocks];
              }
          }];
-        if (!ss[HSUShadowsocksSettings_Selected] && !ss[HSUShadowsocksSettings_Buildin]) {
+        if (![ss[HSUShadowsocksSettings_Selected] boolValue] && ![ss[HSUShadowsocksSettings_Buildin] boolValue]) {
             item.editingStyle = UITableViewCellEditingStyleDelete;
         }
         item.deletionHandler = ^(RETableViewItem *item) {

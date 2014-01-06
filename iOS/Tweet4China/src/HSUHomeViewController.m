@@ -55,7 +55,9 @@
                 [self.dataSource refresh];
             }
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
-            [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            if (self.dataSource.count) {
+                [self.tableView scrollToRowAtIndexPath:indexPath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+            }
         }
     }
 }

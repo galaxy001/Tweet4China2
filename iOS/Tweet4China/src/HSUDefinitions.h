@@ -15,16 +15,18 @@
 #define kTwitterAppKey @"JotIXH4moIF1fIJDVJ50eQ"
 #define kTwitterAppSecret @"5TKbyf4fDyjzse0GqJ62YwABgP6zKuZCbCHUeYTqugc"
 #define UseXAuth YES
-#define Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 
-#define FreeApp
 #define FreeAppleID @"445052810"
 #define ProAppleID @"791880602"
+#define Free_Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
+#define Pro_Flurry_API_Key @"MTYFGCVWN5PZ8JD8N9HW"
 
 #ifdef FreeApp
 #define AppleID FreeAppleID
+#define Flurry_API_Key Free_Flurry_API_Key
 #else
 #define AppleID ProAppleID
+#define Flurry_API_Key Pro_Flurry_API_Key
 #endif
 
 #import "UIImageView+Additions.h"
@@ -167,6 +169,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUActionBarTouched @"HSUActionBarTouched"
 #define HSUAddFriendBarTouched @"HSUAddFriendBarTouched"
 #define HSUTabControllerDidSelectViewControllerNotification @"HSUTabControllerDidSelectViewControllerNotification"
+#define HSUActionBarTouchedNotification @"HSUActionBarTouchedNotification"
 
 #define NetWorkStatus [TWENGINE networkStatus]
 

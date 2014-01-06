@@ -16,6 +16,7 @@
 @property (nonatomic, strong) UIButton *avatarButton;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UILabel *screenNameLabel;
+@property (nonatomic, strong) UIImageView *verifyFlag;
 
 @end
 
@@ -40,7 +41,7 @@
         nameLabel.font = [UIFont boldSystemFontOfSize:14];
         nameLabel.highlightedTextColor = kWhiteColor;
         nameLabel.backgroundColor = kClearColor;
-        nameLabel.frame = ccr(avatarButton.right+9, 10, 180, 18);
+        nameLabel.frame = ccr(avatarButton.right+9, 10, 180, 18); // todo change 180 to variable
         
         UILabel *screenNameLabel = [[UILabel alloc] init];
         [self.contentView addSubview:screenNameLabel];
@@ -56,6 +57,11 @@
         self.followButton = followButton;
         followButton.size = ccs(50, 29);
         followButton.top = 10;
+        
+        UIImageView *verifyFlag = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_block_verified"]];
+        [self.contentView addSubview:verifyFlag];
+        self.verifyFlag = verifyFlag;
+        verifyFlag.hidden = YES;
     }
     return self;
 }
@@ -65,6 +71,7 @@
     [super layoutSubviews];
     
     self.followButton.right = self.contentView.width - 10;
+    self.verifyFlag.leftTop = ccp(self.nameLabel.right + 3, self.nameLabel.top);
 }
 
 - (void)setupWithData:(HSUTableCellData *)data
@@ -75,6 +82,7 @@
     [self setupControl:self.avatarButton forKey:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];
+    [self.nameLabel sizeToFit];
     self.screenNameLabel.text = data.rawData[@"screen_name"];
     
     if ([data.rawData[@"following"] boolValue]) {
@@ -96,6 +104,8 @@
     } else {
         self.followButton.enabled = YES;
     }
+    
+    self.verifyFlag.hidden = ![data.rawData[@"verified"] boolValue];
     
     [self setupControl:self.followButton forKey:@"follow"];
 }

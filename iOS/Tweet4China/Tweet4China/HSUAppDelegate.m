@@ -35,9 +35,9 @@ static HSUShadowsocksProxy *proxy;
     self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
     if (!self.globalSettings) {
 #ifdef FreeApp
-        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
-#else
         self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @NO, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
+#else
+        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
 #endif
     }
     
@@ -71,6 +71,7 @@ static HSUShadowsocksProxy *proxy;
     
     [self updateImageCacheSize];
     [self logJailBreak];
+    [self updateConfig];
     
     return YES;
 }
@@ -174,23 +175,32 @@ static HSUShadowsocksProxy *proxy;
 {
     NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
     if (!sss) {
+#ifdef FreeApp
         sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山1",
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_Desc: @"旧金山",
+                  HSUShadowsocksSettings_Server: @"162.243.150.109",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"纽约",
+                  HSUShadowsocksSettings_Server: @"162.243.81.212",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"纽约",
+                  HSUShadowsocksSettings_Server: @"192.241.245.82",
                   HSUShadowsocksSettings_RemotePort: @"1026",
                   HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
                 
                 @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山",
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
-                  HSUShadowsocksSettings_RemotePort: @"1026",
-                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
+                  HSUShadowsocksSettings_Desc: @"纽约",
+                  HSUShadowsocksSettings_Server: @"192.241.205.25",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
                 
                 @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山",
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
-                  HSUShadowsocksSettings_RemotePort: @"1026",
-                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
+                  HSUShadowsocksSettings_Desc: @"纽约",
+                  HSUShadowsocksSettings_Server: @"162.243.233.180",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
                 
                 @{HSUShadowsocksSettings_Buildin: @YES,
                   HSUShadowsocksSettings_Desc: @"青岛",
@@ -198,7 +208,25 @@ static HSUShadowsocksProxy *proxy;
                   HSUShadowsocksSettings_RemotePort: @"1024",
                   HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
                 ];
-        sss[arc4random_uniform(2)][HSUShadowsocksSettings_Selected] = @YES;
+#else
+        sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"旧金山",
+                  HSUShadowsocksSettings_Server: @"192.241.197.97",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"阿姆斯特丹",
+                  HSUShadowsocksSettings_Server: @"95.85.33.168",
+                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
+                
+                @{HSUShadowsocksSettings_Buildin: @YES,
+                  HSUShadowsocksSettings_Desc: @"青岛",
+                  HSUShadowsocksSettings_Server: @"115.28.20.25",
+                  HSUShadowsocksSettings_RemotePort: @"1024",
+                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
+                ];
+#endif
+        sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES;
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -214,6 +242,9 @@ static HSUShadowsocksProxy *proxy;
                 if (!passowrd) {
                     passowrd = @"ticqoxmp~rxr";
                 }
+                if (!method) {
+                    method = @"AES-128-CFB";
+                }
                 char chars3[13];
                 const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
                 for (int i=0; i<12; i++) {
@@ -224,8 +255,16 @@ static HSUShadowsocksProxy *proxy;
             }
             
             if (server && remotePort && passowrd && method) {
-                if (proxy == nil) {
-                    proxy = [[HSUShadowsocksProxy alloc] initWithHost:server port:[remotePort integerValue] password:passowrd method:method];
+                if (proxy) {
+                    [proxy updateHost:server
+                                 port:[remotePort integerValue]
+                             password:passowrd
+                               method:method];
+                } else {
+                    proxy = [[HSUShadowsocksProxy alloc] initWithHost:server
+                                                                 port:[remotePort integerValue]
+                                                             password:passowrd
+                                                               method:method];
                 }
                 shadowsocksStarted = [proxy startWithLocalPort:ShadowSocksPort];
                 if (!shadowsocksStarted) {
@@ -297,9 +336,14 @@ static HSUShadowsocksProxy *proxy;
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message cancelButtonItem:cancelItem otherButtonItems:buyItem, nil];
     [alert show];
     buyItem.action = ^{
+        [Flurry logEvent:@"buy_pro_confirm"];
         [Appirater setAppId:ProAppleID];
         [Appirater rateApp];
     };
+    cancelItem.action = ^{
+        [Flurry logEvent:@"buy_pro_cancel"];
+    };
+    [Flurry logEvent:@"buy_pro_alert"];
     return NO;
 }
 
@@ -332,6 +376,71 @@ static HSUShadowsocksProxy *proxy;
     }
     fclose(f);
     return isbash;
+}
+
+- (void)updateConfig
+{
+    double delayInSeconds = 5.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+    dispatch_after(popTime, GCDBackgroundThread, ^(void){
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json"]];
+        if (configJSON) {
+            NSDictionary *config = [NSJSONSerialization JSONObjectWithData:configJSON options:0 error:nil];
+#ifdef FreeApp
+            NSArray *serverList = config[@"global"][@"free"][@"server_list"];
+#else
+            NSArray *serverList = config[@"global"][@"pro"][@"server_list"];
+#endif
+            if (serverList.count) {
+                BOOL selected = NO;
+                NSArray *localServerList = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
+                NSMutableArray *newServerList = @[].mutableCopy;
+                for (NSDictionary *ns in serverList) {
+                    [newServerList addObject:ns.mutableCopy];
+                }
+                for (NSDictionary *ls in localServerList) {
+                    if (![ls[HSUShadowsocksSettings_Buildin] boolValue]) {
+                        if ([ls[HSUShadowsocksSettings_Selected] boolValue]) {
+                            selected = YES;
+                        }
+                        [newServerList addObject:ls.mutableCopy];
+                    }
+                }
+                
+                if (!selected) {
+                    newServerList[arc4random_uniform(newServerList.count)][HSUShadowsocksSettings_Selected] = @YES;
+                }
+                
+                [[NSUserDefaults standardUserDefaults] setObject:newServerList forKey:HSUShadowsocksSettings];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [Flurry logEvent:@"server_list_updated"];
+            }
+            
+            
+            // new version
+#ifdef FreeApp
+            CGFloat latestVersion = [config[@"global"][@"free"][@"latest_version"] floatValue];
+#else
+            CGFloat latestVersion = [config[@"global"][@"pro"][@"latest_version"] floatValue];
+#endif
+            CGFloat currentVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] floatValue];
+            if (latestVersion > currentVersion) {
+                dispatch_async(GCDMainThread, ^{
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Ignore")];
+                    RIButtonItem *updateItem = [RIButtonItem itemWithLabel:_(@"Update")];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"New Version") message:_(@"New version found, update now!") cancelButtonItem:cancelItem otherButtonItems:updateItem, nil];
+                    [alert show];
+                    updateItem.action = ^{
+                        [Flurry logEvent:@"update_confirm"];
+                        [Appirater rateApp];
+                    };
+                    cancelItem.action = ^{
+                        [Flurry logEvent:@"update_ignore"];
+                    };
+                });
+            }
+        }
+    });
 }
 
 @end

@@ -1340,6 +1340,11 @@
 				CLASSPREFIX = HSU;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Jason Hsu <support@tuoxie.me>";
+				TargetAttributes = {
+					9628174B16DE5EDC00ABF0AD = {
+						DevelopmentTeam = Q58Y9Y87W8;
+					};
+				};
 			};
 			buildConfigurationList = 9628174716DE5EDC00ABF0AD /* Build configuration list for PBXProject "Tweet4China" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1820,6 +1825,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -1844,10 +1850,11 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "32CA7DC8-3976-4639-9EDD-1823D481385A";
+				PROVISIONING_PROFILE = "74046EA2-CF91-4BAA-9BC7-87898FF02DE9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s";
 			};
 			name = Release;
 		};

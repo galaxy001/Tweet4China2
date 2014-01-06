@@ -3,7 +3,7 @@
 import commands
 
 cn_lines = []
-for line in commands.getoutput('''grep "_(@" src/* -R''').splitlines():
+for line in commands.getoutput('''grep "_(@" src/* Tweet4China/*.m -R''').splitlines():
   line = line[line.index("_(@")+3: line.index(")")]
   if len(line) > 3:
     cn_lines.append(line)

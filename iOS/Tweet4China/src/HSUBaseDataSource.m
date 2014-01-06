@@ -214,6 +214,13 @@
 
 - (void)twitterLoginSuccess:(NSNotification *)notification
 {
+    NSString *firstIdKey = S(@"%@_first_id_str", self.class.cacheKey);
+    NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
+    if (firstIdStr) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
+        // method 'saveCache' will synchronize
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     [self.data removeAllObjects];
     [self saveCache];
     [self.delegate reloadData];
@@ -221,7 +228,15 @@
 
 - (void)twitterLogout
 {
+    NSString *firstIdKey = S(@"%@_first_id_str", self.class.cacheKey);
+    NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
+    if (firstIdStr) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
+        // method 'saveCache' will synchronize
+//        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
     [self.data removeAllObjects];
+    [self saveCache];
     [self.delegate reloadData];
 }
 

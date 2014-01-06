@@ -342,7 +342,7 @@
 {
     NSString *avatarUrl = profile[@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
-    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil success:nil failure:nil];
     self.screenNameLabel.text = [profile[@"screen_name"] twitterScreenName];
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];

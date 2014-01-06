@@ -144,12 +144,15 @@
     
     UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
     UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+    indicator.tag = 111;
     uint curIdx = 0;
     for (UIView *subView in self.tabBar.subviews) {
         if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
             if (idx == curIdx) {
-                indicator.rightTop = ccp(subView.width-15, 0);
-                [subView addSubview:indicator];
+                if (![subView viewWithTag:indicator.tag]) {
+                    indicator.rightTop = ccp(subView.width-15, 0);
+                    [subView addSubview:indicator];
+                }
                 break;
             } else {
                 curIdx ++;
@@ -207,7 +210,7 @@
     for (UITabBarItem *item in self.tabBar.items) {
         [self hideUnreadIndicatorOnTabBarItem:item];
     }
-    notification_post(HSUCheckUnreadTimeNotification);
+//    notification_post(HSUCheckUnreadTimeNotification);
 }
 
 - (BOOL)shouldAutorotate

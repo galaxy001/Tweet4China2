@@ -34,6 +34,12 @@
 
 #define retweeted_R @"ic_ambient_retweet"
 
+@interface HSUMainStatusCell ()
+
+@property (nonatomic, weak) UIActivityIndicatorView *imgLoadSpinner;
+
+@end
+
 @implementation HSUMainStatusCell
 {
     UIView *contentArea;
@@ -52,7 +58,6 @@
     HSUStatusActionView *actionV;
     
     UIImageView *imageView;
-    UIActivityIndicatorView *imgLoadSpinner;
     
     UIView *retweetFavoriteCountSeperatorV;
     UILabel *retweetCountL;
@@ -136,8 +141,9 @@
         [imageView addGestureRecognizer:tapPhotoGesture];
         imageView.userInteractionEnabled = YES;
         
-        imgLoadSpinner = GRAY_INDICATOR;
+        UIActivityIndicatorView *imgLoadSpinner = GRAY_INDICATOR;
         [imageView addSubview:imgLoadSpinner];
+        self.imgLoadSpinner = imgLoadSpinner;
         
         retweetFavoritePannel = [[UIView alloc] init];
         [contentArea addSubview:retweetFavoritePannel];
@@ -436,29 +442,30 @@
     if ([data.renderData[@"attr"] isEqualToString:@"photo"]) {
         imageView.width = [data.renderData[@"photo_fit_width"] floatValue];
         imageView.height = [data.renderData[@"photo_fit_height"] floatValue];
-        imgLoadSpinner.center = imageView.boundsCenter;
+        self.imgLoadSpinner.center = imageView.boundsCenter;
         NSString *photoUrl = data.renderData[@"photo_url"];
         if (photoUrl) {
             [self _downloadPhotoWithURL:[NSURL URLWithString:data.renderData[@"photo_url"]]];
         } else {
             NSString *instagramUrl = data.renderData[@"instagram_url"];
             if (instagramUrl) {
+                __weak typeof(self) weakSelf = self;
                 NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramUrl]];
                 AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                     if ([JSON isKindOfClass:[NSDictionary class]]) {
                         NSString *imageUrl = JSON[@"url"];
                         data.renderData[@"photo_url"] = imageUrl;
-                        [self _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
+                        [weakSelf _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
                     } else {
-                        [imgLoadSpinner stopAnimating];
+                        [weakSelf.imgLoadSpinner stopAnimating];
                     }
                 } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-                    [imgLoadSpinner stopAnimating];
+                    [weakSelf.imgLoadSpinner stopAnimating];
                 }];
                 [instagramer start];
-                [imgLoadSpinner startAnimating];
+                [self.imgLoadSpinner startAnimating];
             } else {
-                [imgLoadSpinner stopAnimating];
+                [self.imgLoadSpinner stopAnimating];
             }
         }
     }
@@ -676,16 +683,13 @@
 
 - (void)_downloadPhotoWithURL:(NSURL *)photoURL
 {
-    NSURLRequest *request = [NSURLRequest requestWithURL:photoURL];
-    AFHTTPRequestOperation *downloader = [[AFImageRequestOperation alloc] initWithRequest:request];
-    [downloader setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        [imgLoadSpinner stopAnimating];
-        [imageView setImage:responseObject];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        [imgLoadSpinner stopAnimating];
+    [self.imgLoadSpinner startAnimating];
+    __weak typeof(self)weakSelf = self;
+    [imageView setImageWithUrlStr:photoURL.absoluteString placeHolder:nil success:^{
+        [weakSelf.imgLoadSpinner stopAnimating];
+    } failure:^{
+        [weakSelf.imgLoadSpinner stopAnimating];
     }];
-    [downloader start];
-    [imgLoadSpinner startAnimating];
 }
 
 + (void)_parseSummary:(HSUTableCellData *)data

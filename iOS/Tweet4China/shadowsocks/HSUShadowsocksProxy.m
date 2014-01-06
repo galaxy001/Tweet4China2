@@ -81,6 +81,15 @@
     _host = nil;
 }
 
+- (void)updateHost:(NSString *)host port:(NSInteger)port password:(NSString *)passoword method:(NSString *)method
+{
+    _host = [host copy];
+    _port = port;
+    config_encryption([passoword cStringUsingEncoding:NSASCIIStringEncoding],
+                      [method cStringUsingEncoding:NSASCIIStringEncoding]);
+    _method = [method copy];
+}
+
 - (id)initWithHost:(NSString *)host port:(NSInteger)port password:(NSString *)passoword method:(NSString *)method
 {
     self = [super init];

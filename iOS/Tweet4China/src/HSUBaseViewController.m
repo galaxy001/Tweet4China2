@@ -79,6 +79,7 @@
     notification_add_observer(UIKeyboardWillChangeFrameNotification, self, @selector(keyboardFrameChanged:));
     notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
     notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
+    notification_add_observer(HSUActionBarTouchedNotification, self, @selector(_actionBarButtonTouchedFirstTime));
     
     if (!self.dataSource) {
         self.dataSource = [self.dataSourceClass dataSourceWithDelegate:self useCache:YES];
@@ -439,11 +440,16 @@
     [self presentViewController:nav animated:YES completion:nil];
     
     if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUActionBarTouched];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        _actionBarButton = nil;
-        self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+        notification_post(HSUActionBarTouchedNotification);
     }
+}
+
+- (void)_actionBarButtonTouchedFirstTime
+{
+    [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUActionBarTouched];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    _actionBarButton = nil;
+    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
 }
 
 - (void)presentModelClass:(Class)modelClass

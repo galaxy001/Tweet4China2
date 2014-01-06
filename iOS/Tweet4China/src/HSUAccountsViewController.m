@@ -80,8 +80,10 @@
       {
           [item deselectRowAnimated:YES];
           
-          if (![[HSUAppDelegate shared] buyProApp]) {
-              return ;
+          if (userSettings.count) {
+              if (![[HSUAppDelegate shared] buyProApp]) {
+                  return ;
+              }
           }
           
           NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];

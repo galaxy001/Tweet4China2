@@ -52,7 +52,11 @@
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [weakSelf.data addObject:loadMoreCellData];
             }
-            
+            if ([tweets count]) {
+                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+            } else {
+                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+            }
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
