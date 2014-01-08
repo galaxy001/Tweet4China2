@@ -183,6 +183,7 @@
 		9687DF74186C5A9100431DA2 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9687DF73186C5A9100431DA2 /* GCDAsyncSocket.m */; };
 		96891F581743A6810019D396 /* btn_tool_bar_dark_segment_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96891F541743A6810019D396 /* btn_tool_bar_dark_segment_default@2x.png */; };
 		96891F5A1743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96891F561743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png */; };
+		9689F5EE187BFC180097E5B9 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */; };
 		968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 968EC06016ECB0830068A6A0 /* HSUPersonCell.m */; };
 		968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 968EC06416ECB62A0068A6A0 /* HSUStatusViewController.m */; };
 		9692466B172BB6BE007720D4 /* HSUStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9692466A172BB6BE007720D4 /* HSUStatusView.m */; };
@@ -566,6 +567,7 @@
 		9687DF73186C5A9100431DA2 /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = CocoaAsyncSocket/GCD/GCDAsyncSocket.m; sourceTree = "<group>"; };
 		96891F541743A6810019D396 /* btn_tool_bar_dark_segment_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_tool_bar_dark_segment_default@2x.png"; sourceTree = "<group>"; };
 		96891F561743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_tool_bar_dark_segment_selected@2x.png"; sourceTree = "<group>"; };
+		9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		968EC05F16ECB0830068A6A0 /* HSUPersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUPersonCell.h; sourceTree = "<group>"; };
 		968EC06016ECB0830068A6A0 /* HSUPersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPersonCell.m; sourceTree = "<group>"; };
 		968EC06316ECB62A0068A6A0 /* HSUStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUStatusViewController.h; sourceTree = "<group>"; };
@@ -728,6 +730,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9689F5EE187BFC180097E5B9 /* MediaPlayer.framework in Frameworks */,
 				96A6360F186AE11300BA9868 /* AssetsLibrary.framework in Frameworks */,
 				962AB00816FB330A00D44566 /* AVFoundation.framework in Frameworks */,
 				96A6360D186AE0F600BA9868 /* CoreImage.framework in Frameworks */,
@@ -819,6 +822,7 @@
 		9628174E16DE5EDC00ABF0AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */,
 				96A6360E186AE11300BA9868 /* AssetsLibrary.framework */,
 				96A6360C186AE0F600BA9868 /* CoreImage.framework */,
 				96D91DFC1813AEA7001A8188 /* StoreKit.framework */,

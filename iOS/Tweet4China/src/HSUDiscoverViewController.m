@@ -11,6 +11,10 @@
 #import "HSUComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import <AFNetworking/AFNetworking.h>
+#import <NSString-MD5/NSString+MD5.h>
+#import <FHSTwitterEngine/NSString+URLEncoding.h>
 
 #define StartURL @"https://www.google.com/ncr"
 
@@ -47,6 +51,9 @@
 @property (nonatomic, weak) UIProgressView *progressBar;
 @property (nonatomic, weak) UIView *urlTextFieldBackgrondView;
 @property (nonatomic, weak) UIView *progressView;
+
+@property (nonatomic, copy) NSString *videoUrl;
+@property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 
 @end
 
@@ -145,6 +152,8 @@
     }
     
     [super viewDidAppear:animated];
+    
+    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(parseYoutube) userInfo:nil repeats:YES];
 }
 
 - (void)viewDidLayoutSubviews
@@ -297,6 +306,36 @@
     openHomeItem.action = ^{
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:kDiscoverHomePage]]];
     };
+}
+
+- (void)parseYoutube
+{
+    NSString *js = @"document.getElementsByTagName('video')[0].src";
+    NSString *videoUrl = [self.webView stringByEvaluatingJavaScriptFromString:js];
+//    videoUrl = @"http://162.243.81.212/9793e4c449934fe488ba4d5e84018b1e.mov";
+//    videoUrl = @"http://r14---sn-q4f7dnlr.googlevideo.com/videoplayback?fexp=941228%2C909717%2C932295%2C938630%2C936912%2C936910%2C923305%2C936913%2C907231%2C907240%2C921090&ms=au&itag=18&sver=3&mt=1389095606&ratebypass=yes&signature=45C392A9EA694D0838E510ABDD723A2D0C2C34A1.CB3D5E5AC34DE219D122A197D453A5EA952F9DBA&id=a0ae213deda60abd&dnc=1&key=yt5&mv=m&upn=JzWDywVAbUc&source=youtube&ipbits=0&yms=AL0uIGID81A&sparams=id%2Cip%2Cipbits%2Citag%2Cratebypass%2Csource%2Cupn%2Cexpire&el=watch&expire=1389116988&ip=192.241.197.97&app=youtube_mobile&cpn=yn0NcBqGB4lWzOXr";
+    if ([self.videoUrl isEqualToString:videoUrl]) {
+        return;
+    }
+    if ([NSURL URLWithString:videoUrl]) {
+        if ([videoUrl rangeOfString:@"googlevideo.com"].location != NSNotFound) {
+            self.videoUrl = videoUrl;
+            
+            [self playVideo];
+        }
+    }
+}
+
+- (void)playVideo
+{
+    return;
+    MPMoviePlayerController *moviePlayer = [[MPMoviePlayerController alloc] init];
+    self.moviePlayer = moviePlayer;
+    [moviePlayer setContentURL:[NSURL URLWithString:self.videoUrl]];
+    [self.view addSubview:moviePlayer.view];
+    moviePlayer.fullscreen = YES;
+    moviePlayer.shouldAutoplay = YES;
+    [moviePlayer play];
 }
 
 @end
