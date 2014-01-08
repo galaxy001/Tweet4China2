@@ -170,6 +170,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUAddFriendBarTouched @"HSUAddFriendBarTouched"
 #define HSUTabControllerDidSelectViewControllerNotification @"HSUTabControllerDidSelectViewControllerNotification"
 #define HSUActionBarTouchedNotification @"HSUActionBarTouchedNotification"
+#define HSUStatusUpdatedNotification @"HSUStatusUpdatedNotification"
 
 #define NetWorkStatus [TWENGINE networkStatus]
 

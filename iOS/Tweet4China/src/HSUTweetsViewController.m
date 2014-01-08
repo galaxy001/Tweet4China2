@@ -32,6 +32,7 @@
     
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
+    notification_add_observer(HSUStatusUpdatedNotification, self, @selector(statusUpdated:));
 }
 
 - (void)galleryViewDidAppear
@@ -64,6 +65,7 @@
 {
     HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_DefaultStatus]) {
+        self.cellDataInNextPage = data;
         HSUStatusViewController *statusVC = [[HSUStatusViewController alloc] initWithStatus:data.rawData];
         [self.navigationController pushViewController:statusVC animated:YES];
         return;
@@ -86,41 +88,160 @@
 }
 
 - (void)retweet:(HSUTableCellData *)cellData {
-    NSDictionary *rawData = cellData.rawData;
-    NSString *id_str = rawData[@"id_str"];
+    NSDictionary *status = cellData.rawData;
+    BOOL isRetweetedStatus = NO;
+    if (status[@"retweeted_status"]) {
+        status = status[@"retweeted_status"];
+        isRetweetedStatus = YES;
+    }
     
-    [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
-        NSMutableDictionary *newRawData = [rawData mutableCopy];
-        newRawData[@"retweeted"] = @(YES);
-        cellData.rawData = newRawData;
-        [self.dataSource saveCache];
-        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-        [self.tableView reloadData];
-    } failure:^(NSError *error) {
-        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-        [TWENGINE dealWithError:error errTitle:_(@"Retweet failed")];
-    }];
+    BOOL retweeted = [status[@"retweeted"] boolValue]; // retweeted by me
+    
+    if (retweeted) {
+        NSString *id_str = status[@"id_str"];
+        if (isRetweetedStatus) {
+            id_str = cellData.rawData[@"id_str"];
+            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+                NSMutableDictionary *newStatus = [status mutableCopy];
+                newStatus[@"retweeted"] = @(!retweeted);
+                if (isRetweetedStatus) {
+                    NSMutableDictionary *newRawData = [cellData.rawData mutableCopy];
+                    newRawData[@"retweeted_status"] = newStatus;
+                    cellData.rawData = newRawData;
+                } else {
+                    cellData.rawData = newStatus;
+                }
+                notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
+                [self.dataSource saveCache];
+                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                [self.tableView reloadData];
+            } failure:^(NSError *error) {
+                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+            }];
+        } else {
+            if ([status[@"retweeted_count"] integerValue] <= 200) {
+                [TWENGINE getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
+                    BOOL found = NO;
+                    NSArray *tweets = responseObj;
+                    for (NSDictionary *tweet in tweets) {
+                        if ([tweet[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
+                            NSString *id_str = tweet[@"id_str"];
+                            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+                                NSMutableDictionary *newStatus = [status mutableCopy];
+                                newStatus[@"retweeted"] = @(!retweeted);
+                                if (isRetweetedStatus) {
+                                    NSMutableDictionary *newRawData = [cellData.rawData mutableCopy];
+                                    newRawData[@"retweeted_status"] = newStatus;
+                                    cellData.rawData = newRawData;
+                                } else {
+                                    cellData.rawData = newStatus;
+                                }
+                                notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
+                                [self.dataSource saveCache];
+                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                [self.tableView reloadData];
+                            } failure:^(NSError *error) {
+                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                            }];
+                            found = YES;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    }
+                } failure:^(NSError *error) {
+                    notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                }];
+            } else {
+                [TWENGINE getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
+                    BOOL found = NO;
+                    NSArray *tweets = responseObj;
+                    for (NSDictionary *tweet in tweets) {
+                        if ([tweet[@"retweeted_status"][@"id_str"] isEqualToString:id_str]) {
+                            NSString *id_str = tweet[@"id_str"];
+                            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+                                NSMutableDictionary *newStatus = [status mutableCopy];
+                                newStatus[@"retweeted"] = @(!retweeted);
+                                if (isRetweetedStatus) {
+                                    NSMutableDictionary *newRawData = [cellData.rawData mutableCopy];
+                                    newRawData[@"retweeted_status"] = newStatus;
+                                    cellData.rawData = newRawData;
+                                } else {
+                                    cellData.rawData = newStatus;
+                                }
+                                notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
+                                [self.dataSource saveCache];
+                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                [self.tableView reloadData];
+                            } failure:^(NSError *error) {
+                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                            }];
+                            found = YES;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    }
+                } failure:^(NSError *error) {
+                    notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                }];
+            }
+        }
+    } else {
+        NSString *id_str = status[@"id_str"];
+        [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
+            NSMutableDictionary *newStatus = [status mutableCopy];
+            newStatus[@"retweeted"] = @(!retweeted);
+            if (isRetweetedStatus) {
+                NSMutableDictionary *newRawData = [cellData.rawData mutableCopy];
+                newRawData[@"retweeted_status"] = newStatus;
+                cellData.rawData = newRawData;
+            } else {
+                cellData.rawData = newStatus;
+            }
+            notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
+            [self.dataSource saveCache];
+            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            [self.tableView reloadData];
+        } failure:^(NSError *error) {
+            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            [TWENGINE dealWithError:error errTitle:_(@"Retweet failed")];
+        }];
+    }
 }
 
 - (void)favorite:(HSUTableCellData *)cellData {
     NSDictionary *rawData = cellData.rawData;
+    if (rawData[@"retweeted_status"]) {
+        rawData = rawData[@"retweeted_status"];
+    }
+    
     NSString *id_str = rawData[@"id_str"];
     BOOL favorited = [rawData[@"favorited"] boolValue];
     
     if (favorited) {
         [TWENGINE unMarkStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
-            newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
+            newRawData[@"favorited"] = @(!favorited);
             cellData.rawData = newRawData;
+            notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
             [self.dataSource saveCache];
             [self.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Favorite Tweet failed")];
+            [TWENGINE dealWithError:error errTitle:_(@"Delete Favorite failed")];
         }];
     } else {
         [TWENGINE markStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
-            newRawData[@"favorited"] = [NSNumber numberWithBool:!favorited];
+            newRawData[@"favorited"] = @(!favorited);
+            notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
             cellData.rawData = newRawData;
             [self.dataSource saveCache];
             [self.tableView reloadData];
@@ -419,6 +540,16 @@
     nav.viewControllers = @[miniBrowser];
     [self presentViewController:nav animated:YES completion:nil];
     self.modelVC = miniBrowser;
+}
+
+- (void)statusUpdated:(NSNotification *)notification
+{
+    if (notification.object == self.cellDataInNextPage.rawData ||
+        [[notification.object objectForKey:@"id_str"] isEqualToString:[self.cellDataInNextPage.rawData objectForKey:@"id_str"]]) {
+        
+        self.cellDataInNextPage.rawData = [notification.object copy];
+        [self.tableView reloadData];
+    }
 }
 
 @end

@@ -17,6 +17,10 @@
 {
     self = [super init];
     if (self) {
+        if (status[@"retweeted_status"]) {
+            status = status[@"retweeted_status"];
+        }
+        
         isMyTweet = [status[@"user"][@"screen_name"] isEqualToString:TWENGINE.myScreenName];
         
         self.backgroundColor = kClearColor;
@@ -25,11 +29,7 @@
         UIButton *replayB = [[UIButton alloc] init];
         [self addSubview:replayB];
         self.replayB = replayB;
-        if (style == HSUStatusActionViewStyle_Default) {
-            [replayB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
-        } else if (style == HSUStatusActionViewStyle_Gallery) {
-            [replayB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_reply_default"] forState:UIControlStateNormal];
-        }
+        [replayB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
         [replayB sizeToFit];
         
         // Retweet
@@ -38,27 +38,14 @@
         [self addSubview:retweetB];
         self.retweetB = retweetB;
         if (isMyTweet) {
-            if (style == HSUStatusActionViewStyle_Default) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateNormal];
-            } else if (style == HSUStatusActionViewStyle_Gallery) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_disabled"] forState:UIControlStateNormal];
-            }
+            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
+            retweetB.enabled = NO;
         } else if (retweeted) {
-            if (style == HSUStatusActionViewStyle_Default) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_on"] forState:UIControlStateNormal];
-                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
-            } else if (style == HSUStatusActionViewStyle_Gallery) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_on_default"] forState:UIControlStateNormal];
-                [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_on_pressed"] forState:UIControlStateHighlighted];
-            }
+            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_on"] forState:UIControlStateNormal];
+            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
         } else {
-            if (style == HSUStatusActionViewStyle_Default) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_off"] forState:UIControlStateNormal];
-                [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
-            } else if (style == HSUStatusActionViewStyle_Gallery) {
-                [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_off_default"] forState:UIControlStateNormal];
-                [retweetB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_retweet_off_pressed"] forState:UIControlStateHighlighted];
-            }
+            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_off"] forState:UIControlStateNormal];
+            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
         }
         [retweetB sizeToFit];
         
@@ -68,19 +55,9 @@
         [self addSubview:favoriteB];
         self.favoriteB = favoriteB;
         if (favorited) {
-            if (style == HSUStatusActionViewStyle_Default) {
-                [favoriteB setImage:[UIImage imageNamed:@"icn_tweet_action_favorite_on"] forState:UIControlStateNormal];
-            } else if (style == HSUStatusActionViewStyle_Gallery) {
-                [favoriteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_favorite_on_default"] forState:UIControlStateNormal];
-                [favoriteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_favorite_on_pressed"] forState:UIControlStateHighlighted];
-            }
+            [favoriteB setImage:[UIImage imageNamed:@"icn_tweet_action_favorite_on"] forState:UIControlStateNormal];
         } else {
-            if (style == HSUStatusActionViewStyle_Default) {
-                [favoriteB setImage:[UIImage imageNamed:@"icn_tweet_action_favorite_off"] forState:UIControlStateNormal];
-            } else if (style == HSUStatusActionViewStyle_Gallery) {
-                [favoriteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_favorite_off_default"] forState:UIControlStateNormal];
-                [favoriteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_favorite_off_pressed"] forState:UIControlStateHighlighted];
-            }
+            [favoriteB setImage:[UIImage imageNamed:@"icn_tweet_action_favorite_off"] forState:UIControlStateNormal];
         }
         [favoriteB sizeToFit];
         
@@ -88,24 +65,14 @@
         UIButton *moreB = [[UIButton alloc] init];
         [self addSubview:moreB];
         self.moreB = moreB;
-        if (style == HSUStatusActionViewStyle_Default) {
-            [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more"] forState:UIControlStateNormal];
-        } else if (style == HSUStatusActionViewStyle_Gallery) {
-            [moreB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_more_default"] forState:UIControlStateNormal];
-            [moreB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_more_pressed"] forState:UIControlStateHighlighted];
-        }
+        [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more"] forState:UIControlStateNormal];
         [moreB sizeToFit];
         
         // Delete
         UIButton *deleteB = [[UIButton alloc] init];
         [self addSubview:deleteB];
         self.deleteB = deleteB;
-        if (style == HSUStatusActionViewStyle_Default) {
-            [deleteB setImage:[UIImage imageNamed:@"icn_tweet_action_delete"] forState:UIControlStateNormal];
-        } else if (style == HSUStatusActionViewStyle_Gallery) {
-            [deleteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_delete_default"] forState:UIControlStateNormal];
-            [deleteB setImage:[UIImage imageNamed:@"icn_gallery_tweet_action_delete_pressed"] forState:UIControlStateHighlighted];
-        }
+        [deleteB setImage:[UIImage imageNamed:@"icn_tweet_action_delete"] forState:UIControlStateNormal];
         [deleteB sizeToFit];
     }
     return self;

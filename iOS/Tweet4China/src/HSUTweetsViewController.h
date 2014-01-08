@@ -10,6 +10,8 @@
 
 @interface HSUTweetsViewController : HSUBaseViewController
 
+@property (nonatomic, weak) HSUTableCellData *cellDataInNextPage;
+
 - (void)reply:(HSUTableCellData *)cellData;
 - (void)retweet:(HSUTableCellData *)cellData;
 - (void)favorite:(HSUTableCellData *)cellData;
