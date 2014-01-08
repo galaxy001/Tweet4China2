@@ -560,7 +560,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)getRetweetsForStatus:(NSString *)statusID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [self sendGETWithUrl:[NSString stringWithFormat:url_statuses_retweets, statusID]
+    [self sendGETWithUrl:S(url_statuses_retweets, statusID)
               parameters:@{@"count": @(count)}
                  success:success failure:failure];
 }
@@ -629,11 +629,15 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  success:^(id responseObj)
      {
          NSMutableDictionary *usersDict = [responseObj mutableCopy];
-         [self lookupUsers:usersDict[@"ids"]
-                   success:^(id responseObj) {
-                       usersDict[@"users"] = responseObj;
-                       success(usersDict);
-                   } failure:failure];
+         if ([usersDict[@"ids"] count]) {
+             [self lookupUsers:usersDict[@"ids"]
+                       success:^(id responseObj) {
+                           usersDict[@"users"] = responseObj;
+                           success(usersDict);
+                       } failure:failure];
+         } else {
+             success(@{@"users": @[]});
+         }
      } failure:failure];
 }
 - (void)getFriendsSinceId:(NSString *)sinceId count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

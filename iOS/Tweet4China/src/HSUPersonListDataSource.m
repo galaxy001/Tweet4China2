@@ -62,6 +62,7 @@
         self.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Load followers failed")];
+        [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
     }];
 }

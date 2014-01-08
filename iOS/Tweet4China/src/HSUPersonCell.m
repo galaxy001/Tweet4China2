@@ -12,11 +12,12 @@
 
 @interface HSUPersonCell ()
 
-@property (nonatomic, strong) UIButton *followButton;
-@property (nonatomic, strong) UIButton *avatarButton;
-@property (nonatomic, strong) UILabel *nameLabel;
-@property (nonatomic, strong) UILabel *screenNameLabel;
-@property (nonatomic, strong) UIImageView *verifyFlag;
+@property (nonatomic, weak) UIButton *followButton;
+@property (nonatomic, weak) UIButton *avatarButton;
+@property (nonatomic, weak) UILabel *nameLabel;
+@property (nonatomic, weak) UILabel *screenNameLabel;
+@property (nonatomic, weak) UIImageView *verifyFlag;
+@property (nonatomic, weak) UILabel *ffInfoLabel;
 
 @end
 
@@ -29,7 +30,7 @@
         UIButton *avatarButton = [[UIButton alloc] init];
         [self.contentView addSubview:avatarButton];
         self.avatarButton = avatarButton;
-        avatarButton.frame = ccr(14, 10, 32, 32);
+        avatarButton.frame = ccr(14, 10, 48, 48);
         avatarButton.layer.cornerRadius = 4;
         avatarButton.layer.masksToBounds = YES;
         avatarButton.backgroundColor = bw(229);
@@ -50,7 +51,7 @@
         screenNameLabel.font = [UIFont systemFontOfSize:12];
         screenNameLabel.highlightedTextColor = kWhiteColor;
         screenNameLabel.backgroundColor = kClearColor;
-        screenNameLabel.frame = ccr(avatarButton.right+9, 30, 180, 18);
+        screenNameLabel.frame = ccr(nameLabel.left, nameLabel.bottom+2, 180, 18);
         
         UIButton *followButton = [[UIButton alloc] init];
         [self.contentView addSubview:followButton];
@@ -62,6 +63,15 @@
         [self.contentView addSubview:verifyFlag];
         self.verifyFlag = verifyFlag;
         verifyFlag.hidden = YES;
+        
+        UILabel *ffInfoLabel = [[UILabel alloc] init];
+        [self.contentView addSubview:ffInfoLabel];
+        self.ffInfoLabel = ffInfoLabel;
+        ffInfoLabel.textColor = kGrayColor;
+        ffInfoLabel.font = [UIFont systemFontOfSize:12];
+        ffInfoLabel.highlightedTextColor = kWhiteColor;
+        ffInfoLabel.backgroundColor = kClearColor;
+        ffInfoLabel.frame = ccr(screenNameLabel.left, screenNameLabel.bottom+2, 180, 18);
     }
     return self;
 }
@@ -78,12 +88,46 @@
 {
     [super setupWithData:data];
     
-    [self.avatarButton setImageWithUrlStr:data.rawData[@"profile_image_url_https"] forState:UIControlStateNormal placeHolder:nil];
+    NSString *avatarUrl = data.rawData[@"profile_image_url_https"];
+    avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
+    [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     [self setupControl:self.avatarButton forKey:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];
     [self.nameLabel sizeToFit];
     self.screenNameLabel.text = data.rawData[@"screen_name"];
+    
+    int followersCount = [data.rawData[@"followers_count"] intValue];
+    int followingCount = [data.rawData[@"friends_count"] intValue];
+    NSString *followersCountStr = S(@"%d", followersCount);
+    NSString *followingCountStr = S(@"%d", followingCount);
+    if (followersCount > 1000 * 1000) {
+        followersCountStr = S(@"%0.1fM", followersCount/1000.0/1000.0);
+    } else if (followersCount > 1000) {
+        followersCountStr = S(@"%0.1fK", followersCount/1000.0);
+    }
+    if (followingCount > 1000 * 1000) {
+        followingCountStr = S(@"%0.1fM", followingCount/1000.0/1000.0);
+    } else if (followingCount > 1000) {
+        followingCountStr = S(@"%0.1fK", followingCount/1000.0);
+    }
+    NSString *ffInfoText = [NSString stringWithFormat:@"%@ %@ %@ %@",
+                            followersCountStr, _(@"Followers"), followingCountStr, _(@"Following")];
+    NSMutableAttributedString *ffInfoTextWithAttributes = [[NSMutableAttributedString alloc] initWithString:ffInfoText];
+    [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName
+                                     value:kBlackColor
+                                     range:NSMakeRange(0, followersCountStr.length)];
+    [ffInfoTextWithAttributes addAttribute:NSFontAttributeName
+                                     value:[UIFont boldSystemFontOfSize:12]
+                                     range:NSMakeRange(0, followersCountStr.length)];
+    [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName
+                                     value:kBlackColor
+                                     range:NSMakeRange(followersCountStr.length + 1 + _(@"Followers").length + 1, followingCountStr.length)];
+    [ffInfoTextWithAttributes addAttribute:NSFontAttributeName
+                                     value:[UIFont boldSystemFontOfSize:12]
+                                     range:NSMakeRange(followersCountStr.length + 1 + _(@"Followers").length + 1, followingCountStr.length)];
+    self.ffInfoLabel.attributedText = ffInfoTextWithAttributes;
+    [self.ffInfoLabel sizeToFit];
     
     if ([data.rawData[@"following"] boolValue]) {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_default"] stretchableImageFromCenter]
@@ -112,7 +156,7 @@
 
 + (CGFloat)heightForData:(HSUTableCellData *)data
 {
-    return 57;
+    return 75;
 }
 
 @end
