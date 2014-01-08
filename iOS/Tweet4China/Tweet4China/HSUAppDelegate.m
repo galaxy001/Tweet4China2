@@ -73,6 +73,9 @@ static HSUShadowsocksProxy *proxy;
     [self logJailBreak];
     [self updateConfig];
     
+    notification_add_observer(SVProgressHUDWillAppearNotification, self, @selector(disableWindowUserinterface));
+    notification_add_observer(SVProgressHUDWillDisappearNotification, self, @selector(enbleWindowUserinterface));
+    
     return YES;
 }
 
@@ -441,6 +444,16 @@ static HSUShadowsocksProxy *proxy;
             }
         }
     });
+}
+
+- (void)disableWindowUserinterface
+{
+    self.window.userInteractionEnabled = NO;
+}
+
+- (void)enbleWindowUserinterface
+{
+    self.window.userInteractionEnabled = YES;
 }
 
 @end

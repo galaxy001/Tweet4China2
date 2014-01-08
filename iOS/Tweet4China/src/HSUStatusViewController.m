@@ -51,7 +51,7 @@
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     
     [self.dataSource refresh];
-//    [self.dataSource loadMore];
+    [self.dataSource loadMore];
 }
 
 - (void)galleryViewDidAppear

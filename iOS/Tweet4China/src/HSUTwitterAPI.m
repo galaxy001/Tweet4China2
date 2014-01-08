@@ -682,6 +682,17 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  success:success
                  failure:failure];
 }
+- (void)searchTweetsWithKeyword:(NSString *)keyword sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    NSMutableDictionary *params = @{}.mutableCopy;
+    params[@"q"] = keyword;
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (count) params[@"count"] = @(count);
+    [self sendGETWithUrl:url_search_tweets
+              parameters:params
+                 success:success
+                 failure:failure];
+}
 - (void)reverseGeocodeWithLocation:(CLLocation *)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     [self sendGETWithUrl:url_reverse_geocode

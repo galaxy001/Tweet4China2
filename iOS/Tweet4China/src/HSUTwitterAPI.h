@@ -56,7 +56,7 @@ typedef void (^HSUTwitterAPIFailureBlock)(NSError *error);
 - (void)lookupFriendshipsWithScreenNames:(NSArray *)screenNames success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 - (void)searchUserWithKeyword:(NSString *)keyword success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
-
+- (void)searchTweetsWithKeyword:(NSString *)keyword sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)reverseGeocodeWithLocation:(CLLocation *)location success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 
 - (void)blockUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

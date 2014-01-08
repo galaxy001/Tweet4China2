@@ -14,6 +14,8 @@
 {
     self = [super init];
     if (self) {
+        self.mainStatus = status;
+        
         HSUTableCellData *mainCellData = [[HSUTableCellData alloc] initWithRawData:status dataType:kDataType_MainStatus];
         [self.data addObject:mainCellData];
         
@@ -41,38 +43,25 @@
     }
 }
 
-//- (void)loadMore
-//{
-//    NSDictionary *status = self.mainStatus[@"retweeted_status"] ?: self.mainStatus;
-//    NSInteger retweetCount = [status[@"retweet_count"] integerValue] - self.loadedRetweetCount;
-//    if (retweetCount) {
-//        if (retweetCount > self.requestCount) {
-//            retweetCount = self.requestCount;
-//        }
-//        __weak typeof(self)weakSelf = self;
-//        [TWENGINE getRetweetsForStatus:status[@"id_str"] count:retweetCount success:^(id responseObj) {
-//            if ([responseObj isKindOfClass:[NSArray class]]) {
-//                NSArray *retweets = (NSArray *)responseObj;
-//                weakSelf.loadedRetweetCount += retweets.count;
-//                for (NSDictionary *retweet in retweets) {
-//                    HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:retweet dataType:kDataType_ChatStatus];
-//                    [weakSelf.data addObject:cellData];
-//                }
-//                
-//                HSUTableCellData *lastCellData = weakSelf.data.lastObject;
-//                if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
-//                    HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
-//                    loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
-//                    loadMoreCellData.dataType = kDataType_LoadMore;
-//                    [weakSelf.data addObject:loadMoreCellData];
-//                }
-//                
-//                [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
-//            }
-//        } failure:^(NSError *error) {
-//            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
-//        }];
-//    }
-//}
+- (void)loadMore
+{
+    NSDictionary *status = self.mainStatus[@"retweeted_status"] ?: self.mainStatus;
+    NSString *keyword = [NSString stringWithFormat:@"@%@", status[@"user"][@"screen_name"]];
+    NSString *mainStatusID = status[@"id_str"];
+    __weak typeof(self) weakSelf = self;
+    [TWENGINE searchTweetsWithKeyword:keyword sinceID:mainStatusID count:100 success:^(id responseObj) {
+        NSArray *tweets = ((NSDictionary *)responseObj)[@"statuses"];
+        
+        for (NSDictionary *tweet in tweets) {
+            if ([tweet[@"in_reply_to_status_id_str"] isEqualToString:mainStatusID]) {
+                HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_ChatStatus];
+                [weakSelf.data addObject:cellData];
+            }
+        }
+        
+        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+    } failure:^(NSError *error) {
+    }];
+}
 
 @end
