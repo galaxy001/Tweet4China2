@@ -100,14 +100,14 @@
 {
     ambientL.textColor = kGrayColor;
     ambientL.font = [UIFont systemFontOfSize:13];
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         ambientL.highlightedTextColor = kWhiteColor;
     }
     ambientL.backgroundColor = kClearColor;
     
     nameL.textColor = kBlackColor;
     nameL.font = [UIFont boldSystemFontOfSize:14];
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         nameL.highlightedTextColor = kWhiteColor;
     }
     nameL.backgroundColor = kClearColor;
@@ -118,14 +118,14 @@
     
     screenNameL.textColor = kGrayColor;
     screenNameL.font = [UIFont systemFontOfSize:12];
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         screenNameL.highlightedTextColor = kWhiteColor;
     }
     screenNameL.backgroundColor = kClearColor;
     
     timeL.textColor = kGrayColor;
     timeL.font = [UIFont systemFontOfSize:12];
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         timeL.highlightedTextColor = kWhiteColor;
     }
     timeL.backgroundColor = kClearColor;
@@ -133,7 +133,7 @@
     textAL.textColor = rgb(38, 38, 38);
     textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
     textAL.backgroundColor = kClearColor;
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         textAL.highlightedTextColor = kWhiteColor;
     }
     textAL.lineBreakMode = NSLineBreakByWordWrapping;

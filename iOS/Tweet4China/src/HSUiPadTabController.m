@@ -35,13 +35,13 @@
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeVC.tabController = self;
         homeNav.viewControllers = @[homeVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
         } else {
 #endif
             homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] tag:1];
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
         }
 #endif
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
@@ -50,13 +50,13 @@
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectVC.tabController = self;
         connectNav.viewControllers = @[connectVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         } else {
 #endif
             connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] tag:2];
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
         }
 #endif
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
@@ -65,13 +65,13 @@
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverVC.tabController = self;
         discoverNav.viewControllers = @[discoverVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         } else {
 #endif
             discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] tag:3];
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
         }
 #endif
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
@@ -80,13 +80,13 @@
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meVC.tabController = self;
         meNav.viewControllers = @[meVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         } else {
 #endif
             meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] tag:4];
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
         }
 #endif
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
@@ -101,7 +101,7 @@
 - (void)viewDidLoad
 {
     self.view.backgroundColor = kBlackColor;
-    UIView *tabBar = [[UIView alloc] initWithFrame:ccr(0, iOS_Ver >= 7 ? 20 : 0, kIPadTabBarWidth, self.view.height)];
+    UIView *tabBar = [[UIView alloc] initWithFrame:ccr(0, Sys_Ver >= 7 ? 20 : 0, kIPadTabBarWidth, self.view.height)];
     [self.view addSubview:tabBar];
     self.tabBar = tabBar;
     tabBar.backgroundColor = kBlackColor;

@@ -35,7 +35,7 @@
     [super viewWillAppear:animated];
     
     UITextField *searchTF;
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         searchTF = [[UITextField alloc] init];
     } else {
         searchTF = [[HSUSearchField alloc] init];
@@ -48,7 +48,7 @@
     searchTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
     searchTF.clearButtonMode = UITextFieldViewModeWhileEditing;
     searchTF.delegate = self;
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         searchTF.size = ccs(self.width-100, 40);
         searchTF.leftTop = ccp(80, 3);
     } else {

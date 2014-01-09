@@ -14,6 +14,17 @@
 
 @implementation HSUNavigationController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+#ifdef __IPHONE_7_0
+    if (Sys_Ver >= 7 && IPHONE) {
+        self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+    }
+#endif
+}
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];

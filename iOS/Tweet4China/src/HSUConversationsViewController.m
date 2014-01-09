@@ -53,7 +53,7 @@
     }
     
     // setup navigation bar
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -63,7 +63,7 @@
     
     // setup close button
     UIButton *closeButton = [[UIButton alloc] init];
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
     } else {
         [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
@@ -74,7 +74,7 @@
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
     UIBarButtonItem *composeBarButton;
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         composeBarButton = [[UIBarButtonItem alloc]
                             initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                             target:self

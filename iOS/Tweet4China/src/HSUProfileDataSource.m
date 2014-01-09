@@ -113,8 +113,8 @@
     if (IPAD) {
         if (indexPath.section == self.sectionsData.count &&
             indexPath.row == [self.sectionsData[indexPath.section-1] count] - 1) {
-#if SDK_Ver >= 70000
-            if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+            if (Sys_Ver >= 7) {
                 cell.separatorInset = edi(0, tableView.width, 0, 0);
             }
 #endif

@@ -133,7 +133,7 @@
         self.title = _(@"New Tweet");
     }
     
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         self.navigationController.navigationBar.tintColor = bw(212);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -145,7 +145,7 @@
     cancelButtonItem.title = _(@"Cancel");
     cancelButtonItem.target = self;
     cancelButtonItem.action = @selector(cancelCompose);
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         cancelButtonItem.tintColor = bw(220);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -165,7 +165,7 @@
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(sendTweet);
     sendButtonItem.enabled = NO;
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         cancelButtonItem.tintColor = bw(220);
         NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
                                      UITextAttributeTextShadowColor: kWhiteColor,
@@ -401,7 +401,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 #endif
     
@@ -437,7 +437,7 @@
         contentShadowV.hidden = NO;
         contentTV.height = kSingleLineHeight;
         suggestionsTV.height = self.view.height - suggestionsTV.top - keyboardHeight;
-        if (iOS_Ver >= 7) {
+        if (Sys_Ver >= 7) {
             contentTV.top = 54;
             suggestionsTV.top = contentTV.top + 45;
             contentShadowV.top = suggestionsTV.top;

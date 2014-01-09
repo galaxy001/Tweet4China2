@@ -14,8 +14,8 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             self.separatorInset = edi(0, 0, 0, 0);
         }
 #endif

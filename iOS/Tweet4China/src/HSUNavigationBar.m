@@ -17,7 +17,7 @@
 - (void)layoutSubviews
 {
     if (!set) {
-        if (iOS_Ver < 7) {
+        if (Sys_Ver < 7) {
             [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
         } else {
             if (IPAD) {
@@ -32,7 +32,7 @@
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         return [super sizeThatFits:size];
     } else {
         return CGSizeMake(self.frame.size.width, 44);

@@ -38,7 +38,7 @@
 - (void)galleryViewDidAppear
 {
     self.statusBarHidden = YES;
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
     [self setNeedsStatusBarAppearanceUpdate];
 #endif
 }
@@ -46,7 +46,7 @@
 - (void)galleryViewDidDisappear
 {
     self.statusBarHidden = NO;
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
     [self setNeedsStatusBarAppearanceUpdate];
 #endif
 }

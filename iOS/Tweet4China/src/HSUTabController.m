@@ -16,7 +16,6 @@
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
-@property (nonatomic, retain) NSArray *tabBarItemsData;
 @property (nonatomic, retain) NSMutableArray *tabBarItems;
 @property (nonatomic, weak) UIButton *selectedTabBarItem;
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
@@ -34,60 +33,78 @@
 {
     self = [super init];
     if (self) {
-        UINavigationController *homeNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *homeNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                                                         toolbarClass:nil];
         HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
             homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
                                                                image:[UIImage imageNamed:@"icn_tab_home_selected"]
                                                        selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
         } else {
 #endif
-            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home") image:[UIImage imageNamed:@"icn_tab_home_selected"] tag:1];
-#if SDK_Ver >= 70000
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
+                                                               image:[UIImage imageNamed:@"icn_tab_home_selected"]
+                                                                 tag:1];
+#ifdef __IPHONE_7_0
         }
 #endif
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
 
-        UINavigationController *connectNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *connectNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                                                            toolbarClass:nil];
         HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
-            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect")
+                                                                  image:[UIImage imageNamed:@"icn_tab_connect_selected"]
+                                                          selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         } else {
 #endif
-            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect") image:[UIImage imageNamed:@"icn_tab_connect_selected"] tag:2];
-#if SDK_Ver >= 70000
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect")
+                                                                  image:[UIImage imageNamed:@"icn_tab_connect_selected"]
+                                                                    tag:2];
+#ifdef __IPHONE_7_0
         }
 #endif
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                                                             toolbarClass:nil];
         HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
-            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover")
+                                                                   image:[UIImage imageNamed:@"icn_tab_discover_selected"]
+                                                           selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         } else {
 #endif
-            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover") image:[UIImage imageNamed:@"icn_tab_discover_selected"] tag:3];
-#if SDK_Ver >= 70000
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover")
+                                                                   image:[UIImage imageNamed:@"icn_tab_discover_selected"]
+                                                                     tag:3];
+#ifdef __IPHONE_7_0
         }
 #endif
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        UINavigationController *meNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class] toolbarClass:nil];
+        UINavigationController *meNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                                                       toolbarClass:nil];
         HSUProfileViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
-#if SDK_Ver >= 70000
-        if (iOS_Ver >= 7) {
-            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
+#ifdef __IPHONE_7_0
+        if (Sys_Ver >= 7) {
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me")
+                                                             image:[UIImage imageNamed:@"icn_tab_me_selected"]
+                                                     selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         } else {
 #endif
-            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me") image:[UIImage imageNamed:@"icn_tab_me_selected"] tag:4];
-#if SDK_Ver >= 70000
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me")
+                                                             image:[UIImage imageNamed:@"icn_tab_me_selected"]
+                                                               tag:4];
+#ifdef __IPHONE_7_0
         }
 #endif
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
@@ -107,14 +124,14 @@
 {
     [super viewDidLoad];
     
-    self.tabBarItemsData = @[@{@"title": _(@"Home"), @"imageName": @"home"},
-                             @{@"title": _(@"Connect"), @"imageName": @"connect"},
-                             @{@"title": _(@"Me"), @"imageName": @"me"},
-                             @{@"title": _(@"Message"), @"imageName": @"me"},
-                             @{@"title": _(@"Discover"), @"imageName": @"discover"}];
-    
     self.tabBar.frame = CGRectMake(0, kWinHeight-kTabBarHeight, kWinWidth, kTabBarHeight);
     ((UIView *)[self.view.subviews objectAtIndex:0]).frame = CGRectMake(0, 0, kWinWidth, kWinHeight-kTabBarHeight);
+    
+#ifdef __IPHONE_7_0
+    if (Sys_Ver >= 7 && IPHONE) {
+        self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+    }
+#endif
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
@@ -210,7 +227,6 @@
     for (UITabBarItem *item in self.tabBar.items) {
         [self hideUnreadIndicatorOnTabBarItem:item];
     }
-//    notification_post(HSUCheckUnreadTimeNotification);
 }
 
 - (BOOL)shouldAutorotate

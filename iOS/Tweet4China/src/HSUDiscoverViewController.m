@@ -27,7 +27,7 @@
 // placeholder position
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         return CGRectInset(bounds, 4, 4);
     }
     return CGRectInset(bounds, 2, 2);
@@ -104,7 +104,7 @@
     urlTextField.backgroundColor = bw(245);
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         UIProgressView *progressBar = [[UIProgressView alloc] init];
         [self.navigationController.navigationBar addSubview:progressBar];
         progressBar.trackTintColor = kWhiteColor;
@@ -125,7 +125,7 @@
         progressView.backgroundColor = rgba(74, 156, 214, .3);
     }
     
-    if (iOS_Ver >= 7) {
+    if (Sys_Ver >= 7) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                   target:self
@@ -161,7 +161,7 @@
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
     
     self.urlTextField.frame = ccr(10, 7, self.view.width-60, self.navigationController.navigationBar.height-14);
-    if (iOS_Ver < 7) {
+    if (Sys_Ver < 7) {
         self.urlTextField.height = self.navigationController.navigationBar.height-20;
         self.urlTextField.top = 10;
     }

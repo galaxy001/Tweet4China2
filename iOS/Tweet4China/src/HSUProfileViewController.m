@@ -128,7 +128,7 @@
             if (self.tableView.contentOffset.y <= 0) {
                 [self refreshData];
             }
-            if (iOS_Ver >= 7) {
+            if (Sys_Ver >= 7) {
                 [self.tableView setContentOffset:ccp(0, -120)];
             }
         }

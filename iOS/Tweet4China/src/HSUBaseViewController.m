@@ -112,7 +112,7 @@
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {
-        if (iOS_Ver >= 7) {
+        if (Sys_Ver >= 7) {
             tableView.backgroundColor = kClearColor;
         }
         tableView.layer.cornerRadius = 5;
@@ -144,17 +144,8 @@
 {
     [super viewWillAppear:animated];
     
-#if SDK_Ver >= 70000
-    if (iOS_Ver >= 7) {
-        if (IPHONE) {
-            self.navigationController.navigationBar.barTintColor = bwa(255, 0.9);
-            self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
-        }
-    }
-#endif
-    
     if (self.navigationController.viewControllers.count > 1) {
-        if (iOS_Ver < 7) {
+        if (Sys_Ver < 7) {
             UIButton *backButton = [[UIButton alloc] init];
             [backButton addTarget:self action:@selector(backButtonTouched) forControlEvents:UIControlEventTouchUpInside];
             if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBar class]]) {
@@ -328,7 +319,7 @@
     if (!_actionBarButton) {
         UIButton *actionButton = [[UIButton alloc] init];
         [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        if (iOS_Ver >= 7) {
+        if (Sys_Ver >= 7) {
             [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
         } else {
             [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
@@ -349,7 +340,7 @@
 - (UIBarButtonItem *)addFriendBarButton
 {
     if (!_addFriendBarButton) {
-        if (iOS_Ver >= 7) {
+        if (Sys_Ver >= 7) {
             _addFriendBarButton = [[UIBarButtonItem alloc]
                                    initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                    target:self
@@ -377,7 +368,7 @@
 - (UIBarButtonItem *)composeBarButton
 {
     if (!_composeBarButton) {
-        if (iOS_Ver >= 7) {
+        if (Sys_Ver >= 7) {
             _composeBarButton = [[UIBarButtonItem alloc]
                                  initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
                                  target:self

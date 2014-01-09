@@ -14,7 +14,7 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-#if SDK_Ver >= 70000
+#ifdef __IPHONE_7_0
         self.separatorInset = edi(0, 0, 0, 0);
 #endif
     }

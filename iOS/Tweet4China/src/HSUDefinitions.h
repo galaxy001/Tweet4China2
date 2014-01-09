@@ -102,10 +102,10 @@ _Pragma("clang diagnostic pop") \
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
 #define TWENGINE [HSUTwitterAPI shared]
-#define iOS_Ver MIN([[UIDevice currentDevice].systemVersion floatValue], __IPHONE_OS_VERSION_MAX_ALLOWED/10000.0)
+#define SDK_Ver __IPHONE_OS_VERSION_MAX_ALLOWED
+#define Sys_Ver MIN([[UIDevice currentDevice].systemVersion floatValue], __IPHONE_OS_VERSION_MAX_ALLOWED/10000.0)
 #define IPAD [HSUCommonTools isIPad]
 #define IPHONE [HSUCommonTools isIPhone]
-#define SDK_Ver __IPHONE_OS_VERSION_MAX_ALLOWED
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
