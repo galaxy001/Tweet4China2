@@ -187,6 +187,7 @@
     [self.webView stopLoading];
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
     [textField resignFirstResponder];
+    [self.overlayButton removeFromSuperview];
     
     return NO;
 }
@@ -230,6 +231,19 @@
 {
     if (!self.urlTextField.hasText && !self.urlTextField.isEditing && self.currentURL) {
         self.urlTextField.text = self.currentURL.absoluteString;
+    }
+    
+    // hide bars
+    if (Sys_Ver >= 7) {
+        CGFloat statusHeight = 20;
+        CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y;
+        if (pulledDown > 0) { // push up
+            self.navigationController.navigationBar.top = statusHeight - pulledDown;
+            self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
+        } else { // pull down
+            self.navigationController.navigationBar.top = statusHeight;
+            self.tabBarController.tabBar.bottom = self.view.height;
+        }
     }
 }
 
@@ -301,8 +315,6 @@
 {
     NSString *js = @"document.getElementsByTagName('video')[0].src";
     NSString *videoUrl = [self.webView stringByEvaluatingJavaScriptFromString:js];
-//    videoUrl = @"http://162.243.81.212/9793e4c449934fe488ba4d5e84018b1e.mov";
-//    videoUrl = @"http://r14---sn-q4f7dnlr.googlevideo.com/videoplayback?fexp=941228%2C909717%2C932295%2C938630%2C936912%2C936910%2C923305%2C936913%2C907231%2C907240%2C921090&ms=au&itag=18&sver=3&mt=1389095606&ratebypass=yes&signature=45C392A9EA694D0838E510ABDD723A2D0C2C34A1.CB3D5E5AC34DE219D122A197D453A5EA952F9DBA&id=a0ae213deda60abd&dnc=1&key=yt5&mv=m&upn=JzWDywVAbUc&source=youtube&ipbits=0&yms=AL0uIGID81A&sparams=id%2Cip%2Cipbits%2Citag%2Cratebypass%2Csource%2Cupn%2Cexpire&el=watch&expire=1389116988&ip=192.241.197.97&app=youtube_mobile&cpn=yn0NcBqGB4lWzOXr";
     if ([self.videoUrl isEqualToString:videoUrl]) {
         return;
     }
@@ -331,7 +343,7 @@
 {
     [self.urlTextField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
-    if (self.urlTextField.text.length == 0) {
+    if (!self.urlTextField.hasText) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
     }
 }
