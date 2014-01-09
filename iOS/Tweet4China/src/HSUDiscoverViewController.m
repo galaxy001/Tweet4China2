@@ -66,6 +66,7 @@
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, weak) UIButton *overlayButton;
+@property (nonatomic, weak) UIView *sb;
 
 @end
 
@@ -102,6 +103,13 @@
     [self.view addSubview:self.webView];
     if (self.startUrl) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
+    }
+    
+    if (!self.sb) {
+        UIView *sb = [[UIView alloc] initWithFrame:ccr(0, -20, self.view.width, 20)];
+        self.sb = sb;
+        sb.backgroundColor = bw(245);
+        [self.navigationController.navigationBar addSubview:sb];
     }
     
     if (!self.urlTextField) {
@@ -156,6 +164,13 @@
     [self addPreviewPageIfCanGoBack];
     
     [super viewDidAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [self.sb removeFromSuperview];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -278,9 +293,15 @@
         if (pulledDown > 0) { // push up
             self.navigationController.navigationBar.top = statusHeight - pulledDown;
             self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
+            
+            self.sb.top = pulledDown - statusHeight;
+            [self.navigationController.navigationBar bringSubviewToFront:self.sb];
         } else { // pull down
             self.navigationController.navigationBar.top = statusHeight;
             self.tabBarController.tabBar.bottom = self.view.height;
+            
+            self.sb.top = -statusHeight;
+            [self.navigationController.navigationBar bringSubviewToFront:self.sb];
         }
     }
 }
