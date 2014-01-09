@@ -16,13 +16,27 @@
 #import <NSString-MD5/NSString+MD5.h>
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
 
-#define StartURL @"https://www.google.com/ncr"
-
 @interface HSUURLField : UITextField
+
+@property (nonatomic, copy) NSString *urlString;
 
 @end
 
 @implementation HSUURLField
+
+- (void)setText:(NSString *)text
+{
+    self.urlString = text;
+    if ([text hasPrefix:@"http://"]) {
+        text = [text substringFromIndex:@"http://".length];
+    } else if ([text hasPrefix:@"https://"]) {
+        text = [text substringFromIndex:@"https://".length];
+    }
+    if ([text hasSuffix:@"/"]) {
+        text = [text substringToIndex:text.length-1];
+    }
+    [super setText:text];
+}
 
 // placeholder position
 - (CGRect)textRectForBounds:(CGRect)bounds
@@ -41,10 +55,8 @@
 
 @end
 
-@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate>
+@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate, UINavigationControllerDelegate>
 
-@property (nonatomic, weak) UIWebView *webView;
-@property (nonatomic, weak) UITextField *urlTextField;
 @property (nonatomic, weak) UIView *tabBarBackground;
 @property (nonatomic, strong) NSURL *currentURL;
 @property (nonatomic, strong) NJKWebViewProgress *progressHandler;
@@ -65,24 +77,20 @@
     self.progressHandler.webViewProxyDelegate = self;
     self.progressHandler.progressDelegate = self;
     
-    if (!self.startUrl) {
-        self.startUrl = [[NSUserDefaults standardUserDefaults] objectForKey:kDiscoverHomePage] ?: StartURL;
+    if (!self.webView) {
+        UIWebView *webView = [[UIWebView alloc] init];
+        self.webView = webView;
+        webView.scalesPageToFit = YES;
+        webView.allowsInlineMediaPlayback = YES;
+        webView.backgroundColor = kWhiteColor;
+        webView.frame = self.view.bounds;
     }
-    
-    UIWebView *webView = [[UIWebView alloc] init];
-    [self.view addSubview:webView];
-    self.webView = webView;
-    webView.scrollView.delegate = self;
-    webView.scalesPageToFit = YES;
-    webView.allowsInlineMediaPlayback = YES;
-    webView.backgroundColor = kWhiteColor;
-    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
-    webView.frame = self.view.bounds;
-    webView.delegate = self.progressHandler;
     
     self.hideRightButtons = YES;
     self.useRefreshControl = NO;
     self.useDefaultStatusView = YES;
+    self.hideBackButton = YES;
+    self.hideLeftButtons = YES;
     
     [super viewDidLoad];
     
@@ -91,47 +99,40 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    UITextField *urlTextField = [[HSUURLField alloc] init];
-    [self.navigationController.navigationBar addSubview:urlTextField];
-    self.urlTextField = urlTextField;
-    urlTextField.delegate = self;
-    urlTextField.keyboardType = UIKeyboardTypeURL;
-    urlTextField.returnKeyType = UIReturnKeyGo;
-    urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
-    urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
-    urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-    urlTextField.placeholder = _(@"Enter URL");
-    urlTextField.backgroundColor = bw(245);
-    urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
-    
-    if (Sys_Ver >= 7) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                  target:self
-                                                  action:@selector(_menuButtonTouched)];
-    } else {
-        urlTextField.backgroundColor = kClearColor;
-        UIView *bg = [[UIView alloc] init];
-        self.urlTextFieldBackgrondView = bg;
-        bg.backgroundColor = [UIColor whiteColor];
-        bg.layer.cornerRadius = 3;
-        [self.navigationController.navigationBar insertSubview:bg belowSubview:urlTextField];
-        
-        UIView *progressView = [[UIView alloc] init];
-        self.progressView = progressView;
-        [self.navigationController.navigationBar insertSubview:progressView belowSubview:urlTextField];
-        progressView.backgroundColor = rgba(74, 156, 214, .3);
-        
-        UIButton *menuButton = [[UIButton alloc] init];
-        [menuButton setImage:[UIImage imageNamed:@"ic_title_action"] forState:UIControlStateNormal];
-        [menuButton addTarget:self action:@selector(_menuButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        [menuButton sizeToFit];
-        menuButton.width *= 1.5;
-        UIBarButtonItem *menuBarButton = [[UIBarButtonItem alloc] initWithCustomView:menuButton];
-        self.navigationItem.rightBarButtonItem = menuBarButton;
+    [self.view addSubview:self.webView];
+    if (self.startUrl) {
+        [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
     }
     
-    self.navigationItem.leftBarButtonItem = nil;
+    if (!self.urlTextField) {
+        UITextField *urlTextField = [[HSUURLField alloc] init];
+        [self.navigationController.navigationBar addSubview:urlTextField];
+        self.urlTextField = urlTextField;
+        urlTextField.textAlignment = NSTextAlignmentCenter;
+        urlTextField.keyboardType = UIKeyboardTypeURL;
+        urlTextField.returnKeyType = UIReturnKeyGo;
+        urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
+        urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
+        urlTextField.placeholder = _(@"Enter URL");
+        urlTextField.backgroundColor = bw(245);
+        urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
+        urlTextField.layer.cornerRadius = 5;
+        
+        if (Sys_Ver < 7) {
+            urlTextField.backgroundColor = kClearColor;
+            UIView *bg = [[UIView alloc] init];
+            self.urlTextFieldBackgrondView = bg;
+            bg.backgroundColor = [UIColor whiteColor];
+            bg.layer.cornerRadius = 3;
+            [self.navigationController.navigationBar insertSubview:bg belowSubview:urlTextField];
+            
+            UIView *progressView = [[UIView alloc] init];
+            self.progressView = progressView;
+            [self.navigationController.navigationBar insertSubview:progressView belowSubview:urlTextField];
+            progressView.backgroundColor = rgba(74, 156, 214, .3);
+        }
+    }
     
     [super viewWillAppear:animated];
 }
@@ -139,19 +140,42 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     if (!self.urlTextField.hasText) {
-        self.urlTextField.text = self.startUrl;
+        self.urlTextField.text = self.webView.request.URL.absoluteString;
+        [self.urlTextField setNeedsDisplay];
     }
     
-    [super viewDidAppear:animated];
+    self.urlTextField.delegate = self;
     
-    [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(parseYoutube) userInfo:nil repeats:YES];
+    [self.view addSubview:self.webView];
+    self.webView.delegate = self.progressHandler;
+    self.webView.scrollView.delegate = self;
+    if (Sys_Ver >= 7) {
+        self.webView.scrollView.contentInset = edi(self.navigationController.navigationBar.height+20, 0, self.tabBarController.tabBar.height, 0);
+    }
+    
+    [self addPreviewPageIfCanGoBack];
+    
+    [super viewDidAppear:animated];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    HSUDiscoverViewController *lastPage = (HSUDiscoverViewController *)viewController;
+    lastPage.webView = self.webView;
+    lastPage.urlTextField = self.urlTextField;
+}
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    [self.webView goBack];
 }
 
 - (void)viewDidLayoutSubviews
 {
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
     
-    self.urlTextField.frame = ccr(10, 7, self.view.width-60, self.navigationController.navigationBar.height-14);
+    // urltextfield frame
+    [self setURLTextFieldWidth];
     if (Sys_Ver < 7) {
         self.urlTextField.height = self.navigationController.navigationBar.height-20;
         self.urlTextField.top = 10;
@@ -159,7 +183,6 @@
     self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
     self.progressView.height = self.urlTextField.height;
     self.progressView.leftTop = self.urlTextField.leftTop;
-    self.urlTextField.layer.cornerRadius = 5;
     
     [super viewDidLayoutSubviews];
 }
@@ -198,7 +221,17 @@
         return YES;
     }
     self.currentURL = request.URL;
+    
+    [self addPreviewPageIfCanGoBack];
+    
     return YES;
+}
+
+- (void)webViewDidStartLoad:(UIWebView *)webView
+{
+    [self addPreviewPageIfCanGoBack];
+    [self addBarButtonsIfNeed];
+    [self setURLTextFieldWidth];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -209,7 +242,12 @@
     }
     if (!self.urlTextField.isEditing) {
         self.urlTextField.text = urlString;
+        [self.urlTextField setNeedsDisplay];
     }
+    
+    [self addPreviewPageIfCanGoBack];
+    [self addBarButtonsIfNeed];
+    [self setURLTextFieldWidth];
 }
 
 - (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
@@ -225,14 +263,14 @@
         self.progressView.width = progress*self.urlTextField.width;
     }];
     self.urlTextField.backgroundColor = kClearColor;
+    
+    [self addPreviewPageIfCanGoBack];
+    [self addBarButtonsIfNeed];
+    [self setURLTextFieldWidth];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (!self.urlTextField.hasText && !self.urlTextField.isEditing && self.currentURL) {
-        self.urlTextField.text = self.currentURL.absoluteString;
-    }
-    
     // hide bars
     if (Sys_Ver >= 7) {
         CGFloat statusHeight = 20;
@@ -345,6 +383,62 @@
     [self.overlayButton removeFromSuperview];
     if (!self.urlTextField.hasText) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
+        [self.urlTextField setNeedsDisplay];
+    }
+}
+
+- (void)addPreviewPageIfCanGoBack
+{
+    if (self.webView.canGoBack && self.navigationController.viewControllers.count == 1) {
+        self.navigationController.delegate = self;
+        HSUDiscoverViewController *prevPage = [[HSUDiscoverViewController alloc] init];
+        self.navigationController.viewControllers = @[prevPage, self];
+        
+        NSArray *subviews = self.navigationController.navigationBar.subviews;
+        for (UIView *subview in subviews) { // hide back bar button and keep back gesture enabled
+            if ([[[subview class] description] isEqualToString:@"_UINavigationBarBackIndicatorView"] ||
+                [[[subview class] description] isEqualToString:@"UINavigationItemView"] ||
+                [[[subview class] description] isEqualToString:@"UINavigationItemButtonView"]) {
+                
+                subview.hidden = YES;
+            }
+        }
+    }
+}
+
+- (void)addBarButtonsIfNeed
+{
+    if (self.webView.isLoading) {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                  target:self.webView
+                                                  action:@selector(stopLoading)];
+    } else {
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                                  target:self.webView
+                                                  action:@selector(reload)];
+    }
+}
+
+- (void)setURLTextFieldWidth
+{
+    CGFloat urlTextFieldWidth = self.view.width - 40;
+    if (self.navigationItem.rightBarButtonItem) {
+        urlTextFieldWidth = self.view.width - 70;
+    }
+    if (self.urlTextField.isEditing) {
+        self.urlTextField.textAlignment = NSTextAlignmentLeft;
+    } else {
+        self.urlTextField.textAlignment = NSTextAlignmentCenter;
+    }
+    if (self.urlTextField.width &&
+        self.urlTextField.width != urlTextFieldWidth) {
+        [UIView animateWithDuration:.2 animations:^{
+            self.urlTextField.frame = ccr(20, 7, urlTextFieldWidth, self.navigationController.navigationBar.height-14);
+        }];
+    } else {
+        self.urlTextField.frame = ccr(20, 7, urlTextFieldWidth, self.navigationController.navigationBar.height-14);
     }
 }
 

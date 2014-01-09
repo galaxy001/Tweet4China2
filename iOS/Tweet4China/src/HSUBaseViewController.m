@@ -135,7 +135,9 @@
     if (self.hideBackButton) {
         self.navigationItem.backBarButtonItem = nil;
     }
-    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    if (!self.hideLeftButtons) {
+        self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    }
     
     [super viewDidLoad];
 }

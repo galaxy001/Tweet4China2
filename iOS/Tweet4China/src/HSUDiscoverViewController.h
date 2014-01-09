@@ -11,6 +11,8 @@
 
 @interface HSUDiscoverViewController : HSUBaseViewController
 
+@property (nonatomic, strong) UITextField *urlTextField;
+@property (nonatomic, strong) UIWebView *webView;
 @property (nonatomic, copy) NSString *startUrl;
 
 @end

@@ -62,16 +62,20 @@
     }
     
     // setup close button
-    UIButton *closeButton = [[UIButton alloc] init];
     if (Sys_Ver >= 7) {
-        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                 target:self
+                                                 action:@selector(_closeButtonTouched)];
     } else {
+        UIButton *closeButton = [[UIButton alloc] init];
+        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
         [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+        [closeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
+        [closeButton sizeToFit];
+        [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     }
-    [closeButton setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
-    [closeButton sizeToFit];
-    [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
     UIBarButtonItem *composeBarButton;
     if (Sys_Ver >= 7) {

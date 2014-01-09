@@ -142,7 +142,9 @@
            [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]) &&
          !self.profileView.dmIndicator)) {
             
+#ifndef DEBUG
             [HSUProfileDataSource checkUnreadForViewController:self];
+#endif
         }
 }
 

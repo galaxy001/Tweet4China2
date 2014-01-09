@@ -62,15 +62,18 @@
     [self.view insertSubview:diandian belowSubview:webview];
     diandian.alpha = 0.2;
     
-    UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     if (Sys_Ver >= 7) {
-        [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_close"] forState:UIControlStateNormal];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                                 target:self
+                                                 action:@selector(_closeButtonTouched)];
     } else {
+        UIButton *closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [closeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_close"] forState:UIControlStateNormal];
+        [closeButton sizeToFit];
+        [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     }
-    [closeButton sizeToFit];
-    [closeButton setTapTarget:self action:@selector(_closeButtonTouched)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:closeButton];
     
     if (self.cellData) {
         if (Sys_Ver >= 7) {
