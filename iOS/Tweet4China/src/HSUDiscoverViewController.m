@@ -53,6 +53,7 @@
 
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
+@property (nonatomic, weak) UIButton *overlayButton;
 
 @end
 
@@ -165,6 +166,10 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    UIButton *overlayButton = [[UIButton alloc] initWithFrame:self.view.bounds];
+    [self.view addSubview:overlayButton];
+    self.overlayButton = overlayButton;
+    [overlayButton setTapTarget:self action:@selector(overlayButtonTouched)];
     textField.backgroundColor = bw(225);
 }
 
@@ -201,7 +206,9 @@
     if ([urlString hasPrefix:@"http://"]) {
         urlString = [urlString substringFromIndex:7];
     }
-    self.urlTextField.text = urlString;
+    if (!self.urlTextField.isEditing) {
+        self.urlTextField.text = urlString;
+    }
 }
 
 - (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
@@ -221,7 +228,6 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [self.urlTextField resignFirstResponder];
     if (!self.urlTextField.hasText && !self.urlTextField.isEditing && self.currentURL) {
         self.urlTextField.text = self.currentURL.absoluteString;
     }
@@ -319,6 +325,15 @@
     moviePlayer.fullscreen = YES;
     moviePlayer.shouldAutoplay = YES;
     [moviePlayer play];
+}
+
+- (void)overlayButtonTouched
+{
+    [self.urlTextField resignFirstResponder];
+    [self.overlayButton removeFromSuperview];
+    if (self.urlTextField.text.length == 0) {
+        self.urlTextField.text = self.webView.request.URL.absoluteString;
+    }
 }
 
 @end
