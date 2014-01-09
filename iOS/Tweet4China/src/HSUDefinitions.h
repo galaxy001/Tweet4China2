@@ -53,7 +53,6 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "HSUNavigationController.h"
 #import "Flurry.h"
-#import "HSUTableView.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>

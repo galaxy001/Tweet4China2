@@ -41,7 +41,7 @@
 {
     [super viewDidLoad];
     
-    HSUTableView *tableView = [[HSUTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.view addSubview:tableView];
     self.tableView = tableView;
     

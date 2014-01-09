@@ -26,7 +26,7 @@
     [super viewDidLoad];
     
     self.title = _(@"Accounts");
-    self.tableView = [[HSUTableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
+    self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
 }
 
 - (void)viewWillAppear:(BOOL)animated

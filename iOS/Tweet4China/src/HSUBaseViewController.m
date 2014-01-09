@@ -31,7 +31,6 @@
 #import "HSUSearchPersonVC.h"
 #import "HSUListCell.h"
 #import "HSUSettingsViewController.h"
-#import "HSUTableView.h"
 #import "HSUiPadTabController.h"
 #import "HSUSearchPersonDataSource.h"
 
@@ -90,11 +89,11 @@
         cellData.renderData[@"delegate"] = self;
     }
     
-    HSUTableView *tableView;
+    UITableView *tableView;
     if (self.tableView) {
         tableView = self.tableView;
     } else {
-        tableView = [[HSUTableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+        tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
         [self.view addSubview:tableView];
         self.tableView = tableView;
     }
@@ -263,12 +262,8 @@
         cellData.renderData[@"delegate"] = self;
     }
     
-    NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
-    for (int i=fromIndex; i<fromIndex+length; i++) {
-        [indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
-    }
-    ((HSUTableView *)self.tableView).offsetLocked = (fromIndex == 0);
-    [self.tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationTop];
+    [self.tableView reloadData];
+    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:length inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
     
     [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
     [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
@@ -284,7 +279,6 @@
             cellData.renderData[@"delegate"] = self;
         }
         
-        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     }
 
@@ -295,10 +289,8 @@
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
 {
     if (error.code == 204) {
-        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     } else if (error == nil) {
-        ((HSUTableView *)self.tableView).offsetLocked = NO;
         [self.tableView reloadData];
     }
 }

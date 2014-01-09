@@ -127,7 +127,6 @@
 		9666CDF01873EFBE0044DB0A /* icn_nav_action_ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */; };
 		9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */; };
 		9666CDFE187698690044DB0A /* unread_indicator@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDFD187698690044DB0A /* unread_indicator@2x.png */; };
-		9666CE011876D1AD0044DB0A /* HSUTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CE001876D1AD0044DB0A /* HSUTableView.m */; };
 		966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */; };
 		966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */; };
 		966ACE1F174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */; };
@@ -480,8 +479,6 @@
 		9666CDF318752A5F0044DB0A /* HSUEditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUEditProfileViewController.h; sourceTree = "<group>"; };
 		9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUEditProfileViewController.m; sourceTree = "<group>"; };
 		9666CDFD187698690044DB0A /* unread_indicator@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "unread_indicator@2x.png"; sourceTree = "<group>"; };
-		9666CDFF1876D1AD0044DB0A /* HSUTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUTableView.h; sourceTree = "<group>"; };
-		9666CE001876D1AD0044DB0A /* HSUTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUTableView.m; sourceTree = "<group>"; };
 		966ACE0D174B9A100050F110 /* bottom-send-button-dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bottom-send-button-dm@2x.png"; sourceTree = "<group>"; };
 		966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_back@2x.png"; sourceTree = "<group>"; };
 		966ACE11174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_compose_dm@2x.png"; sourceTree = "<group>"; };
@@ -1127,8 +1124,6 @@
 				96BE217316EC8FDA00226799 /* HSUBaseTableCell.m */,
 				964827B016E37C9C0002345B /* HSUBaseViewController.h */,
 				964827B116E37C9C0002345B /* HSUBaseViewController.m */,
-				9666CDFF1876D1AD0044DB0A /* HSUTableView.h */,
-				9666CE001876D1AD0044DB0A /* HSUTableView.m */,
 				969B7433173FA8370072EFC0 /* HSUChatStatusCell.h */,
 				969B7434173FA8370072EFC0 /* HSUChatStatusCell.m */,
 				96E34B4217015ECD0066CD5E /* HSUComposeViewController.h */,
@@ -1637,7 +1632,6 @@
 				966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */,
 				966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */,
 				966E1909184CAB5600B5482C /* HSUListMembersDataSource.m in Sources */,
-				9666CE011876D1AD0044DB0A /* HSUTableView.m in Sources */,
 				9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */,
 				966E191B184CB06300B5482C /* HSUListCell.m in Sources */,
 				96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */,
