@@ -16,7 +16,7 @@
 #import <MapKit/MapKit.h>
 #import "HSUSendBarButtonItem.h"
 #import <twitter-text-objc/TwitterText.h>
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+#ifdef __IPHONE_6_0
 #import <OpenCam/OpenCam.h>
 #endif
 
@@ -82,7 +82,7 @@
     UIButton *toggleLocationBnt;
     UITableView *suggestionsTV;
     UIImageView *contentShadowV;
-
+    
     CGFloat keyboardHeight;
     CLLocationManager *locationManager;
     CLLocationCoordinate2D location;
@@ -515,14 +515,12 @@
 {
     if (contentTV.text == nil) return;
     NSString *status = contentTV.text;
-    NSString *briefMessage = [contentTV.text substringToIndex:MIN(20, contentTV.text.length)];
     //save draft
     NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
     NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
     
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
-        [SVProgressHUD showSuccessWithStatus:S(@"Sent\n%@", briefMessage)];
     } failure:^(NSError *error) {
         if (error.code == 204) {
             [[HSUDraftManager shared] removeDraft:draft];
@@ -845,7 +843,7 @@
     return NO;
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+#ifdef __IPHONE_6_0
 - (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
 {
     if (cameraViewController.photo) {
@@ -872,7 +870,7 @@
 
 - (void)selectPhoto
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+#ifdef __IPHONE_6_0
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
     cameraVC.maxWidth = 640;
     cameraVC.delegate = self;

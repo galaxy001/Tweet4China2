@@ -21,7 +21,6 @@ typedef void (^HSUTwitterAPIFailureBlock)(NSError *error);
 - (NSString *)myScreenName;
 - (void)removeAccount:(NSString *)screenName;
 - (void)loadAccount:(NSString *)screenName;
-- (void)loginWithScreenName:(NSString *)screenName andPassword:(NSString *)password success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 - (void)authorizeByOAuth;
 
 - (void)getUserSettingsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;

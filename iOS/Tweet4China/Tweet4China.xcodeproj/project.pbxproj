@@ -122,7 +122,6 @@
 		9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE0187129100044DB0A /* HSUSettingsViewController.m */; };
 		9666CDE418719AE10044DB0A /* HSUAccountsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */; };
 		9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */; };
-		9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDE91872C3040044DB0A /* HSULoginViewController.m */; };
 		9666CDEC1872C9720044DB0A /* bg_login_btn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */; };
 		9666CDF01873EFBE0044DB0A /* icn_nav_action_ios7@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */; };
 		9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9666CDF418752A5F0044DB0A /* HSUEditProfileViewController.m */; };
@@ -472,8 +471,6 @@
 		9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAccountsViewController.m; sourceTree = "<group>"; };
 		9666CDE518719B180044DB0A /* HSUShadowsocksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUShadowsocksViewController.h; sourceTree = "<group>"; };
 		9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUShadowsocksViewController.m; sourceTree = "<group>"; };
-		9666CDE81872C3040044DB0A /* HSULoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoginViewController.h; sourceTree = "<group>"; };
-		9666CDE91872C3040044DB0A /* HSULoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSULoginViewController.m; sourceTree = "<group>"; };
 		9666CDEB1872C9720044DB0A /* bg_login_btn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_login_btn@2x.png"; sourceTree = "<group>"; };
 		9666CDEE1873EFBE0044DB0A /* icn_nav_action_ios7@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_action_ios7@2x.png"; sourceTree = "<group>"; };
 		9666CDF318752A5F0044DB0A /* HSUEditProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUEditProfileViewController.h; sourceTree = "<group>"; };
@@ -1256,8 +1253,6 @@
 				9666CDE618719B180044DB0A /* HSUShadowsocksViewController.m */,
 				96A11F1F17D0BFB600F98ABD /* HSUProxySettingsViewController.h */,
 				96A11F2017D0BFB600F98ABD /* HSUProxySettingsViewController.m */,
-				9666CDE81872C3040044DB0A /* HSULoginViewController.h */,
-				9666CDE91872C3040044DB0A /* HSULoginViewController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1655,7 +1650,6 @@
 				966E1903184CAACC00B5482C /* HSUListsViewController.m in Sources */,
 				969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */,
 				969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */,
-				9666CDEA1872C3040044DB0A /* HSULoginViewController.m in Sources */,
 				96A2127117204F3200BC1D09 /* HSUContextStatusCell.m in Sources */,
 				966E1915184CAFE200B5482C /* HSUSubscribedListsViewController.m in Sources */,
 				96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */,

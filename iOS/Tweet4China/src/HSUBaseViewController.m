@@ -79,6 +79,7 @@
     notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
     notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     notification_add_observer(HSUActionBarTouchedNotification, self, @selector(_actionBarButtonTouchedFirstTime));
+    notification_add_observer(HSUPostTweetProgressChangedNotification, self, @selector(updateProgress:));
     
     if (!self.dataSource) {
         self.dataSource = [self.dataSourceClass dataSourceWithDelegate:self useCache:YES];
@@ -451,6 +452,12 @@
 - (void)reloadData
 {
     [self.tableView reloadData];
+}
+
+- (void)updateProgress:(NSNotification *)notification
+{
+    double progress = [notification.object doubleValue];
+    [((HSUNavigationController *)self.navigationController) updateProgress:progress];
 }
 
 @end

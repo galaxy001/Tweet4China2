@@ -48,7 +48,6 @@
 @property (nonatomic, weak) UIView *tabBarBackground;
 @property (nonatomic, strong) NSURL *currentURL;
 @property (nonatomic, strong) NJKWebViewProgress *progressHandler;
-@property (nonatomic, weak) UIProgressView *progressBar;
 @property (nonatomic, weak) UIView *urlTextFieldBackgrondView;
 @property (nonatomic, weak) UIView *progressView;
 
@@ -105,12 +104,10 @@
     urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
     
     if (Sys_Ver >= 7) {
-        UIProgressView *progressBar = [[UIProgressView alloc] init];
-        [self.navigationController.navigationBar addSubview:progressBar];
-        progressBar.trackTintColor = kWhiteColor;
-        progressBar.top = self.navigationController.navigationBar.height - progressBar.height;
-        progressBar.width = self.navigationController.navigationBar.width;
-        self.progressBar = progressBar;
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                                  target:self
+                                                  action:@selector(_menuButtonTouched)];
     } else {
         urlTextField.backgroundColor = kClearColor;
         UIView *bg = [[UIView alloc] init];
@@ -123,14 +120,7 @@
         self.progressView = progressView;
         [self.navigationController.navigationBar insertSubview:progressView belowSubview:urlTextField];
         progressView.backgroundColor = rgba(74, 156, 214, .3);
-    }
-    
-    if (Sys_Ver >= 7) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemAction
-                                                  target:self
-                                                  action:@selector(_menuButtonTouched)];
-    } else {
+        
         UIButton *menuButton = [[UIButton alloc] init];
         [menuButton setImage:[UIImage imageNamed:@"ic_title_action"] forState:UIControlStateNormal];
         [menuButton addTarget:self action:@selector(_menuButtonTouched) forControlEvents:UIControlEventTouchUpInside];
@@ -218,18 +208,11 @@
 {
     if (progress == 0.0) {
         [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-        self.progressBar.progress = 0;
-        [UIView animateWithDuration:0.27 animations:^{
-            self.progressBar.alpha = 1.0;
-        }];
     } else if (progress == 1.0) {
         [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-        [UIView animateWithDuration:0.27 delay:progress - self.progressBar.progress options:0 animations:^{
-            self.progressBar.alpha = 0.0;
-        } completion:nil];
     }
     
-    [self.progressBar setProgress:progress animated:NO];
+    [((HSUNavigationController *)self.navigationController) updateProgress:progress];
     [UIView animateWithDuration:.27 animations:^{
         self.progressView.width = progress*self.urlTextField.width;
     }];

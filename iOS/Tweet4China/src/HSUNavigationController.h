@@ -10,4 +10,6 @@
 
 @interface HSUNavigationController : UINavigationController
 
+- (void)updateProgress:(double)progress;
+
 @end

@@ -14,7 +14,6 @@
 // if you want to use all of the features.
 #define kTwitterAppKey @"JotIXH4moIF1fIJDVJ50eQ"
 #define kTwitterAppSecret @"5TKbyf4fDyjzse0GqJ62YwABgP6zKuZCbCHUeYTqugc"
-#define UseXAuth YES
 
 #define FreeAppleID @"445052810"
 #define ProAppleID @"791880602"
@@ -170,6 +169,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUTabControllerDidSelectViewControllerNotification @"HSUTabControllerDidSelectViewControllerNotification"
 #define HSUActionBarTouchedNotification @"HSUActionBarTouchedNotification"
 #define HSUStatusUpdatedNotification @"HSUStatusUpdatedNotification"
+#define HSUPostTweetProgressChangedNotification @"HSUPostTweetProgressChangedNotification"
 
 #define NetWorkStatus [TWENGINE networkStatus]
 
