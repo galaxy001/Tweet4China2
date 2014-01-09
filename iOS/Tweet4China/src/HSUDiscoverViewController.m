@@ -15,6 +15,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import <NSString-MD5/NSString+MD5.h>
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
+#import "HSUWebBrowserFavoritesDataSource.h"
 
 @interface HSUURLField : UITextField
 
@@ -55,7 +56,7 @@
 
 @end
 
-@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate, UINavigationControllerDelegate>
+@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) UIView *tabBarBackground;
 @property (nonatomic, strong) NSURL *currentURL;
@@ -67,6 +68,12 @@
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic, weak) UIButton *overlayButton;
 @property (nonatomic, weak) UIView *sb;
+
+@property (nonatomic, strong) UIBarButtonItem *stopBarItem;
+@property (nonatomic, strong) UIBarButtonItem *reloadBarItem;
+
+@property (nonatomic, weak) UITableView *favoritesView;
+@property (nonatomic, strong) HSUWebBrowserFavoritesDataSource *favoritesDataSource;
 
 @end
 
@@ -83,9 +90,15 @@
         self.webView = webView;
         webView.scalesPageToFit = YES;
         webView.allowsInlineMediaPlayback = YES;
-        webView.backgroundColor = kWhiteColor;
+        webView.backgroundColor = bw(240);
         webView.frame = self.view.bounds;
     }
+    
+    UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc]
+                                         initWithTarget:self
+                                         action:@selector(swipToLeft:)];
+    gesture.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.view addGestureRecognizer:gesture];
     
     self.hideRightButtons = YES;
     self.useRefreshControl = NO;
@@ -116,14 +129,13 @@
         UITextField *urlTextField = [[HSUURLField alloc] init];
         [self.navigationController.navigationBar addSubview:urlTextField];
         self.urlTextField = urlTextField;
-        urlTextField.textAlignment = NSTextAlignmentCenter;
         urlTextField.keyboardType = UIKeyboardTypeURL;
         urlTextField.returnKeyType = UIReturnKeyGo;
         urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
         urlTextField.placeholder = _(@"Enter URL");
-        urlTextField.backgroundColor = bw(245);
+        urlTextField.backgroundColor = bw(240);
         urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
         urlTextField.layer.cornerRadius = 5;
         
@@ -161,7 +173,7 @@
         self.webView.scrollView.contentInset = edi(self.navigationController.navigationBar.height+20, 0, self.tabBarController.tabBar.height, 0);
     }
     
-    [self addPreviewPageIfCanGoBack];
+    [self resetStatus];
     
     [super viewDidAppear:animated];
 }
@@ -208,12 +220,10 @@
     [self.view addSubview:overlayButton];
     self.overlayButton = overlayButton;
     [overlayButton setTapTarget:self action:@selector(overlayButtonTouched)];
-    textField.backgroundColor = bw(225);
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    textField.backgroundColor = bw(245);
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -274,7 +284,6 @@
     [UIView animateWithDuration:.27 animations:^{
         self.progressView.width = progress*self.urlTextField.width;
     }];
-    self.urlTextField.backgroundColor = kClearColor;
     
     [self resetStatus];
 }
@@ -405,6 +414,8 @@
 
 - (void)addPreviewPageIfCanGoBack
 {
+    self.webView.hidden = NO;
+    self.favoritesView.hidden = YES;
     if (self.webView.canGoBack && self.navigationController.viewControllers.count == 1) {
         self.navigationController.delegate = self;
         HSUDiscoverViewController *prevPage = [[HSUDiscoverViewController alloc] init];
@@ -419,21 +430,43 @@
                 subview.hidden = YES;
             }
         }
+    } else if (!self.webView.request && !self.urlTextField.hasText) {
+        self.webView.hidden = YES;
+        // create favorites view
+        if (!self.favoritesView) {
+            UITableView *favoritesView = [[UITableView alloc] initWithFrame:self.webView.frame];
+            self.favoritesView = favoritesView;
+            favoritesView.contentInset = self.webView.scrollView.contentInset;
+            [self.view addSubview:favoritesView];
+            favoritesView.delegate = self;
+            favoritesView.backgroundColor = kWhiteColor;
+            self.favoritesDataSource = [[HSUWebBrowserFavoritesDataSource alloc] init];
+            favoritesView.dataSource = self.favoritesDataSource;
+        }
+        self.favoritesView.hidden = NO;
     }
 }
 
 - (void)addBarButtonsIfNeed
 {
     if (self.webView.isLoading) {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-                                                  target:self.webView
-                                                  action:@selector(stopLoading)];
+        if (!self.stopBarItem) {
+            self.stopBarItem = [[UIBarButtonItem alloc]
+                                initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                                target:self.webView
+                                action:@selector(stopLoading)];
+        }
+        self.navigationItem.rightBarButtonItem = self.stopBarItem;
+    } else if (self.webView.request) {
+        if (!self.reloadBarItem) {
+            self.reloadBarItem = [[UIBarButtonItem alloc]
+                                  initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                                  target:self.webView
+                                  action:@selector(reload)];
+        }
+        self.navigationItem.rightBarButtonItem = self.reloadBarItem;
     } else {
-        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                                  initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                                  target:self.webView
-                                                  action:@selector(reload)];
+        self.navigationItem.rightBarButtonItem = nil;
     }
 }
 
@@ -443,11 +476,7 @@
     if (self.navigationItem.rightBarButtonItem) {
         urlTextFieldWidth = self.view.width - 70;
     }
-    if (self.urlTextField.isEditing) {
-        self.urlTextField.textAlignment = NSTextAlignmentLeft;
-    } else {
-        self.urlTextField.textAlignment = NSTextAlignmentCenter;
-    }
+    
     if (self.urlTextField.width &&
         self.urlTextField.width != urlTextFieldWidth) {
         [UIView animateWithDuration:.2 animations:^{
@@ -460,13 +489,35 @@
 
 - (void)resetStatus
 {
-    if (!self.urlTextField.isEditing) {
+    if (!self.urlTextField.isEditing && self.webView.request.URL.absoluteString.length) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
-        [self.urlTextField setNeedsDisplay];
     }
     [self addPreviewPageIfCanGoBack];
     [self addBarButtonsIfNeed];
     [self setURLTextFieldWidth];
+}
+
+- (void)swipToLeft:(UIGestureRecognizer *)gesture
+{
+    CGPoint point = [gesture locationInView:self.view];
+    if (point.x > self.view.width - 20) {
+        if (self.webView.canGoForward) {
+            [self.webView goForward];
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *favorite = self.favoritesDataSource.favorites[indexPath.row];
+    NSString *urlStr = favorite[@"url"];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]]];
+    self.urlTextField.text = urlStr;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 44;
 }
 
 @end

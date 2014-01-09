@@ -273,6 +273,7 @@
 		96DABC72172AC4C7001AD70A /* ic_glow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC70172AC4C7001AD70A /* ic_glow@2x.png */; };
 		96DABC76172AF5BF001AD70A /* HSUStatusActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DABC75172AF5BE001AD70A /* HSUStatusActionView.m */; };
 		96DEB785179D447F005D3FAF /* HSUTwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DEB784179D447F005D3FAF /* HSUTwitterAPI.m */; };
+		96DECEBF187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DECEBE187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.m */; };
 		96E34B4117006B1C0066CD5E /* bg_dm_count@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E34B4017006B1C0066CD5E /* bg_dm_count@2x.png */; };
 		96E34B4417015ECD0066CD5E /* HSUComposeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96E34B4317015ECD0066CD5E /* HSUComposeViewController.m */; };
 		96E34B50170167580066CD5E /* button-bar-at@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E34B45170167580066CD5E /* button-bar-at@2x.png */; };
@@ -688,6 +689,8 @@
 		96DABC75172AF5BE001AD70A /* HSUStatusActionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUStatusActionView.m; sourceTree = "<group>"; };
 		96DEB783179D447F005D3FAF /* HSUTwitterAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUTwitterAPI.h; sourceTree = "<group>"; };
 		96DEB784179D447F005D3FAF /* HSUTwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUTwitterAPI.m; sourceTree = "<group>"; };
+		96DECEBD187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUWebBrowserFavoritesDataSource.h; sourceTree = "<group>"; };
+		96DECEBE187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUWebBrowserFavoritesDataSource.m; sourceTree = "<group>"; };
 		96E34B4017006B1C0066CD5E /* bg_dm_count@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_dm_count@2x.png"; sourceTree = "<group>"; };
 		96E34B4217015ECD0066CD5E /* HSUComposeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUComposeViewController.h; sourceTree = "<group>"; };
 		96E34B4317015ECD0066CD5E /* HSUComposeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUComposeViewController.m; sourceTree = "<group>"; };
@@ -1132,6 +1135,8 @@
 				969B7437173FB3910072EFC0 /* HSUDefaultStatusCell.m */,
 				9628185216DFAB8100ABF0AD /* HSUDiscoverViewController.h */,
 				9628185316DFAB8100ABF0AD /* HSUDiscoverViewController.m */,
+				96DECEBD187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.h */,
+				96DECEBE187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.m */,
 				96D292361743861F00AB4F8C /* HSUDraftCell.h */,
 				96D292371743861F00AB4F8C /* HSUDraftCell.m */,
 				96FA81D117450B6A00DB023A /* HSUDraftsCell.h */,
@@ -1616,6 +1621,7 @@
 				96BE217116EC77BF00226799 /* HSUBaseDataSource.m in Sources */,
 				96BE217416EC8FDA00226799 /* HSUBaseTableCell.m in Sources */,
 				968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */,
+				96DECEBF187F2A6100E46809 /* HSUWebBrowserFavoritesDataSource.m in Sources */,
 				968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */,
 				9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */,
 				9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */,
