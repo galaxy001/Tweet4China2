@@ -237,32 +237,29 @@
     }
     self.currentURL = request.URL;
     
-    [self addPreviewPageIfCanGoBack];
+    [self resetStatus];
     
     return YES;
 }
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
-    [self addPreviewPageIfCanGoBack];
-    [self addBarButtonsIfNeed];
-    [self setURLTextFieldWidth];
+    [self resetStatus];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    NSString *urlString = webView.request.URL.absoluteString;
-    if ([urlString hasPrefix:@"http://"]) {
-        urlString = [urlString substringFromIndex:7];
-    }
-    if (!self.urlTextField.isEditing) {
-        self.urlTextField.text = urlString;
-        [self.urlTextField setNeedsDisplay];
-    }
+    [self resetStatus];
+}
+
+- (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
+{
+    [((HSUNavigationController *)self.navigationController) updateProgress:0];
+    [UIView animateWithDuration:.27 animations:^{
+        self.progressView.width = 0;
+    }];
     
-    [self addPreviewPageIfCanGoBack];
-    [self addBarButtonsIfNeed];
-    [self setURLTextFieldWidth];
+    [self resetStatus];
 }
 
 - (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
@@ -279,9 +276,7 @@
     }];
     self.urlTextField.backgroundColor = kClearColor;
     
-    [self addPreviewPageIfCanGoBack];
-    [self addBarButtonsIfNeed];
-    [self setURLTextFieldWidth];
+    [self resetStatus];
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
@@ -461,6 +456,17 @@
     } else {
         self.urlTextField.frame = ccr(20, 7, urlTextFieldWidth, self.navigationController.navigationBar.height-14);
     }
+}
+
+- (void)resetStatus
+{
+    if (!self.urlTextField.isEditing) {
+        self.urlTextField.text = self.webView.request.URL.absoluteString;
+        [self.urlTextField setNeedsDisplay];
+    }
+    [self addPreviewPageIfCanGoBack];
+    [self addBarButtonsIfNeed];
+    [self setURLTextFieldWidth];
 }
 
 @end
