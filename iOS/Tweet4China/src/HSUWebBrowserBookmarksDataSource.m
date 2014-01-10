@@ -41,7 +41,6 @@
         [bookmarks addObject:@{@"title": @"Twitter", @"url": @"http://twitter.com"}];
         [bookmarks addObject:@{@"title": @"Google+", @"url": @"http://plus.google.com"}];
         [bookmarks addObject:@{@"title": @"Wikipedia", @"url": @"http://wikipedia.org"}];
-        [bookmarks addObject:@{@"title": @"蘋果日報", @"url": @"http://m.appledaily.com.tw"}];
         [[NSUserDefaults standardUserDefaults] setObject:bookmarks forKey:bookmark_cache_key];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }

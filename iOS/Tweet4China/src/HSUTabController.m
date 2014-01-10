@@ -147,7 +147,9 @@
 {
     if (self.lastSelectedTabBarItem == item) {
         HSUBaseViewController *currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
-        [currentVC.tableView setContentOffset:ccp(0, 0) animated:YES];
+        if ([currentVC respondsToSelector:@selector(tableView)]) {
+            [currentVC.tableView setContentOffset:ccp(0, 0) animated:YES];
+        }
     }
     self.lastSelectedTabBarItem = item;
 }

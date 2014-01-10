@@ -197,6 +197,8 @@
         [self.urlTextField setNeedsDisplay];
     }
     
+    self.tabBarController.delegate = self;
+    
     [super viewWillAppear:animated];
 }
 
@@ -240,6 +242,14 @@
     [super viewDidLayoutSubviews];
 }
 
+- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
+{
+    if (tabBarController.selectedViewController == self.navigationController) {
+        return NO;
+    }
+    return YES;
+}
+
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     if (viewController != self) {
@@ -272,6 +282,7 @@
     if (![url hasPrefix:@"http"]) {
         url = [@"http://" stringByAppendingString:url];
     }
+    textField.text = url;
     self.tabIndex = self.tabsDataSource.tabs.count;
     [self.webView stopLoading];
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
@@ -307,8 +318,8 @@
         
         NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         [self.tabsDataSource addTabAtIndex:self.tabIndex title:title url:webView.request.URL.absoluteString];
-        [self resetStatus];
     }
+    [self resetStatus];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -508,46 +519,24 @@
                                  action:@selector(bookmarksButtonTouched)];
     }
     
-    if (self.webView.isHidden) {
-        self.navigationItem.rightBarButtonItem = nil;
-        self.navigationItem.leftBarButtonItem = nil;
-    } else {
-        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
+    if (!self.webView.isHidden) {
         if (self.webView.isLoading) {
-            self.navigationItem.rightBarButtonItem = self.stopBarItem;
+            self.navigationItem.rightBarButtonItems = @[self.bookmarksBarItem, self.stopBarItem];
         } else if (self.webView.request) {
-            self.navigationItem.rightBarButtonItem = self.reloadBarItem;
+            self.navigationItem.rightBarButtonItems = @[self.bookmarksBarItem, self.reloadBarItem];
         } else {
             self.navigationItem.rightBarButtonItem = nil;
         }
     }
-//    
-//    if (self.webView.isLoading) {
-//        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
-//        self.navigationItem.rightBarButtonItem = self.stopBarItem;
-//    } else if (self.webView.request) {
-//        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
-//        self.navigationItem.rightBarButtonItem = self.reloadBarItem;
-//    } else {
-//        self.navigationItem.rightBarButtonItem = nil;
-//        self.navigationItem.leftBarButtonItem = nil;
-//    }
 }
 
 - (void)setURLTextFieldWidth
 {
     CGFloat left = 20;
-    if (self.navigationItem.leftBarButtonItem) {
-        left += 40;
-    }
-    
-    CGFloat urlTextFieldWidth = self.view.width - left - 20;
-    if (self.navigationItem.rightBarButtonItem) {
-        urlTextFieldWidth -= 30;
-    }
+    CGFloat urlTextFieldWidth = self.view.width - left - 20 - 45 * self.navigationItem.rightBarButtonItems.count;
     
     if (self.urlTextField.width &&
-        (self.urlTextField.width != urlTextFieldWidth || self.urlTextField.left != left)) {
+        self.urlTextField.width != urlTextFieldWidth) {
         [UIView animateWithDuration:.2 animations:^{
             self.urlTextField.frame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
         }];
