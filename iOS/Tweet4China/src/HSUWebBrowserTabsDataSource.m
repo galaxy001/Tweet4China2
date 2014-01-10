@@ -72,7 +72,7 @@
         cell.favoriteButton.tag = indexPath.row;
         cell.favoriteButton.hidden = NO;
     } else {
-        cell.textLabel.text = _(@"+ Tab");
+        cell.textLabel.text = _(@"New Tab");
         cell.favoriteButton.selected = NO;
         cell.favoriteButton.hidden = YES;
     }
@@ -87,17 +87,19 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [self removeTabAtIndex:indexPath.row];
-    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    [tableView reloadData];
 }
 
 - (void)favoriteButtonTouched:(UIButton *)favoriteButton
 {
     NSMutableDictionary *tab = [[self.tabs[favoriteButton.tag] mutableCopy] mutableCopy];
     
-    NSMutableArray *bookmarks = [[[NSUserDefaults standardUserDefaults] objectForKey:@"web_browser_bookmarks"] mutableCopy];
-    [bookmarks addObject:tab];
-    [[NSUserDefaults standardUserDefaults] setObject:bookmarks forKey:@"web_browser_bookmarks"];
-    notification_post(HSUBookmarkUpdatedNotification);
+    if (![tab[@"selected"] boolValue]) {
+        NSMutableArray *bookmarks = [[[NSUserDefaults standardUserDefaults] objectForKey:@"web_browser_bookmarks"] mutableCopy];
+        [bookmarks addObject:tab];
+        [[NSUserDefaults standardUserDefaults] setObject:bookmarks forKey:@"web_browser_bookmarks"];
+        notification_post(HSUBookmarkUpdatedNotification);
+    }
     
     tab[@"selected"] = @(![tab[@"selected"] boolValue]);
     [self.tabs replaceObjectAtIndex:favoriteButton.tag withObject:tab];

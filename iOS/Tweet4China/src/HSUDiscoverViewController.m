@@ -192,7 +192,7 @@
         }
     }
     
-    if (!self.urlTextField.hasText) {
+    if (!self.urlTextField.hasText && self.webView.request.URL.absoluteString.length) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
         [self.urlTextField setNeedsDisplay];
     }
@@ -260,6 +260,10 @@
     [self.view addSubview:overlayButton];
     self.overlayButton = overlayButton;
     [overlayButton setTapTarget:self action:@selector(overlayButtonTouched)];
+    
+    [self.webView loadHTMLString:@"<html></html>" baseURL:nil];
+    self.tabIndex = self.tabsDataSource.tabs.count;
+    [self showWebView];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
@@ -297,7 +301,7 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    if (webView.request.URL.absoluteString &&
+    if (webView.request.URL.absoluteString.length &&
         ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         
         NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
@@ -456,7 +460,7 @@
 {
     [self.urlTextField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
-    if (!self.urlTextField.hasText) {
+    if (!self.urlTextField.hasText && self.webView.request.URL.absoluteString.length) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
         [self.urlTextField setNeedsDisplay];
     }
@@ -555,7 +559,8 @@
 {
     if (!self.webView.hidden &&
         !self.urlTextField.isEditing &&
-        self.webView.request.URL.absoluteString.length) {
+        self.webView.request.URL.absoluteString.length &&
+        ![self.webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         
         self.urlTextField.text = self.webView.request.URL.absoluteString;
     } else if (self.webView.isHidden) {
@@ -631,6 +636,10 @@
     self.bookmarksView.hidden = YES;
     self.tabsView.hidden = YES;
     self.segmentedControl.hidden = YES;
+    
+    self.bookmarksView.scrollsToTop = NO;
+    self.tabsView.scrollsToTop = NO;
+    self.webView.scrollView.scrollsToTop = YES;
 }
 
 - (void)hideWebview
@@ -640,6 +649,11 @@
     self.tabsView.hidden = NO;
     self.segmentedControl.hidden = NO;
     [self.bookmarksView reloadData];
+    
+    self.bookmarksView.scrollsToTop = YES;
+    self.tabsView.scrollsToTop = YES;
+    self.webView.scrollView.scrollsToTop = NO;
+    
     [self.tabsView reloadData];
 }
 
