@@ -13,6 +13,6 @@
 @property (nonatomic, strong) NSMutableArray *tabs;
 
 - (void)addTabAtIndex:(NSUInteger)index title:(NSString *)title url:(NSString *)url;
-- (void)removeTabAtIndex:(NSUInteger)index;
+- (void)removeAllTabs;
 
 @end

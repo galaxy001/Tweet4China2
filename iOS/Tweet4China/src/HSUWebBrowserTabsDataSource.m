@@ -40,6 +40,13 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+- (void)removeAllTabs
+{
+    [self.tabs removeAllObjects];
+    [[NSUserDefaults standardUserDefaults] setObject:self.tabs forKey:tab_cache_key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 - (void)removeTabAtIndex:(NSUInteger)index
 {
     [self.tabs removeObjectAtIndex:index];
@@ -54,6 +61,9 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if (self.tabs.count) {
+        return self.tabs.count + 2;
+    }
     return self.tabs.count + 1;
 }
 
@@ -71,8 +81,12 @@
         cell.favoriteButton.selected = [self.tabs[indexPath.row][@"selected"] boolValue];
         cell.favoriteButton.tag = indexPath.row;
         cell.favoriteButton.hidden = NO;
-    } else {
+    } else if (indexPath.row == self.tabs.count) {
         cell.textLabel.text = _(@"New Tab");
+        cell.favoriteButton.selected = NO;
+        cell.favoriteButton.hidden = YES;
+    } else {
+        cell.textLabel.text = _(@"Clear All Tabs");
         cell.favoriteButton.selected = NO;
         cell.favoriteButton.hidden = YES;
     }

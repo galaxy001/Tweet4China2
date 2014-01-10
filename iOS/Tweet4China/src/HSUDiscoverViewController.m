@@ -7,7 +7,6 @@
 //
 
 #import "HSUDiscoverViewController.h"
-#import <NJKWebViewProgress/NJKWebViewProgress.h>
 #import "HSUComposeViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
@@ -59,13 +58,11 @@
 
 @end
 
-@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, NJKWebViewProgressDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, weak) UIView *tabBarBackground;
 @property (nonatomic, strong) NSURL *currentURL;
-@property (nonatomic, strong) NJKWebViewProgress *progressHandler;
 @property (nonatomic, weak) UIView *urlTextFieldBackgrondView;
-@property (nonatomic, weak) UIView *progressView;
 
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, strong) MPMoviePlayerController *moviePlayer;
@@ -81,6 +78,7 @@
 @property (nonatomic, strong) HSUWebBrowserTabsDataSource *tabsDataSource;
 @property (nonatomic, weak) UISegmentedControl *segmentedControl;
 @property (nonatomic) NSUInteger tabIndex;
+@property (nonatomic) BOOL startedLoadAnyPage;
 
 @end
 
@@ -88,10 +86,6 @@
 
 - (void)viewDidLoad
 {
-    self.progressHandler = [[NJKWebViewProgress alloc] init];
-    self.progressHandler.webViewProxyDelegate = self;
-    self.progressHandler.progressDelegate = self;
-    
     UIWebView *webView = [[UIWebView alloc] init];
     self.webView = webView;
     webView.scalesPageToFit = YES;
@@ -99,6 +93,8 @@
     webView.backgroundColor = bw(240);
     webView.frame = self.view.bounds;
     webView.hidden = YES;
+    webView.delegate = self;
+    webView.scrollView.delegate = self;
     
     UITableView *bookmarksView = [[UITableView alloc] initWithFrame:self.webView.frame];
     self.bookmarksView = bookmarksView;
@@ -119,6 +115,10 @@
     self.tabsDataSource = [[HSUWebBrowserTabsDataSource alloc] init];
     tabsView.dataSource = self.tabsDataSource;
     tabsView.left = self.view.width;
+    
+    self.bookmarksView.scrollsToTop = NO;
+    self.tabsView.scrollsToTop = NO;
+    self.webView.scrollView.scrollsToTop = YES;
     
     UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[_(@"Bookmarks"), _(@"Tabs")]];
     self.segmentedControl = segmentedControl;
@@ -183,11 +183,6 @@
             bg.backgroundColor = [UIColor whiteColor];
             bg.layer.cornerRadius = 3;
             [self.navigationController.navigationBar insertSubview:bg belowSubview:urlTextField];
-            
-            UIView *progressView = [[UIView alloc] init];
-            self.progressView = progressView;
-            [self.navigationController.navigationBar insertSubview:progressView belowSubview:urlTextField];
-            progressView.backgroundColor = rgba(74, 156, 214, .3);
         }
     }
     
@@ -204,10 +199,8 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [self.view addSubview:self.webView];
-    self.webView.delegate = self.progressHandler;
-    self.webView.scrollView.delegate = self;
+    
     if (Sys_Ver >= 7) {
-        self.webView.scrollView.contentInset = edi(navbar_height+20, 0, tabbar_height, 0);
         self.bookmarksView.contentInset = edi(navbar_height+20+50, 0, tabbar_height, 0);
         self.tabsView.contentInset = edi(navbar_height+20+50, 0, tabbar_height, 0);
     }
@@ -235,8 +228,6 @@
         self.urlTextField.top = 10;
     }
     self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
-    self.progressView.height = self.urlTextField.height;
-    self.progressView.leftTop = self.urlTextField.leftTop;
     
     if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
         self.navigationController.navigationBar.hidden = NO;
@@ -245,6 +236,8 @@
         self.navigationController.navigationBar.hidden = YES;
         self.tabBarController.tabBar.hidden = YES;
     }
+    
+    [self resetWebInset];
     
     [super viewDidLayoutSubviews];
 }
@@ -282,8 +275,6 @@
     self.overlayButton = overlayButton;
     [overlayButton setTapTarget:self action:@selector(overlayButtonTouched)];
     
-    [self.webView loadHTMLString:@"<html></html>" baseURL:nil];
-    self.tabIndex = self.tabsDataSource.tabs.count;
     [self showWebView];
 }
 
@@ -300,18 +291,13 @@
     [self showWebView];
     [textField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
-    [((HSUNavigationController *)self.navigationController) updateProgress:.1];
     
     return NO;
 }
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    if ([request.URL.absoluteString hasPrefix:@"webviewprogressproxy"]) {
-        return YES;
-    }
     self.currentURL = request.URL;
-    
     [self resetStatus];
     
     return YES;
@@ -319,49 +305,29 @@
 
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
+    [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
+    
     [self resetStatus];
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
+    self.startedLoadAnyPage = YES;
     if (webView.request.URL.absoluteString.length &&
         ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         
         NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
         [self.tabsDataSource addTabAtIndex:self.tabIndex title:title url:webView.request.URL.absoluteString];
     }
+    
+    [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
+    
     [self resetStatus];
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    [((HSUNavigationController *)self.navigationController) updateProgress:0];
-    [UIView animateWithDuration:.27 animations:^{
-        self.progressView.width = 0;
-    }];
-    
-    [self resetStatus];
-}
-
-- (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
-{
-    if (self.webView.request.URL.absoluteString.length == 0 ||
-        [self.webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
-        
-        progress = 0;
-    }
-    
-    if (progress == 0.0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
-    } else if (progress == 1.0) {
-        [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
-    }
-    
-    [((HSUNavigationController *)self.navigationController) updateProgress:progress];
-    [UIView animateWithDuration:.27 animations:^{
-        self.progressView.width = progress*self.urlTextField.width;
-    }];
-    
+    [[AFNetworkActivityIndicatorManager sharedManager] decrementActivityCount];
     [self resetStatus];
 }
 
@@ -370,19 +336,19 @@
     // hide bars
     if (Sys_Ver >= 7) {
         CGFloat statusHeight = 20;
-        CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y;
-        if (pulledDown > 0) { // push up
-            self.navigationController.navigationBar.top = statusHeight - pulledDown;
-            self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
-            
-            self.sb.top = pulledDown - statusHeight;
-            [self.navigationController.navigationBar bringSubviewToFront:self.sb];
-        } else { // pull down
-            self.navigationController.navigationBar.top = statusHeight;
-            self.tabBarController.tabBar.bottom = self.view.height;
-            
-            self.sb.top = -statusHeight;
-            [self.navigationController.navigationBar bringSubviewToFront:self.sb];
+        CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
+        if (pulledDown < 0) {
+            pulledDown = 0;
+        }
+        
+        self.navigationController.navigationBar.top = statusHeight - pulledDown;
+        self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
+        
+        self.sb.top = pulledDown - statusHeight;
+        [self.navigationController.navigationBar bringSubviewToFront:self.sb];
+        
+        if (!self.segmentedControl.isHidden) {
+            self.segmentedControl.center = ccp(self.width/2, 20 + navbar_height + 25 - pulledDown);
         }
     }
 }
@@ -564,6 +530,7 @@
     [self addPreviewPageIfCanGoBack];
     [self addBarButtonsIfNeed];
     [self setURLTextFieldWidth];
+    [self resetWebInset];
 }
 
 - (void)swipToLeft:(UIGestureRecognizer *)gesture
@@ -590,6 +557,10 @@
             NSDictionary *tab = self.tabsDataSource.tabs[indexPath.row];
             urlStr = tab[@"url"];
             self.tabIndex = indexPath.row;
+        } else if (indexPath.row > self.tabsDataSource.tabs.count) { // clear all tabs
+            [self.tabsDataSource removeAllTabs];
+            [tableView reloadData];
+            return;
         }
     }
     [self.webView loadHTMLString:@"<html></html>" baseURL:nil];
@@ -631,10 +602,6 @@
     self.bookmarksView.hidden = YES;
     self.tabsView.hidden = YES;
     self.segmentedControl.hidden = YES;
-    
-    self.bookmarksView.scrollsToTop = NO;
-    self.tabsView.scrollsToTop = NO;
-    self.webView.scrollView.scrollsToTop = YES;
 }
 
 - (void)hideWebview
@@ -645,15 +612,26 @@
     self.segmentedControl.hidden = NO;
     [self.bookmarksView reloadData];
     
-    self.bookmarksView.scrollsToTop = YES;
-    self.tabsView.scrollsToTop = YES;
-    self.webView.scrollView.scrollsToTop = NO;
-    
     self.navigationItem.rightBarButtonItem = nil;
-    [((HSUNavigationController *)self.navigationController) updateProgress:0];
     [self.webView stopLoading];
     
     [self.tabsView reloadData];
+}
+
+- (void)resetWebInset
+{
+    CGFloat top = 0, bottom = 0;
+    if (self.startedLoadAnyPage) {
+        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+            top = navbar_height + 20;
+        } else {
+            top = 20;
+        }
+        if (self.webView.scrollView.contentSize.height < self.view.height - top) {
+            bottom = tabbar_height;
+        }
+    }
+    self.webView.scrollView.contentInset = edi(top, 0, bottom, 0);
 }
 
 - (BOOL)shouldAutorotate

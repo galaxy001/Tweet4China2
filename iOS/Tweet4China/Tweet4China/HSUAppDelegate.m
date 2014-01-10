@@ -20,6 +20,7 @@
 #import "Flurry.h"
 #endif
 #import <HSUWebCache/HSUWebCache.h>
+#import <AFNetworking/AFNetworkActivityIndicatorManager.h>
 
 static HSUShadowsocksProxy *proxy;
 
@@ -40,6 +41,8 @@ static HSUShadowsocksProxy *proxy;
         self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
 #endif
     }
+    
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
     [self startShadowsocks];
     [self configureAppirater];

@@ -718,7 +718,6 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         [params addObject:param];
     }
     
-    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     dispatch_async(GCDBackgroundThread, ^{
         FHSTwitterEngine *engine = TWENGINE.engine;
