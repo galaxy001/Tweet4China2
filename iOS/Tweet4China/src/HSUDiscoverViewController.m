@@ -74,7 +74,6 @@
 
 @property (nonatomic, strong) UIBarButtonItem *stopBarItem;
 @property (nonatomic, strong) UIBarButtonItem *reloadBarItem;
-@property (nonatomic, strong) UIBarButtonItem *bookmarksBarItem;
 
 @property (nonatomic, weak) UITableView *bookmarksView;
 @property (nonatomic, weak) UITableView *tabsView;
@@ -244,10 +243,14 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
 {
-    if (tabBarController.selectedViewController == self.navigationController) {
+    if (self.webView.isHidden) {
         return NO;
     }
-    return YES;
+    if (viewController == self.navigationController) {
+        [self bookmarksButtonTouched];
+        return NO;
+    }
+    return NO;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -512,18 +515,12 @@
                               target:self.webView
                               action:@selector(reload)];
     }
-    if (!self.bookmarksBarItem) {
-        self.bookmarksBarItem = [[UIBarButtonItem alloc]
-                                 initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks
-                                 target:self
-                                 action:@selector(bookmarksButtonTouched)];
-    }
     
     if (!self.webView.isHidden) {
         if (self.webView.isLoading) {
-            self.navigationItem.rightBarButtonItems = @[self.bookmarksBarItem, self.stopBarItem];
+            self.navigationItem.rightBarButtonItem = self.stopBarItem;
         } else if (self.webView.request) {
-            self.navigationItem.rightBarButtonItems = @[self.bookmarksBarItem, self.reloadBarItem];
+            self.navigationItem.rightBarButtonItem = self.reloadBarItem;
         } else {
             self.navigationItem.rightBarButtonItem = nil;
         }
@@ -533,7 +530,7 @@
 - (void)setURLTextFieldWidth
 {
     CGFloat left = 20;
-    CGFloat urlTextFieldWidth = self.view.width - left - 20 - 45 * self.navigationItem.rightBarButtonItems.count;
+    CGFloat urlTextFieldWidth = self.view.width - left - 20 - (self.navigationItem.rightBarButtonItem ? 30 : 0);
     
     if (self.urlTextField.width &&
         self.urlTextField.width != urlTextFieldWidth) {
@@ -643,6 +640,8 @@
     self.bookmarksView.scrollsToTop = YES;
     self.tabsView.scrollsToTop = YES;
     self.webView.scrollView.scrollsToTop = NO;
+    
+    self.navigationItem.rightBarButtonItem = nil;
     
     [self.tabsView reloadData];
 }
