@@ -15,7 +15,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import <NSString-MD5/NSString+MD5.h>
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
-#import "HSUWebBrowserFavoritesDataSource.h"
+#import "HSUWebBrowserBookmarksDataSource.h"
+#import "HSUWebBrowserTabsDataSource.h"
 
 @interface HSUURLField : UITextField
 
@@ -32,6 +33,8 @@
         text = [text substringFromIndex:@"http://".length];
     } else if ([text hasPrefix:@"https://"]) {
         text = [text substringFromIndex:@"https://".length];
+    } else if ([text isEqualToString:@"about:blank"]) {
+        text = nil;
     }
     if ([text hasSuffix:@"/"]) {
         text = [text substringToIndex:text.length-1];
@@ -71,9 +74,14 @@
 
 @property (nonatomic, strong) UIBarButtonItem *stopBarItem;
 @property (nonatomic, strong) UIBarButtonItem *reloadBarItem;
+@property (nonatomic, strong) UIBarButtonItem *bookmarksBarItem;
 
-@property (nonatomic, weak) UITableView *favoritesView;
-@property (nonatomic, strong) HSUWebBrowserFavoritesDataSource *favoritesDataSource;
+@property (nonatomic, weak) UITableView *bookmarksView;
+@property (nonatomic, weak) UITableView *tabsView;
+@property (nonatomic, strong) HSUWebBrowserBookmarksDataSource *bookmarksDataSource;
+@property (nonatomic, strong) HSUWebBrowserTabsDataSource *tabsDataSource;
+@property (nonatomic, weak) UISegmentedControl *segmentedControl;
+@property (nonatomic) NSUInteger tabIndex;
 
 @end
 
@@ -85,14 +93,42 @@
     self.progressHandler.webViewProxyDelegate = self;
     self.progressHandler.progressDelegate = self;
     
-    if (!self.webView) {
-        UIWebView *webView = [[UIWebView alloc] init];
-        self.webView = webView;
-        webView.scalesPageToFit = YES;
-        webView.allowsInlineMediaPlayback = YES;
-        webView.backgroundColor = bw(240);
-        webView.frame = self.view.bounds;
-    }
+    UIWebView *webView = [[UIWebView alloc] init];
+    self.webView = webView;
+    webView.scalesPageToFit = YES;
+    webView.allowsInlineMediaPlayback = YES;
+    webView.backgroundColor = bw(240);
+    webView.frame = self.view.bounds;
+    webView.hidden = YES;
+    
+    UITableView *bookmarksView = [[UITableView alloc] initWithFrame:self.webView.frame];
+    self.bookmarksView = bookmarksView;
+    bookmarksView.contentInset = self.webView.scrollView.contentInset;
+    [self.view addSubview:bookmarksView];
+    bookmarksView.delegate = self;
+    bookmarksView.backgroundColor = kWhiteColor;
+    self.bookmarksDataSource = [[HSUWebBrowserBookmarksDataSource alloc] init];
+    bookmarksView.dataSource = self.bookmarksDataSource;
+    notification_add_observer(HSUBookmarkUpdatedNotification, self.bookmarksView, @selector(reloadData));
+    
+    UITableView *tabsView = [[UITableView alloc] initWithFrame:self.webView.frame];
+    self.tabsView = tabsView;
+    tabsView.contentInset = self.webView.scrollView.contentInset;
+    [self.view addSubview:tabsView];
+    tabsView.delegate = self;
+    tabsView.backgroundColor = kWhiteColor;
+    self.tabsDataSource = [[HSUWebBrowserTabsDataSource alloc] init];
+    tabsView.dataSource = self.tabsDataSource;
+    tabsView.left = self.view.width;
+    
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[_(@"Bookmarks"), _(@"Tabs")]];
+    self.segmentedControl = segmentedControl;
+    [segmentedControl setWidth:100 forSegmentAtIndex:0];
+    [segmentedControl setWidth:100 forSegmentAtIndex:1];
+    segmentedControl.center = ccp(self.width/2, 20 + navbar_height + 25);
+    segmentedControl.selectedSegmentIndex = 0;
+    [self.view addSubview:segmentedControl];
+    [segmentedControl addTarget:self action:@selector(segmentChanged:) forControlEvents:UIControlEventValueChanged];
     
     UISwipeGestureRecognizer *gesture = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self
@@ -116,6 +152,7 @@
     [self.view addSubview:self.webView];
     if (self.startUrl) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
+        [self showWebView];
     }
     
     if (!self.sb) {
@@ -138,6 +175,7 @@
         urlTextField.backgroundColor = bw(240);
         urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
         urlTextField.layer.cornerRadius = 5;
+        urlTextField.delegate = self;
         
         if (Sys_Ver < 7) {
             urlTextField.backgroundColor = kClearColor;
@@ -154,23 +192,23 @@
         }
     }
     
-    [super viewWillAppear:animated];
-}
-
-- (void)viewDidAppear:(BOOL)animated
-{
     if (!self.urlTextField.hasText) {
         self.urlTextField.text = self.webView.request.URL.absoluteString;
         [self.urlTextField setNeedsDisplay];
     }
     
-    self.urlTextField.delegate = self;
-    
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
     [self.view addSubview:self.webView];
     self.webView.delegate = self.progressHandler;
     self.webView.scrollView.delegate = self;
     if (Sys_Ver >= 7) {
-        self.webView.scrollView.contentInset = edi(self.navigationController.navigationBar.height+20, 0, self.tabBarController.tabBar.height, 0);
+        self.webView.scrollView.contentInset = edi(navbar_height+20, 0, tabbar_height, 0);
+        self.bookmarksView.contentInset = edi(navbar_height+20+50, 0, tabbar_height, 0);
+        self.tabsView.contentInset = edi(navbar_height+20+50, 0, tabbar_height, 0);
     }
     
     [self resetStatus];
@@ -185,18 +223,6 @@
     [self.sb removeFromSuperview];
 }
 
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    HSUDiscoverViewController *lastPage = (HSUDiscoverViewController *)viewController;
-    lastPage.webView = self.webView;
-    lastPage.urlTextField = self.urlTextField;
-}
-
-- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    [self.webView goBack];
-}
-
 - (void)viewDidLayoutSubviews
 {
     self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
@@ -204,7 +230,7 @@
     // urltextfield frame
     [self setURLTextFieldWidth];
     if (Sys_Ver < 7) {
-        self.urlTextField.height = self.navigationController.navigationBar.height-20;
+        self.urlTextField.height = navbar_height-20;
         self.urlTextField.top = 10;
     }
     self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
@@ -212,6 +238,20 @@
     self.progressView.leftTop = self.urlTextField.leftTop;
     
     [super viewDidLayoutSubviews];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (viewController != self) {
+        [navigationController pushViewController:self animated:NO];
+        if (self.webView.canGoBack) {
+            [self.webView goBack];
+            self.bookmarksView.hidden = YES;
+            self.tabsView.hidden = YES;
+        } else {
+            [self hideWebview];
+        }
+    }
 }
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
@@ -222,18 +262,16 @@
     [overlayButton setTapTarget:self action:@selector(overlayButtonTouched)];
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField
-{
-}
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     NSString *url = self.urlTextField.text;
     if (![url hasPrefix:@"http"]) {
         url = [@"http://" stringByAppendingString:url];
     }
+    self.tabIndex = self.tabsDataSource.tabs.count;
     [self.webView stopLoading];
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:url]]];
+    [self showWebView];
     [textField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
     
@@ -259,7 +297,13 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    [self resetStatus];
+    if (webView.request.URL.absoluteString &&
+        ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+        
+        NSString *title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+        [self.tabsDataSource addTabAtIndex:self.tabIndex title:title url:webView.request.URL.absoluteString];
+        [self resetStatus];
+    }
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
@@ -274,6 +318,12 @@
 
 - (void)webViewProgress:(NJKWebViewProgress *)webViewProgress updateProgress:(float)progress
 {
+    if (self.webView.request.URL.absoluteString.length == 0 ||
+        [self.webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+        
+        progress = 0;
+    }
+    
     if (progress == 0.0) {
         [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     } else if (progress == 1.0) {
@@ -414,11 +464,10 @@
 
 - (void)addPreviewPageIfCanGoBack
 {
-    self.webView.hidden = NO;
-    self.favoritesView.hidden = YES;
-    if (self.webView.canGoBack && self.navigationController.viewControllers.count == 1) {
+    if (self.navigationController.viewControllers.count == 1) {
         self.navigationController.delegate = self;
-        HSUDiscoverViewController *prevPage = [[HSUDiscoverViewController alloc] init];
+        UIViewController *prevPage = [[UIViewController alloc] init];
+        prevPage.view.backgroundColor = kWhiteColor;
         self.navigationController.viewControllers = @[prevPage, self];
         
         NSArray *subviews = self.navigationController.navigationBar.subviews;
@@ -430,67 +479,87 @@
                 subview.hidden = YES;
             }
         }
-    } else if (!self.webView.request && !self.urlTextField.hasText) {
-        self.webView.hidden = YES;
-        // create favorites view
-        if (!self.favoritesView) {
-            UITableView *favoritesView = [[UITableView alloc] initWithFrame:self.webView.frame];
-            self.favoritesView = favoritesView;
-            favoritesView.contentInset = self.webView.scrollView.contentInset;
-            [self.view addSubview:favoritesView];
-            favoritesView.delegate = self;
-            favoritesView.backgroundColor = kWhiteColor;
-            self.favoritesDataSource = [[HSUWebBrowserFavoritesDataSource alloc] init];
-            favoritesView.dataSource = self.favoritesDataSource;
-        }
-        self.favoritesView.hidden = NO;
     }
 }
 
 - (void)addBarButtonsIfNeed
 {
-    if (self.webView.isLoading) {
-        if (!self.stopBarItem) {
-            self.stopBarItem = [[UIBarButtonItem alloc]
-                                initWithBarButtonSystemItem:UIBarButtonSystemItemStop
-                                target:self.webView
-                                action:@selector(stopLoading)];
-        }
-        self.navigationItem.rightBarButtonItem = self.stopBarItem;
-    } else if (self.webView.request) {
-        if (!self.reloadBarItem) {
-            self.reloadBarItem = [[UIBarButtonItem alloc]
-                                  initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
-                                  target:self.webView
-                                  action:@selector(reload)];
-        }
-        self.navigationItem.rightBarButtonItem = self.reloadBarItem;
-    } else {
-        self.navigationItem.rightBarButtonItem = nil;
+    if (!self.stopBarItem) {
+        self.stopBarItem = [[UIBarButtonItem alloc]
+                            initWithBarButtonSystemItem:UIBarButtonSystemItemStop
+                            target:self.webView
+                            action:@selector(stopLoading)];
     }
+    if (!self.reloadBarItem) {
+        self.reloadBarItem = [[UIBarButtonItem alloc]
+                              initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
+                              target:self.webView
+                              action:@selector(reload)];
+    }
+    if (!self.bookmarksBarItem) {
+        self.bookmarksBarItem = [[UIBarButtonItem alloc]
+                                 initWithBarButtonSystemItem:UIBarButtonSystemItemBookmarks
+                                 target:self
+                                 action:@selector(bookmarksButtonTouched)];
+    }
+    
+    if (self.webView.isHidden) {
+        self.navigationItem.rightBarButtonItem = nil;
+        self.navigationItem.leftBarButtonItem = nil;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
+        if (self.webView.isLoading) {
+            self.navigationItem.rightBarButtonItem = self.stopBarItem;
+        } else if (self.webView.request) {
+            self.navigationItem.rightBarButtonItem = self.reloadBarItem;
+        } else {
+            self.navigationItem.rightBarButtonItem = nil;
+        }
+    }
+//    
+//    if (self.webView.isLoading) {
+//        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
+//        self.navigationItem.rightBarButtonItem = self.stopBarItem;
+//    } else if (self.webView.request) {
+//        self.navigationItem.leftBarButtonItem = self.bookmarksBarItem;
+//        self.navigationItem.rightBarButtonItem = self.reloadBarItem;
+//    } else {
+//        self.navigationItem.rightBarButtonItem = nil;
+//        self.navigationItem.leftBarButtonItem = nil;
+//    }
 }
 
 - (void)setURLTextFieldWidth
 {
-    CGFloat urlTextFieldWidth = self.view.width - 40;
+    CGFloat left = 20;
+    if (self.navigationItem.leftBarButtonItem) {
+        left += 40;
+    }
+    
+    CGFloat urlTextFieldWidth = self.view.width - left - 20;
     if (self.navigationItem.rightBarButtonItem) {
-        urlTextFieldWidth = self.view.width - 70;
+        urlTextFieldWidth -= 30;
     }
     
     if (self.urlTextField.width &&
-        self.urlTextField.width != urlTextFieldWidth) {
+        (self.urlTextField.width != urlTextFieldWidth || self.urlTextField.left != left)) {
         [UIView animateWithDuration:.2 animations:^{
-            self.urlTextField.frame = ccr(20, 7, urlTextFieldWidth, self.navigationController.navigationBar.height-14);
+            self.urlTextField.frame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
         }];
     } else {
-        self.urlTextField.frame = ccr(20, 7, urlTextFieldWidth, self.navigationController.navigationBar.height-14);
+        self.urlTextField.frame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
     }
 }
 
 - (void)resetStatus
 {
-    if (!self.urlTextField.isEditing && self.webView.request.URL.absoluteString.length) {
+    if (!self.webView.hidden &&
+        !self.urlTextField.isEditing &&
+        self.webView.request.URL.absoluteString.length) {
+        
         self.urlTextField.text = self.webView.request.URL.absoluteString;
+    } else if (self.webView.isHidden) {
+        self.urlTextField.text = nil;
     }
     [self addPreviewPageIfCanGoBack];
     [self addBarButtonsIfNeed];
@@ -509,15 +578,69 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *favorite = self.favoritesDataSource.favorites[indexPath.row];
-    NSString *urlStr = favorite[@"url"];
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSString *urlStr;
+    if (tableView == self.bookmarksView) {
+        NSDictionary *bookmark = self.bookmarksDataSource.bookmarks[indexPath.row];
+        urlStr = bookmark[@"url"];
+        self.tabIndex = self.tabsDataSource.tabs.count;
+    } else {
+        if (indexPath.row < self.tabsDataSource.tabs.count) {
+            NSDictionary *tab = self.tabsDataSource.tabs[indexPath.row];
+            urlStr = tab[@"url"];
+            self.tabIndex = indexPath.row;
+        }
+    }
+    [self.webView loadHTMLString:@"<html></html>" baseURL:nil];
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:urlStr]]];
     self.urlTextField.text = urlStr;
+    [self showWebView];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     return 44;
+}
+
+- (void)bookmarksButtonTouched
+{
+    // todo add tab
+    [self hideWebview];
+    [self resetStatus];
+}
+
+- (void)segmentChanged:(UISegmentedControl *)segment
+{
+    if (segment.selectedSegmentIndex == 0) {
+        [UIView animateWithDuration:.2 animations:^{
+            self.bookmarksView.left = 0;
+            self.tabsView.left = self.view.width;
+        }];
+    } else if (segment.selectedSegmentIndex == 1) {
+        [UIView animateWithDuration:.2 animations:^{
+            self.bookmarksView.right = 0;
+            self.tabsView.left = 0;
+        }];
+    }
+}
+
+- (void)showWebView
+{
+    self.webView.hidden = NO;
+    self.bookmarksView.hidden = YES;
+    self.tabsView.hidden = YES;
+    self.segmentedControl.hidden = YES;
+}
+
+- (void)hideWebview
+{
+    self.webView.hidden = YES;
+    self.bookmarksView.hidden = NO;
+    self.tabsView.hidden = NO;
+    self.segmentedControl.hidden = NO;
+    [self.bookmarksView reloadData];
+    [self.tabsView reloadData];
 }
 
 @end

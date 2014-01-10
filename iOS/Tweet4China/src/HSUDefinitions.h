@@ -170,6 +170,10 @@ _Pragma("clang diagnostic pop") \
 #define HSUActionBarTouchedNotification @"HSUActionBarTouchedNotification"
 #define HSUStatusUpdatedNotification @"HSUStatusUpdatedNotification"
 #define HSUPostTweetProgressChangedNotification @"HSUPostTweetProgressChangedNotification"
+#define HSUBookmarkUpdatedNotification @"HSUBookmarkUpdatedNotification"
+
+#define navbar_height self.navigationController.navigationBar.height
+#define tabbar_height self.tabBarController.tabBar.height
 
 #define NetWorkStatus [TWENGINE networkStatus]
 

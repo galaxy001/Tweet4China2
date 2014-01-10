@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HSUWebBrowserFavoritesDataSource : NSObject <UITableViewDataSource>
+@interface HSUWebBrowserBookmarksDataSource : NSObject <UITableViewDataSource>
 
-@property (nonatomic, strong) NSMutableArray *favorites;
+@property (nonatomic, strong) NSMutableArray *bookmarks;
+
+- (void)addBookmarkWithTitle:(NSString *)title url:(NSString *)url;
 
 @end
