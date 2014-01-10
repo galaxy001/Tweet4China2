@@ -233,7 +233,7 @@
 
 - (BOOL)shouldAutorotate
 {
-    return NO;
+    return [self.selectedViewController shouldAutorotate];
 }
 
 @end

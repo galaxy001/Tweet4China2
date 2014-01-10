@@ -238,19 +238,27 @@
     self.progressView.height = self.urlTextField.height;
     self.progressView.leftTop = self.urlTextField.leftTop;
     
+    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+        self.navigationController.navigationBar.hidden = NO;
+        self.tabBarController.tabBar.hidden = NO;
+    } else {
+        self.navigationController.navigationBar.hidden = YES;
+        self.tabBarController.tabBar.hidden = YES;
+    }
+    
     [super viewDidLayoutSubviews];
 }
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
 {
-    if (self.webView.isHidden) {
-        return NO;
-    }
     if (viewController == self.navigationController) {
+        if (self.webView.isHidden) {
+            return NO;
+        }
         [self bookmarksButtonTouched];
         return NO;
     }
-    return NO;
+    return YES;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -646,6 +654,11 @@
     [self.webView stopLoading];
     
     [self.tabsView reloadData];
+}
+
+- (BOOL)shouldAutorotate
+{
+    return !self.webView.isHidden;
 }
 
 @end
