@@ -278,6 +278,7 @@
     [self showWebView];
     [textField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
+    [((HSUNavigationController *)self.navigationController) updateProgress:.1];
     
     return NO;
 }
