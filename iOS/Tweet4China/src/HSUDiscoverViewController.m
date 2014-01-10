@@ -642,6 +642,8 @@
     self.webView.scrollView.scrollsToTop = NO;
     
     self.navigationItem.rightBarButtonItem = nil;
+    [((HSUNavigationController *)self.navigationController) updateProgress:0];
+    [self.webView stopLoading];
     
     [self.tabsView reloadData];
 }
