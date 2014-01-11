@@ -85,22 +85,23 @@
     
     [self refreshLocalData];
     
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         for (NSDictionary *tweet in tweets) {
             HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
-            [self.data addObject:statusCellData];
+            [weakSelf.data addObject:statusCellData];
         }
-        [self.delegate preprocessDataSourceForRender:self];
-        if (self.count) {
+        [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
+        if (weakSelf.count) {
             NSDictionary *rawData = @{@"title": _(@"View More Tweets"),
                                       @"action": kAction_UserTimeline,
-                                      @"user_screen_name": self.screenName};
+                                      @"user_screen_name": weakSelf.screenName ?: @""};
             HSUTableCellData *viewMoreCellData =
             [[HSUTableCellData alloc] initWithRawData:rawData
                                              dataType:kDataType_NormalTitle];
-            [self.data addObject:viewMoreCellData];
-            [self.delegate dataSource:self didFinishRefreshWithError:nil];
+            [weakSelf.data addObject:viewMoreCellData];
+            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         }
     } failure:^(NSError *error) {
         

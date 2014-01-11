@@ -159,8 +159,9 @@
         NSDictionary *rawData = cellData.rawData;
         NSString *id_str = rawData[@"id_str"];
         
+        __weak typeof(self)weakSelf = self;
         [TWENGINE destroyStatus:id_str success:^(id responseObj) {
-            [self.navigationController popViewControllerAnimated:YES];
+            [weakSelf.navigationController popViewControllerAnimated:YES];
             notification_post_with_object(HSUStatusDidDelete, id_str);
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Delete Tweet failed")];

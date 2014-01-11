@@ -28,6 +28,8 @@
 #import "HSUiPadTabController.h"
 #import "HSUMessagesDataSource.h"
 #import "HSUMessagesViewController.h"
+#import "HSUSearchPersonDataSource.h"
+#import "HSUSearchPersonVC.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -36,6 +38,8 @@
 @property (nonatomic) BOOL presenting;
 @property (nonatomic) BOOL selectPhotoForAvatar; // YES for avatar, NO for banner
 @property (nonatomic) UIInterfaceOrientation orientation;
+@property (nonatomic, strong) UIBarButtonItem *addFriendBarButton;
+@property (nonatomic, weak) UIImageView *addFriendButtonIndicator;
 
 @end
 
@@ -70,6 +74,13 @@
     self.orientation = self.interfaceOrientation;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.addFriendButtonIndicator.hidden = NO;
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -93,6 +104,13 @@
         [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController];
         [self.profileView showDMIndicator];
     }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    self.addFriendButtonIndicator.hidden = YES;
 }
 
 - (void)viewDidLayoutSubviews
@@ -279,13 +297,14 @@
     if ([self.profile[@"blocked"] boolValue]) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
         RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
+        __weak typeof(self)weakSelf = self;
         unblockItem.action = ^{
             [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
-                NSMutableDictionary *profile = self.profile.mutableCopy;
+                NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
                 profile[@"blocked"] = @(NO);
                 profile[@"following"] = @(NO);
-                self.profile = profile;
-                [self.profileView setupWithProfile:profile];
+                weakSelf.profile = profile;
+                [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
                 [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
             }];
@@ -293,22 +312,24 @@
         UIActionSheet *blockActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:unblockItem otherButtonItems:nil, nil];
         [blockActionSheet showInView:[UIApplication sharedApplication].keyWindow];
     } else if ([self.profile[@"following"] boolValue]) {
+        __weak typeof(self)weakSelf = self;
         [TWENGINE unFollowUser:self.screenName success:^(id responseObj) {
-            NSMutableDictionary *profile = self.profile.mutableCopy;
+            NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
             profile[@"following"] = @(NO);
-            self.profile = profile;
-            [self.profileView setupWithProfile:profile];
+            weakSelf.profile = profile;
+            [weakSelf.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Unfollow failed")];
             followButton.enabled = YES;
         }];
     } else {
+        __weak typeof(self)weakSelf = self;
         [TWENGINE followUser:self.screenName success:^(id responseObj) {
-            NSMutableDictionary *profile = self.profile.mutableCopy;
+            NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
             profile[@"following"] = @(YES);
-            self.profile = profile;
-            [self.profileView setupWithProfile:profile];
+            weakSelf.profile = profile;
+            [weakSelf.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Follow failed")];
@@ -395,13 +416,14 @@
     
     if ([self.profile[@"blocked"] boolValue]) {
         RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
+        __weak typeof(self)weakSelf = self;
         unblockItem.action = ^{
             [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = self.profile.mutableCopy;
                 profile[@"blocked"] = @(NO);
                 profile[@"following"] = @(NO);
-                self.profile = profile;
-                [self.profileView setupWithProfile:profile];
+                weakSelf.profile = profile;
+                [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
                 [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
             }];
@@ -409,13 +431,14 @@
         [actionSheet addButtonItem:unblockItem];
     } else {
         RIButtonItem *blockItem = [RIButtonItem itemWithLabel:_(@"Block")];
+        __weak typeof(self)weakSelf = self;
         blockItem.action = ^{
             [TWENGINE blockUser:self.screenName success:^(id responseObj) {
-                NSMutableDictionary *profile = self.profile.mutableCopy;
+                NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
                 profile[@"blocked"] = @(YES);
                 profile[@"following"] = @(NO);
-                self.profile = profile;
-                [self.profileView setupWithProfile:profile];
+                weakSelf.profile = profile;
+                [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
                 [TWENGINE dealWithError:error errTitle:_(@"Block failed")];
             }];
@@ -585,5 +608,51 @@
         [self.profileView showDMIndicator];
     }
 }
+
+- (UIBarButtonItem *)addFriendBarButton
+{
+    if (!_addFriendBarButton) {
+        if (Sys_Ver >= 7) {
+            _addFriendBarButton = [[UIBarButtonItem alloc]
+                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                   target:self
+                                   action:@selector(_addButtonTouched)];
+        } else {
+            UIButton *addFriendButton = [[UIButton alloc] init];
+            [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
+            [addFriendButton sizeToFit];
+            addFriendButton.width *= 1.4;
+            _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
+        }
+        
+        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
+            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+            [self.navigationController.navigationBar addSubview:indicator];
+            _addFriendButtonIndicator = indicator;
+            indicator.leftTop = ccp(self.navigationController.navigationBar.width-23, 0);
+        }
+    }
+    return _addFriendBarButton;
+}
+
+- (void)_addButtonTouched
+{
+    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
+        return;
+    }
+    
+    HSUSearchPersonDataSource *dataSource = [[HSUSearchPersonDataSource alloc] init];
+    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:addFriendVC animated:YES];
+    
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
+        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUAddFriendBarTouched];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [_addFriendButtonIndicator removeFromSuperview];
+    }
+}
+
 
 @end

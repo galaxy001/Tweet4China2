@@ -43,9 +43,7 @@
 @implementation HSUBaseViewController
 {
     UIBarButtonItem *_actionBarButton;
-    UIBarButtonItem *_addFriendBarButton;
     UIBarButtonItem *_composeBarButton;
-    UIImageView *_addFriendButtonIndicator;
 }
 
 #pragma mark - Liftstyle
@@ -129,15 +127,9 @@
         self.refreshControl = refreshControl;
     }
     
-    if (!self.hideRightButtons) {
-        self.navigationItem.rightBarButtonItems = @[self.composeBarButton];
-    }
-    if (self.hideBackButton) {
-        self.navigationItem.backBarButtonItem = nil;
-    }
-    if (!self.hideLeftButtons) {
-        self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
-    }
+//    if (self.hideBackButton) {
+//        self.navigationItem.backBarButtonItem = nil;
+//    }
     
     [super viewDidLoad];
 }
@@ -332,33 +324,6 @@
     }
     return _actionBarButton;
 }
-- (UIBarButtonItem *)addFriendBarButton
-{
-    if (!_addFriendBarButton) {
-        if (Sys_Ver >= 7) {
-            _addFriendBarButton = [[UIBarButtonItem alloc]
-                                   initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                   target:self
-                                   action:@selector(_addButtonTouched)];
-        } else {
-            UIButton *addFriendButton = [[UIButton alloc] init];
-            [addFriendButton addTarget:self action:@selector(_addButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-            [addFriendButton setImage:[UIImage imageNamed:@"icn_nav_bar_people_1"] forState:UIControlStateNormal];
-            [addFriendButton sizeToFit];
-            addFriendButton.width *= 1.4;
-            _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
-        }
-        
-        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
-            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-            [self.navigationController.navigationBar addSubview:indicator];
-            _addFriendButtonIndicator = indicator;
-            indicator.leftTop = ccp(self.navigationController.navigationBar.width-23, 0);
-        }
-    }
-    return _addFriendBarButton;
-}
 
 - (UIBarButtonItem *)composeBarButton
 {
@@ -400,22 +365,6 @@
 - (void)_searchButtonTouched
 {
     
-}
-
-- (void)_addButtonTouched
-{
-    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
-        return;
-    }
-    HSUSearchPersonDataSource *dataSource = [[HSUSearchPersonDataSource alloc] init];
-    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:addFriendVC animated:YES];
-    
-    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
-        [[NSUserDefaults standardUserDefaults] setObject:@YES forKey:HSUAddFriendBarTouched];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [_addFriendButtonIndicator removeFromSuperview];
-    }
 }
 
 - (void)_actionButtonTouched

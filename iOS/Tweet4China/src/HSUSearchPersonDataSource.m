@@ -16,12 +16,13 @@
         return;
     }
     NSString *keyword = self.keyword;
+    __weak typeof(self)weakSelf = self;
     [TWENGINE searchUserWithKeyword:self.keyword success:^(id responseObj) {
-        if ([self.keyword isEqualToString:keyword]) {
+        if ([weakSelf.keyword isEqualToString:keyword]) {
             success(responseObj);
         }
     } failure:^(NSError *error) {
-        if ([self.keyword isEqualToString:keyword]) {
+        if ([weakSelf.keyword isEqualToString:keyword]) {
             failure(error);
         }
     }];

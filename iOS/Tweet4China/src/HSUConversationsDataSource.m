@@ -34,6 +34,7 @@
         }
     }
     [SVProgressHUD showWithStatus:_(self.count ? @"Updating..." : @"Loading...")];
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
         [TWENGINE getSentMessagesSinceID:sinceId success:^(id responseObj) {
@@ -76,7 +77,7 @@
                 conversation[@"created_at"] = latestMessage[@"created_at"];
                 
                 BOOL found = NO;
-                for (HSUTableCellData *oldCellData in self.data) {
+                for (HSUTableCellData *oldCellData in weakSelf.data) {
                     if ([oldCellData.rawData[@"user"][@"screen_name"] isEqualToString:sender_sn] ||
                         [oldCellData.rawData[@"user"][@"screen_name"] isEqualToString:recipient_sn]) {
                         NSMutableDictionary *rawData = oldCellData.rawData.mutableCopy;
@@ -89,14 +90,14 @@
                 if (!found) {
                     HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:conversation
                                                                                   dataType:kDataType_Conversation];
-                    [self.data insertObject:cellData atIndex:0];
+                    [weakSelf.data insertObject:cellData atIndex:0];
                 }
             }
             
-            [self saveCache];
-            [self.delegate preprocessDataSourceForRender:self];
-            [self.delegate dataSource:self didFinishRefreshWithError:nil];
-            self.loadingCount --;
+            [weakSelf saveCache];
+            [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
+            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+            weakSelf.loadingCount --;
             
             [SVProgressHUD dismiss];
         } failure:^(NSError *error) {

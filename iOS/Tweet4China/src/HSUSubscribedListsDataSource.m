@@ -26,6 +26,7 @@
     if (self.count == 0 && [TWENGINE isAuthorized]) {
         [SVProgressHUD showWithStatus:_(@"Loading Lists")];
     }
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getListsWithScreenName:self.screenName success:^(id responseObj) {
         [SVProgressHUD dismiss];
         NSArray *lists = responseObj;
@@ -34,31 +35,31 @@
             for (int i=lists.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:lists[i] dataType:kDataType_List];
-                [self.data insertObject:cellData atIndex:0];
+                [weakSelf.data insertObject:cellData atIndex:0];
             }
             
-            HSUTableCellData *lastCellData = self.data.lastObject;
+            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
                 HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
-                if (lists.count < self.requestCount) {
+                if (lists.count < weakSelf.requestCount) {
                     loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_NoMore)};
                 } else {
                     loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 }
                 loadMoreCellData.dataType = kDataType_LoadMore;
-                [self.data addObject:loadMoreCellData];
+                [weakSelf.data addObject:loadMoreCellData];
             }
             
-            [self saveCache];
-            [self.delegate preprocessDataSourceForRender:self];
+            [weakSelf saveCache];
+            [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        [self.delegate dataSource:self didFinishRefreshWithError:nil];
-        self.loadingCount --;
+        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.delegate dataSource:self didFinishRefreshWithError:error];
-        self.loadingCount --;
+        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
+        weakSelf.loadingCount --;
     }];
 }
 

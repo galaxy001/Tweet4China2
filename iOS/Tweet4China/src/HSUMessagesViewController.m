@@ -30,8 +30,8 @@
 {
     self = [super init];
     if (self) {
-        self.hideBackButton = YES;
-        self.hideRightButtons = YES;
+//        self.hideBackButton = YES;
+//        self.hideRightButtons = YES;
         self.useRefreshControl = NO;
     }
     return self;
@@ -297,14 +297,15 @@
 {
     [message removeObjectForKey:@"failed"];
     [self.tableView reloadData];
+    __weak typeof(self)weakSelf = self;
     [TWENGINE sendDirectMessage:message[@"text"] toUser:message[@"recipient_screen_name"] success:^(id responseObj) {
         [message setValuesForKeysWithDictionary:responseObj];
         [message removeObjectForKey:@"sending"];
-        [self.tableView reloadData];
+        [weakSelf.tableView reloadData];
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Failed to send message")];
         message[@"failed"] = @(YES);
-        [self.tableView reloadData];
+        [weakSelf.tableView reloadData];
     }];
 }
 

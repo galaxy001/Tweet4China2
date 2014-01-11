@@ -37,31 +37,32 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
-                [self.data insertObject:cellData atIndex:0];
+                [weakSelf.data insertObject:cellData atIndex:0];
             }
             
-            HSUTableCellData *lastCellData = self.data.lastObject;
+            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
                 HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
-                [self.data addObject:loadMoreCellData];
+                [weakSelf.data addObject:loadMoreCellData];
             }
             
-            [self saveCache];
-            [self.delegate preprocessDataSourceForRender:self];
+            [weakSelf saveCache];
+            [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        [self.delegate dataSource:self didFinishRefreshWithError:nil];
-        self.loadingCount --;
+        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.delegate dataSource:self didFinishRefreshWithError:error];
+        [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
     }];
 }
 
@@ -71,30 +72,31 @@
     
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
-        id loadMoreCellData = self.data.lastObject;
-        [self.data removeLastObject];
+        id loadMoreCellData = weakSelf.data.lastObject;
+        [weakSelf.data removeLastObject];
         for (NSDictionary *tweet in responseObj) {
             HSUTableCellData *cellData =
             [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
-            [self.data addObject:cellData];
+            [weakSelf.data addObject:cellData];
         }
-        [self.data addObject:loadMoreCellData];
+        [weakSelf.data addObject:loadMoreCellData];
         
         if ([responseObj count]) {
-            [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
         } else {
-            [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
         }
-        [self saveCache];
-        [self.delegate preprocessDataSourceForRender:self];
-        [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
-        self.loadingCount --;
+        [weakSelf saveCache];
+        [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
+        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:nil];
+        weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
-        [self.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
-        [self.delegate dataSource:self didFinishLoadMoreWithError:error];
-        self.loadingCount --;
+        [weakSelf.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
+        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:error];
+        weakSelf.loadingCount --;
     }];
 }
 

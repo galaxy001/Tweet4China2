@@ -135,11 +135,11 @@
     gesture.direction = UISwipeGestureRecognizerDirectionLeft;
     [self.view addGestureRecognizer:gesture];
     
-    self.hideRightButtons = YES;
+//    self.hideRightButtons = YES;
     self.useRefreshControl = NO;
     self.useDefaultStatusView = YES;
-    self.hideBackButton = YES;
-    self.hideLeftButtons = YES;
+//    self.hideBackButton = YES;
+//    self.hideLeftButtons = YES;
     
     [super viewDidLoad];
     

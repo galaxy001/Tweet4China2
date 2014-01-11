@@ -16,9 +16,9 @@
 @property (nonatomic, strong) HSUBaseDataSource *dataSource;
 @property (nonatomic, weak) HSURefreshControl *refreshControl;
 @property (nonatomic, weak) UITableView *tableView;
-@property (nonatomic, assign) BOOL hideBackButton;
-@property (nonatomic, assign) BOOL hideLeftButtons;
-@property (nonatomic, assign) BOOL hideRightButtons;
+//@property (nonatomic, assign) BOOL hideBackButton;
+//@property (nonatomic, assign) BOOL hideLeftButtons;
+//@property (nonatomic, assign) BOOL hideRightButtons;
 @property (nonatomic, assign) BOOL useRefreshControl;
 @property (nonatomic, assign) uint viewDidAppearCount;
 @property (nonatomic, assign) float keyboardHeight;
@@ -26,7 +26,6 @@
 @property (nonatomic, assign) BOOL statusBarHidden;
 
 @property (nonatomic, readonly) UIBarButtonItem *actionBarButton;
-@property (nonatomic, readonly) UIBarButtonItem *addFriendBarButton;
 @property (nonatomic, readonly) UIBarButtonItem *composeBarButton;
 
 @property (nonatomic, weak) id tabController;

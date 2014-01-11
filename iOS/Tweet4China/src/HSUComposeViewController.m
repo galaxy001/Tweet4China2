@@ -377,11 +377,12 @@
 #endif
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
+    __weak typeof(self)weakSelf = self;
     [TWENGINE getFriendsWithCount:100 success:^(id responseObj) {
         friends = responseObj[@"users"];
         [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        [self filterSuggestions];
+        [weakSelf filterSuggestions];
     } failure:^(NSError *error) {
         
     }];
@@ -392,7 +393,7 @@
         [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self filterSuggestions];
+            [weakSelf filterSuggestions];
         });
     } failure:^(NSError *error) {
         

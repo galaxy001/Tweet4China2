@@ -23,7 +23,7 @@
 - (void)viewDidLoad
 {
     self.useRefreshControl = NO;
-    self.hideRightButtons = YES;
+//    self.hideRightButtons = YES;
     
     [super viewDidLoad];
     

@@ -101,6 +101,7 @@
         NSString *id_str = status[@"id_str"];
         if (isRetweetedStatus) {
             id_str = cellData.rawData[@"id_str"];
+            __weak typeof(self)weakSelf = self;
             [TWENGINE destroyStatus:id_str success:^(id responseObj) {
                 NSMutableDictionary *newStatus = [status mutableCopy];
                 newStatus[@"retweeted"] = @(!retweeted);
@@ -112,15 +113,16 @@
                     cellData.rawData = newStatus;
                 }
                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
-                [self.dataSource saveCache];
+                [weakSelf.dataSource saveCache];
                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                [self.tableView reloadData];
+                [weakSelf.tableView reloadData];
             } failure:^(NSError *error) {
                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
                 [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
             }];
         } else {
             if ([status[@"retweeted_count"] integerValue] <= 200) {
+                __weak typeof(self)weakSelf = self;
                 [TWENGINE getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
                     BOOL found = NO;
                     NSArray *tweets = responseObj;
@@ -138,9 +140,9 @@
                                     cellData.rawData = newStatus;
                                 }
                                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
-                                [self.dataSource saveCache];
+                                [weakSelf.dataSource saveCache];
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                                [self.tableView reloadData];
+                                [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
                                 [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
@@ -157,6 +159,7 @@
                     [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
                 }];
             } else {
+                __weak typeof(self)weakSelf = self;
                 [TWENGINE getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
                     BOOL found = NO;
                     NSArray *tweets = responseObj;
@@ -174,9 +177,9 @@
                                     cellData.rawData = newStatus;
                                 }
                                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
-                                [self.dataSource saveCache];
+                                [weakSelf.dataSource saveCache];
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                                [self.tableView reloadData];
+                                [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
                                 [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
@@ -196,6 +199,7 @@
         }
     } else {
         NSString *id_str = status[@"id_str"];
+        __weak typeof(self)weakSelf = self;
         [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
             NSMutableDictionary *newStatus = [status mutableCopy];
             newStatus[@"retweeted"] = @(!retweeted);
@@ -207,9 +211,9 @@
                 cellData.rawData = newStatus;
             }
             notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
-            [self.dataSource saveCache];
+            [weakSelf.dataSource saveCache];
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-            [self.tableView reloadData];
+            [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
             [TWENGINE dealWithError:error errTitle:_(@"Retweet failed")];
@@ -227,24 +231,26 @@
     BOOL favorited = [rawData[@"favorited"] boolValue];
     
     if (favorited) {
+        __weak typeof(self)weakSelf = self;
         [TWENGINE unMarkStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
             newRawData[@"favorited"] = @(!favorited);
             cellData.rawData = newRawData;
             notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
-            [self.dataSource saveCache];
-            [self.tableView reloadData];
+            [weakSelf.dataSource saveCache];
+            [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Delete Favorite failed")];
         }];
     } else {
+        __weak typeof(self)weakSelf = self;
         [TWENGINE markStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
             newRawData[@"favorited"] = @(!favorited);
             notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
             cellData.rawData = newRawData;
-            [self.dataSource saveCache];
-            [self.tableView reloadData];
+            [weakSelf.dataSource saveCache];
+            [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Favorite Tweet failed")];
         }];
@@ -262,10 +268,11 @@
         NSDictionary *rawData = cellData.rawData;
         NSString *id_str = rawData[@"id_str"];
         
+        __weak typeof(self)weakSelf = self;
         [TWENGINE destroyStatus:id_str success:^(id responseObj) {
-            [self.dataSource removeCellData:cellData];
-            [self.dataSource saveCache];
-            [self.tableView reloadData];
+            [weakSelf.dataSource removeCellData:cellData];
+            [weakSelf.dataSource saveCache];
+            [weakSelf.tableView reloadData];
             notification_post_with_object(HSUStatusDidDelete, id_str);
         } failure:^(NSError *error) {
             [TWENGINE dealWithError:error errTitle:_(@"Delete Tweet failed")];

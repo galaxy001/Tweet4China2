@@ -30,6 +30,14 @@
     return self;
 }
 
+- (void)viewDidLoad
+{
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton];
+    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    
+    [super viewDidLoad];
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];

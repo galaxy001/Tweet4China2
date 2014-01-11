@@ -52,13 +52,14 @@
                          accessoryType:accessorType
                       selectionHandler:^(RETableViewItem *item)
          {
+             __weak typeof(self)weakSelf = self;
              if (![screenName isEqualToString:TWENGINE.myScreenName]) {
                  [TWENGINE loadAccount:screenName];
                  // clear old dm cache
                  [[NSUserDefaults standardUserDefaults] removeObjectForKey:[HSUConversationsDataSource cacheKey]];
                  [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str", [HSUProfileDataSource cacheKey])];
                  [[NSUserDefaults standardUserDefaults] synchronize];
-                 [self.navigationController popViewControllerAnimated:YES];
+                 [weakSelf.navigationController popViewControllerAnimated:YES];
              }
              [item deselectRowAnimated:YES];
          }];
