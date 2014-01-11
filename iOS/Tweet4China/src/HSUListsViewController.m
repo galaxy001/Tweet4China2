@@ -43,7 +43,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = _("List");
+    self.navigationItem.title = _("Lists");
     
     UISegmentedControl *typeControl = [[UISegmentedControl alloc] initWithItems:@[_("Subscribed"), _("Member of")]];
     self.typeControl = typeControl;
