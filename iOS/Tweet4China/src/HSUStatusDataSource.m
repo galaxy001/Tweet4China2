@@ -31,7 +31,7 @@
     NSDictionary *status = [self.data[0] rawData];
     if ([status[@"in_reply_to_status_id_str"] length]) {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
+        [twitter getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
             HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
             [weakSelf.data insertObject:chatCellData atIndex:0];
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:1];
@@ -48,7 +48,7 @@
     NSString *keyword = [NSString stringWithFormat:@"@%@", status[@"user"][@"screen_name"]];
     NSString *mainStatusID = status[@"id_str"];
     __weak typeof(self) weakSelf = self;
-    [TWENGINE searchTweetsWithKeyword:keyword sinceID:mainStatusID count:100 success:^(id responseObj) {
+    [twitter searchTweetsWithKeyword:keyword sinceID:mainStatusID count:100 success:^(id responseObj) {
         NSArray *tweets = ((NSDictionary *)responseObj)[@"statuses"];
         
         for (NSDictionary *tweet in tweets) {

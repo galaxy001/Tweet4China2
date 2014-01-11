@@ -33,11 +33,11 @@
             break;
         }
     }
-    [SVProgressHUD showWithStatus:_(self.count ? @"Updating..." : @"Loading...")];
+    [SVProgressHUD showWithStatus:self.count ? _("Updating...") : _("Loading...")];
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getDirectMessagesSinceID:sinceId success:^(id responseObj) {
+    [twitter getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
-        [TWENGINE getSentMessagesSinceID:sinceId success:^(id responseObj) {
+        [twitter getSentMessagesSinceID:sinceId success:^(id responseObj) {
             id sMsgs = responseObj;
             // merge received messages & sent messages
             NSArray *messages = [[NSArray arrayWithArray:rMsgs] arrayByAddingObjectsFromArray:sMsgs];
@@ -101,10 +101,10 @@
             
             [SVProgressHUD dismiss];
         } failure:^(NSError *error) {
-            [SVProgressHUD showErrorWithStatus:_(@"Load Messages failed")];
+            [SVProgressHUD showErrorWithStatus:_("Load Messages failed")];
         }];
     } failure:^(NSError *error) {
-        [SVProgressHUD showErrorWithStatus:_(@"Load Messages failed")];
+        [SVProgressHUD showErrorWithStatus:_("Load Messages failed")];
     }];
 }
 
@@ -114,7 +114,7 @@
         HSUTableCellData *cellData = [self dataAtIndexPath:indexPath];
         NSArray *messages = cellData.rawData[@"messages"];
         for (NSDictionary *message in messages) {
-            [TWENGINE deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
+            [twitter deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
                 
             } failure:^(NSError *error) {
                 

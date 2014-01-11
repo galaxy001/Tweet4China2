@@ -36,7 +36,7 @@
     NSString *screenName = user[@"screen_name"];
     __weak typeof(self)weakSelf = self;
     [SVProgressHUD showWithStatus:nil];
-    [TWENGINE lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
+    [twitter lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
         NSDictionary *ship = responseObj[0];
         NSArray *connections = ship[@"connections"];
         BOOL followedMe = NO;
@@ -58,7 +58,7 @@
                 [SVProgressHUD dismiss];
                 [weakSelf.navigationController pushViewController:messagesVC animated:YES];
             } else {
-                [TWENGINE showUser:MyScreenName success:^(id responseObj) {
+                [twitter showUser:MyScreenName success:^(id responseObj) {
                     [SVProgressHUD dismiss];
                     messagesVC.myProfile = responseObj;
                     [weakSelf.navigationController pushViewController:messagesVC animated:YES];
@@ -68,8 +68,8 @@
             }
         } else {
             [SVProgressHUD dismiss];
-            NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ ", _(@"You can not send direct message to"), screenName, screenName, _(@"is not following you.")];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_(@"OK") otherButtonTitles:nil, nil];
+            NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ ", _("You can not send direct message to"), screenName, screenName, _("is not following you.")];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
             [alert show];
         }
     } failure:^(NSError *error) {
@@ -81,9 +81,9 @@
 {
     if (self.searchTF.text.length) {
         NSString *screenName = self.searchTF.text;
-        [SVProgressHUD showWithStatus:[NSString stringWithFormat:@"%@ @%@", _(@"Finding"), screenName]];
+        [SVProgressHUD showWithStatus:[NSString stringWithFormat:@"%@ @%@", _("Finding"), screenName]];
         __weak typeof(self) weakSelf = self;
-        [TWENGINE showUser:screenName success:^(id responseObj) {
+        [twitter showUser:screenName success:^(id responseObj) {
             [weakSelf sendMessageTo:responseObj];
         } failure:^(NSError *error) {
             [SVProgressHUD dismiss];

@@ -16,9 +16,7 @@
 
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 @property (nonatomic, strong) RETableViewManager *manager;
-#endif
 
 @end
 
@@ -28,7 +26,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = _(@"Settings");
+    self.navigationItem.title = _("Settings");
     self.view.backgroundColor = kWhiteColor;
     self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
     
@@ -45,13 +43,12 @@
                                           action:@selector(_doneButtonTouched)];
     self.navigationItem.rightBarButtonItem = doneBarButtonItem;
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
     
     RETableViewSection *section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Accounts")
+     [RETableViewItem itemWithTitle:_("Accounts")
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
@@ -76,7 +73,7 @@
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
-    REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_(@"Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
+    REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_("Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
     [section addItem:soundEffectItem];
     __weak typeof(self) weakSelf = self;
     soundEffectItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -88,7 +85,7 @@
         }
     };
     
-    REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_(@"Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
+    REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_("Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
     [section addItem:photoPreviewItem];
     photoPreviewItem.switchValueChangeHandler = ^(REBoolItem *item) {
         
@@ -99,7 +96,7 @@
         }
     };
     
-    [section addItem:[RERadioItem itemWithTitle:_(@"Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
+    [section addItem:[RERadioItem itemWithTitle:_("Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -124,7 +121,7 @@
         [weakSelf.navigationController pushViewController:optionsController animated:YES];
     }]];
     
-    [section addItem:[RERadioItem itemWithTitle:_(@"Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
+    [section addItem:[RERadioItem itemWithTitle:_("Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -152,7 +149,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Rate on App Store")
+     [RETableViewItem itemWithTitle:_("Rate on App Store")
                       accessoryType:UITableViewCellAccessoryNone
                    selectionHandler:^(RETableViewItem *item)
       {
@@ -160,12 +157,12 @@
           [item deselectRowAnimated:YES];
       }]];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Help & Feedback (Email)")
+     [RETableViewItem itemWithTitle:_("Help & Feedback (Email)")
                       accessoryType:UITableViewCellAccessoryNone
                    selectionHandler:^(RETableViewItem *item)
       {
           NSString *subject = @"[Tweet4China 2.6] Feedback";
-          NSString *body = _(@"\nDescribe the problem please");
+          NSString *body = _("\nDescribe the problem please");
           NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=%@&body=%@",
                            [subject stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
                            [body stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
@@ -176,7 +173,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"OpenSource Code (Github)")
+     [RETableViewItem itemWithTitle:_("OpenSource Code (Github)")
                                       accessoryType:UITableViewCellAccessoryNone
                                    selectionHandler:^(RETableViewItem *item)
     {
@@ -185,7 +182,7 @@
         [item deselectRowAnimated:YES];
     }]];
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Official Blog (Tumblr)")
+     [RETableViewItem itemWithTitle:_("Official Blog (Tumblr)")
                                       accessoryType:UITableViewCellAccessoryNone
                                    selectionHandler:^(RETableViewItem *item)
     {
@@ -200,12 +197,11 @@
     NSString *verion = [NSString stringWithFormat:@"Pro %@", verNum];
 #endif
     RETableViewItem *item =
-    [RETableViewItem itemWithTitle:S(@"%@ (%@)", _(@"Application Version"), verion)
+    [RETableViewItem itemWithTitle:S(@"%@ (%@)", _("Application Version"), verion)
                      accessoryType:UITableViewCellAccessoryNone
                   selectionHandler:nil];
     item.selectionStyle = UITableViewCellSelectionStyleNone;
     [section addItem:item];
-#endif
 }
 
 #pragma mark - actions

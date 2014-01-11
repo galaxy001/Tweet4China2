@@ -13,7 +13,6 @@
 
 @interface HSUEditProfileViewController () <RETableViewManagerDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 @property (nonatomic, strong) RETableViewManager *manager;
 @property (nonatomic, weak) RETableViewItem *avatarItem;
 @property (nonatomic, weak) RETableViewItem *bannerItem;
@@ -22,7 +21,6 @@
 @property (nonatomic, weak) RETextItem *urlItem;
 @property (nonatomic, weak) RELongTextItem *descItem;
 @property (nonatomic) BOOL updated;
-#endif
 @property (nonatomic) BOOL selectPhotoForAvatar;
 
 @end
@@ -35,16 +33,14 @@
     
     self.tableView = [[UITableView alloc] initWithFrame:self.tableView.frame style:UITableViewStyleGrouped];
     
-    self.title = _(@"Edit Profile");
-    
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
+    self.title = _("Edit Profile");
     
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
     
     RETableViewSection *section = [RETableViewSection section];
     [self.manager addSection:section];
     
-    RETableViewItem *avatarItem = [RETableViewItem itemWithTitle:_(@"Avatar")];
+    RETableViewItem *avatarItem = [RETableViewItem itemWithTitle:_("Avatar")];
     if (self.avatarImage) {
         avatarItem.image = [self.avatarImage scaleToWidth:48];
     }
@@ -64,7 +60,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     
-    RETableViewItem *bannerItem = [RETableViewItem itemWithTitle:_(@"Banner")];
+    RETableViewItem *bannerItem = [RETableViewItem itemWithTitle:_("Banner")];
     if (self.bannerImage) {
         bannerItem.image = [self.bannerImage scaleToWidth:96];
     }
@@ -83,7 +79,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     
-    RETextItem *nameItem = [RETextItem itemWithTitle:_(@"Name")];
+    RETextItem *nameItem = [RETextItem itemWithTitle:_("Name")];
     self.nameItem = nameItem;
     [section addItem:nameItem];
     nameItem.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -95,7 +91,7 @@
         weakSelf.updated = changed;
     };
     
-    RETextItem *locationItem = [RETextItem itemWithTitle:_(@"Location")];
+    RETextItem *locationItem = [RETextItem itemWithTitle:_("Location")];
     self.locationItem = locationItem;
     [section addItem:locationItem];
     locationItem.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -107,7 +103,7 @@
         weakSelf.updated = changed;
     };
     
-    RETextItem *urlItem = [RETextItem itemWithTitle:_(@"Site")];
+    RETextItem *urlItem = [RETextItem itemWithTitle:_("Site")];
     self.urlItem = urlItem;
     [section addItem:urlItem];
     urlItem.clearButtonMode = UITextFieldViewModeWhileEditing;
@@ -127,22 +123,20 @@
 //    self.descItem = descItem;
 //    [section addItem:descItem];
 //    descItem.value = self.profile[@"description"];
-//    descItem.placeholder = _(@"Introduce yourself");
+//    descItem.placeholder = _("Introduce yourself");
 //    descItem.cellHeight = 88;
 //    descItem.charactersLimit = 160;
 //    descItem.onChange = ^(RETextItem *item) {
 //        self.navigationItem.rightBarButtonItem.enabled = YES;
 //    };
-#endif
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_(@"Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_(@"Save") style:UIBarButtonItemStyleDone target:self action:@selector(save)];
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Save") style:UIBarButtonItemStyleDone target:self action:@selector(save)];
     self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)selectPhotoForAvatar:(BOOL)forAvatar
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
     if (forAvatar) {
         cameraVC.maxWidth = 640;
@@ -152,32 +146,6 @@
     cameraVC.delegate = self;
     [self presentViewController:cameraVC animated:YES completion:nil];
     self.selectPhotoForAvatar = forAvatar;
-#else
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_(@"Select From Camera")];
-    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_(@"Take a Picture")];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
-    [actionSheet showInView:self.view.window];
-    cancelItem.action = ^{
-        [contentTV becomeFirstResponder];
-    };
-    photoItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-        self.selectPhotoForAvatar = forAvatar;
-    };
-    captureItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-        self.selectPhotoForAvatar = forAvatar;
-    };
-#endif
 }
 
 - (void)avatarTouched
@@ -194,7 +162,7 @@
 {
     UIImage *image = cameraViewController.photo;
     if (image) {
-        [SVProgressHUD showWithStatus:_(@"Uploading...")];
+        [SVProgressHUD showWithStatus:_("Uploading...")];
         // get center square
         if (image.size.width > image.size.height) {
             image = [image subImageAtRect:ccr(image.size.width/2-image.size.height/2, 0, image.size.height, image.size.height)];
@@ -203,14 +171,14 @@
         }
         __weak typeof(self) weakSelf = self;
         if (self.selectPhotoForAvatar) {
-            [TWENGINE updateAvatar:image success:^(id responseObj) {
+            [twitter updateAvatar:image success:^(id responseObj) {
                 weakSelf.avatarItem.image = [image scaleToWidth:48];
                 [weakSelf.tableView reloadData];
                 [SVProgressHUD dismiss];
                 [weakSelf.profileVC reloadData];
                 weakSelf.navigationItem.rightBarButtonItem.enabled = YES;
             } failure:^(NSError *error) {
-                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+                [SVProgressHUD showErrorWithStatus:_("Upload failed")];
             }];
         } else {
             // get center rectangle
@@ -219,14 +187,14 @@
             } else if (image.size.width < image.size.height * 2) {
                 image = [image subImageAtRect:ccr(0, image.size.height-image.size.width/2, image.size.width, image.size.width/2)];
             }
-            [TWENGINE updateBanner:image success:^(id responseObj) {
+            [twitter updateBanner:image success:^(id responseObj) {
                 weakSelf.bannerItem.image = [image scaleToWidth:96];
                 [weakSelf.tableView reloadData];
                 [SVProgressHUD dismiss];
                 [weakSelf.profileVC reloadData];
                 weakSelf.navigationItem.rightBarButtonItem.enabled = YES;
             } failure:^(NSError *error) {
-                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+                [SVProgressHUD showErrorWithStatus:_("Upload failed")];
             }];
         }
         self.selectPhotoForAvatar = NO;
@@ -249,7 +217,7 @@
         return;
     }
     
-    [SVProgressHUD showWithStatus:_(@"Updating...")];
+    [SVProgressHUD showWithStatus:_("Updating...")];
     NSMutableDictionary *profile = [NSMutableDictionary dictionary];
     if (self.nameItem.value) {
         profile[@"name"] = self.nameItem.value;
@@ -268,12 +236,12 @@
         profile[@"description"] = self.descItem.value;
     }
     __weak typeof(self) weakSelf = self;
-    [TWENGINE updateProfile:profile success:^(id responseObj) {
+    [twitter updateProfile:profile success:^(id responseObj) {
         [SVProgressHUD dismiss];
         [weakSelf dismiss];
         [weakSelf.profileVC reloadData];
     } failure:^(NSError *error) {
-        [SVProgressHUD showErrorWithStatus:_(@"Update failed")];
+        [SVProgressHUD showErrorWithStatus:_("Update failed")];
     }];
 }
 

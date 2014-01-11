@@ -27,7 +27,7 @@
 {
     notification_post_with_object(HSUDeleteConversationNotification, self.conversation);
     for (NSDictionary *message in self.conversation[@"messages"]) {
-        [TWENGINE deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
+        [twitter deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
             
         } failure:^(NSError *error) {
             

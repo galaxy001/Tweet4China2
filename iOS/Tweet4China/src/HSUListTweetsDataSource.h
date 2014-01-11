@@ -10,11 +10,8 @@
 
 @interface HSUListTweetsDataSource : HSUTweetsDataSource
 
-@property (nonatomic, copy) NSString *listId;
+@property (nonatomic, strong) NSDictionary *list;
 
-- (instancetype)initWithListId:(NSString *)listId;
-
-- (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
-- (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (instancetype)initWithList:(NSDictionary *)list;
 
 @end

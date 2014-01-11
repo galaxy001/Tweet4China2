@@ -13,7 +13,7 @@
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
+    [twitter getUserTimelineWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         weakSelf.lastStatusID = tweet[@"id_str"];
         success(responseObj);
@@ -25,7 +25,7 @@
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getUserTimelineWithScreenName:self.screenName maxID:self.lastStatusID count:self.requestCount success:^(id responseObj) {
+    [twitter getUserTimelineWithScreenName:self.screenName maxID:self.lastStatusID count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
         weakSelf.lastStatusID = tweet[@"id_str"];
         success(responseObj);

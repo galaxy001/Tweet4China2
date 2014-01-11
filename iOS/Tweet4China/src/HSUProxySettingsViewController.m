@@ -7,16 +7,12 @@
 //
 
 #import "HSUProxySettingsViewController.h"
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 #import <RETableViewManager/RETableViewManager.h>
-#endif
 #import <RETableViewManager/RETableViewOptionsController.h>
 
 @interface HSUProxySettingsViewController () <RETableViewManagerDelegate>
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 @property (nonatomic, strong) RETableViewManager *manager;
-#endif
 
 @end
 
@@ -25,15 +21,6 @@
 - (void)viewDidLoad
 {
     self.title = @"shadowsocks";
-    
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-//    NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
-//    NSDictionary *selectedShadowsocks = self.shadowsocks;
-//    for (NSDictionary *ss in sss) {
-//        if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
-//            selectedShadowsocks = ss;
-//        }
-//    }
     
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
     
@@ -89,12 +76,10 @@
                                               action:@selector(done)];
     
     [super viewDidLoad];
-#endif
 }
 
 - (void)done
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     RETableViewSection *section  = self.manager.sections[0];
     
     RETextItem *serverItem = section.items[0];
@@ -125,9 +110,9 @@
     if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
         if (![[HSUAppDelegate shared] startShadowsocks]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                            message:_(@"Finish Settings or Tap Cancel")
+                                                            message:_("Finish Settings or Tap Cancel")
                                                            delegate:nil
-                                                  cancelButtonTitle:_(@"OK")
+                                                  cancelButtonTitle:_("OK")
                                                   otherButtonTitles:nil, nil];
             [alert show];
         } else {
@@ -136,7 +121,6 @@
     } else {
         [self.navigationController popViewControllerAnimated:YES];
     }
-#endif
 }
 
 @end

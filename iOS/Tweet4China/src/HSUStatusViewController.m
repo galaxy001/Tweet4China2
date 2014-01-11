@@ -121,11 +121,11 @@
 - (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
 {
     label.backgroundColor = rgb(215, 230, 242);
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     cancelItem.action = ^{
         label.backgroundColor = kClearColor;
     };
-    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_(@"Copy Content")];
+    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy Content")];
     copyItem.action = ^{
         label.backgroundColor = kClearColor;
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
@@ -150,21 +150,21 @@
 
 - (void)delete:(HSUTableCellData *)cellData
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     cancelItem.action = ^{
         [self.tableView reloadData];
     };
-    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_(@"Delete Tweet")];
+    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_("Delete Tweet")];
     deleteItem.action = ^{
         NSDictionary *rawData = cellData.rawData;
         NSString *id_str = rawData[@"id_str"];
         
         __weak typeof(self)weakSelf = self;
-        [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+        [twitter destroyStatus:id_str success:^(id responseObj) {
             [weakSelf.navigationController popViewControllerAnimated:YES];
             notification_post_with_object(HSUStatusDidDelete, id_str);
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Delete Tweet failed")];
+            [twitter dealWithError:error errTitle:_("Delete Tweet failed")];
         }];
     };
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];

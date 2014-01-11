@@ -18,7 +18,7 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    [TWENGINE getMentionsTimelineSinceID:latestIdStr maxID:nil count:1 success:^(id responseObj) {
+    [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:1 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         NSString *lastIdStr = tweets.lastObject[@"id_str"];
         if (lastIdStr) { // updated
@@ -38,7 +38,7 @@
         latestIdStr = @"1";
     }
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
+    [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {
@@ -61,7 +61,7 @@
         [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
     }];
 }
@@ -73,7 +73,7 @@
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
+    [twitter getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         id loadMoreCellData = weakSelf.data.lastObject;
         [weakSelf.data removeLastObject];
         for (NSDictionary *tweet in responseObj) {
@@ -93,7 +93,7 @@
         [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:nil];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
         [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:error];
         weakSelf.loadingCount --;

@@ -112,7 +112,7 @@
         followingCountStr = S(@"%0.1fK", followingCount/1000.0);
     }
     NSString *ffInfoText = [NSString stringWithFormat:@"%@ %@ %@ %@",
-                            followersCountStr, _(@"Followers"), followingCountStr, _(@"Following")];
+                            followersCountStr, _("Followers"), followingCountStr, _("Following")];
     NSMutableAttributedString *ffInfoTextWithAttributes = [[NSMutableAttributedString alloc] initWithString:ffInfoText];
     [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName
                                      value:kBlackColor
@@ -122,10 +122,10 @@
                                      range:NSMakeRange(0, followersCountStr.length)];
     [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName
                                      value:kBlackColor
-                                     range:NSMakeRange(followersCountStr.length + 1 + _(@"Followers").length + 1, followingCountStr.length)];
+                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 1, followingCountStr.length)];
     [ffInfoTextWithAttributes addAttribute:NSFontAttributeName
                                      value:[UIFont boldSystemFontOfSize:12]
-                                     range:NSMakeRange(followersCountStr.length + 1 + _(@"Followers").length + 1, followingCountStr.length)];
+                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 1, followingCountStr.length)];
     self.ffInfoLabel.attributedText = ffInfoTextWithAttributes;
     [self.ffInfoLabel sizeToFit];
     

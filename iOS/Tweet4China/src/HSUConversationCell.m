@@ -99,7 +99,7 @@
     NSString *name = user[@"name"];
     NSString *sn = [user[@"screen_name"] twitterScreenName];
     NSString *avatarUrl = user[@"profile_image_url_https"];
-    NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
     NSString *time = createdDate.pureTwitterDisplay;
     NSDictionary *latestMessage = [data.rawData[@"messages"] lastObject];
     NSString *content = latestMessage[@"text"];

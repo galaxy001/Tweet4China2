@@ -158,8 +158,8 @@
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-        RIButtonItem *saveItem = [RIButtonItem itemWithLabel:_(@"Save Image")];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *saveItem = [RIButtonItem itemWithLabel:_("Save Image")];
         saveItem.action = ^{
             UIImageWriteToSavedPhotosAlbum(self.imageView.image, nil, nil, nil);
         };

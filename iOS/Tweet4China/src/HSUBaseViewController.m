@@ -353,7 +353,7 @@
 #pragma mark - Actions
 - (void)_composeButtonTouched
 {
-    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
+    if (![twitter isAuthorized] || [SVProgressHUD isVisible]) {
         return;
     }
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];

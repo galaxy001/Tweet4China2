@@ -180,7 +180,7 @@
         [tweetsButton setTitleColor:bw(153) forState:UIControlStateNormal];
         tweetsButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [tweetsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -55, 0, 0)];
-        [tweetsButton setTitle:_(@"TWEETS") forState:UIControlStateNormal];
+        [tweetsButton setTitle:_("TWEETS") forState:UIControlStateNormal];
         [tweetsButton setTapTarget:delegate action:@selector(tweetsButtonTouched)];
         
         UILabel *tweetsCountLabel = [[UILabel alloc] init];
@@ -199,7 +199,7 @@
         [followingButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followingButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -38.5, 0, 0)];
-        [followingButton setTitle:_(@"FOLLOWING") forState:UIControlStateNormal];
+        [followingButton setTitle:_("FOLLOWING") forState:UIControlStateNormal];
         [followingButton setTapTarget:delegate action:@selector(followingsButtonTouched)];
         
         UILabel *followingCountLabel = [[UILabel alloc] init];
@@ -218,7 +218,7 @@
         [followersButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followersButton.titleLabel.font = [UIFont systemFontOfSize:9];
         [followersButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -37.5, 0, 0)];
-        [followersButton setTitle:_(@"FOLLOWERS") forState:UIControlStateNormal];
+        [followersButton setTitle:_("FOLLOWERS") forState:UIControlStateNormal];
         [followersButton setTapTarget:delegate action:@selector(followersButtonTouched)];
         
         UILabel *followersCountLabel = [[UILabel alloc] init];
@@ -391,7 +391,7 @@
         [self.followButton setTitleShadowColor:kWhiteColor forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, 1);
         [self.followButton setTitleColor:bw(51) forState:UIControlStateNormal];
-        [self.followButton setTitle:_(@"Blocked") forState:UIControlStateNormal];
+        [self.followButton setTitle:_("Blocked") forState:UIControlStateNormal];
     } else if ([profile[@"following"] boolValue]) {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
@@ -401,7 +401,7 @@
         [self.followButton setTitleShadowColor:bw(80) forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, -1);
         [self.followButton setTitleColor:kWhiteColor forState:UIControlStateNormal];
-        [self.followButton setTitle:_(@"Following") forState:UIControlStateNormal];
+        [self.followButton setTitle:_("Following") forState:UIControlStateNormal];
     } else {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
@@ -412,7 +412,7 @@
         [self.followButton setTitleShadowColor:kWhiteColor forState:UIControlStateNormal];
         self.followButton.titleLabel.shadowOffset = ccs(0, 1);
         [self.followButton setTitleColor:bw(51) forState:UIControlStateNormal];
-        [self.followButton setTitle:_(@"Follow") forState:UIControlStateNormal];
+        [self.followButton setTitle:_("Follow") forState:UIControlStateNormal];
     }
     
     self.followButton.enabled = ![profile[@"following"] isKindOfClass:[NSString class]];

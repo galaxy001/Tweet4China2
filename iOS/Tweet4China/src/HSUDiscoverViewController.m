@@ -120,7 +120,7 @@
     self.tabsView.scrollsToTop = NO;
     self.webView.scrollView.scrollsToTop = YES;
     
-    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[_(@"Bookmarks"), _(@"Tabs")]];
+    UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:@[_("Bookmarks"), _("Tabs")]];
     self.segmentedControl = segmentedControl;
     [segmentedControl setWidth:100 forSegmentAtIndex:0];
     [segmentedControl setWidth:100 forSegmentAtIndex:1];
@@ -170,7 +170,7 @@
         urlTextField.autocorrectionType = UITextAutocorrectionTypeNo;
         urlTextField.autocapitalizationType = UITextAutocapitalizationTypeNone;
         urlTextField.clearButtonMode = UITextFieldViewModeWhileEditing;
-        urlTextField.placeholder = _(@"Enter URL");
+        urlTextField.placeholder = _("Enter URL");
         urlTextField.backgroundColor = bw(240);
         urlTextField.layer.sublayerTransform = CATransform3DMakeTranslation(5, 0, 0);
         urlTextField.layer.cornerRadius = 5;
@@ -357,15 +357,15 @@
 
 - (void)_menuButtonTouched
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:_(@"Refresh")];
-    RIButtonItem *stopItem = [RIButtonItem itemWithLabel:_(@"Stop")];
-    RIButtonItem *backwardItem = [RIButtonItem itemWithLabel:_(@"Backward")];
-    RIButtonItem *forwardItem = [RIButtonItem itemWithLabel:_(@"Forward")];
-    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:_(@"Share Link")];
-    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_(@"Copy URL")];
-    RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:_(@"Set as Home")];
-    RIButtonItem *openHomeItem = [RIButtonItem itemWithLabel:_(@"Open Home")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *refreshItem = [RIButtonItem itemWithLabel:_("Refresh")];
+    RIButtonItem *stopItem = [RIButtonItem itemWithLabel:_("Stop")];
+    RIButtonItem *backwardItem = [RIButtonItem itemWithLabel:_("Backward")];
+    RIButtonItem *forwardItem = [RIButtonItem itemWithLabel:_("Forward")];
+    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:_("Share Link")];
+    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy URL")];
+    RIButtonItem *setHomeItem = [RIButtonItem itemWithLabel:_("Set as Home")];
+    RIButtonItem *openHomeItem = [RIButtonItem itemWithLabel:_("Open Home")];
     UIActionSheet *menu = [[UIActionSheet alloc]
                            initWithTitle:nil
                            cancelButtonItem:cancelItem

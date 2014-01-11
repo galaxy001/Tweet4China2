@@ -13,9 +13,7 @@
 
 @interface HSUShadowsocksViewController ()
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 @property (nonatomic, strong) RETableViewManager *manager;
-#endif
 
 @end
 
@@ -33,7 +31,6 @@
 {
     [super viewWillAppear:animated];
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
     
     RETableViewSection *section = [RETableViewSection section];
@@ -43,9 +40,9 @@
     for (NSDictionary *ss in sss) {
         NSString *ssserver = ss[HSUShadowsocksSettings_Server];
         NSString *ssport = ss[HSUShadowsocksSettings_RemotePort];
-        NSString *title = ssserver ? S(@"%@:%@", ssserver, ssport) : _(@"Default");
+        NSString *title = ssserver ? S(@"%@:%@", ssserver, ssport) : _("Default");
         if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
-            title = S(@"%@ %d", _(@"Buildin Server"), ([sss indexOfObject:ss] + 1));
+            title = S(@"%@ %d", _("Buildin Server"), ([sss indexOfObject:ss] + 1));
             if (ss[HSUShadowsocksSettings_Desc]) {
                 title = S(@"%@ (%@)", title, ss[HSUShadowsocksSettings_Desc]);
             }
@@ -97,7 +94,7 @@
     }
     
     [section addItem:
-     [RETableViewItem itemWithTitle:_(@"Add New")
+     [RETableViewItem itemWithTitle:_("Add New")
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
@@ -105,7 +102,6 @@
           HSUProxySettingsViewController *proxySettingsVC = [[HSUProxySettingsViewController alloc] init];
           [self.navigationController pushViewController:proxySettingsVC animated:YES];
       }]];
-#endif
     
     if (self.navigationController.viewControllers.count == 1) {
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(dismiss)];

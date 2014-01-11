@@ -24,8 +24,8 @@
 {
     [super refresh];
     
-    if (self.count == 0 && [TWENGINE isAuthorized]) {
-        [SVProgressHUD showWithStatus:_(@"Loading Tweets")];
+    if (self.count == 0 && [twitter isAuthorized]) {
+        [SVProgressHUD showWithStatus:_("Loading Tweets")];
     }
     
     __weak typeof(self)weakSelf = self;
@@ -68,7 +68,7 @@
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
-        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
         weakSelf.loadingCount --;
     }];
@@ -97,7 +97,7 @@
         [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:[responseObj count]];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
         [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:error];
         weakSelf.loadingCount --;

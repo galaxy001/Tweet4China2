@@ -35,12 +35,18 @@
         [self.contentView addSubview:nameLabel];
         nameLabel.backgroundColor = kClearColor;
         nameLabel.font = [UIFont boldSystemFontOfSize:14];
+        if (Sys_Ver < 7) {
+            nameLabel.highlightedTextColor = kWhiteColor;
+        }
         
         UILabel *descLabel = [[UILabel alloc] init];
         self.descLabel = descLabel;
         [self.contentView addSubview:descLabel];
         descLabel.backgroundColor = kClearColor;
         descLabel.font = [UIFont systemFontOfSize:14];
+        if (Sys_Ver < 7) {
+            descLabel.highlightedTextColor = kWhiteColor;
+        }
         
         UILabel *creatorLabel = [[UILabel alloc] init];
         self.creatorLabel = creatorLabel;
@@ -48,6 +54,9 @@
         creatorLabel.backgroundColor = kClearColor;
         creatorLabel.font = [UIFont systemFontOfSize:12];
         creatorLabel.textColor = kLightBlueColor;
+        if (Sys_Ver < 7) {
+            creatorLabel.highlightedTextColor = kWhiteColor;
+        }
         
         UIImageView *modeIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_locked"]];
         self.modeIcon = modeIcon;
@@ -60,6 +69,9 @@
         memberCountLabel.backgroundColor = kClearColor;
         memberCountLabel.font = [UIFont systemFontOfSize:12];
         memberCountLabel.textColor = kLightBlueColor;
+        if (Sys_Ver < 7) {
+            memberCountLabel.highlightedTextColor = kWhiteColor;
+        }
         
         UIImageView *creatorAvatar = [[UIImageView alloc] init];
         self.creatorAvatar = creatorAvatar;

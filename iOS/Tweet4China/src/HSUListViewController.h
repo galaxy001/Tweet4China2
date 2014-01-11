@@ -7,7 +7,10 @@
 //
 
 #import "HSUBaseViewController.h"
+#import "HSUTweetsViewController.h"
 
-@interface HSUListViewController : HSUBaseViewController
+@interface HSUListViewController : HSUTweetsViewController
+
+- (id)initWithList:(NSDictionary *)list;
 
 @end

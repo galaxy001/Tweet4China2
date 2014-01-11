@@ -28,7 +28,12 @@
 {
     [super loadMore];
     
+    if (self.count == 0 && [twitter isAuthorized]) {
+        [SVProgressHUD showWithStatus:_("Loading")];
+    }
+    
     [self fetchDataWithSuccess:^(id responseObj) {
+        [SVProgressHUD dismiss];
         NSArray *users = responseObj;
         self.nextCursor = nil;
         self.prevCursor = nil;
@@ -61,7 +66,7 @@
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load followers failed")];
+        [SVProgressHUD showErrorWithStatus:_("Load failed")];
         [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
     }];

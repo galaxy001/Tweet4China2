@@ -37,22 +37,22 @@
 {
     self.sectionsData = [NSMutableArray arrayWithCapacity:2];
     NSMutableArray *referencesData = [NSMutableArray arrayWithCapacity:4];
-    NSDictionary *rawData = @{@"title": _(@"Following"),
+    NSDictionary *rawData = @{@"title": _("Following"),
                               @"action": kAction_Following,
                               @"user_screen_name": self.screenName};
     HSUTableCellData *followingCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": _(@"Followers"),
+    rawData = @{@"title": _("Followers"),
                 @"action": kAction_Followers,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *followersCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": _(@"Favorites"),
+    rawData = @{@"title": _("Favorites"),
                 @"action": kAction_Favorites,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *favoritesCellData = [[HSUTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
-    rawData = @{@"title": _(@"Lists"),
+    rawData = @{@"title": _("Lists"),
                 @"action": kAction_Lists,
                 @"user_screen_name": self.screenName};
     HSUTableCellData *listsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
@@ -66,9 +66,9 @@
     [self.sectionsData addObject:referencesData];
     
     NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];
-    if ([self.screenName isEqualToString:TWENGINE.myScreenName] && drafts.count) {
+    if ([self.screenName isEqualToString:twitter.myScreenName] && drafts.count) {
         NSMutableArray *draftData = [NSMutableArray arrayWithCapacity:1];
-        rawData = @{@"title": _(@"Drafts"),
+        rawData = @{@"title": _("Drafts"),
                     @"count": @(drafts.count),
                     @"action": kAction_Drafts};
         HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
@@ -86,7 +86,7 @@
     [self refreshLocalData];
     
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
+    [twitter getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         for (NSDictionary *tweet in tweets) {
             HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
@@ -94,7 +94,7 @@
         }
         [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         if (weakSelf.count) {
-            NSDictionary *rawData = @{@"title": _(@"View More Tweets"),
+            NSDictionary *rawData = @{@"title": _("View More Tweets"),
                                       @"action": kAction_UserTimeline,
                                       @"user_screen_name": weakSelf.screenName ?: @""};
             HSUTableCellData *viewMoreCellData =
@@ -148,7 +148,7 @@
 
 - (void)_notificationDraftCountChanged
 {
-    NSDictionary *rawData = @{@"title": _(@"Drafts"),
+    NSDictionary *rawData = @{@"title": _("Drafts"),
                               @"count": @([[HSUDraftManager shared] draftsSortedByUpdateTime].count),
                               @"action": kAction_Drafts};
     HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
@@ -163,9 +163,9 @@
 {
     // check dm
     NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
-    [TWENGINE getDirectMessagesSinceID:latestIdStr success:^(id responseObj) {
+    [twitter getDirectMessagesSinceID:latestIdStr success:^(id responseObj) {
         id rMsgs = responseObj;
-        [TWENGINE getSentMessagesSinceID:latestIdStr success:^(id responseObj) {
+        [twitter getSentMessagesSinceID:latestIdStr success:^(id responseObj) {
             id sMsgs = responseObj;
             // merge received messages & sent messages
             NSArray *messages = [[NSArray arrayWithArray:rMsgs] arrayByAddingObjectsFromArray:sMsgs];

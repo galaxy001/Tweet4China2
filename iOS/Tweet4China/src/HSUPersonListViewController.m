@@ -62,25 +62,25 @@
     
     if ([cellData.rawData[@"following"] boolValue]) {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE unFollowUser:screenName success:^(id responseObj) {
+        [twitter unFollowUser:screenName success:^(id responseObj) {
             cellData.renderData[@"sending_following_request"] = @(NO);
             NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
             rawData[@"following"] = @(NO);
             cellData.rawData = rawData;
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Unfollow failed")];
+            [twitter dealWithError:error errTitle:_("Unfollow failed")];
         }];
     } else {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE followUser:screenName success:^(id responseObj) {
+        [twitter followUser:screenName success:^(id responseObj) {
             cellData.renderData[@"sending_following_request"] = @(NO);
             NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
             rawData[@"following"] = @(YES);
             cellData.rawData = rawData;
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Follow failed")];
+            [twitter dealWithError:error errTitle:_("Follow failed")];
         }];
     }
 }

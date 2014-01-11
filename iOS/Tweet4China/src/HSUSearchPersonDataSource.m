@@ -17,7 +17,7 @@
     }
     NSString *keyword = self.keyword;
     __weak typeof(self)weakSelf = self;
-    [TWENGINE searchUserWithKeyword:self.keyword success:^(id responseObj) {
+    [twitter searchUserWithKeyword:self.keyword success:^(id responseObj) {
         if ([weakSelf.keyword isEqualToString:keyword]) {
             success(responseObj);
         }
@@ -45,7 +45,7 @@
         [self.delegate dataSource:self didFinishLoadMoreWithError:nil];
         self.loadingCount --;
     } failure:^(NSError *error) {
-        [TWENGINE dealWithError:error errTitle:_(@"Load search result failed")];
+        [twitter dealWithError:error errTitle:_("Load search result failed")];
         [self.delegate dataSource:self didFinishLoadMoreWithError:error];
     }];
 }

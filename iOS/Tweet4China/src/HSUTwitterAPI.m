@@ -40,6 +40,11 @@ static NSString * const url_lists_members_destroy_all = @"https://api.twitter.co
 static NSString * const url_lists_members_create_all = @"https://api.twitter.com/1.1/lists/members/create_all.json";
 static NSString * const url_lists_statuses = @"https://api.twitter.com/1.1/lists/statuses.json";
 static NSString * const url_lists_list = @"https://api.twitter.com/1.1/lists/list.json";
+static NSString * const url_lists_destroy = @"https://api.twitter.com/1.1/lists/destroy.json";
+static NSString * const url_lists_subscriptions = @"https://api.twitter.com/1.1/lists/subscriptions.json";
+static NSString * const url_lists_subscribers_create = @"https://api.twitter.com/1.1/lists/subscribers/create.json";
+static NSString * const url_lists_subscribers_destroy = @"https://api.twitter.com/1.1/lists/subscribers/destroy.json";
+static NSString * const url_lists_subscribers = @"https://api.twitter.com/1.1/lists/subscribers.json";
 
 static NSString * const url_statuses_home_timeline = @"https://api.twitter.com/1.1/statuses/home_timeline.json";
 static NSString * const url_statuses_update = @"https://api.twitter.com/1.1/statuses/update.json";
@@ -197,7 +202,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
             [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
-            [TWENGINE authorizeByOAuth];
+            [twitter authorizeByOAuth];
         });
         return;
     }
@@ -215,11 +220,11 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 
 - (void)authorizeByFHSTwitterEngine
 {
-    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_(@"Login")];
+    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_("Login")];
     loginItem.action = ^{
         [self authorizeByOAuth];
     };
-    RIButtonItem *registerItem = [RIButtonItem itemWithLabel:_(@"Register")];
+    RIButtonItem *registerItem = [RIButtonItem itemWithLabel:_("Register")];
     registerItem.action = ^{
         self.authorizing = NO;
         UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
@@ -227,7 +232,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         nav.viewControllers = @[miniBrowser];
         [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
     };
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Login to twitter")
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Login to twitter")
                                                     message:nil
                                            cancelButtonItem:nil
                                            otherButtonItems:loginItem, registerItem, nil];
@@ -246,7 +251,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                  NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
                  NSMutableDictionary *us = [responseObj mutableCopy];
-                 us[@"access_token"] = TWENGINE.accessToken;
+                 us[@"access_token"] = twitter.accessToken;
                  userSettings[us[@"screen_name"]] = us;
                  [[NSUserDefaults standardUserDefaults] setObject:us[@"screen_name"] forKey:HSUCurrentScreenName];
                  [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
@@ -254,7 +259,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @YES});
                  [Flurry logEvent:@"authorize_by_oauth_success" withParameters:@{@"network": NetWorkStatus}];
              } failure:^(NSError *error) {
-                 [[HSUTwitterAPI shared] dealWithError:error errTitle:_(@"Fetch account info failed")];
+                 [[HSUTwitterAPI shared] dealWithError:error errTitle:_("Fetch account info failed")];
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
                  [Flurry logEvent:@"authorize_by_oauth_failed" withParameters:@{@"network": NetWorkStatus}];
              }];
@@ -401,6 +406,13 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  success:success
                  failure:failure];
 }
+- (void)getListsSubscribedWithScreenName:(NSString *)screenName count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendGETWithUrl:url_lists_subscriptions
+              parameters:@{@"screen_name": screenName, @"count": @(count)}
+                 success:success
+                 failure:failure];
+}
 - (void)getListTimelineWithListID:(NSString *)listID maxID:(NSString *)maxID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     if (maxID) maxID = S(@"%lld", [maxID longLongValue] - 1);
@@ -413,6 +425,59 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 {
     [self sendGETWithUrl:url_lists_statuses
               parameters:@{@"list_id": listID, @"since_id": sinceID, @"count": @(count)}
+                 success:success
+                 failure:failure];
+}
+- (void)deleteListWithListID:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_destroy
+               parameters:@{@"list_id": listID}
+                  success:success
+                  failure:failure];
+}
+- (void)updateListWithListID:(NSString *)listID name:(NSString *)name desc:(NSString *)desc mode:(NSString *)mode success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_update
+               parameters:@{@"list_id": listID, @"name": name, @"description": desc, @"mode": mode}
+                  success:success
+                  failure:failure];
+}
+- (void)createListWithName:(NSString *)name desc:(NSString *)desc mode:(NSString *)mode success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_create
+               parameters:@{@"name": name, @"description": desc, @"mode": mode}
+                  success:success
+                  failure:failure];
+}
+- (void)subscribeListWithListID:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_subscribers_create
+               parameters:@{@"list_id": listID}
+                  success:success
+                  failure:failure];
+}
+- (void)unsubscribeListWithListID:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_subscribers_destroy
+               parameters:@{@"list_id": listID}
+                  success:success
+                  failure:failure];
+}
+- (void)getListSubscribersWithListID:(NSString *)listID sinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    NSMutableDictionary *params = [@{@"list_id": listID} mutableCopy];
+    if (sinceID) params[@"cursor"] = sinceID;
+    [self sendGETWithUrl:url_lists_subscribers
+              parameters:params
+                 success:success
+                 failure:failure];
+}
+- (void)getListMembersWithListID:(NSString *)listID sinceID:(NSString *)sinceID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
+{
+    NSMutableDictionary *params = [@{@"list_id": listID} mutableCopy];
+    if (sinceID) params[@"cursor"] = sinceID;
+    [self sendGETWithUrl:url_lists_members
+              parameters:params
                  success:success
                  failure:failure];
 }
@@ -720,7 +785,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     
     [[AFNetworkActivityIndicatorManager sharedManager] incrementActivityCount];
     dispatch_async(GCDBackgroundThread, ^{
-        FHSTwitterEngine *engine = TWENGINE.engine;
+        FHSTwitterEngine *engine = twitter.engine;
         id responseObj;
         if ([method isEqualToString:@"GET"]) {
             responseObj = [engine sendGETRequest:request withParameters:params];
@@ -793,10 +858,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     }
     
     if ([Reachability reachabilityForInternetConnection].isReachable) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Retry Later")];
-        RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_(@"Change Server")];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Connection failed")
-                                                        message:_(@"api_request_failed_alert_message")
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Retry Later")];
+        RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_("Change Server")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Connection failed")
+                                                        message:_("api_request_failed_alert_message")
                                                cancelButtonItem:cancelItem
                                                otherButtonItems:changeServerItem, nil];
         changeServerItem.action = ^{
@@ -806,7 +871,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         };
         [alert show];
     } else {
-        [SVProgressHUD showErrorWithStatus:_(@"Check your network")];
+        [SVProgressHUD showErrorWithStatus:_("Check your network")];
     }
 }
 

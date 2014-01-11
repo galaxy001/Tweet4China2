@@ -39,12 +39,12 @@
         homeNav.viewControllers = @[homeVC];
 #ifdef __IPHONE_7_0
         if (Sys_Ver >= 7) {
-            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Home")
                                                                image:[UIImage imageNamed:@"icn_tab_home_selected"]
                                                        selectedImage:[UIImage imageNamed:@"ic_tab_home_default"]];
         } else {
 #endif
-            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Home")
+            homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Home")
                                                                image:[UIImage imageNamed:@"icn_tab_home_selected"]
                                                                  tag:1];
 #ifdef __IPHONE_7_0
@@ -58,12 +58,12 @@
         connectNav.viewControllers = @[connectVC];
 #ifdef __IPHONE_7_0
         if (Sys_Ver >= 7) {
-            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect")
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Connect")
                                                                   image:[UIImage imageNamed:@"icn_tab_connect_selected"]
                                                           selectedImage:[UIImage imageNamed:@"ic_tab_at_default"]];
         } else {
 #endif
-            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Connect")
+            connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Connect")
                                                                   image:[UIImage imageNamed:@"icn_tab_connect_selected"]
                                                                     tag:2];
 #ifdef __IPHONE_7_0
@@ -77,12 +77,12 @@
         discoverNav.viewControllers = @[discoverVC];
 #ifdef __IPHONE_7_0
         if (Sys_Ver >= 7) {
-            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover")
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
                                                                    image:[UIImage imageNamed:@"icn_tab_discover_selected"]
                                                            selectedImage:[UIImage imageNamed:@"ic_tab_hash_default"]];
         } else {
 #endif
-            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Discover")
+            discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
                                                                    image:[UIImage imageNamed:@"icn_tab_discover_selected"]
                                                                      tag:3];
 #ifdef __IPHONE_7_0
@@ -96,12 +96,12 @@
         meNav.viewControllers = @[meVC];
 #ifdef __IPHONE_7_0
         if (Sys_Ver >= 7) {
-            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me")
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Me")
                                                              image:[UIImage imageNamed:@"icn_tab_me_selected"]
                                                      selectedImage:[UIImage imageNamed:@"ic_tab_profile_default"]];
         } else {
 #endif
-            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_(@"Me")
+            meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Me")
                                                              image:[UIImage imageNamed:@"icn_tab_me_selected"]
                                                                tag:4];
 #ifdef __IPHONE_7_0
@@ -136,7 +136,7 @@
 
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
 {
-    if ([TWENGINE isAuthorized]) {
+    if ([twitter isAuthorized]) {
         notification_post_with_object(HSUTabControllerDidSelectViewControllerNotification, viewController);
         return YES;
     }

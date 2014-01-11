@@ -31,7 +31,7 @@
 //        self.hideBackButton = YES;
 //        self.hideRightButtons = YES;
         self.useRefreshControl = NO;
-        self.title = _(@"Drafts");
+        self.title = _("Drafts");
     }
     return self;
 }
@@ -80,7 +80,7 @@
     
     UIButton *editButton = [[UIButton alloc] init];
     self.editButton = editButton;
-    [editButton setTitle:_(@"Edit") forState:UIControlStateNormal];
+    [editButton setTitle:_("Edit") forState:UIControlStateNormal];
     editButton.titleLabel.font = [UIFont boldSystemFontOfSize:12];
     [editButton sizeToFit];
     editButton.size = ccs(editButton.width + 20, editButton.height + 10);
@@ -94,7 +94,7 @@
     UIBarButtonItem *placeButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
     
     UIButton *sendButton = [[UIButton alloc] init];
-    [sendButton setTitle:_(@"Send All") forState:UIControlStateNormal];
+    [sendButton setTitle:_("Send All") forState:UIControlStateNormal];
     sendButton.titleLabel.font = [UIFont boldSystemFontOfSize:12];
     [sendButton sizeToFit];
     sendButton.size = ccs(sendButton.width + 20, sendButton.height + 10);
@@ -132,9 +132,9 @@
     self.editing = !self.editing;
     [self.tableView setEditing:self.editing animated:YES];
     if (self.editing) {
-        [self.editButton setTitle:_(@"Done") forState:UIControlStateNormal];
+        [self.editButton setTitle:_("Done") forState:UIControlStateNormal];
     } else {
-        [self.editButton setTitle:_(@"Edit") forState:UIControlStateNormal];
+        [self.editButton setTitle:_("Edit") forState:UIControlStateNormal];
     }
 }
 
@@ -172,7 +172,7 @@
 {
     if (!self.editing) {
         self.editing = YES;
-        [self.editButton setTitle:_(@"Done") forState:UIControlStateNormal];
+        [self.editButton setTitle:_("Done") forState:UIControlStateNormal];
     }
 }
 

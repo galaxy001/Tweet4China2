@@ -143,7 +143,7 @@
 - (void)sendDraft:(NSDictionary *)draft success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     CLLocation *location = [[CLLocation alloc] initWithLatitude:[draft[@"lat"] doubleValue] longitude:[draft[@"long"] doubleValue]];
-    [TWENGINE sendStatus:draft[@"status"] inReplyToID:draft[kTwitterReplyID_ParameterKey] imageFilePath:draft[@"image_file_path"] location:location placeId:draft[@"place_id"] success:^(id responseObj) {
+    [twitter sendStatus:draft[@"status"] inReplyToID:draft[kTwitterReplyID_ParameterKey] imageFilePath:draft[@"image_file_path"] location:location placeId:draft[@"place_id"] success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

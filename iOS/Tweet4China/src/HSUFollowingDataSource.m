@@ -12,7 +12,7 @@
 
 -(void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    [TWENGINE getFollowingsSinceId:self.nextCursor forUserScreenName:self.screenName success:^(id responseObj) {
+    [twitter getFollowingsSinceId:self.nextCursor forUserScreenName:self.screenName success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

@@ -174,7 +174,7 @@
 {
     HSUBaseDataSource *dataSource = [[self alloc] init];
     dataSource.delegate = delegate;
-    if (!TWENGINE.isAuthorized) {
+    if (!twitter.isAuthorized) {
         return dataSource;
     }
     if (useCahce) {

@@ -41,7 +41,7 @@
         searchTF = [[HSUSearchField alloc] init];
     }
     self.searchTF = searchTF;
-    searchTF.placeholder = _(@"Search User");
+    searchTF.placeholder = _("Search User");
     searchTF.leftViewMode = UITextFieldViewModeAlways;
     searchTF.returnKeyType = UIReturnKeySearch;
     searchTF.autocorrectionType = UITextAutocorrectionTypeNo;

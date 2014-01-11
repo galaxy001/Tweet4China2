@@ -9,9 +9,7 @@
 #import "HSUAppDelegate.h"
 #import "HSUTabController.h"
 #import "HSUShadowsocksProxy.h"
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
 #import <Appirater/Appirater.h>
-#endif
 #import "HSUiPadTabController.h"
 #import "HSUComposeViewController.h"
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
@@ -111,7 +109,7 @@ static HSUShadowsocksProxy *proxy;
         if (imgData) {
             UIImage *img = [UIImage imageWithData:imgData];
             if (img) {
-                return [self postWithMessage:_(@"Just post a photo.") image:img];
+                return [self postWithMessage:_("Just post a photo.") image:img];
             }
         }
         return NO;
@@ -168,13 +166,11 @@ static HSUShadowsocksProxy *proxy;
 
 - (void)configureAppirater
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     [Appirater setAppId:AppleID];
     [Appirater setDaysUntilPrompt:1];
     [Appirater setUsesUntilPrompt:10];
     [Appirater setSignificantEventsUntilPrompt:-1];
     [Appirater setTimeBeforeReminding:2];
-#endif
 }
 
 - (BOOL)startShadowsocks
@@ -335,10 +331,10 @@ static HSUShadowsocksProxy *proxy;
 #ifndef FreeApp // free app is restrict for using time
     return YES;
 #endif
-    NSString *title = _(@"pro_alert_title");
-    NSString *message = _(@"pro_message_title");
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"pro_alert_cancel_item")];
-    RIButtonItem *buyItem = [RIButtonItem itemWithLabel:_(@"pro_alert_buy_item")];
+    NSString *title = _("pro_alert_title");
+    NSString *message = _("pro_message_title");
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("pro_alert_cancel_item")];
+    RIButtonItem *buyItem = [RIButtonItem itemWithLabel:_("pro_alert_buy_item")];
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message cancelButtonItem:cancelItem otherButtonItems:buyItem, nil];
     [alert show];
     buyItem.action = ^{
@@ -358,8 +354,8 @@ static HSUShadowsocksProxy *proxy;
     return;
 #ifndef FreeApp
     if (self.isJailBreak) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"OK")];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Jailbreak Device") message:_(@"jailbreak_alert_message") cancelButtonItem:cancelItem otherButtonItems:nil, nil];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("OK")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Jailbreak Device") message:_("jailbreak_alert_message") cancelButtonItem:cancelItem otherButtonItems:nil, nil];
         [alert show];
         cancelItem.action = ^{
             [Appirater setAppId:FreeAppleID];
@@ -432,9 +428,9 @@ static HSUShadowsocksProxy *proxy;
             CGFloat currentVersion = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"] floatValue];
             if (latestVersion > currentVersion) {
                 dispatch_async(GCDMainThread, ^{
-                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Ignore")];
-                    RIButtonItem *updateItem = [RIButtonItem itemWithLabel:_(@"Update")];
-                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"New Version") message:_(@"New version found, update now!") cancelButtonItem:cancelItem otherButtonItems:updateItem, nil];
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Ignore")];
+                    RIButtonItem *updateItem = [RIButtonItem itemWithLabel:_("Update")];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("New Version") message:_("New version found, update now!") cancelButtonItem:cancelItem otherButtonItems:updateItem, nil];
                     [alert show];
                     updateItem.action = ^{
                         [Flurry logEvent:@"update_confirm"];

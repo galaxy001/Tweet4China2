@@ -10,11 +10,11 @@
 
 @implementation HSUListTweetsDataSource
 
-- (instancetype)initWithListId:(NSString *)listId
+- (instancetype)initWithList:(NSDictionary *)list
 {
     self = [super init];
     if (self) {
-        self.listId = listId;
+        self.list = list;
     }
     return self;
 }
@@ -25,7 +25,7 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    [TWENGINE getListTimelineWithListID:self.listId sinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
+    [twitter getListTimelineWithListID:self.list[@"id_str"] sinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);
@@ -36,7 +36,7 @@
 {
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
-    [TWENGINE getListTimelineWithListID:self.listId maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
+    [twitter getListTimelineWithListID:self.list[@"id_str"] maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

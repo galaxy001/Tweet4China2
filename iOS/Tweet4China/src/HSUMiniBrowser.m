@@ -35,7 +35,7 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = _(@"Loading...");
+    self.navigationItem.title = _("Loading...");
     self.view.backgroundColor = bw(0xd0);
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000

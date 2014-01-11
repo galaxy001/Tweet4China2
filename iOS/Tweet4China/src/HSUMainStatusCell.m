@@ -295,7 +295,7 @@
     [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     
     // time
-    NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]];
     timePlaceL.text = createdDate.standardTwitterDisplay;
     
     NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];

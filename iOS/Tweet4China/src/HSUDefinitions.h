@@ -6,9 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#ifndef Tweet4China_HSUDefinitions_h
-#define Tweet4China_HSUDefinitions_h
-
 // Define twitter application consumer key & secret.
 // Access level of your twitter application should contains Read, write, and direct messages
 // if you want to use all of the features.
@@ -71,9 +68,8 @@ _Pragma("clang diagnostic pop") \
 } while (0)
 
 
-#ifndef _
-#define _(s) NSLocalizedString(s, nil)
-#endif
+#define _(s) NSLocalizedString(@s, nil)
+#define __(s) NSLocalizedString(@"s", nil)
 #define GCDBackgroundThread dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 #define GCDMainThread dispatch_get_main_queue()
 #define dp(filename) [([NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0]) stringByAppendingPathComponent:filename]
@@ -99,7 +95,7 @@ _Pragma("clang diagnostic pop") \
 #define kLightBlueColor rgb(141, 157, 168)
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
-#define TWENGINE [HSUTwitterAPI shared]
+#define twitter [HSUTwitterAPI shared]
 #define SDK_Ver __IPHONE_OS_VERSION_MAX_ALLOWED
 #define Sys_Ver MIN([[UIDevice currentDevice].systemVersion floatValue], __IPHONE_OS_VERSION_MAX_ALLOWED/10000.0)
 #define IPAD [HSUCommonTools isIPad]
@@ -107,7 +103,7 @@ _Pragma("clang diagnostic pop") \
 
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
-#define MyScreenName [TWENGINE myScreenName]
+#define MyScreenName [twitter myScreenName]
 #define DEF_NavitationController_Light [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
@@ -172,11 +168,10 @@ _Pragma("clang diagnostic pop") \
 #define HSUPostTweetProgressChangedNotification @"HSUPostTweetProgressChangedNotification"
 #define HSUBookmarkUpdatedNotification @"HSUBookmarkUpdatedNotification"
 
+#define status_height 20
 #define navbar_height self.navigationController.navigationBar.height
 #define tabbar_height self.tabBarController.tabBar.height
 
-#define NetWorkStatus [TWENGINE networkStatus]
+#define NetWorkStatus [twitter networkStatus]
 
 BOOL statusViewTestLabelInited;
-
-#endif

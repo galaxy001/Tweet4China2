@@ -123,13 +123,13 @@
     self.retryButton.hidden = YES;
     if ([data.rawData[@"sending"] boolValue]) {
         if ([data.rawData[@"failed"] boolValue]) {
-            self.timeLabel.text = _(@"Failed");
+            self.timeLabel.text = _("Failed");
             self.retryButton.hidden = NO;
         } else {
-            self.timeLabel.text = _(@"Sending...");
+            self.timeLabel.text = _("Sending...");
         }
     } else {
-        NSDate *createdDate = [TWENGINE getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
+        NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
         NSDateFormatter *df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"M/d/yyyy HH:mm"];
         self.timeLabel.text = [df stringFromDate:createdDate];

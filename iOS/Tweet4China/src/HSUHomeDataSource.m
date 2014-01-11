@@ -17,7 +17,7 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    [TWENGINE getHomeTimelineSinceID:latestIdStr count:1 success:^(id responseObj) {
+    [twitter getHomeTimelineSinceID:latestIdStr count:1 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         NSString *lastIdStr = tweets.lastObject[@"id_str"];
         if (lastIdStr) { // updated
@@ -34,24 +34,24 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    [TWENGINE getHomeTimelineSinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
+    [twitter getHomeTimelineSinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
         success(responseObj);
         // ask follow author
         if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"asked_follow_author"] boolValue]) {
             NSString *authorScreenName = @"tuoxie007";
-            if (![TWENGINE.myScreenName isEqualToString:authorScreenName]) {
-                [TWENGINE showUser:authorScreenName success:^(id responseObj) {
+            if (![twitter.myScreenName isEqualToString:authorScreenName]) {
+                [twitter showUser:authorScreenName success:^(id responseObj) {
                     NSDictionary *profile = responseObj;
                     if (![profile[@"following"] boolValue]) {
-                        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-                        RIButtonItem *followItem = [RIButtonItem itemWithLabel:_(@"OK")];
+                        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+                        RIButtonItem *followItem = [RIButtonItem itemWithLabel:_("OK")];
                         followItem.action = ^{
-                            [TWENGINE followUser:authorScreenName success:^(id responseObj) {
+                            [twitter followUser:authorScreenName success:^(id responseObj) {
                             } failure:^(NSError *error) {
                             }];
                         };
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Follow Author @tuoxie007")
-                                                                        message:_(@"Get the latest activities about Tweet4China")
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Follow Author @tuoxie007")
+                                                                        message:_("Get the latest activities about Tweet4China")
                                                                cancelButtonItem:cancelItem
                                                                otherButtonItems:followItem, nil];
                         [alert show];
@@ -79,7 +79,7 @@
 {
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
-    [TWENGINE getHomeTimelineWithMaxID:lastStatusId count:self.requestCount success:^(id responseObj) {
+    [twitter getHomeTimelineWithMaxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {
         failure(error);

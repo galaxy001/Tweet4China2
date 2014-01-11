@@ -23,15 +23,15 @@
 {
     [super refresh];
     
-    if (self.count == 0 && [TWENGINE isAuthorized]) {
-        [SVProgressHUD showWithStatus:_(@"Loading Lists")];
+    [self.data removeAllObjects];
+    if (self.count == 0 && [twitter isAuthorized]) {
+        [SVProgressHUD showWithStatus:_("Loading Lists")];
     }
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getListsWithScreenName:self.screenName success:^(id responseObj) {
+    [twitter getListsWithScreenName:self.screenName success:^(id responseObj) {
         [SVProgressHUD dismiss];
         NSArray *lists = responseObj;
         if (lists.count) {
-            
             for (int i=lists.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:lists[i] dataType:kDataType_List];
@@ -57,7 +57,7 @@
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [SVProgressHUD dismiss];
-        [TWENGINE dealWithError:error errTitle:_(@"Load failed")];
+        [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         weakSelf.loadingCount --;
     }];
@@ -70,7 +70,15 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    NSDictionary *list = [self rawDataAtIndex:indexPath.row];
+    [SVProgressHUD showWithStatus:nil];
+    [twitter deleteListWithListID:list[@"id_str"] success:^(id responseObj) {
+        [SVProgressHUD dismiss];
+        [self.data removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    } failure:^(NSError *error) {
+        [SVProgressHUD showErrorWithStatus:_("Delete List failed")];
+    }];
 }
 
 @end

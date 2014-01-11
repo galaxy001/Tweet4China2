@@ -173,13 +173,13 @@
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     if (now - self.lastUpdateTime > 60) {
         self.lastUpdateTime = now;
-        self.navigationItem.title = self.profile ? _(@"Updating...") : _(@"Loading...");
+        self.navigationItem.title = self.profile ? _("Updating...") : _("Loading...");
         __weak typeof(self) weakSelf = self;
-        [TWENGINE showUser:self.screenName success:^(id responseObj) {
+        [twitter showUser:self.screenName success:^(id responseObj) {
             weakSelf.navigationItem.title = nil;
             [weakSelf updateProfile:responseObj];
         } failure:^(NSError *error) {
-            weakSelf.navigationItem.title = _(@"Error Occurred");
+            weakSelf.navigationItem.title = _("Error Occurred");
             weakSelf.lastUpdateTime = 0;
         }];
     }
@@ -193,7 +193,7 @@
     
     if (self.isMe) {
         NSMutableDictionary *profiles = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserProfiles] mutableCopy] ?: [NSMutableDictionary dictionary];
-        profiles[TWENGINE.myScreenName] = profile;
+        profiles[twitter.myScreenName] = profile;
         [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -280,10 +280,8 @@
 
 - (void)listsButtonTouched
 {
-    HSUSubscribedListsDataSource *dataSource = [[HSUSubscribedListsDataSource alloc] initWithScreenName:self.screenName];
-    HSUListsViewController *listVC = [[HSUListsViewController alloc] initWithDataSource:dataSource];
+    HSUListsViewController *listVC = [[HSUListsViewController alloc] initWithScreenName:self.screenName];
     [self.navigationController pushViewController:listVC animated:YES];
-    [dataSource refresh];
 }
 
 - (void)draftsButtonTouched
@@ -295,44 +293,44 @@
 {
     followButton.enabled = NO;
     if ([self.profile[@"blocked"] boolValue]) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_("Unblock")];
         __weak typeof(self)weakSelf = self;
         unblockItem.action = ^{
-            [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
+            [twitter unblockuser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
                 profile[@"blocked"] = @(NO);
                 profile[@"following"] = @(NO);
                 weakSelf.profile = profile;
                 [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
+                [twitter dealWithError:error errTitle:_("Unblock failed")];
             }];
         };
         UIActionSheet *blockActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:unblockItem otherButtonItems:nil, nil];
         [blockActionSheet showInView:[UIApplication sharedApplication].keyWindow];
     } else if ([self.profile[@"following"] boolValue]) {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE unFollowUser:self.screenName success:^(id responseObj) {
+        [twitter unFollowUser:self.screenName success:^(id responseObj) {
             NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
             profile[@"following"] = @(NO);
             weakSelf.profile = profile;
             [weakSelf.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Unfollow failed")];
+            [twitter dealWithError:error errTitle:_("Unfollow failed")];
             followButton.enabled = YES;
         }];
     } else {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE followUser:self.screenName success:^(id responseObj) {
+        [twitter followUser:self.screenName success:^(id responseObj) {
             NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
             profile[@"following"] = @(YES);
             weakSelf.profile = profile;
             [weakSelf.profileView setupWithProfile:profile];
             followButton.enabled = YES;
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Follow failed")];
+            [twitter dealWithError:error errTitle:_("Follow failed")];
             followButton.enabled = YES;
         }];
     }
@@ -351,10 +349,10 @@
             return;
         }
         
-        [SVProgressHUD showWithStatus:_(@"Please Wait")];
+        [SVProgressHUD showWithStatus:_("Please Wait")];
         __weak typeof(self)weakSelf = self;
         NSString *screenName = self.screenName;
-        [TWENGINE lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
+        [twitter lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
             NSDictionary *ship = responseObj[0];
             NSArray *connections = ship[@"connections"];
             BOOL followedMe = NO;
@@ -378,7 +376,7 @@
                     [SVProgressHUD dismiss];
                     [weakSelf presentViewController:nav animated:YES completion:nil];
                 } else {
-                    [TWENGINE showUser:MyScreenName success:^(id responseObj) {
+                    [twitter showUser:MyScreenName success:^(id responseObj) {
                         [SVProgressHUD dismiss];
                         messagesVC.myProfile = responseObj;
                         [weakSelf presentViewController:nav animated:YES completion:nil];
@@ -388,8 +386,8 @@
                 }
             } else {
                 [SVProgressHUD dismiss];
-                NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _(@"You can not send direct message to"), screenName, screenName, _(@"is not following you.")];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_(@"OK") otherButtonTitles:nil, nil];
+                NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), screenName, screenName, _("is not following you.")];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
                 [alert show];
             }
         } failure:^(NSError *error) {
@@ -403,44 +401,44 @@
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil];
     uint count = 0;
     
-    RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:_(@"Report Spam")];
+    RIButtonItem *reportSpamItem = [RIButtonItem itemWithLabel:_("Report Spam")];
     reportSpamItem.action = ^{
-        [TWENGINE reportUserAsSpam:self.screenName success:^(id responseObj) {
+        [twitter reportUserAsSpam:self.screenName success:^(id responseObj) {
             
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Report Spam failed")];
+            [twitter dealWithError:error errTitle:_("Report Spam failed")];
         }];
     };
     [actionSheet addButtonItem:reportSpamItem];
     count ++;
     
     if ([self.profile[@"blocked"] boolValue]) {
-        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_(@"Unblock")];
+        RIButtonItem *unblockItem = [RIButtonItem itemWithLabel:_("Unblock")];
         __weak typeof(self)weakSelf = self;
         unblockItem.action = ^{
-            [TWENGINE unblockuser:self.screenName success:^(id responseObj) {
+            [twitter unblockuser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = self.profile.mutableCopy;
                 profile[@"blocked"] = @(NO);
                 profile[@"following"] = @(NO);
                 weakSelf.profile = profile;
                 [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:_(@"Unblock failed")];
+                [twitter dealWithError:error errTitle:_("Unblock failed")];
             }];
         };
         [actionSheet addButtonItem:unblockItem];
     } else {
-        RIButtonItem *blockItem = [RIButtonItem itemWithLabel:_(@"Block")];
+        RIButtonItem *blockItem = [RIButtonItem itemWithLabel:_("Block")];
         __weak typeof(self)weakSelf = self;
         blockItem.action = ^{
-            [TWENGINE blockUser:self.screenName success:^(id responseObj) {
+            [twitter blockUser:self.screenName success:^(id responseObj) {
                 NSMutableDictionary *profile = weakSelf.profile.mutableCopy;
                 profile[@"blocked"] = @(YES);
                 profile[@"following"] = @(NO);
                 weakSelf.profile = profile;
                 [weakSelf.profileView setupWithProfile:profile];
             } failure:^(NSError *error) {
-                [TWENGINE dealWithError:error errTitle:_(@"Block failed")];
+                [twitter dealWithError:error errTitle:_("Block failed")];
             }];
         };
         [actionSheet addButtonItem:blockItem];
@@ -448,7 +446,7 @@
     [actionSheet setDestructiveButtonIndex:count];
     count ++;
     
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
     [actionSheet setCancelButtonIndex:count];
     count ++;
@@ -476,7 +474,6 @@
 
 - (void)selectPhotoForAvatar:(BOOL)forAvatar
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
     if (forAvatar) {
         cameraVC.maxWidth = 640;
@@ -486,32 +483,6 @@
     cameraVC.delegate = self;
     [self presentViewController:cameraVC animated:YES completion:nil];
     self.selectPhotoForAvatar = forAvatar;
-#else
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_(@"Select From Camera")];
-    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_(@"Take a Picture")];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
-    [actionSheet showInView:self.view.window];
-    cancelItem.action = ^{
-        [contentTV becomeFirstResponder];
-    };
-    photoItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-        self.selectPhotoForAvatar = forAvatar;
-    };
-    captureItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-        self.selectPhotoForAvatar = forAvatar;
-    };
-#endif
 }
 
 - (void)avatarButtonTouched
@@ -543,7 +514,7 @@
 - (void)_composeButtonTouched
 {
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    if (![self.screenName isEqualToString:[TWENGINE myScreenName]]) {
+    if (![self.screenName isEqualToString:[twitter myScreenName]]) {
         composeVC.defaultText = [NSString stringWithFormat:@"@%@ ", self.screenName];
         composeVC.defaultSelectedRange = NSMakeRange(0, composeVC.defaultText.length);
     }
@@ -557,7 +528,7 @@
     UIImage *image = cameraViewController.photo;
     if (image) {
         __weak typeof(self) weakSelf = self;
-        [SVProgressHUD showWithStatus:_(@"Uploading...")];
+        [SVProgressHUD showWithStatus:_("Uploading...")];
         // get center square
         if (image.size.width > image.size.height) {
             image = [image subImageAtRect:ccr(image.size.width/2-image.size.height/2, 0, image.size.height, image.size.height)];
@@ -565,11 +536,11 @@
             image = [image subImageAtRect:ccr(0, image.size.height/2-image.size.width/2, image.size.width, image.size.width)];
         }
         if (self.selectPhotoForAvatar) {
-            [TWENGINE updateAvatar:image success:^(id responseObj) {
+            [twitter updateAvatar:image success:^(id responseObj) {
                 [weakSelf refreshData];
                 [SVProgressHUD dismiss];
             } failure:^(NSError *error) {
-                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+                [SVProgressHUD showErrorWithStatus:_("Upload failed")];
             }];
         } else {
             // get center rectangle
@@ -578,11 +549,11 @@
             } else if (image.size.width < image.size.height * 2) {
                 image = [image subImageAtRect:ccr(0, image.size.height-image.size.width/2, image.size.width, image.size.width/2)];
             }
-            [TWENGINE updateBanner:image success:^(id responseObj) {
+            [twitter updateBanner:image success:^(id responseObj) {
                 [weakSelf refreshData];
                 [SVProgressHUD dismiss];
             } failure:^(NSError *error) {
-                [SVProgressHUD showErrorWithStatus:_(@"Upload failed")];
+                [SVProgressHUD showErrorWithStatus:_("Upload failed")];
             }];
         }
         self.selectPhotoForAvatar = NO;
@@ -639,7 +610,7 @@
 
 - (void)_addButtonTouched
 {
-    if (![TWENGINE isAuthorized] || [SVProgressHUD isVisible]) {
+    if (![twitter isAuthorized] || [SVProgressHUD isVisible]) {
         return;
     }
     

@@ -50,6 +50,10 @@
         icon.hidden = YES;
         title.hidden = NO;
         [spinner stopAnimating]; spinner.hidden = YES;
+    } else if (status == kLoadMoreCellStatus_NoMore) {
+        icon.hidden = NO;
+        [spinner stopAnimating]; spinner.hidden = YES;
+        title.hidden = YES;
     }
 }
 

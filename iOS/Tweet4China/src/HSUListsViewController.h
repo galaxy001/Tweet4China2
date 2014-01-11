@@ -10,4 +10,6 @@
 
 @interface HSUListsViewController : HSUBaseViewController
 
+- (instancetype)initWithScreenName:(NSString *)screenName;
+
 @end

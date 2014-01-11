@@ -237,6 +237,7 @@
 		96BE216D16EC74AB00226799 /* HSUStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE216C16EC74AB00226799 /* HSUStatusCell.m */; };
 		96BE217116EC77BF00226799 /* HSUBaseDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE217016EC77BF00226799 /* HSUBaseDataSource.m */; };
 		96BE217416EC8FDA00226799 /* HSUBaseTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BE217316EC8FDA00226799 /* HSUBaseTableCell.m */; };
+		96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAEC18813C8300D13F4B /* HSUEditListViewController.m */; };
 		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
 		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
 		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
@@ -639,6 +640,8 @@
 		96BE217016EC77BF00226799 /* HSUBaseDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUBaseDataSource.m; sourceTree = "<group>"; };
 		96BE217216EC8FDA00226799 /* HSUBaseTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUBaseTableCell.h; sourceTree = "<group>"; };
 		96BE217316EC8FDA00226799 /* HSUBaseTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUBaseTableCell.m; sourceTree = "<group>"; };
+		96BFCAEB18813C8300D13F4B /* HSUEditListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUEditListViewController.h; sourceTree = "<group>"; };
+		96BFCAEC18813C8300D13F4B /* HSUEditListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUEditListViewController.m; sourceTree = "<group>"; };
 		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
 		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
 		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
@@ -1229,6 +1232,8 @@
 				966E190E184CABFA00B5482C /* HSUMemberOfListsDataSource.m */,
 				966E1901184CAACC00B5482C /* HSUListsViewController.h */,
 				966E1902184CAACC00B5482C /* HSUListsViewController.m */,
+				96BFCAEB18813C8300D13F4B /* HSUEditListViewController.h */,
+				96BFCAEC18813C8300D13F4B /* HSUEditListViewController.m */,
 				966E1919184CB06300B5482C /* HSUListCell.h */,
 				966E191A184CB06300B5482C /* HSUListCell.m */,
 				966E1910184CAF7000B5482C /* HSUListViewController.h */,
@@ -1697,6 +1702,7 @@
 				96FA81D317450B6A00DB023A /* HSUDraftsCell.m in Sources */,
 				966ACE33174B9B180050F110 /* HSUConversationsViewController.m in Sources */,
 				966ACE36174B9B210050F110 /* HSUMessagesViewController.m in Sources */,
+				96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */,
 				966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */,
 				966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */,
 				96FAB148174BDBBC00C8C854 /* HSUMessageCell.m in Sources */,

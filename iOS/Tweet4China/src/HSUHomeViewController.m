@@ -88,7 +88,7 @@
     NSError *error = notification.userInfo[@"error"];
     BOOL success = [notification.userInfo[@"success"] boolValue];
     if (error || !success) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Authorize Error") message:error.description delegate:nil cancelButtonTitle:_(@"OK") otherButtonTitles:nil, nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Authorize Error") message:error.description delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
         [alert show];
     } else {
         [self.refreshControl beginRefreshing];

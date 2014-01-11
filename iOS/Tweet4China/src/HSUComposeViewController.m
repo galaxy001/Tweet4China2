@@ -51,12 +51,7 @@
 
 @end
 
-@interface HSUComposeViewController () <UITextViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
-,OCMCameraViewControllerDelegate>
-#else
-,UIImagePickerControllerDelegate>
-#endif
+@interface HSUComposeViewController () <UITextViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, OCMCameraViewControllerDelegate>
 
 @end
 
@@ -130,7 +125,7 @@
     if (self.defaultTitle) {
         self.title = self.defaultTitle;
     } else {
-        self.title = _(@"New Tweet");
+        self.title = _("New Tweet");
     }
     
     if (Sys_Ver < 7) {
@@ -142,7 +137,7 @@
     }
     
     UIBarButtonItem *cancelButtonItem = [[UIBarButtonItem alloc] init];
-    cancelButtonItem.title = _(@"Cancel");
+    cancelButtonItem.title = _("Cancel");
     cancelButtonItem.target = self;
     cancelButtonItem.action = @selector(cancelCompose);
     if (Sys_Ver < 7) {
@@ -161,7 +156,7 @@
     self.navigationItem.leftBarButtonItem = cancelButtonItem;
     
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
-    sendButtonItem.title = _(@"Tweet");
+    sendButtonItem.title = _("Tweet");
     sendButtonItem.target = self;
     sendButtonItem.action = @selector(sendTweet);
     sendButtonItem.enabled = NO;
@@ -294,11 +289,7 @@
     locationL.textColor = bw(140);
     locationL.shadowColor = kWhiteColor;
     locationL.shadowOffset = ccs(0, 1);
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     locationL.textAlignment = NSTextAlignmentCenter;
-#else
-    locationL.textAlignment = UITextAlignmentCenter;
-#endif
     locationL.numberOfLines = 1;
     locationL.frame = ccr(mapView.left, mapView.bottom, mapView.width, 30);
 
@@ -307,7 +298,7 @@
     [toggleLocationBnt setTapTarget:self action:@selector(toggleLocationButtonTouched)];
     [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
     [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-    [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
+    [toggleLocationBnt setTitle:_("Turn off location") forState:UIControlStateNormal];
     [toggleLocationBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
     toggleLocationBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
     [toggleLocationBnt sizeToFit];
@@ -323,9 +314,7 @@
     suggestionsTV.rowHeight = 37;
     suggestionsTV.backgroundColor = bw(232);
     suggestionsTV.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     [suggestionsTV registerClass:[HSUSuggestMentionCell class] forCellReuseIdentifier:[[HSUSuggestMentionCell class] description]];
-#endif
     
     contentShadowV = [[UIImageView alloc] initWithImage:[[UIImage imageNamed:@"searches-top-shadow.png"] stretchableImageFromCenter]];
     [self.view addSubview:contentShadowV];
@@ -372,13 +361,11 @@
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     locationManager.pausesLocationUpdatesAutomatically = YES;
-#endif
     
     friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
     __weak typeof(self)weakSelf = self;
-    [TWENGINE getFriendsWithCount:100 success:^(id responseObj) {
+    [twitter getFriendsWithCount:100 success:^(id responseObj) {
         friends = responseObj[@"users"];
         [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -388,7 +375,7 @@
     }];
     
     trends = [[NSUserDefaults standardUserDefaults] objectForKey:@"trends"];
-    [TWENGINE getTrendsWithSuccess:^(id responseObj) {
+    [twitter getTrendsWithSuccess:^(id responseObj) {
         trends = responseObj[0][@"trends"];
         [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -491,12 +478,12 @@
             [self dismiss];
             return;
         }
-        RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:_(@"Cancel")];
-        RIButtonItem *giveUpBnt = [RIButtonItem itemWithLabel:_(@"Don't Save")];
+        RIButtonItem *cancelBnt = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *giveUpBnt = [RIButtonItem itemWithLabel:_("Don't Save")];
         giveUpBnt.action = ^{
             [self dismissViewControllerAnimated:YES completion:nil];
         };
-        RIButtonItem *saveBnt = [RIButtonItem itemWithLabel:_(@"Save Draft")];
+        RIButtonItem *saveBnt = [RIButtonItem itemWithLabel:_("Save Draft")];
         saveBnt.action = ^{
             NSString *status = contentTV.text;
             NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
@@ -525,19 +512,19 @@
     } failure:^(NSError *error) {
         if (error.code == 204) {
             [[HSUDraftManager shared] removeDraft:draft];
-            [SVProgressHUD showErrorWithStatus:_(@"Duplicated status")];
+            [SVProgressHUD showErrorWithStatus:_("Duplicated status")];
             return ;
         }
         if (!shadowsocksStarted) {
             [[HSUAppDelegate shared] startShadowsocks];
         }
         [[HSUDraftManager shared] activeDraft:draft];
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-        RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:_(@"Drafts")];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:_("Drafts")];
         draftsItem.action = ^{
             [[HSUDraftManager shared] presentDraftsViewController];
         };
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_(@"Tweet not sent")
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Tweet not sent")
                                                         message:error.userInfo[@"message"]
                                                cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
         dispatch_async(GCDMainThread, ^{
@@ -684,7 +671,7 @@
             [locationManager startUpdatingLocation];
             geoBnt.hidden = YES;
             [geoLoadingV startAnimating];
-            [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
+            [toggleLocationBnt setTitle:_("Turn off location") forState:UIControlStateNormal];
             mapOutlineIV.backgroundColor = kClearColor;
         }
 
@@ -701,7 +688,7 @@
         [geoBnt setImage:[UIImage imageNamed:@"compose-geo"] forState:UIControlStateNormal];
         geoBnt.hidden = NO;
         [locationManager stopUpdatingLocation];
-        [toggleLocationBnt setTitle:_(@"Turn on location") forState:UIControlStateNormal];
+        [toggleLocationBnt setTitle:_("Turn on location") forState:UIControlStateNormal];
         [mapView removeAnnotations:mapView.annotations];
         mapOutlineIV.backgroundColor = rgba(1, 1, 1, 0.2);
         toggleLocationBnt.tag = 0;
@@ -710,7 +697,7 @@
         [locationManager startUpdatingLocation];
         geoBnt.hidden = YES;
         [geoLoadingV startAnimating];
-        [toggleLocationBnt setTitle:_(@"Turn off location") forState:UIControlStateNormal];
+        [toggleLocationBnt setTitle:_("Turn off location") forState:UIControlStateNormal];
         mapOutlineIV.backgroundColor = kClearColor;
     }
 }
@@ -728,7 +715,7 @@
         }
     }];
     
-    [TWENGINE reverseGeocodeWithLocation:manager.location success:^(id responseObj) {
+    [twitter reverseGeocodeWithLocation:manager.location success:^(id responseObj) {
         NSArray *places = responseObj[@"result"][@"places"];
         if (places.count) {
             NSArray *contained = places[0][@"contained_within"];
@@ -877,9 +864,9 @@
     cameraVC.delegate = self;
     [self presentViewController:cameraVC animated:YES completion:nil];
 #else
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_(@"Select From Camera")];
-    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_(@"Take a Picture")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_("Select From Camera")];
+    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_("Take a Picture")];
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
     [actionSheet showInView:self.view.window];
     cancelItem.action = ^{

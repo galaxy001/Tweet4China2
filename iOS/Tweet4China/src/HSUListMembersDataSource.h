@@ -6,8 +6,12 @@
 //  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUBaseDataSource.h"
+#import "HSUPersonListDataSource.h"
 
-@interface HSUListMembersDataSource : HSUBaseDataSource
+@interface HSUListMembersDataSource : HSUPersonListDataSource
+
+@property (nonatomic, strong) NSDictionary *list;
+
+- (instancetype)initWithList:(NSDictionary *)list;
 
 @end

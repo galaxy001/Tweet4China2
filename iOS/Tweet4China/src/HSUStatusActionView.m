@@ -21,7 +21,7 @@
             status = status[@"retweeted_status"];
         }
         
-        isMyTweet = [status[@"user"][@"screen_name"] isEqualToString:TWENGINE.myScreenName];
+        isMyTweet = [status[@"user"][@"screen_name"] isEqualToString:twitter.myScreenName];
         
         self.backgroundColor = kClearColor;
         

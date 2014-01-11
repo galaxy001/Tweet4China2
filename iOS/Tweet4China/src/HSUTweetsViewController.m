@@ -102,7 +102,7 @@
         if (isRetweetedStatus) {
             id_str = cellData.rawData[@"id_str"];
             __weak typeof(self)weakSelf = self;
-            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+            [twitter destroyStatus:id_str success:^(id responseObj) {
                 NSMutableDictionary *newStatus = [status mutableCopy];
                 newStatus[@"retweeted"] = @(!retweeted);
                 if (isRetweetedStatus) {
@@ -118,18 +118,18 @@
                 [weakSelf.tableView reloadData];
             } failure:^(NSError *error) {
                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
             }];
         } else {
             if ([status[@"retweeted_count"] integerValue] <= 200) {
                 __weak typeof(self)weakSelf = self;
-                [TWENGINE getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
+                [twitter getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
                     BOOL found = NO;
                     NSArray *tweets = responseObj;
                     for (NSDictionary *tweet in tweets) {
                         if ([tweet[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
                             NSString *id_str = tweet[@"id_str"];
-                            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+                            [twitter destroyStatus:id_str success:^(id responseObj) {
                                 NSMutableDictionary *newStatus = [status mutableCopy];
                                 newStatus[@"retweeted"] = @(!retweeted);
                                 if (isRetweetedStatus) {
@@ -145,7 +145,7 @@
                                 [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                             }];
                             found = YES;
                             break;
@@ -156,17 +156,17 @@
                     }
                 } failure:^(NSError *error) {
                     notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                    [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                    [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                 }];
             } else {
                 __weak typeof(self)weakSelf = self;
-                [TWENGINE getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
+                [twitter getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
                     BOOL found = NO;
                     NSArray *tweets = responseObj;
                     for (NSDictionary *tweet in tweets) {
                         if ([tweet[@"retweeted_status"][@"id_str"] isEqualToString:id_str]) {
                             NSString *id_str = tweet[@"id_str"];
-                            [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+                            [twitter destroyStatus:id_str success:^(id responseObj) {
                                 NSMutableDictionary *newStatus = [status mutableCopy];
                                 newStatus[@"retweeted"] = @(!retweeted);
                                 if (isRetweetedStatus) {
@@ -182,7 +182,7 @@
                                 [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
                                 notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                                [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                             }];
                             found = YES;
                             break;
@@ -193,14 +193,14 @@
                     }
                 } failure:^(NSError *error) {
                     notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-                    [TWENGINE dealWithError:error errTitle:_(@"Delete retweet failed")];
+                    [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                 }];
             }
         }
     } else {
         NSString *id_str = status[@"id_str"];
         __weak typeof(self)weakSelf = self;
-        [TWENGINE sendRetweetWithStatusID:id_str success:^(id responseObj) {
+        [twitter sendRetweetWithStatusID:id_str success:^(id responseObj) {
             NSMutableDictionary *newStatus = [status mutableCopy];
             newStatus[@"retweeted"] = @(!retweeted);
             if (isRetweetedStatus) {
@@ -216,7 +216,7 @@
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-            [TWENGINE dealWithError:error errTitle:_(@"Retweet failed")];
+            [twitter dealWithError:error errTitle:_("Retweet failed")];
         }];
     }
 }
@@ -232,7 +232,7 @@
     
     if (favorited) {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE unMarkStatus:id_str success:^(id responseObj) {
+        [twitter unMarkStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
             newRawData[@"favorited"] = @(!favorited);
             cellData.rawData = newRawData;
@@ -240,11 +240,11 @@
             [weakSelf.dataSource saveCache];
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Delete Favorite failed")];
+            [twitter dealWithError:error errTitle:_("Delete Favorite failed")];
         }];
     } else {
         __weak typeof(self)weakSelf = self;
-        [TWENGINE markStatus:id_str success:^(id responseObj) {
+        [twitter markStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
             newRawData[@"favorited"] = @(!favorited);
             notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
@@ -252,30 +252,30 @@
             [weakSelf.dataSource saveCache];
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Favorite Tweet failed")];
+            [twitter dealWithError:error errTitle:_("Favorite Tweet failed")];
         }];
     }
 }
 
 - (void)delete:(HSUTableCellData *)cellData
 {
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     cancelItem.action = ^{
         [self.tableView reloadData];
     };
-    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_(@"Delete Tweet")];
+    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_("Delete Tweet")];
     deleteItem.action = ^{
         NSDictionary *rawData = cellData.rawData;
         NSString *id_str = rawData[@"id_str"];
         
         __weak typeof(self)weakSelf = self;
-        [TWENGINE destroyStatus:id_str success:^(id responseObj) {
+        [twitter destroyStatus:id_str success:^(id responseObj) {
             [weakSelf.dataSource removeCellData:cellData];
             [weakSelf.dataSource saveCache];
             [weakSelf.tableView reloadData];
             notification_post_with_object(HSUStatusDidDelete, id_str);
         } failure:^(NSError *error) {
-            [TWENGINE dealWithError:error errTitle:_(@"Delete Tweet failed")];
+            [twitter dealWithError:error errTitle:_("Delete Tweet failed")];
         }];
     };
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];
@@ -295,7 +295,7 @@
     }
     
     if (urls && urls.count) { // has link
-        RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_(@"Tweet Link")];
+        RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
         tweetLinkItem.action = ^{
             if (urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
@@ -312,7 +312,7 @@
                     [selectLinkActionSheet addButtonItem:buttonItem];
                 }
                 
-                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
                 [selectLinkActionSheet addButtonItem:cancelItem];
                 
                 [selectLinkActionSheet setCancelButtonIndex:urls.count];
@@ -322,7 +322,7 @@
         [actionSheet addButtonItem:tweetLinkItem];
         count ++;
         
-        RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_(@"Copy Link")];
+        RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
         copyLinkItem.action = ^{
             if (urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
@@ -341,7 +341,7 @@
                     [selectLinkActionSheet addButtonItem:buttonItem];
                 }
                 
-                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
                 [selectLinkActionSheet addButtonItem:cancelItem];
                 
                 [selectLinkActionSheet setCancelButtonIndex:urls.count];
@@ -351,11 +351,11 @@
         [actionSheet addButtonItem:copyLinkItem];
         count ++;
         
-        RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_(@"Mail Link")];
+        RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
         mailLinkItem.action = ^{
             if (urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
-                NSString *subject = _(@"Link from Twitter");
+                NSString *subject = _("Link from Twitter");
                 NSString *body = S(@"<a href=\"%@\">%@</a>", link, link);
                 [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
             } else {
@@ -365,14 +365,14 @@
                     NSString *expendedUrl = urlDict[@"expanded_url"];
                     RIButtonItem *buttonItem = [RIButtonItem itemWithLabel:displayUrl];
                     buttonItem.action = ^{
-                        NSString *subject = _(@"Link from Twitter");
+                        NSString *subject = _("Link from Twitter");
                         NSString *body = S(@"<a href=\"%@\">%@</a>", expendedUrl, displayUrl);
                         [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
                     };
                     [selectLinkActionSheet addButtonItem:buttonItem];
                 }
                 
-                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
                 [selectLinkActionSheet addButtonItem:cancelItem];
                 
                 [selectLinkActionSheet setCancelButtonIndex:urls.count];
@@ -386,7 +386,7 @@
     NSString *id_str = rawData[@"id_str"];
     NSString *link = S(@"https://twitter.com/rtfocus/status/%@", id_str);
     
-    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_(@"Copy link to Tweet")];
+    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy link to Tweet")];
     copyLinkToTweetItem.action = ^{
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = link;
@@ -394,23 +394,23 @@
     [actionSheet addButtonItem:copyLinkToTweetItem];
     count ++;
     
-    RIButtonItem *mailTweetItem = [RIButtonItem itemWithLabel:_(@"Mail Tweet")];
+    RIButtonItem *mailTweetItem = [RIButtonItem itemWithLabel:_("Mail Tweet")];
     mailTweetItem.action = ^{
-        [TWENGINE oembedStatus:id_str success:^(id responseObj) {
+        [twitter oembedStatus:id_str success:^(id responseObj) {
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-            NSString *subject = _(@"Link from Twitter");
+            NSString *subject = _("Link from Twitter");
             [HSUCommonTools sendMailWithSubject:subject
                                            body:responseObj[@"html"]
                       presentFromViewController:self];
         } failure:^(NSError *error) {
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
-            [TWENGINE dealWithError:error errTitle:_(@"Fetch HTML failed")];
+            [twitter dealWithError:error errTitle:_("Fetch HTML failed")];
         }];
     };
     [actionSheet addButtonItem:mailTweetItem];
     count ++;
     
-    RIButtonItem *RTItem = [RIButtonItem itemWithLabel:_(@"RT")];
+    RIButtonItem *RTItem = [RIButtonItem itemWithLabel:_("RT")];
     RTItem.action = ^{
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
         NSString *authorScreenName = rawData[@"user"][@"screen_name"];
@@ -423,7 +423,7 @@
     [actionSheet addButtonItem:RTItem];
     count ++;
     
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
     
     [actionSheet setCancelButtonIndex:count];
@@ -455,8 +455,8 @@
     //    HSUTableCellData *cellData = [arguments objectForKey:@"cell_data"];
     if ([url.absoluteString hasPrefix:@"user://"] ||
         [url.absoluteString hasPrefix:@"tag://"]) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-        RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_(@"Copy Content")];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy Content")];
         copyItem.action = ^{
             UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
             pasteboard.string = label.text;
@@ -467,23 +467,23 @@
     }
     
     // Commen Link
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_(@"Cancel")];
-    RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_(@"Tweet Link")];
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
     tweetLinkItem.action = ^{
         [self _composeWithText:S(@" %@", url.absoluteString)];
     };
-    RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_(@"Copy Link")];
+    RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
     copyLinkItem.action = ^{
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = url.absoluteString;
     };
-    RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_(@"Mail Link")];
+    RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
     mailLinkItem.action = ^{
         NSString *body = S(@"<a href=\"%@\">%@</a><br><br>", url.absoluteString, url.absoluteString);
-        NSString *subject = _(@"Link from Twitter");
+        NSString *subject = _("Link from Twitter");
         [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
     };
-    RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_(@"Open in Safari")];
+    RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_("Open in Safari")];
     openInSafariItem.action = ^{
         [[UIApplication sharedApplication] openURL:url];
     };
