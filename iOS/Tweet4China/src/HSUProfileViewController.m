@@ -20,7 +20,6 @@
 #import "HSUConversationsViewController.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSUFavoritesDataSource.h"
-#import "HSUSubscribedListsViewController.h"
 #import "HSUSubscribedListsDataSource.h"
 #import <OpenCam/OpenCam.h>
 #import "HSUEditProfileViewController.h"
@@ -30,6 +29,7 @@
 #import "HSUMessagesViewController.h"
 #import "HSUSearchPersonDataSource.h"
 #import "HSUSearchPersonVC.h"
+#import "HSUListsViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -281,7 +281,7 @@
 - (void)listsButtonTouched
 {
     HSUSubscribedListsDataSource *dataSource = [[HSUSubscribedListsDataSource alloc] initWithScreenName:self.screenName];
-    HSUSubscribedListsViewController *listVC = [[HSUSubscribedListsViewController alloc] initWithDataSource:dataSource];
+    HSUListsViewController *listVC = [[HSUListsViewController alloc] initWithDataSource:dataSource];
     [self.navigationController pushViewController:listVC animated:YES];
     [dataSource refresh];
 }

@@ -7,8 +7,7 @@
 //
 
 #import "HSUBaseViewController.h"
-#import "HSUTweetsViewController.h"
 
-@interface HSUListViewController : HSUTweetsViewController
+@interface HSUListViewController : HSUBaseViewController
 
 @end

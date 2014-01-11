@@ -35,7 +35,7 @@
             for (int i=lists.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:lists[i] dataType:kDataType_List];
-                [weakSelf.data insertObject:cellData atIndex:0];
+                [weakSelf.data addObject:cellData];
             }
             
             HSUTableCellData *lastCellData = weakSelf.data.lastObject;
@@ -66,6 +66,11 @@
 - (void)loadMore
 {
     NSLog(@"!!! Not Implemented");
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 @end

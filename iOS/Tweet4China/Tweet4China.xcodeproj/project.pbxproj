@@ -146,8 +146,6 @@
 		966E190C184CAB6D00B5482C /* HSUListSubscribersDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E190B184CAB6D00B5482C /* HSUListSubscribersDataSource.m */; };
 		966E190F184CABFA00B5482C /* HSUMemberOfListsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E190E184CABFA00B5482C /* HSUMemberOfListsDataSource.m */; };
 		966E1912184CAF7000B5482C /* HSUListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E1911184CAF7000B5482C /* HSUListViewController.m */; };
-		966E1915184CAFE200B5482C /* HSUSubscribedListsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E1914184CAFE200B5482C /* HSUSubscribedListsViewController.m */; };
-		966E1918184CAFF700B5482C /* HSUMemberOfListsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E1917184CAFF700B5482C /* HSUMemberOfListsViewController.m */; };
 		966E191B184CB06300B5482C /* HSUListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 966E191A184CB06300B5482C /* HSUListCell.m */; };
 		966E1925184CB31200B5482C /* icn_locked_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966E191D184CB31200B5482C /* icn_locked_pressed@2x.png */; };
 		966E1927184CB31200B5482C /* icn_locked_pressed~ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966E191F184CB31200B5482C /* icn_locked_pressed~ipad@2x.png */; };
@@ -514,10 +512,6 @@
 		966E190E184CABFA00B5482C /* HSUMemberOfListsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUMemberOfListsDataSource.m; sourceTree = "<group>"; };
 		966E1910184CAF7000B5482C /* HSUListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUListViewController.h; sourceTree = "<group>"; };
 		966E1911184CAF7000B5482C /* HSUListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUListViewController.m; sourceTree = "<group>"; };
-		966E1913184CAFE200B5482C /* HSUSubscribedListsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSubscribedListsViewController.h; sourceTree = "<group>"; };
-		966E1914184CAFE200B5482C /* HSUSubscribedListsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSubscribedListsViewController.m; sourceTree = "<group>"; };
-		966E1916184CAFF700B5482C /* HSUMemberOfListsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUMemberOfListsViewController.h; sourceTree = "<group>"; };
-		966E1917184CAFF700B5482C /* HSUMemberOfListsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUMemberOfListsViewController.m; sourceTree = "<group>"; };
 		966E1919184CB06300B5482C /* HSUListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUListCell.h; sourceTree = "<group>"; };
 		966E191A184CB06300B5482C /* HSUListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUListCell.m; sourceTree = "<group>"; };
 		966E191D184CB31200B5482C /* icn_locked_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_locked_pressed@2x.png"; sourceTree = "<group>"; };
@@ -1235,10 +1229,6 @@
 				966E190E184CABFA00B5482C /* HSUMemberOfListsDataSource.m */,
 				966E1901184CAACC00B5482C /* HSUListsViewController.h */,
 				966E1902184CAACC00B5482C /* HSUListsViewController.m */,
-				966E1913184CAFE200B5482C /* HSUSubscribedListsViewController.h */,
-				966E1914184CAFE200B5482C /* HSUSubscribedListsViewController.m */,
-				966E1916184CAFF700B5482C /* HSUMemberOfListsViewController.h */,
-				966E1917184CAFF700B5482C /* HSUMemberOfListsViewController.m */,
 				966E1919184CB06300B5482C /* HSUListCell.h */,
 				966E191A184CB06300B5482C /* HSUListCell.m */,
 				966E1910184CAF7000B5482C /* HSUListViewController.h */,
@@ -1666,12 +1656,10 @@
 				603905961F1A442FC872C8B3 /* HSUSuggestMentionCell.m in Sources */,
 				603909172DE0FB7D7730FFEB /* HSUSuggestTagCell.m in Sources */,
 				9631AD191714738F006A4C0F /* GTMNSString+HTML.m in Sources */,
-				966E1918184CAFF700B5482C /* HSUMemberOfListsViewController.m in Sources */,
 				966E1903184CAACC00B5482C /* HSUListsViewController.m in Sources */,
 				969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */,
 				969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */,
 				96A2127117204F3200BC1D09 /* HSUContextStatusCell.m in Sources */,
-				966E1915184CAFE200B5482C /* HSUSubscribedListsViewController.m in Sources */,
 				96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */,
 				966E190F184CABFA00B5482C /* HSUMemberOfListsDataSource.m in Sources */,
 				96DABC6E172A9B90001AD70A /* HSUGalleryView.m in Sources */,
