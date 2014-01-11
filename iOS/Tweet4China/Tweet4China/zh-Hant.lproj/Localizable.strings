@@ -185,6 +185,9 @@
 "Delete List failed" = "刪除列表失敗了";
 "Delete retweet failed" = "刪除轉推失敗了";
 "Delete Favorite failed" = "刪除收藏失敗了";
-"New Tab" = "新建標簽";
-"Clear All Tabs" = "清空所有標簽";
+"New Tab" = "新建標簽頁";
+"Clear All Tabs" = "清空所有標簽頁";
 "Member of" = "其中一員";
+"Tabs" = "標簽頁";
+"Members" = "成員";
+"Subscribers" = "訂閱者";
