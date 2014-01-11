@@ -333,22 +333,24 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    // hide bars
-    if (Sys_Ver >= 7) {
-        CGFloat statusHeight = 20;
-        CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
-        if (pulledDown < 0) {
-            pulledDown = 0;
-        }
-        
-        self.navigationController.navigationBar.top = statusHeight - pulledDown;
-        self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
-        
-        self.sb.top = pulledDown - statusHeight;
-        [self.navigationController.navigationBar bringSubviewToFront:self.sb];
-        
-        if (!self.segmentedControl.isHidden) {
-            self.segmentedControl.center = ccp(self.width/2, 20 + navbar_height + 25 - pulledDown);
+    if (scrollView == self.webView.scrollView) {
+        // hide bars
+        if (Sys_Ver >= 7) {
+            CGFloat statusHeight = 20;
+            CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
+            if (pulledDown < 0) {
+                pulledDown = 0;
+            }
+            
+            self.navigationController.navigationBar.top = statusHeight - pulledDown;
+            self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
+            
+            self.sb.top = pulledDown - statusHeight;
+            [self.navigationController.navigationBar bringSubviewToFront:self.sb];
+            
+            if (!self.segmentedControl.isHidden) {
+                self.segmentedControl.center = ccp(self.width/2, 20 + navbar_height + 25 - pulledDown);
+            }
         }
     }
 }
