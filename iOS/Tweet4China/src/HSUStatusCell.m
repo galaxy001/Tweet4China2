@@ -61,8 +61,8 @@
     [super setupWithData:data];
     
     NSDictionary *rawData = data.rawData;
-    retweeted = [rawData[@"retweeted"] boolValue];
-    favorited = [rawData[@"favorited"] boolValue];
+    retweeted = [rawData[@"retweeted_status"][@"retweeted"] boolValue] || [rawData[@"retweeted"] boolValue];
+    favorited = [rawData[@"retweeted_status"][@"favorited"] boolValue] || [rawData[@"favorited"] boolValue];
     
     if (retweeted && favorited) {
         flagIV.image = [UIImage imageNamed:@"ic_dogear_both"];

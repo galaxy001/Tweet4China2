@@ -292,12 +292,14 @@
     locationL.textAlignment = NSTextAlignmentCenter;
     locationL.numberOfLines = 1;
     locationL.frame = ccr(mapView.left, mapView.bottom, mapView.width, 30);
-
+    
     toggleLocationBnt = [[UIButton alloc] init];
     [extraPanelSV addSubview:toggleLocationBnt];
     [toggleLocationBnt setTapTarget:self action:@selector(toggleLocationButtonTouched)];
-    [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
-    [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
+    [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter]
+                                 forState:UIControlStateNormal];
+    [toggleLocationBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter]
+                                 forState:UIControlStateHighlighted];
     [toggleLocationBnt setTitle:_("Turn off location") forState:UIControlStateNormal];
     [toggleLocationBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
     toggleLocationBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
@@ -501,7 +503,7 @@
 
 - (void)sendTweet
 {
-    if (contentTV.text == nil) return;
+    if (contentTV.text == nil && postImage == nil) return;
     NSString *status = contentTV.text;
     //save draft
     NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
@@ -544,7 +546,7 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
     NSUInteger wordLen = [TwitterText tweetLength:contentTV.text];
-    if (wordLen > 0) {
+    if (wordLen > 0 || postImage) {
         self.navigationItem.rightBarButtonItem.enabled = YES;
     } else {
         self.navigationItem.rightBarButtonItem.enabled = NO;
@@ -644,6 +646,7 @@
     previewCloseBnt.hidden = NO;
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera-glow"] forState:UIControlStateNormal];
 //    UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
+    self.navigationItem.rightBarButtonItem.enabled = YES;
 }
 
 - (void)previewCloseButtonTouched {

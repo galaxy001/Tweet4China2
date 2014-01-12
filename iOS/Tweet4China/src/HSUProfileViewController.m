@@ -86,9 +86,9 @@
     [super viewDidAppear:animated];
     
     if (self.isMe) { // me tab
-        self.navigationItem.rightBarButtonItems = @[self.addFriendBarButton];
+        self.navigationItem.rightBarButtonItem = self.addFriendBarButton;
     } else {
-        self.navigationItem.rightBarButtonItems = nil;
+        self.navigationItem.rightBarButtonItem = self.composeBarButton;
     }
     
     if (!self.presenting) {
