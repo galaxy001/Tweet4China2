@@ -48,17 +48,22 @@
     NSString *keyword = [NSString stringWithFormat:@"@%@", status[@"user"][@"screen_name"]];
     NSString *mainStatusID = status[@"id_str"];
     __weak typeof(self) weakSelf = self;
-    [twitter searchTweetsWithKeyword:keyword sinceID:mainStatusID count:100 success:^(id responseObj) {
+    [twitter searchTweetsWithKeyword:keyword sinceID:mainStatusID count:20 success:^(id responseObj) {
+        NSUInteger oldCount = weakSelf.count;
         NSArray *tweets = ((NSDictionary *)responseObj)[@"statuses"];
         
+        NSUInteger newTweetsCount = 0;
         for (NSDictionary *tweet in tweets) {
             if ([tweet[@"in_reply_to_status_id_str"] isEqualToString:mainStatusID]) {
                 HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_ChatStatus];
                 [weakSelf.data addObject:cellData];
+                newTweetsCount += 1;
             }
         }
         
-        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        if (newTweetsCount) {
+            [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:newTweetsCount];
+        }
     } failure:^(NSError *error) {
     }];
 }

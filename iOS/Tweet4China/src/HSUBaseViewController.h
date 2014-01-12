@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "HSUBaseDataSource.h"
+#import "HSURefreshControl.h"
 
-@class HSURefreshControl;
 @interface HSUBaseViewController : UIViewController <UITableViewDelegate, HSUBaseDataSourceDelegate, UITabBarControllerDelegate>
 
 @property (nonatomic, strong) Class dataSourceClass;

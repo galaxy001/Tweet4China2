@@ -15,10 +15,17 @@
 #import "HSUNavigationBarLight.h"
 #import "HSUProfileViewController.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import "HSUTabController.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUStatusViewController ()
 
 @property (nonatomic, strong) NSDictionary *mainStatus;
+
+@property (nonatomic, weak) UIView *replyBar;
+@property (nonatomic, weak) UITextField *replyTextField;
+@property (nonatomic, weak) UILabel *replyCountLabel;
+@property (nonatomic, weak) UIButton *replyButton;
 
 @end
 
@@ -47,11 +54,45 @@
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
     
+//    UIView *replyBar = [[UIView alloc] init];
+//    self.replyBar = replyBar;
+//    [self.view addSubview:replyBar];
+//    
+//    UITextField *replyTextField = [[UITextField alloc] init];
+//    self.replyTextField = replyTextField;
+//    [replyBar addSubview:replyTextField];
+//    
+//    UILabel *replayCountLabel = [[UILabel alloc] init];
+//    self.replyCountLabel = replayCountLabel;
+//    [replyBar addSubview:replayCountLabel];
+//    
+//    UIButton *replyButton = [[UIButton alloc] init];
+//    self.replyButton = replyButton;
+//    [replyBar addSubview:replyButton];
+    
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     
     [self.dataSource refresh];
     [self.dataSource loadMore];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithBarButtonSystemItem:UIBarButtonSystemItemReply
+                                              target:self
+                                              action:@selector(_composeButtonTouched)];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self resetTableViewHeight];
+    self.navigationItem.rightBarButtonItem.title = _("Reply");
 }
 
 - (void)galleryViewDidAppear
@@ -70,13 +111,55 @@
 #endif
 }
 
+- (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
+{
+    [self.refreshControl endRefreshing];
+    for (HSUTableCellData *cellData in self.dataSource.allData) {
+        cellData.renderData[@"delegate"] = self;
+    }
+    
+    [self.tableView reloadData];
+    
+    if (fromIndex) {
+        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+status_height+navbar_height, self.tableView.width, self.tableView.height);
+        NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];
+        NSIndexPath *firstIndexPath = indexPathsVisibleRows[0];
+        NSInteger firstRow = firstIndexPath.row;
+        if (fromIndex == 0) { // refresh
+            firstRow += length;
+        }
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:firstRow inSection:0]
+                              atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    }
+    [self resetTableViewHeight];
+    
+    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
+    [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
+}
+
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
 {
     if (error) {
         L(error);
     } else {
         [self.tableView reloadData];
+        
     }
+}
+
+- (void)resetTableViewHeight
+{
+    CGFloat height = 0;
+    for (HSUTableCellData *cellData in self.dataSource.data) {
+        if (cellData.rawData != self.mainStatus && height == 0) {
+            NSDictionary *status = cellData.rawData;
+            self.navigationItem.title = S(@"%@ @%@", _("Reply to"), status[@"user"][@"screen_name"]);
+            continue;
+        }
+        height += [cellData.renderData[@"height"] floatValue];
+    }
+    height = MIN(height + self.tableView.contentInset.top + tabbar_height, self.view.height);
+    self.tableView.contentInset = edi(self.tableView.contentInset.top, 0, self.view.height-height+tabbar_height, 0);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

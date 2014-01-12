@@ -17,6 +17,7 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import "NSDate+Additions.h"
 #import "HSUStatusCell.h"
+#import "HSUSearchTweetsDataSource.h"
 
 @interface HSUTweetsViewController ()
 
@@ -499,28 +500,31 @@
         NSString *screenName = [url.absoluteString substringFromIndex:7];
         HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
         [self.navigationController pushViewController:profileVC animated:YES];
-        return;
-    }
-    if ([url.absoluteString hasPrefix:@"tag://"]) {
-        // Push Tag ViewController
-        return;
-    }
-    NSString *attr = cellData.renderData[@"attr"];
-    if ([attr isEqualToString:@"photo"]) {
-        NSString *mediaURLHttps;
-        NSArray *medias = cellData.rawData[@"entities"][@"media"];
-        for (NSDictionary *media in medias) {
-            NSString *expandedUrl = media[@"expanded_url"];
-            if ([expandedUrl isEqualToString:url.absoluteString]) {
-                mediaURLHttps = media[@"media_url_https"];
+    } else if ([url.absoluteString hasPrefix:@"tag://"]) {
+        NSString *hashTag = [url.absoluteString substringFromIndex:6];
+        HSUSearchTweetsDataSource *searchDataSource = [[HSUSearchTweetsDataSource alloc] init];
+        searchDataSource.keyword = S(@"#%@", hashTag);
+        HSUTweetsViewController *tweetsVC = [[HSUTweetsViewController alloc] initWithDataSource:searchDataSource];
+        [self.navigationController pushViewController:tweetsVC animated:YES];
+        [searchDataSource refresh];
+    } else {
+        NSString *attr = cellData.renderData[@"attr"];
+        if ([attr isEqualToString:@"photo"]) {
+            NSString *mediaURLHttps;
+            NSArray *medias = cellData.rawData[@"entities"][@"media"];
+            for (NSDictionary *media in medias) {
+                NSString *expandedUrl = media[@"expanded_url"];
+                if ([expandedUrl isEqualToString:url.absoluteString]) {
+                    mediaURLHttps = media[@"media_url_https"];
+                }
+            }
+            if (mediaURLHttps) {
+                [self openPhotoURL:[NSURL URLWithString:mediaURLHttps] withCellData:cellData];
+                return;
             }
         }
-        if (mediaURLHttps) {
-            [self openPhotoURL:[NSURL URLWithString:mediaURLHttps] withCellData:cellData];
-            return;
-        }
+        [self openWebURL:url withCellData:cellData];
     }
-    [self openWebURL:url withCellData:cellData];
 }
 
 - (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData

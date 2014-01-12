@@ -17,6 +17,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
 #import "HSUMiniBrowser.h"
+#import "HSUInstagramMediaCache.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -449,21 +450,31 @@
         } else {
             NSString *instagramUrl = data.renderData[@"instagram_url"];
             if (instagramUrl) {
-                __weak typeof(self) weakSelf = self;
-                NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramUrl]];
-                AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-                    if ([JSON isKindOfClass:[NSDictionary class]]) {
-                        NSString *imageUrl = JSON[@"url"];
-                        data.renderData[@"photo_url"] = imageUrl;
-                        [weakSelf _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
-                    } else {
+                NSString *mediaUrl = self.data.renderData[@"photo_url"];
+                if (mediaUrl) {
+                    [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
+                } else if ((mediaUrl = [HSUInstagramMediaCache mediaUrlForWebUrl:instagramUrl])) {
+                    self.data.renderData[@"photo_url"] = mediaUrl;
+                    [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
+                } else {
+                    __weak typeof(self) weakSelf = self;
+                    NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", instagramUrl);
+                    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
+                    AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                        if ([JSON isKindOfClass:[NSDictionary class]]) {
+                            NSString *imageUrl = JSON[@"url"];
+                            [HSUInstagramMediaCache setMediaUrl:imageUrl forWebUrl:instagramUrl];
+                            data.renderData[@"photo_url"] = imageUrl;
+                            [weakSelf _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
+                        } else {
+                            [weakSelf.imgLoadSpinner stopAnimating];
+                        }
+                    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
                         [weakSelf.imgLoadSpinner stopAnimating];
-                    }
-                } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-                    [weakSelf.imgLoadSpinner stopAnimating];
-                }];
-                [instagramer start];
-                [self.imgLoadSpinner startAnimating];
+                    }];
+                    [instagramer start];
+                    [self.imgLoadSpinner startAnimating];
+                }
             } else {
                 [self.imgLoadSpinner stopAnimating];
             }
@@ -717,8 +728,7 @@
                        [expandedUrl hasPrefix:@"http://snpy.tv"]) {
                 attrName = @"video";
             } else if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
-                NSString *instagramUrl = S(@"http://api.instagram.com/oembed?url=%@", expandedUrl);
-                data.renderData[@"instagram_url"] = instagramUrl;
+                data.renderData[@"instagram_url"] = expandedUrl;
                 data.renderData[@"photo_width"] = @(612);
                 data.renderData[@"photo_height"] = @(612);
                 attrName = @"photo";

@@ -258,7 +258,15 @@
     }
     
     [self.tableView reloadData];
-    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:length inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+    if (fromIndex == 0) {
+        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+status_height+navbar_height, self.tableView.width, self.tableView.height);
+        NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];
+        NSIndexPath *firstIndexPath = indexPathsVisibleRows[0];
+        NSInteger firstRow = firstIndexPath.row + length - 1;
+        if (firstRow < 0) firstRow = 0;
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:firstRow inSection:0]
+                              atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
     
     [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
     [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad

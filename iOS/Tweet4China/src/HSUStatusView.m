@@ -13,6 +13,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
 #import "NSDate+Additions.h"
+#import "HSUInstagramMediaCache.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -37,8 +38,6 @@
     UIImageView *attrI; // photo/video/geo/summary/audio/convo
     UILabel *timeL;
     TTTAttributedLabel *textAL;
-    
-    BOOL hasPhoto;
 }
 
 @synthesize avatarB;
@@ -245,66 +244,68 @@
     NSDictionary *place = rawData[@"place"];
     
     // attr
-    [self.data.renderData removeObjectForKey:@"instagram_url"];
-    [self.data.renderData removeObjectForKey:@"photo_url"];
-    hasPhoto = NO;
     attrI.imageName = nil;
-    NSString *attrName = nil;
-    if ([rawData[@"in_reply_to_status_id_str"] length]) {
-        attrName = @"convo";
-    }
-    if (entities) {
-        NSArray *medias = entities[@"media"];
-        NSArray *urls = entities[@"urls"];
-        if (medias.count) {
-            NSDictionary *media = medias[0];
-            NSString *type = media[@"type"];
-            if ([type isEqualToString:@"photo"]) {
-                if (!attrName) {
-                    attrName = @"photo";
+    if (!self.data.renderData[@"attr_name"] || ([self.data.renderData[@"has_photo"] boolValue] && !self.data.renderData[@"photo_url"])) {
+        if ([rawData[@"in_reply_to_status_id_str"] length]) {
+            self.data.renderData[@"attr_name"] = @"convo";
+        }
+        if (entities) {
+            NSArray *medias = entities[@"media"];
+            NSArray *urls = entities[@"urls"];
+            if (medias.count) {
+                NSDictionary *media = medias[0];
+                NSString *type = media[@"type"];
+                if ([type isEqualToString:@"photo"]) {
+                    if (!self.data.renderData[@"attr_name"]) {
+                        self.data.renderData[@"attr_name"] = @"photo";
+                    }
+                    self.data.renderData[@"has_photo"] = @YES;
+                    self.data.renderData[@"photo_url"] = media[@"media_url_https"];
+                    self.data.renderData[@"photo_size"] = media[@"sizes"][@"large"];
                 }
-                hasPhoto = YES;
-                self.data.renderData[@"photo_url"] = media[@"media_url_https"];
-                self.data.renderData[@"photo_size"] = media[@"sizes"][@"large"];
-                
-            }
-        } else if (urls.count) {
-            for (NSDictionary *urlDict in urls) {
-                NSString *expandedUrl = urlDict[@"expanded_url"];
-                NSString *aName = [self _attrForUrl:expandedUrl];
-                if (!attrName) {
-                    attrName = aName;
-                }
-                if ([aName isEqualToString:@"photo"]) {
-                    hasPhoto = YES;
-                }
-                if (aName) {
-                    break;
+            } else if (urls.count) {
+                for (NSDictionary *urlDict in urls) {
+                    NSString *expandedUrl = urlDict[@"expanded_url"];
+                    NSString *aName = [self _attrForUrl:expandedUrl];
+                    if (!self.data.renderData[@"attr_name"]) {
+                        if (aName) {
+                            self.data.renderData[@"attr_name"] = aName;
+                        }
+                    }
+                    if ([aName isEqualToString:@"photo"]) {
+                        self.data.renderData[@"has_photo"] = @YES;
+                    }
+                    if (aName) {
+                        break;
+                    }
                 }
             }
         }
-    }
-    if (!attrName && ([geo isKindOfClass:[NSDictionary class]] ||
-                      [place isKindOfClass:[NSDictionary class]])) {
-        if ([geo isKindOfClass:[NSDictionary class]]) {
-            if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
-                attrName = @"geo";
+        if (!self.data.renderData[@"attr_name"] && ([geo isKindOfClass:[NSDictionary class]] ||
+                                                    [place isKindOfClass:[NSDictionary class]])) {
+            if ([geo isKindOfClass:[NSDictionary class]]) {
+                if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
+                    //                attrName = @"geo";
+                    self.data.renderData[@"attr_name"] = @"geo";
+                }
+            } else if ([place isKindOfClass:[NSDictionary class]]) {
+                //            attrName = @"geo";
+                self.data.renderData[@"attr_name"] = @"geo";
             }
-        } else if ([place isKindOfClass:[NSDictionary class]]) {
-            attrName = @"geo";
+        }
+        
+        if (!self.data.renderData[@"attr_name"]) {
+            self.data.renderData[@"attr_name"] = @"";
         }
     }
     
-    if (attrName) {
-        attrI.imageName = S(@"ic_tweet_attr_%@_default", attrName);
-        self.data.renderData[@"attr"] = attrName;
+    if ([self.data.renderData[@"attr_name"] length]) {
+        attrI.imageName = S(@"ic_tweet_attr_%@_default", self.data.renderData[@"attr_name"]);
     } else {
         attrI.imageName = nil;
-        [self.data.renderData removeObjectForKey:@"attr"];
     }
-    
     self.imagePreviewButton.hidden = YES;
-    if (hasPhoto && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if ([self.data.renderData[@"has_photo"] boolValue] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
         self.imagePreviewButton.hidden = NO;
         [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
                                            forState:UIControlStateNormal
@@ -334,7 +335,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([self.data.renderData[@"attr_name"] isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -373,34 +374,47 @@
     } else if ([GlobalSettings[HSUSettingPhotoPreview] boolValue] &&
                ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
         
-        NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-        NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
-        self.data.renderData[@"instagram_url"] = instagramAPIUrl;
-        __weak typeof(self) weakSelf = self;
-        AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
-                                               JSONRequestOperationWithRequest:request
-                                               success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
-        {
-            if ([JSON isKindOfClass:[NSDictionary class]]) {
-                NSString *imageUrl = JSON[@"url"];
-                if ([imageUrl hasSuffix:@".mp4"]) {
-                    weakSelf.data.renderData[@"video_url"] = imageUrl;
-                    weakSelf.data.renderData[@"video_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
-                } else {
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
-                        weakSelf.data.renderData[@"photo_url"] = imageUrl;
-                        weakSelf.data.renderData[@"photo_size"] = @{@"w": JSON[@"width"], @"h": JSON[@"height"]};
-                        weakSelf.imagePreviewButton.hidden = NO;
-                        [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl
-                                                               forState:UIControlStateNormal
-                                                            placeHolder:nil];
+        NSString *mediaUrl = self.data.renderData[@"photo_url"];
+        if (mediaUrl) {
+            self.imagePreviewButton.hidden = NO;
+            [self.imagePreviewButton setImageWithUrlStr:mediaUrl
+                                               forState:UIControlStateNormal
+                                            placeHolder:nil];
+        } else if ((mediaUrl = [HSUInstagramMediaCache mediaUrlForWebUrl:url])) {
+            self.data.renderData[@"photo_url"] = mediaUrl;
+            self.imagePreviewButton.hidden = NO;
+            [self.imagePreviewButton setImageWithUrlStr:mediaUrl
+                                               forState:UIControlStateNormal
+                                            placeHolder:nil];
+        } else {
+            NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
+            self.data.renderData[@"instagram_url"] = instagramAPIUrl;
+            NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
+            __weak typeof(self) weakSelf = self;
+            AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
+                                                   JSONRequestOperationWithRequest:request
+                                                   success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
+            {
+                if ([JSON isKindOfClass:[NSDictionary class]]) {
+                    NSString *imageUrl = JSON[@"url"];
+                    if ([imageUrl hasSuffix:@".mp4"]) {
+                        weakSelf.data.renderData[@"video_url"] = imageUrl;
+                    } else {
+                        if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
+                            [HSUInstagramMediaCache setMediaUrl:imageUrl forWebUrl:url];
+                            weakSelf.data.renderData[@"photo_url"] = imageUrl;
+                            weakSelf.imagePreviewButton.hidden = NO;
+                            [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl
+                                                                   forState:UIControlStateNormal
+                                                                placeHolder:nil];
+                        }
                     }
                 }
-            }
-        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
-            
-        }];
-        [instagramer start];
+            } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+                
+            }];
+            [instagramer start];
+        }
         return @"photo";
     }
     return nil;

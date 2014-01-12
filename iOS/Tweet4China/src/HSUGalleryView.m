@@ -157,7 +157,7 @@
 
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
 {
-    if (gesture.state == UIGestureRecognizerStateEnded) {
+    if (gesture.state == UIGestureRecognizerStateBegan) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
         RIButtonItem *saveItem = [RIButtonItem itemWithLabel:_("Save Image")];
         saveItem.action = ^{

@@ -93,7 +93,6 @@
         [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
         [weakSelf saveCache];
         [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
-//        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:nil];
         [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:[responseObj count]];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {

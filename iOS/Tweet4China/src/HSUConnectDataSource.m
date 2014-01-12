@@ -40,6 +40,7 @@
     __weak typeof(self)weakSelf = self;
     [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
+        BOOL oldCount = self.count;
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
@@ -58,7 +59,12 @@
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        if (tweets.count >= weakSelf.requestCount || oldCount == 0) {
+            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
+        } else {
+            [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];
+        }
+        
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [twitter dealWithError:error errTitle:_("Load failed")];
