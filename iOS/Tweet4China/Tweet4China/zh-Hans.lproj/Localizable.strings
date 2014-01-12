@@ -191,3 +191,13 @@
 "Tabs" = "标签页";
 "Members" = "成员";
 "Subscribers" = "订阅者";
+"RETWEETS" = "转推";
+"RETWEET" = "转推";
+"FAVORITES" = "收藏";
+"FAVORITE" = "收藏";
+"Photos" = "图片";
+"FOLLOWS YOU" = "关注了你";
+"Developer (@tuoxie007)" = "开发者 (@tuoxie007)";
+"Reply" = "回复";
+"Reply to" = "回复给";
+"Open in Chrome" = "用Chrome打开";

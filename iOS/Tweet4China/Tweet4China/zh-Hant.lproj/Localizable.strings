@@ -191,3 +191,13 @@
 "Tabs" = "標簽頁";
 "Members" = "成員";
 "Subscribers" = "訂閱者";
+"RETWEETS" = "轉推";
+"RETWEET" = "轉推";
+"FAVORITES" = "收藏";
+"FAVORITE" = "收藏";
+"Photos" = "圖片";
+"FOLLOWS YOU" = "關注了你";
+"Developer (@tuoxie007)" = "開發者 (@tuoxie007)";
+"Reply" = "回復";
+"Reply to" = "回復給";
+"Open in Chrome" = "用Chrome打開";
