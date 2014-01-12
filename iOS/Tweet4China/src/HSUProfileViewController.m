@@ -30,6 +30,9 @@
 #import "HSUSearchPersonDataSource.h"
 #import "HSUSearchPersonVC.h"
 #import "HSUListsViewController.h"
+#import "HSUPhotosViewController.h"
+#import "HSURecentPhotosDataSource.h"
+
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -238,6 +241,9 @@
         } else if ([rawData[@"action"] isEqualToString:kAction_Lists]) {
             [self listsButtonTouched];
             return;
+        } else if ([rawData[@"action"] isEqualToString:kAction_Photos]) {
+            [self photosButtonTouched];
+            return;
         }
     } else if ([data.dataType isEqualToString:kDataType_Drafts]) {
         if ([rawData[@"action"] isEqualToString:kAction_Drafts]) {
@@ -287,6 +293,15 @@
 - (void)draftsButtonTouched
 {
     [[HSUDraftManager shared] presentDraftsViewController];
+}
+
+- (void)photosButtonTouched
+{
+    HSURecentPhotosDataSource *dataSource = [[HSURecentPhotosDataSource alloc] init];
+    dataSource.screenName = self.screenName;
+    HSUTweetsViewController *tweetsVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:tweetsVC animated:YES];
+    [dataSource refresh];
 }
 
 - (void)followButtonTouched:(UIButton *)followButton

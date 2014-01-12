@@ -13,6 +13,7 @@
 #define kAction_Followers @"followers"
 #define kAction_Favorites @"favorites"
 #define kAction_Lists @"lists"
+#define kAction_Photos @"photos"
 #define kAction_Drafts @"drafts"
 
 @interface HSUProfileDataSource : HSUBaseDataSource

@@ -130,6 +130,7 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_Message @"Message"
 #define kDataType_Conversation @"Conversation"
 #define kDataType_List @"List"
+#define kDataType_Photo @"Photo"
 
 #define kTwitterReplyID_ParameterKey @"in_reply_to_status_id"
 #define HSUUserSettings @"HSUUserSettings"

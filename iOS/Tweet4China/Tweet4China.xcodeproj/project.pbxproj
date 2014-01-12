@@ -242,6 +242,9 @@
 		96BFCAF31882677000D13F4B /* HSUInstagramMediaCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAF21882677000D13F4B /* HSUInstagramMediaCache.m */; };
 		96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAF61882799400D13F4B /* OpenInChromeController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		96BFCAFA188287E300D13F4B /* HSURetweetersDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAF9188287E300D13F4B /* HSURetweetersDataSource.m */; };
+		96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAFF188298C800D13F4B /* HSURecentPhotosDataSource.m */; };
+		96BFCB031882995900D13F4B /* HSUPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB021882995900D13F4B /* HSUPhotosViewController.m */; };
+		96BFCB061882997200D13F4B /* HSUPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB051882997200D13F4B /* HSUPhotoCell.m */; };
 		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
 		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
 		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
@@ -654,6 +657,12 @@
 		96BFCAF61882799400D13F4B /* OpenInChromeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenInChromeController.m; sourceTree = "<group>"; };
 		96BFCAF8188287E300D13F4B /* HSURetweetersDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSURetweetersDataSource.h; sourceTree = "<group>"; };
 		96BFCAF9188287E300D13F4B /* HSURetweetersDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURetweetersDataSource.m; sourceTree = "<group>"; };
+		96BFCAFE188298C800D13F4B /* HSURecentPhotosDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSURecentPhotosDataSource.h; sourceTree = "<group>"; };
+		96BFCAFF188298C800D13F4B /* HSURecentPhotosDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURecentPhotosDataSource.m; sourceTree = "<group>"; };
+		96BFCB011882995900D13F4B /* HSUPhotosViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUPhotosViewController.h; sourceTree = "<group>"; };
+		96BFCB021882995900D13F4B /* HSUPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPhotosViewController.m; sourceTree = "<group>"; };
+		96BFCB041882997200D13F4B /* HSUPhotoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUPhotoCell.h; sourceTree = "<group>"; };
+		96BFCB051882997200D13F4B /* HSUPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPhotoCell.m; sourceTree = "<group>"; };
 		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
 		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
 		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
@@ -1213,6 +1222,12 @@
 				96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */,
 				9628E6DA17312B8E005A9EC9 /* HSUProfileDataSource.h */,
 				9628E6DB17312B8E005A9EC9 /* HSUProfileDataSource.m */,
+				96BFCAFE188298C800D13F4B /* HSURecentPhotosDataSource.h */,
+				96BFCAFF188298C800D13F4B /* HSURecentPhotosDataSource.m */,
+				96BFCB011882995900D13F4B /* HSUPhotosViewController.h */,
+				96BFCB021882995900D13F4B /* HSUPhotosViewController.m */,
+				96BFCB041882997200D13F4B /* HSUPhotoCell.h */,
+				96BFCB051882997200D13F4B /* HSUPhotoCell.m */,
 				9628E6D41730F45E005A9EC9 /* HSUProfileView.h */,
 				9628E6D51730F45E005A9EC9 /* HSUProfileView.m */,
 				9628185516DFABE700ABF0AD /* HSUProfileViewController.h */,
@@ -1653,6 +1668,7 @@
 				9666CDE418719AE10044DB0A /* HSUAccountsViewController.m in Sources */,
 				9628185716DFABE700ABF0AD /* HSUProfileViewController.m in Sources */,
 				9628185A16DFACEC00ABF0AD /* HSUCommonTools.m in Sources */,
+				96BFCB031882995900D13F4B /* HSUPhotosViewController.m in Sources */,
 				9628185D16DFAE2A00ABF0AD /* HSUNavigationBar.m in Sources */,
 				9628186016DFB27100ABF0AD /* HSUTabController.m in Sources */,
 				964827AF16E37ACF0002345B /* HSUTexturedView.m in Sources */,
@@ -1672,6 +1688,7 @@
 				966E1909184CAB5600B5482C /* HSUListMembersDataSource.m in Sources */,
 				9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */,
 				966E191B184CB06300B5482C /* HSUListCell.m in Sources */,
+				96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */,
 				96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */,
 				9687DF74186C5A9100431DA2 /* GCDAsyncSocket.m in Sources */,
 				962AB00616FB324D00D44566 /* HSURefreshControl.m in Sources */,
@@ -1722,6 +1739,7 @@
 				966E1912184CAF7000B5482C /* HSUListViewController.m in Sources */,
 				969B7438173FB3910072EFC0 /* HSUDefaultStatusCell.m in Sources */,
 				96BFCAFA188287E300D13F4B /* HSURetweetersDataSource.m in Sources */,
+				96BFCB061882997200D13F4B /* HSUPhotoCell.m in Sources */,
 				9666CDDC18702D650044DB0A /* HSUAttributedLabel.m in Sources */,
 				96D291B51742879400AB4F8C /* HSUDraftManager.m in Sources */,
 				96D291BE1742924000AB4F8C /* NSData+MD5.m in Sources */,

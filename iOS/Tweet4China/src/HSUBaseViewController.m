@@ -33,6 +33,7 @@
 #import "HSUSettingsViewController.h"
 #import "HSUiPadTabController.h"
 #import "HSUSearchPersonDataSource.h"
+#import "HSUPhotoCell.h"
 
 @interface HSUBaseViewController ()
 
@@ -107,6 +108,7 @@
     [tableView registerClass:[HSUConversationCell class] forCellReuseIdentifier:kDataType_Conversation];
     [tableView registerClass:[HSUMessageCell class] forCellReuseIdentifier:kDataType_Message];
     [tableView registerClass:[HSUListCell class] forCellReuseIdentifier:kDataType_List];
+    [tableView registerClass:[HSUPhotoCell class] forCellReuseIdentifier:kDataType_Photo];
     tableView.dataSource = self.dataSource;
     tableView.delegate = self;
     if (IPAD) {
