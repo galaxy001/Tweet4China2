@@ -135,7 +135,7 @@
         followedLabel.shadowColor = kGrayColor;
         followedLabel.layer.cornerRadius = 3;
         followedLabel.clipsToBounds = YES;
-        followedLabel.text = _("Followed you");
+        followedLabel.text = _("FOLLOWS YOU");
         [followedLabel sizeToFit];
         followedLabel.width += 4;
         followedLabel.leftBottom = screenNameLabel.rightBottom;
