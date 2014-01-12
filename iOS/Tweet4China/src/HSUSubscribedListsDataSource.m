@@ -68,6 +68,12 @@
     NSLog(@"!!! Not Implemented");
 }
 
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *list = [self rawDataAtIndex:indexPath.row];
+    return [list[@"user"][@"screen_name"] isEqualToString:MyScreenName];
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     NSDictionary *list = [self rawDataAtIndex:indexPath.row];

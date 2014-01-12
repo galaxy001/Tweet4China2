@@ -10,19 +10,8 @@
 
 @implementation HSUMemberOfListsDataSource
 
-- (id)initWithScreenName:(NSString *)screenName
-{
-    self = [super init];
-    if (self) {
-        self.screenName = screenName;
-    }
-    return self;
-}
-
 - (void)refresh
 {
-    [super refresh];
-    
     [self.data removeAllObjects];
     if (self.count == 0 && [twitter isAuthorized]) {
         [SVProgressHUD showWithStatus:_("Loading Lists")];
@@ -61,11 +50,6 @@
         [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         weakSelf.loadingCount --;
     }];
-}
-
-- (void)loadMore
-{
-    NSLog(@"!!! Not Implemented");
 }
 
 @end
