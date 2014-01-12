@@ -8,7 +8,7 @@
 
 #import "HSUPersonListViewController.h"
 
-@interface HSUSearchPersonVC : HSUPersonListViewController
+@interface HSUSearchPersonViewController : HSUPersonListViewController
 
 @property (nonatomic, weak) UITextField *searchTF;
 

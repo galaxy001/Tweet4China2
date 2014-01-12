@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUSearchPersonVC.h"
+#import "HSUSearchPersonViewController.h"
 
-@interface HSUCreateDirectMessageViewController : HSUSearchPersonVC
+@interface HSUCreateDirectMessageViewController : HSUSearchPersonViewController
 
 - (void)sendMessageTo:(NSDictionary *)user;
 

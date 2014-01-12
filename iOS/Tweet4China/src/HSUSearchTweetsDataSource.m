@@ -25,6 +25,8 @@
 
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    [self.data removeAllObjects];
+    [self.delegate reloadData];
     [self fetchMoreDataWithSuccess:success failure:failure];
 }
 

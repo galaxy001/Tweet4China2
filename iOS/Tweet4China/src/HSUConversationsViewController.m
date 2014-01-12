@@ -30,8 +30,6 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUConversationsDataSource class];
-//        self.hideBackButton = YES;
-//        self.hideRightButtons = YES;
         self.useRefreshControl = NO;
         self.title = _("Messages");
     }

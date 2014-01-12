@@ -28,7 +28,7 @@
 #import "HSUMessagesDataSource.h"
 #import "HSUMessagesViewController.h"
 #import "HSUSearchPersonDataSource.h"
-#import "HSUSearchPersonVC.h"
+#import "HSUSearchPersonViewController.h"
 #import "HSUListsViewController.h"
 #import "HSUPhotosViewController.h"
 #import "HSURecentPhotosDataSource.h"
@@ -44,6 +44,7 @@
 @property (nonatomic, strong) UIBarButtonItem *addFriendBarButton;
 @property (nonatomic, weak) UIImageView *addFriendButtonIndicator;
 @property (nonatomic) BOOL relationshipLoaded;
+@property (nonatomic) BOOL followedMe;
 
 @end
 
@@ -391,45 +392,55 @@
         
         [SVProgressHUD showWithStatus:_("Please Wait")];
         __weak typeof(self)weakSelf = self;
-        NSString *screenName = self.screenName;
-        [twitter lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
-            NSDictionary *ship = responseObj[0];
-            NSArray *connections = ship[@"connections"];
-            BOOL followedMe = NO;
-            if ([connections isKindOfClass:[NSArray class]]) {
-                for (NSString *connection in connections) {
-                    if ([connection isEqualToString:@"followed_by"]) {
-                        followedMe = YES;
-                        break;
+        if (self.relationshipLoaded) {
+            [self startDirectMessage];
+        } else {
+            NSString *screenName = self.screenName;
+            [twitter lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
+                NSDictionary *ship = responseObj[0];
+                NSArray *connections = ship[@"connections"];
+                BOOL followedMe = NO;
+                if ([connections isKindOfClass:[NSArray class]]) {
+                    for (NSString *connection in connections) {
+                        if ([connection isEqualToString:@"followed_by"]) {
+                            followedMe = YES;
+                            break;
+                        }
                     }
                 }
-            }
-            if (followedMe) {
-                HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:nil];
-                HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
-                HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
-                messagesVC.herProfile = weakSelf.profile;
-                messagesVC.myProfile = nil;
-                NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
-                if (userProfiles[MyScreenName]) {
-                    messagesVC.myProfile = userProfiles[MyScreenName];
-                    [SVProgressHUD dismiss];
-                    [weakSelf presentViewController:nav animated:YES completion:nil];
+                if (followedMe) {
+                    [weakSelf startDirectMessage];
                 } else {
-                    [twitter showUser:MyScreenName success:^(id responseObj) {
-                        [SVProgressHUD dismiss];
-                        messagesVC.myProfile = responseObj;
-                        [weakSelf presentViewController:nav animated:YES completion:nil];
-                    } failure:^(NSError *error) {
-                        [SVProgressHUD dismiss];
-                    }];
+                    [SVProgressHUD dismiss];
+                    NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), screenName, screenName, _("is not following you.")];
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
+                    [alert show];
                 }
-            } else {
+            } failure:^(NSError *error) {
                 [SVProgressHUD dismiss];
-                NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), screenName, screenName, _("is not following you.")];
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
-                [alert show];
-            }
+            }];
+        }
+    }
+}
+
+- (void)startDirectMessage
+{
+    __weak typeof(self)weakSelf = self;
+    HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:nil];
+    __block HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
+    HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
+    messagesVC.herProfile = self.profile;
+    messagesVC.myProfile = nil;
+    NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
+    if (userProfiles[MyScreenName]) {
+        messagesVC.myProfile = userProfiles[MyScreenName];
+        [SVProgressHUD dismiss];
+        [self presentViewController:nav animated:YES completion:nil];
+    } else {
+        [twitter showUser:MyScreenName success:^(id responseObj) {
+            [SVProgressHUD dismiss];
+            messagesVC.myProfile = responseObj;
+            [weakSelf presentViewController:nav animated:YES completion:nil];
         } failure:^(NSError *error) {
             [SVProgressHUD dismiss];
         }];
@@ -655,7 +666,7 @@
     }
     
     HSUSearchPersonDataSource *dataSource = [[HSUSearchPersonDataSource alloc] init];
-    HSUSearchPersonVC *addFriendVC = [[HSUSearchPersonVC alloc] initWithDataSource:dataSource];
+    HSUSearchPersonViewController *addFriendVC = [[HSUSearchPersonViewController alloc] initWithDataSource:dataSource];
     [self.navigationController pushViewController:addFriendVC animated:YES];
     
     if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {

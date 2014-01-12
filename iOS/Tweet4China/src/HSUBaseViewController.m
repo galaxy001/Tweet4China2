@@ -28,12 +28,14 @@
 #import "HSUDraftsCell.h"
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
-#import "HSUSearchPersonVC.h"
+#import "HSUSearchPersonViewController.h"
 #import "HSUListCell.h"
 #import "HSUSettingsViewController.h"
 #import "HSUiPadTabController.h"
 #import "HSUSearchPersonDataSource.h"
 #import "HSUPhotoCell.h"
+#import "HSUSearchTweetsDataSource.h"
+#import "HSUSearchTweetsViewController.h"
 
 @interface HSUBaseViewController ()
 
@@ -45,6 +47,7 @@
 {
     UIBarButtonItem *_actionBarButton;
     UIBarButtonItem *_composeBarButton;
+    UIBarButtonItem *_searchBarButton;
 }
 
 #pragma mark - Liftstyle
@@ -355,6 +358,26 @@
     return _composeBarButton;
 }
 
+- (UIBarButtonItem *)searchBarButton
+{
+    if (!_searchBarButton) {
+        if (Sys_Ver >= 7) {
+            _searchBarButton = [[UIBarButtonItem alloc]
+                                initWithBarButtonSystemItem:UIBarButtonSystemItemSearch
+                                target:self
+                                action:@selector(_searchButtonTouched)];
+        } else {
+            UIButton *searchButton = [[UIButton alloc] init];
+            [searchButton addTarget:self action:@selector(_searchButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            [searchButton setImage:[UIImage imageNamed:@"ic_title_search"] forState:UIControlStateNormal];
+            [searchButton sizeToFit];
+            searchButton.width *= 1.4;
+            _searchBarButton = [[UIBarButtonItem alloc] initWithCustomView:searchButton];
+        }
+    }
+    return _searchBarButton;
+}
+
 - (void)backButtonTouched
 {
     [self.navigationController popViewControllerAnimated:YES];
@@ -374,7 +397,9 @@
 
 - (void)_searchButtonTouched
 {
-    
+    HSUSearchTweetsDataSource *dataSource = [[HSUSearchTweetsDataSource alloc] init];
+    HSUSearchTweetsViewController *searchVC = [[HSUSearchTweetsViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:searchVC animated:YES];
 }
 
 - (void)_actionButtonTouched

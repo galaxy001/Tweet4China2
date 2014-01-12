@@ -30,8 +30,6 @@
 {
     self = [super init];
     if (self) {
-//        self.hideBackButton = YES;
-//        self.hideRightButtons = YES;
         self.useRefreshControl = NO;
     }
     return self;
@@ -40,6 +38,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.title = _("Direct Message");
     
     UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [self.view addSubview:tableView];

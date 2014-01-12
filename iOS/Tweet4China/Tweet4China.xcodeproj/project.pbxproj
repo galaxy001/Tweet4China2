@@ -245,6 +245,7 @@
 		96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAFF188298C800D13F4B /* HSURecentPhotosDataSource.m */; };
 		96BFCB031882995900D13F4B /* HSUPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB021882995900D13F4B /* HSUPhotosViewController.m */; };
 		96BFCB061882997200D13F4B /* HSUPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB051882997200D13F4B /* HSUPhotoCell.m */; };
+		96BFCB091882CEBB00D13F4B /* HSUSearchTweetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB081882CEBB00D13F4B /* HSUSearchTweetsViewController.m */; };
 		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
 		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
 		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
@@ -255,7 +256,7 @@
 		96D292381743861F00AB4F8C /* HSUDraftCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D292371743861F00AB4F8C /* HSUDraftCell.m */; };
 		96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */; };
 		96D91DFD1813AEA7001A8188 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D91DFC1813AEA7001A8188 /* StoreKit.framework */; };
-		96D91E031813B288001A8188 /* HSUSearchPersonVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E021813B288001A8188 /* HSUSearchPersonVC.m */; };
+		96D91E031813B288001A8188 /* HSUSearchPersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E021813B288001A8188 /* HSUSearchPersonViewController.m */; };
 		96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */; };
 		96DABC45172A8473001AD70A /* icn_gallery_tweet_action_delete_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */; };
 		96DABC47172A8473001AD70A /* icn_gallery_tweet_action_delete_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC23172A846E001AD70A /* icn_gallery_tweet_action_delete_pressed@2x.png */; };
@@ -663,6 +664,8 @@
 		96BFCB021882995900D13F4B /* HSUPhotosViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPhotosViewController.m; sourceTree = "<group>"; };
 		96BFCB041882997200D13F4B /* HSUPhotoCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUPhotoCell.h; sourceTree = "<group>"; };
 		96BFCB051882997200D13F4B /* HSUPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPhotoCell.m; sourceTree = "<group>"; };
+		96BFCB071882CEBB00D13F4B /* HSUSearchTweetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchTweetsViewController.h; sourceTree = "<group>"; };
+		96BFCB081882CEBB00D13F4B /* HSUSearchTweetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchTweetsViewController.m; sourceTree = "<group>"; };
 		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
 		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
 		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
@@ -682,8 +685,8 @@
 		96D4BC8A172830F700E7BABA /* HSUConnectDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConnectDataSource.h; sourceTree = "<group>"; };
 		96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUConnectDataSource.m; sourceTree = "<group>"; };
 		96D91DFC1813AEA7001A8188 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		96D91E011813B288001A8188 /* HSUSearchPersonVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonVC.h; sourceTree = "<group>"; };
-		96D91E021813B288001A8188 /* HSUSearchPersonVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonVC.m; sourceTree = "<group>"; };
+		96D91E011813B288001A8188 /* HSUSearchPersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonViewController.h; sourceTree = "<group>"; };
+		96D91E021813B288001A8188 /* HSUSearchPersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonViewController.m; sourceTree = "<group>"; };
 		96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonDataSource.h; sourceTree = "<group>"; };
 		96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonDataSource.m; sourceTree = "<group>"; };
 		96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_gallery_tweet_action_delete_default@2x.png"; sourceTree = "<group>"; };
@@ -1282,8 +1285,10 @@
 				967272B81733E3E400B6E30A /* HSUUserHomeDataSource.m */,
 				960DFEE617E426F700D6BEB1 /* HSUFavoritesDataSource.h */,
 				960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */,
-				96D91E011813B288001A8188 /* HSUSearchPersonVC.h */,
-				96D91E021813B288001A8188 /* HSUSearchPersonVC.m */,
+				96D91E011813B288001A8188 /* HSUSearchPersonViewController.h */,
+				96D91E021813B288001A8188 /* HSUSearchPersonViewController.m */,
+				96BFCB071882CEBB00D13F4B /* HSUSearchTweetsViewController.h */,
+				96BFCB081882CEBB00D13F4B /* HSUSearchTweetsViewController.m */,
 				96C951F418795A6300D3AC9A /* HSUSearchField.h */,
 				96C951F518795A6300D3AC9A /* HSUSearchField.m */,
 				96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */,
@@ -1679,10 +1684,11 @@
 				96BE217416EC8FDA00226799 /* HSUBaseTableCell.m in Sources */,
 				968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */,
 				96DECEBF187F2A6100E46809 /* HSUWebBrowserBookmarksDataSource.m in Sources */,
+				96BFCB091882CEBB00D13F4B /* HSUSearchTweetsViewController.m in Sources */,
 				968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */,
 				9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */,
 				9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */,
-				96D91E031813B288001A8188 /* HSUSearchPersonVC.m in Sources */,
+				96D91E031813B288001A8188 /* HSUSearchPersonViewController.m in Sources */,
 				966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */,
 				966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */,
 				966E1909184CAB5600B5482C /* HSUListMembersDataSource.m in Sources */,

@@ -28,8 +28,6 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUDraftsDataSource class];
-//        self.hideBackButton = YES;
-//        self.hideRightButtons = YES;
         self.useRefreshControl = NO;
         self.title = _("Drafts");
     }
