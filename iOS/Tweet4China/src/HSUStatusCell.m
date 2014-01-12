@@ -102,11 +102,14 @@
 
 - (void)cellSwiped:(UIGestureRecognizer *)gesture {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        [self switchMode];
+        dispatch_async(GCDMainThread, ^{
+            [self switchMode];
+        });
     }
 }
 
 - (void)switchMode {
+    NSLog(@"switch mode");
     if (actionV) {
         [UIView animateWithDuration:0.2 animations:^{
             self.contentView.backgroundColor = kClearColor;
