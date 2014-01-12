@@ -13,6 +13,7 @@
 #import "HSUShadowsocksViewController.h"
 #import <Appirater/Appirater.h>
 #import <HSUWebCache/HSUWebCache.h>
+#import "HSUProfileViewController.h"
 
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
@@ -172,6 +173,15 @@
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
+    [section addItem:
+     [RETableViewItem itemWithTitle:_("Developer (@tuoxie007)")
+                      accessoryType:UITableViewCellAccessoryNone
+                   selectionHandler:^(RETableViewItem *item)
+      {
+          HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:@"tuoxie007"];
+          [self.navigationController pushViewController:profileVC animated:YES];
+          [item deselectRowAnimated:YES];
+      }]];
     [section addItem:
      [RETableViewItem itemWithTitle:_("OpenSource Code (Github)")
                                       accessoryType:UITableViewCellAccessoryNone
