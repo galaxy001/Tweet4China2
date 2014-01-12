@@ -18,6 +18,7 @@
 #import "NSDate+Additions.h"
 #import "HSUStatusCell.h"
 #import "HSUSearchTweetsDataSource.h"
+#import "OpenInChromeController.h"
 
 @interface HSUTweetsViewController ()
 
@@ -34,6 +35,13 @@
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     notification_add_observer(HSUStatusUpdatedNotification, self, @selector(statusUpdated:));
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.modelVC = nil;
 }
 
 - (void)galleryViewDidAppear
@@ -284,8 +292,8 @@
 }
 
 - (void)more:(HSUTableCellData *)cellData {
-    NSDictionary *rawData = cellData.rawData;
     
+    NSDictionary *rawData = cellData.rawData;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil];
     uint count = 0;
     
@@ -298,7 +306,7 @@
     if (urls && urls.count) { // has link
         RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
         tweetLinkItem.action = ^{
-            if (urls.count == 1) {
+            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 [self _composeWithText:S(@" %@", link)];
             } else {
@@ -325,7 +333,7 @@
         
         RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
         copyLinkItem.action = ^{
-            if (urls.count == 1) {
+            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                 pasteboard.string = link;
@@ -354,7 +362,7 @@
         
         RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
         mailLinkItem.action = ^{
-            if (urls.count == 1) {
+            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 NSString *subject = _("Link from Twitter");
                 NSString *body = S(@"<a href=\"%@\">%@</a>", link, link);
@@ -382,6 +390,62 @@
         };
         [actionSheet addButtonItem:mailLinkItem];
         count ++;
+        
+        RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_("Open in Safari")];
+        openInSafariItem.action = ^{
+            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+                NSString *link = [urls objectAtIndex:0][@"expanded_url"];
+                [[UIApplication sharedApplication] openURL:[NSURL URLWithString:link]];
+            } else {
+                UIActionSheet *selectLinkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil, nil];
+                for (NSDictionary *urlDict in urls) {
+                    NSString *displayUrl = urlDict[@"display_url"];
+                    NSString *expendedUrl = urlDict[@"expanded_url"];
+                    RIButtonItem *buttonItem = [RIButtonItem itemWithLabel:displayUrl];
+                    buttonItem.action = ^{
+                        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:expendedUrl]];
+                    };
+                    [selectLinkActionSheet addButtonItem:buttonItem];
+                }
+                
+                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+                [selectLinkActionSheet addButtonItem:cancelItem];
+                
+                [selectLinkActionSheet setCancelButtonIndex:urls.count];
+                [selectLinkActionSheet showInView:self.view.window];
+            }
+        };
+        [actionSheet addButtonItem:openInSafariItem];
+        count ++;
+        
+        if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
+            RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:_("Open in Chrome")];
+            openInChromeItem.action = ^{
+                if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+                    NSString *link = [urls objectAtIndex:0][@"expanded_url"];
+                    [[OpenInChromeController sharedInstance] openInChrome:[NSURL URLWithString:link] withCallbackURL:nil createNewTab:YES];
+                } else {
+                    UIActionSheet *selectLinkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil, nil];
+                    for (NSDictionary *urlDict in urls) {
+                        NSString *displayUrl = urlDict[@"display_url"];
+                        NSString *expendedUrl = urlDict[@"expanded_url"];
+                        RIButtonItem *buttonItem = [RIButtonItem itemWithLabel:displayUrl];
+                        buttonItem.action = ^{
+                            [[OpenInChromeController sharedInstance] openInChrome:[NSURL URLWithString:expendedUrl] withCallbackURL:nil createNewTab:YES];
+                        };
+                        [selectLinkActionSheet addButtonItem:buttonItem];
+                    }
+                    
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+                    [selectLinkActionSheet addButtonItem:cancelItem];
+                    
+                    [selectLinkActionSheet setCancelButtonIndex:urls.count];
+                    [selectLinkActionSheet showInView:self.view.window];
+                }
+            };
+            [actionSheet addButtonItem:openInChromeItem];
+            count ++;
+        }
     }
     
     NSString *id_str = rawData[@"id_str"];
@@ -488,7 +552,17 @@
     openInSafariItem.action = ^{
         [[UIApplication sharedApplication] openURL:url];
     };
-    UIActionSheet *linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, nil];
+    UIActionSheet *linkActionSheet;
+    if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
+        RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:_("Open in Chrome")];
+        openInChromeItem.action = ^{
+            [[OpenInChromeController sharedInstance] openInChrome:url withCallbackURL:nil createNewTab:YES];
+        };
+        linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, openInChromeItem, nil];
+    } else {
+        linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, nil];
+    }
+    
     [linkActionSheet showInView:self.view.window];
 }
 

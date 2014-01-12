@@ -240,6 +240,7 @@
 		96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAEC18813C8300D13F4B /* HSUEditListViewController.m */; };
 		96BFCAF0188259B500D13F4B /* HSUSearchTweetsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAEF188259B500D13F4B /* HSUSearchTweetsDataSource.m */; };
 		96BFCAF31882677000D13F4B /* HSUInstagramMediaCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAF21882677000D13F4B /* HSUInstagramMediaCache.m */; };
+		96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCAF61882799400D13F4B /* OpenInChromeController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
 		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
 		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
@@ -648,6 +649,8 @@
 		96BFCAEF188259B500D13F4B /* HSUSearchTweetsDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchTweetsDataSource.m; sourceTree = "<group>"; };
 		96BFCAF11882677000D13F4B /* HSUInstagramMediaCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUInstagramMediaCache.h; sourceTree = "<group>"; };
 		96BFCAF21882677000D13F4B /* HSUInstagramMediaCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUInstagramMediaCache.m; sourceTree = "<group>"; };
+		96BFCAF51882799400D13F4B /* OpenInChromeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenInChromeController.h; sourceTree = "<group>"; };
+		96BFCAF61882799400D13F4B /* OpenInChromeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenInChromeController.m; sourceTree = "<group>"; };
 		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
 		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
 		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
@@ -884,6 +887,7 @@
 		9628177516DE5FDF00ABF0AD /* 3th-party */ = {
 			isa = PBXGroup;
 			children = (
+				96BFCAF41882799400D13F4B /* OpenInChrome */,
 				96865E8B186E6C89004C0D5B /* Flurry */,
 				9687DF71186C5A5200431DA2 /* CocoaAsyncSocket */,
 				960640A917D06CA7000B1032 /* shadowsocks */,
@@ -1308,6 +1312,15 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
+		96BFCAF41882799400D13F4B /* OpenInChrome */ = {
+			isa = PBXGroup;
+			children = (
+				96BFCAF51882799400D13F4B /* OpenInChromeController.h */,
+				96BFCAF61882799400D13F4B /* OpenInChromeController.m */,
+			);
+			path = OpenInChrome;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1689,6 +1702,7 @@
 				9628E6D917312240005A9EC9 /* NSString+Additions.m in Sources */,
 				9628E6DC17312B8E005A9EC9 /* HSUProfileDataSource.m in Sources */,
 				9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */,
+				96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */,
 				967272681732C59800B6E30A /* HSUPersonListViewController.m in Sources */,
 				967272781732CF0300B6E30A /* HSUFollowingDataSource.m in Sources */,
 				960DFEE817E426F700D6BEB1 /* HSUFavoritesDataSource.m in Sources */,
