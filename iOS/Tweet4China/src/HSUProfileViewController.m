@@ -43,6 +43,7 @@
 @property (nonatomic) UIInterfaceOrientation orientation;
 @property (nonatomic, strong) UIBarButtonItem *addFriendBarButton;
 @property (nonatomic, weak) UIImageView *addFriendButtonIndicator;
+@property (nonatomic) BOOL relationshipLoaded;
 
 @end
 
@@ -173,11 +174,12 @@
 {
     [((HSUProfileDataSource *)self.dataSource) refreshLocalData];
     
+    __weak typeof(self) weakSelf = self;
+    
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     if (now - self.lastUpdateTime > 60) {
         self.lastUpdateTime = now;
         self.navigationItem.title = self.profile ? _("Updating...") : _("Loading...");
-        __weak typeof(self) weakSelf = self;
         [twitter showUser:self.screenName success:^(id responseObj) {
             weakSelf.navigationItem.title = nil;
             [weakSelf updateProfile:responseObj];
@@ -186,6 +188,29 @@
             weakSelf.lastUpdateTime = 0;
         }];
     }
+    
+    if (!self.isMe && !self.relationshipLoaded) {
+        [twitter lookupFriendshipsWithScreenNames:@[self.screenName] success:^(id responseObj) {
+            weakSelf.relationshipLoaded = YES;
+            NSDictionary *ship = responseObj[0];
+            NSArray *connections = ship[@"connections"];
+            BOOL followedMe = NO;
+            if ([connections isKindOfClass:[NSArray class]]) {
+                for (NSString *connection in connections) {
+                    if ([connection isEqualToString:@"followed_by"]) {
+                        followedMe = YES;
+                        break;
+                    }
+                }
+            }
+            if (followedMe) {
+                [weakSelf.profileView showFollowed];
+            }
+        } failure:^(NSError *error) {
+            
+        }];
+    }
+    
     [self.tableView reloadData];
 }
 
@@ -639,6 +664,5 @@
         [_addFriendButtonIndicator removeFromSuperview];
     }
 }
-
 
 @end

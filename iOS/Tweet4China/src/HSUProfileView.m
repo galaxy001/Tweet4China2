@@ -24,6 +24,7 @@
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIImageView *verifyFlag;
 @property (nonatomic, strong) UILabel *screenNameLabel;
+@property (nonatomic, strong) UILabel *followedLabel;
 @property (nonatomic, strong) UILabel *descLabel;
 @property (nonatomic, strong) UILabel *locationLabel;
 @property (nonatomic, strong) UILabel *siteLabel;
@@ -119,9 +120,27 @@
         screenNameLabel.backgroundColor = kClearColor;
         screenNameLabel.shadowOffset = ccs(0, 1);
         screenNameLabel.shadowColor = kGrayColor;
-        screenNameLabel.size = ccs(kLabelWidth, kNormalTextSize*1.2);
-        screenNameLabel.topCenter = ccp(infoView.width/2, nameLabel.bottom+5);
         screenNameLabel.text = screenName.twitterScreenName;
+        [screenNameLabel sizeToFit];
+        screenNameLabel.topCenter = ccp(infoView.width/2, nameLabel.bottom+5);
+        
+        UILabel *followedLabel = [[UILabel alloc] init];
+        [infoView addSubview:followedLabel];
+        self.followedLabel = followedLabel;
+        followedLabel.font = [UIFont systemFontOfSize:10];
+        followedLabel.textColor = kWhiteColor;
+        followedLabel.textAlignment = NSTextAlignmentCenter;
+        followedLabel.backgroundColor = rgba(0, 0, 0, .3);
+        followedLabel.shadowOffset = ccs(0, 1);
+        followedLabel.shadowColor = kGrayColor;
+        followedLabel.layer.cornerRadius = 3;
+        followedLabel.clipsToBounds = YES;
+        followedLabel.text = _("Followed you");
+        [followedLabel sizeToFit];
+        followedLabel.width += 4;
+        followedLabel.leftBottom = screenNameLabel.rightBottom;
+        followedLabel.right += 4;
+        followedLabel.hidden = YES;
         
         UILabel *descLabel = [[UILabel alloc] init];
         [infoView addSubview:descLabel];
@@ -457,6 +476,21 @@
 - (void)hideDMIndicator
 {
     [self.dmIndicator removeFromSuperview];
+}
+
+- (void)showFollowed
+{
+    __weak typeof(self)weakSelf = self;
+    [UIView animateWithDuration:1 animations:^{
+        weakSelf.screenNameLabel.left -= weakSelf.followedLabel.width / 2 + 2;
+        weakSelf.followedLabel.left -= weakSelf.followedLabel.width / 2 + 2;
+    } completion:^(BOOL finished) {
+        weakSelf.followedLabel.hidden = NO;
+        weakSelf.followedLabel.alpha = 0;
+        [UIView animateWithDuration:.2 animations:^{
+            weakSelf.followedLabel.alpha = 1;
+        }];
+    }];
 }
 
 @end

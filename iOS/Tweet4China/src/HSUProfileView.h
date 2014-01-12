@@ -19,6 +19,7 @@
 - (void)setupWithProfile:(NSDictionary *)profile;
 - (void)showDMIndicator;
 - (void)hideDMIndicator;
+- (void)showFollowed;
 
 @end
 
