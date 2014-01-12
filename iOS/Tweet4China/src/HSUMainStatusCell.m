@@ -165,7 +165,6 @@
         retweetsButton.titleLabel.font = [UIFont systemFontOfSize:12];
         [retweetsButton setTitleColor:kGrayColor forState:UIControlStateNormal];
         retweetsButton.hidden = YES;
-        [retweetsButton addTarget:self action:@selector(retweetsButtonTouched) forControlEvents:UIControlEventTouchUpInside];
         
         favoriteCountL = [[UILabel alloc] init];
         [retweetFavoritePannel addSubview:favoriteCountL];
@@ -489,7 +488,8 @@
         retweetCountL.text = S(@"%d", retweetCount);
         [retweetCountL sizeToFit];
         retweetsButton.hidden = NO;
-        [retweetsButton setTitle:retweetCount > 1 ? @"RETWEETS" : @"RETWEET" forState:UIControlStateNormal];
+        [retweetsButton setTitle:retweetCount > 1 ? _("RETWEETS")
+                                                  : _("RETWEET") forState:UIControlStateNormal];
         [retweetsButton sizeToFit];
         retweetsButton.left = retweetCountL.right + 3;
         
@@ -501,7 +501,8 @@
         favoriteCountL.text = S(@"%d", favoriteCount);
         [favoriteCountL sizeToFit];
         favoriteCountWordL.hidden = NO;
-        favoriteCountWordL.text = favoriteCount > 1 ? @"FAVORITES" : @"FAVORITE";
+        favoriteCountWordL.text = favoriteCount > 1 ? _("FAVORITES")
+                                                    : _("FAVORITE");
         [favoriteCountWordL sizeToFit];
         favoriteCountL.left = favoriteLeft;
         favoriteCountWordL.left = favoriteCountL.right + 3;
@@ -513,6 +514,7 @@
     [self setupControl:actionV.favoriteB forKey:@"favorite"];
     [self setupControl:actionV.moreB forKey:@"more"];
     [self setupControl:actionV.deleteB forKey:@"delete"];
+    [self setupControl:retweetsButton forKey:@"retweets"];
     [self setupControl:avatarB forKey:@"touchAvatar"];
 }
 
@@ -659,12 +661,6 @@
 - (TTTAttributedLabel *)contentLabel
 {
     return textAL;
-}
-
-- (void)retweetsButtonTouched
-{
-//    id delegate = self.data.renderData[@"delegate"];
-//    [delegate performSelector:@selector(retweetsButtonTouched)];
 }
 
 #pragma mark - attributtedLabel delegate

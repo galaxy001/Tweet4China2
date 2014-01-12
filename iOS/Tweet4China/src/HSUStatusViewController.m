@@ -17,6 +17,8 @@
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import "HSUTabController.h"
 #import "HSUiPadTabController.h"
+#import "HSURetweetersDataSource.h"
+#import "HSUPersonListViewController.h"
 
 @interface HSUStatusViewController ()
 
@@ -93,6 +95,14 @@
     
     [self resetTableViewHeight];
     self.navigationItem.rightBarButtonItem.title = _("Reply");
+}
+
+- (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource
+{
+    [super preprocessDataSourceForRender:dataSource];
+    
+    [dataSource addEventWithName:@"retweets" target:self action:@selector(retweets:) events:UIControlEventTouchUpInside];
+    [dataSource addEventWithName:@"favorites" target:self action:@selector(favorites:) events:UIControlEventTouchUpInside];
 }
 
 - (void)galleryViewDidAppear
@@ -252,6 +262,15 @@
     };
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];
     [actionSheet showInView:self.view.window];
+}
+
+- (void)retweets:(HSUTableCellData *)cellData
+{
+    HSURetweetersDataSource *dataSource = [[HSURetweetersDataSource alloc] init];
+    dataSource.statusID = cellData.rawData[@"id_str"];
+    HSUPersonListViewController *retweetersVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
+    [self.navigationController pushViewController:retweetersVC animated:YES];
+    [dataSource refresh];
 }
 
 @end
