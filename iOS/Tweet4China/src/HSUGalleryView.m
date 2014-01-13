@@ -123,6 +123,7 @@
     if (Sys_Ver < 7) {
         [[UIApplication sharedApplication] setStatusBarHidden:YES];
     }
+    [self resetImageOrientation];
     if (animation) {
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 1;
@@ -175,24 +176,30 @@
 
 - (void)deviceOrientationDidChange:(NSNotification *)notification
 {
+    __weak typeof(self)weakSelf = self;
     [UIView animateWithDuration:.3 animations:^{
-        UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
-        if (orientation == UIDeviceOrientationLandscapeLeft) {
-            imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
-            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
-        } else if (orientation == UIDeviceOrientationLandscapeRight) {
-            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI/2);
-            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
-        } else if (orientation == UIDeviceOrientationPortrait) {
-            imagePanel.transform = CGAffineTransformMakeRotation(0);
-            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
-        } else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
-            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI);
-            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
-        }
-        
-        self.imageView.frame = imagePanel.bounds;
+        [weakSelf resetImageOrientation];
     }];
+}
+
+- (void)resetImageOrientation
+{
+    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    if (orientation == UIDeviceOrientationLandscapeLeft) {
+        imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
+        imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+    } else if (orientation == UIDeviceOrientationLandscapeRight) {
+        imagePanel.transform = CGAffineTransformMakeRotation(-M_PI/2);
+        imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+    } else if (orientation == UIDeviceOrientationPortrait) {
+        imagePanel.transform = CGAffineTransformMakeRotation(0);
+        imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+    } else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
+        imagePanel.transform = CGAffineTransformMakeRotation(-M_PI);
+        imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+    }
+    
+    self.imageView.frame = imagePanel.bounds;
 }
 
 @end

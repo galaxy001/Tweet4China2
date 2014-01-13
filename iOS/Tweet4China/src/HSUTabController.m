@@ -233,7 +233,12 @@
 
 - (BOOL)shouldAutorotate
 {
-    return [self.selectedViewController shouldAutorotate];
+    return self.selectedViewController.shouldAutorotate;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return self.selectedViewController.prefersStatusBarHidden;
 }
 
 @end

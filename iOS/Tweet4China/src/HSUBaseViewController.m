@@ -100,6 +100,9 @@
         [self.view addSubview:tableView];
         self.tableView = tableView;
     }
+    if (IPAD) {
+        self.tableView.separatorColor = rgb(225, 232, 237);
+    }
     // todo: rework
     [tableView registerClass:[HSUDefaultStatusCell class] forCellReuseIdentifier:kDataType_DefaultStatus];
     [tableView registerClass:[HSUChatStatusCell class] forCellReuseIdentifier:kDataType_ChatStatus];
@@ -162,10 +165,7 @@
         }
     }
     
-    if (IPAD) {
-        self.view.backgroundColor = rgb(244, 248, 251);
-        self.tableView.frame = ccr(kIPADMainViewPadding, 15, self.view.width-kIPADMainViewPadding*2, self.view.height-30);
-    } else {
+    if (!IPAD) {
         self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_texture"]];
         self.tableView.frame = self.view.bounds;
     }
@@ -189,7 +189,8 @@
     
     if (IPAD) {
         self.view.backgroundColor = rgb(244, 248, 251);
-        self.tableView.frame = ccr(kIPADMainViewPadding, 15, self.view.width-kIPADMainViewPadding*2, self.view.height-30);
+        self.tableView.frame = ccr(0, 15, self.view.width, self.view.height-30);
+        self.tableView.backgroundColor = self.view.backgroundColor;
         [self.tableView reloadData];
     }
 }
@@ -234,12 +235,22 @@
         if ([data.renderData[@"mode"] isEqualToString:@"action"]) {
             return NO;
         }
-        return YES;
-    }
-    if ([data.dataType isEqualToString:kDataType_LoadMore]) {
+    } else if ([data.dataType isEqualToString:kDataType_LoadMore]) {
         return NO;
     }
+    if (IPAD) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.contentView.backgroundColor = rgb(235, 238, 240);
+    }
     return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (IPAD) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.contentView.backgroundColor = kWhiteColor;
+    }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath

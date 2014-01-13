@@ -118,16 +118,17 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HSUBaseTableCell *cell = (HSUBaseTableCell *)[super tableView:tableView cellForRowAtIndexPath:indexPath];
-    if (IPAD) {
+#ifdef __IPHONE_7_0
+    if (IPAD && Sys_Ver >= 7) {
         if (indexPath.section == self.sectionsData.count &&
             indexPath.row == [self.sectionsData[indexPath.section-1] count] - 1) {
-#ifdef __IPHONE_7_0
-            if (Sys_Ver >= 7) {
-                cell.separatorInset = edi(0, tableView.width, 0, 0);
-            }
-#endif
+            cell.separatorInset = edi(0, tableView.width, 0, 0);
+        } else {
+            CGFloat padding = cell.width/2-cell.contentView.width/2;
+            cell.separatorInset = edi(0, padding, 0, padding);
         }
     }
+#endif
     return cell;
 }
 

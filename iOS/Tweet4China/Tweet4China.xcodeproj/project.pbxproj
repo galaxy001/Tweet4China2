@@ -246,6 +246,8 @@
 		96BFCB031882995900D13F4B /* HSUPhotosViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB021882995900D13F4B /* HSUPhotosViewController.m */; };
 		96BFCB061882997200D13F4B /* HSUPhotoCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB051882997200D13F4B /* HSUPhotoCell.m */; };
 		96BFCB091882CEBB00D13F4B /* HSUSearchTweetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96BFCB081882CEBB00D13F4B /* HSUSearchTweetsViewController.m */; };
+		96BFCB0C1883CBCD00D13F4B /* table_corner_left_bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96BFCB0A1883CBCD00D13F4B /* table_corner_left_bottom@2x.png */; };
+		96BFCB0D1883CBCD00D13F4B /* table_corner_right_bottom@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96BFCB0B1883CBCD00D13F4B /* table_corner_right_bottom@2x.png */; };
 		96C951F3187959D900D3AC9A /* HSUCreateDirectMessageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */; };
 		96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F518795A6300D3AC9A /* HSUSearchField.m */; };
 		96C951F918795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96C951F818795B7200D3AC9A /* HSUDirectMessagePersonsDataSource.m */; };
@@ -666,6 +668,8 @@
 		96BFCB051882997200D13F4B /* HSUPhotoCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPhotoCell.m; sourceTree = "<group>"; };
 		96BFCB071882CEBB00D13F4B /* HSUSearchTweetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchTweetsViewController.h; sourceTree = "<group>"; };
 		96BFCB081882CEBB00D13F4B /* HSUSearchTweetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchTweetsViewController.m; sourceTree = "<group>"; };
+		96BFCB0A1883CBCD00D13F4B /* table_corner_left_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table_corner_left_bottom@2x.png"; sourceTree = "<group>"; };
+		96BFCB0B1883CBCD00D13F4B /* table_corner_right_bottom@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "table_corner_right_bottom@2x.png"; sourceTree = "<group>"; };
 		96C951F1187959D900D3AC9A /* HSUCreateDirectMessageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCreateDirectMessageViewController.h; sourceTree = "<group>"; };
 		96C951F2187959D900D3AC9A /* HSUCreateDirectMessageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUCreateDirectMessageViewController.m; sourceTree = "<group>"; };
 		96C951F418795A6300D3AC9A /* HSUSearchField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchField.h; sourceTree = "<group>"; };
@@ -914,6 +918,8 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				96BFCB0A1883CBCD00D13F4B /* table_corner_left_bottom@2x.png */,
+				96BFCB0B1883CBCD00D13F4B /* table_corner_right_bottom@2x.png */,
 				96DECEC6187FD6A300E46809 /* btn_bookmark_selected@2x.png */,
 				96DECEC7187FD6A300E46809 /* btn_bookmark@2x.png */,
 				9666CDFD187698690044DB0A /* unread_indicator@2x.png */,
@@ -1596,6 +1602,7 @@
 				96891F5A1743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png in Resources */,
 				966ACE1B174B9A100050F110 /* bottom-send-button-dm@2x.png in Resources */,
 				966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */,
+				96BFCB0D1883CBCD00D13F4B /* table_corner_right_bottom@2x.png in Resources */,
 				9628A70217F81F7B005374F1 /* icn_tab_me_selected@2x~iphone.png in Resources */,
 				966ACE1F174B9A100050F110 /* icn_nav_bar_light_compose_dm@2x.png in Resources */,
 				966ACE21174B9A100050F110 /* sms-left-selected@2x.png in Resources */,
@@ -1603,6 +1610,7 @@
 				966ACE23174B9A100050F110 /* sms-left@2x.png in Resources */,
 				966ACE25174B9A100050F110 /* sms-right-selected@2x.png in Resources */,
 				966ACE27174B9A100050F110 /* sms-right@2x.png in Resources */,
+				96BFCB0C1883CBCD00D13F4B /* table_corner_left_bottom@2x.png in Resources */,
 				9633E5E2174D20EF009062B7 /* error-bubble@2x.png in Resources */,
 				9633E5E4174D20EF009062B7 /* ic_dm_reply_default@2x.png in Resources */,
 				9633E5E6174D20EF009062B7 /* ic_dm_reply_pressed@2x.png in Resources */,

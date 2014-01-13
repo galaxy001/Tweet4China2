@@ -13,6 +13,11 @@
 
 @property (nonatomic, strong) HSUTableCellData *data;
 
+@property (nonatomic, weak) UIImageView *cornerLeftTop;
+@property (nonatomic, weak) UIImageView *cornerRightTop;
+@property (nonatomic, weak) UIImageView *cornerLeftBottom;
+@property (nonatomic, weak) UIImageView *cornerRightBottom;
+
 - (void)setupWithData:(HSUTableCellData *)data;
 + (CGFloat)heightForData:(HSUTableCellData *)data;
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key;

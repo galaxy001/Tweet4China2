@@ -58,6 +58,7 @@ BOOL shadowsocksStarted;
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
+#define HSUiPadBgColor rgb(244, 248, 251)
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 do { \

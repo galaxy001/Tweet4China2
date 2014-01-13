@@ -41,6 +41,8 @@
 
 @property (nonatomic, strong) UIButton *messagesButton;
 
+@property (nonatomic, weak) UIView *contentView;
+
 @end
 
 @implementation HSUProfileView
@@ -49,11 +51,14 @@
 {
     self = [super init];
     if (self) {
-        UIImageView *infoBGView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_profile_empty"]];
-        [self addSubview:infoBGView];
-        self.infoBGView = infoBGView;
+        UIView *contentView = [[UIView alloc] init];
+        self.contentView = contentView;
+        contentView.width = kWinWidth-kIPADMainViewPadding*2;
+        [self addSubview:contentView];
         
-        infoBGView.width = width;
+        UIImageView *infoBGView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"bg_profile_empty"]];
+        [contentView addSubview:infoBGView];
+        self.infoBGView = infoBGView;
         
         UIPageControl *pager = [[UIPageControl alloc] init];
         [infoBGView addSubview:pager];
@@ -65,7 +70,7 @@
         pager.hidden = YES;
         
         UIScrollView *infoView = [[UIScrollView alloc] init];
-        [self addSubview:infoView];
+        [contentView addSubview:infoView];
         self.infoView = infoView;
         infoView.pagingEnabled = YES;
         infoView.frame = infoBGView.frame;
@@ -82,6 +87,9 @@
         avatarBGView.backgroundColor = kWhiteColor;
         avatarBGView.layer.cornerRadius = 4;
         avatarBGView.size = ccs(68, 68);
+        if (IPAD) {
+            avatarBGView.size = ccs(96, 96);
+        }
         avatarBGView.topCenter = ccp(infoView.width/2, 16);
         
         UIButton *avatarButton = [[UIButton alloc] init];
@@ -89,7 +97,7 @@
         self.avatarButton = avatarButton;
         avatarButton.backgroundColor = bw(229);
         avatarButton.layer.cornerRadius = 4;
-        avatarButton.size = ccs(60, 60);
+        avatarButton.size = ccs(avatarBGView.width-8, avatarBGView.height-8);
         avatarButton.center = avatarBGView.boundsCenter;
         [avatarButton setTapTarget:delegate action:@selector(avatarButtonTouched)];
         
@@ -180,16 +188,16 @@
         siteLabel.size = ccs(kLabelWidth, kNormalTextSize*1.2);
         siteLabel.topCenter = ccp(infoView.width/2*3, locationLabel.bottom+5);
         
-        self.frame = infoView.bounds;
+        contentView.frame = infoView.bounds;
         
         UIView *referenceButtonBGView = [[UIView alloc] init];
-        [self addSubview:referenceButtonBGView];
+        [contentView addSubview:referenceButtonBGView];
         if (IPAD) {
             referenceButtonBGView.backgroundColor = self.superview.backgroundColor;
         } else {
             referenceButtonBGView.backgroundColor = bw(232);
         }
-        referenceButtonBGView.frame = ccr(0, infoView.bottom, self.width, 48);
+        referenceButtonBGView.frame = ccr(0, infoView.bottom, contentView.width, 48);
         
         UIButton *tweetsButton = [[UIButton alloc] init];
         [referenceButtonBGView addSubview:tweetsButton];
@@ -249,11 +257,11 @@
         followersCountLabel.leftTop = ccp(10, 9);
         
         UIView *buttonsPanel = [[UIView alloc] init];
-        [self addSubview:buttonsPanel];
+        [contentView addSubview:buttonsPanel];
         if (IPAD) {
-            buttonsPanel.frame = ccr([referenceButtonBGView convertPoint:followersButton.rightTop fromView:self].x, referenceButtonBGView.top, referenceButtonBGView.width-followersButton.right, referenceButtonBGView.height-1);
+            buttonsPanel.frame = ccr([referenceButtonBGView convertPoint:followersButton.rightTop fromView:contentView].x, referenceButtonBGView.top, referenceButtonBGView.width-followersButton.right, referenceButtonBGView.height-1);
         } else {
-            buttonsPanel.frame = ccr(0, referenceButtonBGView.bottom, self.width, 48);
+            buttonsPanel.frame = ccr(0, referenceButtonBGView.bottom, contentView.width, 48);
         }
         buttonsPanel.backgroundColor = kWhiteColor;
         
@@ -334,7 +342,7 @@
             
             followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
             actionsButton.rightCenter = ccp(followButton.left - 10, buttonHeight);
-            self.height = referenceButtonBGView.bottom;
+            contentView.height = referenceButtonBGView.bottom;
         } else {
             settingsButton.leftCenter = ccp(10, buttonHeight);
             accountsButton.leftCenter = ccp(settingsButton.right + 10, buttonHeight);
@@ -346,10 +354,19 @@
             
             actionsButton.leftCenter = ccp(10, buttonsPanel.height/2);
             followButton.rightCenter = ccp(buttonsPanel.width - 10, buttonHeight);
-            self.height = buttonsPanel.bottom;
+            contentView.height = buttonsPanel.bottom;
         }
+        
+        self.size = ccs(width, contentView.height);
     }
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    self.contentView.left = self.width/2 - self.contentView.width/2;
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -481,7 +498,7 @@
 - (void)showFollowed
 {
     __weak typeof(self)weakSelf = self;
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:.7 animations:^{
         weakSelf.screenNameLabel.left -= weakSelf.followedLabel.width / 2 + 2;
         weakSelf.followedLabel.left -= weakSelf.followedLabel.width / 2 + 2;
     } completion:^(BOOL finished) {

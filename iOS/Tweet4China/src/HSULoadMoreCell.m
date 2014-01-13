@@ -31,6 +31,11 @@
         [self.contentView addSubview:title];
         [title sizeToFit];
         // todo: set title styles
+        
+        if (IPAD) {
+            self.cornerLeftBottom.hidden = NO;
+            self.cornerRightBottom.hidden = NO;
+        }
     }
     return self;
 }
@@ -64,9 +69,13 @@
 
 - (void)layoutSubviews
 {
-    icon.center = self.contentView.center;
-    spinner.center = self.contentView.center;
-    title.center = self.contentView.center;
+    [super layoutSubviews];
+    
+    icon.center = self.contentView.boundsCenter;
+    spinner.center = self.contentView.boundsCenter;
+    title.center = self.contentView.boundsCenter;
+    self.cornerLeftBottom.bottom = self.contentView.height;
+    self.cornerRightBottom.rightBottom = ccp(self.contentView.width, self.contentView.height);
 }
 
 @end

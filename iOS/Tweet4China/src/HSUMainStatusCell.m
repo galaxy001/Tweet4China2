@@ -213,7 +213,7 @@
 {
     [super layoutSubviews];
     
-    contentArea.frame = ccr(contentArea.left, contentArea.top, contentArea.width, self.contentView.height-padding_S-actionV_H);
+    contentArea.frame = ccr(padding_S, padding_S, self.contentView.width-padding_S*4, self.contentView.height-padding_S-actionV_H);
     
     ambientArea.frame = ccr(0, 0, contentArea.width, ambient_S);
     

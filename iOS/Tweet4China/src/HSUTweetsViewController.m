@@ -637,4 +637,9 @@
     }
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return self.statusBarHidden;
+}
+
 @end

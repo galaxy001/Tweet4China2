@@ -58,7 +58,7 @@
 
 @end
 
-@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate>
+@interface HSUDiscoverViewController () <UITextFieldDelegate, UIWebViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, UIGestureRecognizerDelegate, HSUiPadTabControllerDelegate>
 
 @property (nonatomic, weak) UIView *tabBarBackground;
 @property (nonatomic, strong) NSURL *currentURL;
@@ -71,6 +71,8 @@
 
 @property (nonatomic, strong) UIBarButtonItem *stopBarItem;
 @property (nonatomic, strong) UIBarButtonItem *reloadBarItem;
+@property (nonatomic, strong) UIBarButtonItem *backButtonItem;
+@property (nonatomic, strong) UIBarButtonItem *forwButtonItem;
 
 @property (nonatomic, weak) UITableView *bookmarksView;
 @property (nonatomic, weak) UITableView *tabsView;
@@ -78,7 +80,7 @@
 @property (nonatomic, strong) HSUWebBrowserTabsDataSource *tabsDataSource;
 @property (nonatomic, weak) UISegmentedControl *segmentedControl;
 @property (nonatomic) NSUInteger tabIndex;
-@property (nonatomic) BOOL startedLoadAnyPage;
+@property (nonatomic, weak) NSTimer *checkStatusTimer;
 
 @end
 
@@ -135,11 +137,8 @@
     gesture.direction = UISwipeGestureRecognizerDirectionLeft;
     [self.view addGestureRecognizer:gesture];
     
-//    self.hideRightButtons = YES;
     self.useRefreshControl = NO;
     self.useDefaultStatusView = YES;
-//    self.hideBackButton = YES;
-//    self.hideLeftButtons = YES;
     
     [super viewDidLoad];
     
@@ -149,13 +148,14 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [self.view addSubview:self.webView];
+    
     if (self.startUrl) {
         [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.startUrl]]];
         [self showWebView];
     }
     
-    if (!self.sb) {
-        UIView *sb = [[UIView alloc] initWithFrame:ccr(0, -20, self.view.width, 20)];
+    if (!self.sb && IPHONE && Sys_Ver >= 7) {
+        UIView *sb = [[UIView alloc] initWithFrame:ccr(0, -20, MAX(self.view.width, self.view.height), 20)];
         self.sb = sb;
         sb.backgroundColor = bw(245);
         [self.navigationController.navigationBar addSubview:sb];
@@ -186,12 +186,13 @@
         }
     }
     
-    if (!self.urlTextField.hasText && self.webView.request.URL.absoluteString.length) {
-        self.urlTextField.text = self.webView.request.URL.absoluteString;
+    if (!self.urlTextField.hasText && self.currentURL.absoluteString.length) {
+        self.urlTextField.text = self.currentURL.absoluteString;
         [self.urlTextField setNeedsDisplay];
     }
     
     self.tabBarController.delegate = self;
+    self.tabController.delegate = self;
     
     [super viewWillAppear:animated];
 }
@@ -207,6 +208,13 @@
     
     [self resetStatus];
     
+    self.checkStatusTimer = [NSTimer
+                             scheduledTimerWithTimeInterval:1
+                             target:self
+                             selector:@selector(checkStatus)
+                             userInfo:nil
+                             repeats:YES];
+    
     [super viewDidAppear:animated];
 }
 
@@ -214,12 +222,19 @@
 {
     [super viewWillDisappear:animated];
     
+    [self.checkStatusTimer invalidate];
     [self.sb removeFromSuperview];
 }
 
 - (void)viewDidLayoutSubviews
 {
-    self.webView.frame = ccr(0, 0, self.view.width, self.view.height);
+    self.webView.frame = self.view.bounds;
+    self.bookmarksView.size = self.webView.size;
+    self.tabsView.size = self.webView.size;
+    if (self.tabsView.left) {
+        self.tabsView.left = self.view.width;
+    }
+    self.segmentedControl.left = self.view.width/2 - self.segmentedControl.width/2;
     
     // urltextfield frame
     [self setURLTextFieldWidth];
@@ -229,12 +244,14 @@
     }
     self.urlTextFieldBackgrondView.frame = self.urlTextField.frame;
     
-    if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
-        self.navigationController.navigationBar.hidden = NO;
-        self.tabBarController.tabBar.hidden = NO;
-    } else {
-        self.navigationController.navigationBar.hidden = YES;
-        self.tabBarController.tabBar.hidden = YES;
+    if (IPHONE) {
+        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+            self.navigationController.navigationBar.hidden = NO;
+            self.tabBarController.tabBar.hidden = NO;
+        } else {
+            self.navigationController.navigationBar.hidden = YES;
+            self.tabBarController.tabBar.hidden = YES;
+        }
     }
     
     [self resetWebInset];
@@ -242,14 +259,16 @@
     [super viewDidLayoutSubviews];
 }
 
-- (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController
+- (BOOL)tabBarController:(id)tabBarController shouldSelectViewController:(UIViewController *)viewController
 {
-    if (viewController == self.navigationController) {
-        if (self.webView.isHidden) {
+    if (self.view.window) {
+        if (viewController == self.navigationController) {
+            if (self.webView.isHidden) {
+                return NO;
+            }
+            [self bookmarksButtonTouched];
             return NO;
         }
-        [self bookmarksButtonTouched];
-        return NO;
     }
     return YES;
 }
@@ -312,7 +331,6 @@
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
-    self.startedLoadAnyPage = YES;
     if (webView.request.URL.absoluteString.length &&
         ![webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         
@@ -333,25 +351,26 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    if (scrollView == self.webView.scrollView) {
+    CGFloat statusHeight = 20;
+    CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
+    if (pulledDown < 0) {
+        pulledDown = 0;
+    }
+    
+    if (IPHONE && scrollView == self.webView.scrollView) {
         // hide bars
         if (Sys_Ver >= 7) {
-            CGFloat statusHeight = 20;
-            CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
-            if (pulledDown < 0) {
-                pulledDown = 0;
-            }
             
             self.navigationController.navigationBar.top = statusHeight - pulledDown;
             self.tabBarController.tabBar.bottom = self.view.height + pulledDown;
             
             self.sb.top = pulledDown - statusHeight;
             [self.navigationController.navigationBar bringSubviewToFront:self.sb];
-            
-            if (!self.segmentedControl.isHidden) {
-                self.segmentedControl.center = ccp(self.width/2, 20 + navbar_height + 25 - pulledDown);
-            }
         }
+    }
+    
+    if (!self.segmentedControl.isHidden) {
+        self.segmentedControl.center = ccp(self.view.width/2, 20 + navbar_height + 25 - pulledDown);
     }
 }
 
@@ -451,8 +470,8 @@
 {
     [self.urlTextField resignFirstResponder];
     [self.overlayButton removeFromSuperview];
-    if (!self.urlTextField.hasText && self.webView.request.URL.absoluteString.length) {
-        self.urlTextField.text = self.webView.request.URL.absoluteString;
+    if (!self.urlTextField.hasText && self.currentURL.absoluteString.length) {
+        self.urlTextField.text = self.currentURL.absoluteString;
         [self.urlTextField setNeedsDisplay];
     }
 }
@@ -491,6 +510,18 @@
                               target:self.webView
                               action:@selector(reload)];
     }
+    if (!self.backButtonItem) {
+        self.backButtonItem = [[UIBarButtonItem alloc]
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemRewind
+                               target:self.webView
+                               action:@selector(goBack)];
+    }
+    if (!self.forwButtonItem) {
+        self.forwButtonItem = [[UIBarButtonItem alloc]
+                               initWithBarButtonSystemItem:UIBarButtonSystemItemFastForward
+                               target:self.webView
+                               action:@selector(goForward)];
+    }
     
     if (!self.webView.isHidden) {
         if (self.webView.isLoading) {
@@ -500,6 +531,17 @@
         } else {
             self.navigationItem.rightBarButtonItem = nil;
         }
+        NSArray *items;
+        if (self.webView.canGoBack && self.webView.canGoForward) {
+            items = @[self.backButtonItem, self.forwButtonItem];
+        } else if (self.webView.canGoBack) {
+            items = @[self.backButtonItem];
+        } else if (self.webView.canGoForward) {
+            items = @[self.forwButtonItem];
+        }
+        if (![self.navigationItem.leftBarButtonItems isEqualToArray:items]) {
+            self.navigationItem.leftBarButtonItems = items;
+        }
     }
 }
 
@@ -507,6 +549,8 @@
 {
     CGFloat left = 20;
     CGFloat urlTextFieldWidth = self.view.width - left - 20 - (self.navigationItem.rightBarButtonItem ? 30 : 0);
+    left += self.navigationItem.leftBarButtonItems.count * 50;
+    urlTextFieldWidth -= self.navigationItem.leftBarButtonItems.count * 50;
     
     if (self.urlTextField.width &&
         self.urlTextField.width != urlTextFieldWidth) {
@@ -522,10 +566,10 @@
 {
     if (!self.webView.hidden &&
         !self.urlTextField.isEditing &&
-        self.webView.request.URL.absoluteString.length &&
-        ![self.webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
+        self.currentURL.absoluteString.length &&
+        ![self.currentURL.absoluteString isEqualToString:@"about:blank"]) {
         
-        self.urlTextField.text = self.webView.request.URL.absoluteString;
+        self.urlTextField.text = self.currentURL.absoluteString;
     } else if (self.webView.isHidden) {
         self.urlTextField.text = nil;
     }
@@ -615,6 +659,7 @@
     [self.bookmarksView reloadData];
     
     self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.leftBarButtonItems = nil;
     [self.webView stopLoading];
     
     [self.tabsView reloadData];
@@ -622,23 +667,32 @@
 
 - (void)resetWebInset
 {
+    static BOOL flag;
     CGFloat top = 0, bottom = 0;
-    if (self.startedLoadAnyPage) {
-        if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) {
+    if (flag || (self.webView.request.URL && self.webView.scrollView.contentSize.height > self.webView.height)) {
+        flag = YES;
+        if (!self.navigationController.navigationBar.isHidden) {
             top = navbar_height + 20;
         } else {
             top = 20;
         }
-        if (self.webView.scrollView.contentSize.height < self.view.height - top) {
+        if (!self.tabBarController.tabBar.isHidden || self.webView.scrollView.contentSize.height < self.view.height - top) {
             bottom = tabbar_height;
         }
     }
-    self.webView.scrollView.contentInset = edi(top, 0, bottom, 0);
+    UIEdgeInsets inset = edi(top, 0, bottom, 0);
+    if (!UIEdgeInsetsEqualToEdgeInsets(self.webView.scrollView.contentInset, inset)) {
+        self.webView.scrollView.contentInset = inset;
+    }
 }
 
-- (BOOL)shouldAutorotate
+- (void)checkStatus
 {
-    return !self.webView.isHidden;
+    if (!self.webView.isHidden) {
+        [self addBarButtonsIfNeed];
+        [self setURLTextFieldWidth];
+        [self resetWebInset];
+    }
 }
 
 @end

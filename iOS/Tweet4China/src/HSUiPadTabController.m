@@ -163,6 +163,9 @@
             UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"icn_tab_%@_selected", imageName]];
             [tabBarItem setImage:image forState:UIControlStateNormal];
             UIViewController *selectedVC = self.viewControllers[[self.tabBarItems indexOfObject:tabBarItem]];
+            if (self.delegate && ![self.delegate tabBarController:self shouldSelectViewController:selectedVC]) {
+                return;
+            }
             notification_post_with_object(HSUTabControllerDidSelectViewControllerNotification, selectedVC);
             if (self.mainVC != selectedVC) {
                 [self.mainVC.view removeFromSuperview];
@@ -185,8 +188,10 @@
         childVC.left = self.tabBar.right;
         if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) { // portrait
             childVC.width = 768 - childVC.left;
+            childVC.height = 1024;
         } else { // landscap
             childVC.width = 1024 - childVC.left;
+            childVC.height = 768;
         }
         [self addChildViewController:childVC];
     }
@@ -242,6 +247,11 @@
         }
     }
     return NO;
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return self.mainVC.prefersStatusBarHidden;
 }
 
 @end

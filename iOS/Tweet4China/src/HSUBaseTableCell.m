@@ -19,13 +19,44 @@
             self.separatorInset = edi(0, 0, 0, 0);
         }
 #endif
-        
         if (IPAD) {
-            self.width = kWinWidth - kIPadTabBarWidth - kIPADMainViewPadding*2;
-            self.contentView.width = self.width;
+            UIImageView *cornerLeftTop = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_left_top"]];
+            UIImageView *cornerRightTop = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_right_top"]];
+            UIImageView *cornerLeftBottom = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_left_bottom"]];
+            UIImageView *cornerRightBottom = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"table_corner_right_bottom"]];
+            
+            self.cornerLeftTop = cornerLeftTop;
+            self.cornerRightTop = cornerRightTop;
+            self.cornerLeftBottom = cornerLeftBottom;
+            self.cornerRightBottom = cornerRightBottom;
+            
+            [self.contentView addSubview:cornerLeftTop];
+            [self.contentView addSubview:cornerRightTop];
+            [self.contentView addSubview:cornerLeftBottom];
+            [self.contentView addSubview:cornerRightBottom];
+            
+            cornerLeftTop.hidden = YES;
+            cornerRightTop.hidden = YES;
+            cornerLeftBottom.hidden = YES;
+            cornerRightBottom.hidden = YES;
+            
+            self.selectionStyle = UITableViewCellSelectionStyleNone;
         }
     }
     return self;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+    
+    if (IPAD) {
+        self.contentView.width = kWinWidth - kIPADMainViewPadding*2;
+        self.contentView.topCenter = ccp(self.center.x, self.contentView.top);
+        self.backgroundColor = rgb(244, 248, 251);
+        self.contentView.backgroundColor = kWhiteColor;
+        self.cornerRightTop.right = self.contentView.width;
+    }
 }
 
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key

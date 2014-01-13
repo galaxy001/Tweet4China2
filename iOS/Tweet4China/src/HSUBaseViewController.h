@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "HSUBaseDataSource.h"
 #import "HSURefreshControl.h"
+#import "HSUiPadTabController.h"
 
 @interface HSUBaseViewController : UIViewController <UITableViewDelegate, HSUBaseDataSourceDelegate, UITabBarControllerDelegate>
 
@@ -26,7 +27,7 @@
 @property (nonatomic, readonly) UIBarButtonItem *composeBarButton;
 @property (nonatomic, readonly) UIBarButtonItem *searchBarButton;
 
-@property (nonatomic, weak) id tabController;
+@property (nonatomic, weak) HSUiPadTabController *tabController;
 
 - (id)initWithDataSource:(HSUBaseDataSource *)dataSource;
 - (Class)cellClassForDataType:(NSString *)dataType;

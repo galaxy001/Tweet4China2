@@ -8,10 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol HSUiPadTabControllerDelegate;
+
 @interface HSUiPadTabController : UIViewController
+
+@property (nonatomic, weak) id<HSUiPadTabControllerDelegate> delegate;
 
 - (void)showUnreadIndicatorOnViewController:(UIViewController *)viewController;
 - (void)hideUnreadIndicatorOnViewController:(UIViewController *)viewController;
 - (BOOL)hasUnreadIndicatorOnViewController:(UIViewController *)viewController;
+
+@end
+
+@protocol HSUiPadTabControllerDelegate <NSObject>
+
+- (BOOL)tabBarController:(HSUiPadTabController *)tabController shouldSelectViewController:(UIViewController *)viewController;
 
 @end

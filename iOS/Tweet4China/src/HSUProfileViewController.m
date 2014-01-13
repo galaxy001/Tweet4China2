@@ -40,7 +40,6 @@
 @property (nonatomic) NSTimeInterval lastUpdateTime;
 @property (nonatomic) BOOL presenting;
 @property (nonatomic) BOOL selectPhotoForAvatar; // YES for avatar, NO for banner
-@property (nonatomic) UIInterfaceOrientation orientation;
 @property (nonatomic, strong) UIBarButtonItem *addFriendBarButton;
 @property (nonatomic, weak) UIImageView *addFriendButtonIndicator;
 @property (nonatomic) BOOL relationshipLoaded;
@@ -76,7 +75,15 @@
 {
     [super viewDidLoad];
     
-    self.orientation = self.interfaceOrientation;
+    HSUProfileView *profileView = [[HSUProfileView alloc]
+                                   initWithScreenName:self.screenName
+                                   width:self.tableView.width-kIPADMainViewPadding*2
+                                   delegate:self];
+    if (self.profile) {
+        [profileView setupWithProfile:self.profile];
+    }
+    self.tableView.tableHeaderView = profileView;
+    self.profileView = profileView;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -116,25 +123,6 @@
     [super viewWillDisappear:animated];
     
     self.addFriendButtonIndicator.hidden = YES;
-}
-
-- (void)viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    
-    // 偷懒
-    if (UIInterfaceOrientationIsPortrait(self.orientation) != UIInterfaceOrientationIsPortrait(self.interfaceOrientation) ||
-        !self.profileView) {
-        
-        HSUProfileView *profileView = [[HSUProfileView alloc] initWithScreenName:self.screenName width:self.view.width-kIPADMainViewPadding*2 delegate:self];
-        if (self.profile) {
-            [profileView setupWithProfile:self.profile];
-        }
-        self.tableView.tableHeaderView = profileView;
-        self.profileView = profileView;
-    }
-    
-    self.orientation = self.interfaceOrientation;
 }
 
 - (void)viewDidDisappear:(BOOL)animated

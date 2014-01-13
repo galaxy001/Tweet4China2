@@ -95,7 +95,7 @@
     
     self.nameLabel.text = data.rawData[@"name"];
     [self.nameLabel sizeToFit];
-    self.screenNameLabel.text = data.rawData[@"screen_name"];
+    self.screenNameLabel.text = S(@"@%@", data.rawData[@"screen_name"]);
     
     int followersCount = [data.rawData[@"followers_count"] intValue];
     int followingCount = [data.rawData[@"friends_count"] intValue];

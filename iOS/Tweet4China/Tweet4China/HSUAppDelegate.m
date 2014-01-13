@@ -29,15 +29,29 @@ static HSUShadowsocksProxy *proxy;
     return (HSUAppDelegate *)[UIApplication sharedApplication].delegate;
 }
 
+//+ (void)initialize
+//{
+//    NSMutableDictionary *userDefaults = @{@"UserAgent": @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36"}.mutableCopy;
+//    [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaults];
+//}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
     if (!self.globalSettings) {
+        NSMutableDictionary *settings = @{}.mutableCopy;
+        settings[HSUSettingSoundEffect] = @YES;
+        settings[HSUSettingPhotoPreview] = @YES;
+        settings[HSUSettingTextSize] = @"14";
+        settings[HSUSettingCacheSize] = @"16MB";
 #ifdef FreeApp
-        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @NO, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
-#else
-        self.globalSettings = @{HSUSettingSoundEffect: @YES, HSUSettingPhotoPreview: @YES, HSUSettingTextSize: @"14", HSUSettingCacheSize: @"16MB"};
+        settings[HSUSettingPhotoPreview] = @NO;
 #endif
+        if (IPAD) {
+            settings[HSUSettingTextSize] = @"16";
+        }
+        [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;

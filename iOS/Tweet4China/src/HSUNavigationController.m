@@ -43,6 +43,22 @@
     [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (self.presentingViewController) {
+        return;
+    }
+    for (UIViewController *childVC in self.viewControllers) {
+        if (self.navigationBar.isHidden) {
+            childVC.view.size = ccs(self.view.width, self.view.height);
+        } else {
+            childVC.view.size = ccs(self.view.width, self.view.height-self.navigationBar.height-20);
+        }
+    }
+}
+
 - (BOOL)shouldAutorotate
 {
     return [self.viewControllers.lastObject shouldAutorotate];
@@ -61,6 +77,11 @@
             weakSelf.progressBar.alpha = 0.0;
         } completion:nil];
     }
+}
+
+- (BOOL)prefersStatusBarHidden
+{
+    return [self.viewControllers.lastObject prefersStatusBarHidden];
 }
 
 @end

@@ -47,13 +47,19 @@
     [cell setupWithData:cellData];
     
     if (IPAD) {
-        if (indexPath.section == 0 && indexPath.row == self.count - 1) {
+        cell.cornerLeftTop.hidden = indexPath.row != 0;
+        cell.cornerRightTop.hidden = indexPath.row != 0;
+    }
+    
 #ifdef __IPHONE_7_0
-            if (Sys_Ver >= 7) {
-                cell.separatorInset = edi(0, tableView.width, 0, 0);
-            }
-#endif
+    if (IPAD && Sys_Ver >= 7) {
+        if (indexPath.section == 0 && indexPath.row == self.count - 1) {
+            cell.separatorInset = edi(0, tableView.width, 0, 0);
+        } else {
+            CGFloat padding = cell.width/2-cell.contentView.width/2;
+            cell.separatorInset = edi(0, padding, 0, padding);
         }
+#endif
     }
     return cell;
 }
