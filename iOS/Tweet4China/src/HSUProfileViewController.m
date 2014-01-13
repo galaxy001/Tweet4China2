@@ -314,6 +314,7 @@
     HSURecentPhotosDataSource *dataSource = [[HSURecentPhotosDataSource alloc] init];
     dataSource.screenName = self.screenName;
     HSUTweetsViewController *tweetsVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
+    tweetsVC.useRefreshControl = NO;
     [self.navigationController pushViewController:tweetsVC animated:YES];
     [dataSource refresh];
 }
@@ -378,11 +379,11 @@
             return;
         }
         
-        [SVProgressHUD showWithStatus:_("Please Wait")];
         __weak typeof(self)weakSelf = self;
         if (self.relationshipLoaded) {
             [self startDirectMessage];
         } else {
+            [SVProgressHUD showWithStatus:_("Please Wait")];
             NSString *screenName = self.screenName;
             [twitter lookupFriendshipsWithScreenNames:@[screenName] success:^(id responseObj) {
                 NSDictionary *ship = responseObj[0];

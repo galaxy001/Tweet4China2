@@ -24,13 +24,8 @@
 {
     [super refresh];
     
-    if (self.count == 0 && [twitter isAuthorized]) {
-        [SVProgressHUD showWithStatus:_("Loading Tweets")];
-    }
-    
     __weak typeof(self)weakSelf = self;
     [self fetchRefreshDataWithSuccess:^(id responseObj) {
-        [SVProgressHUD dismiss];
         NSArray *tweets = responseObj;
         BOOL oldCount = self.count;
         if (tweets.count) {
@@ -67,7 +62,6 @@
         }
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
-        [SVProgressHUD dismiss];
         [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
         weakSelf.loadingCount --;

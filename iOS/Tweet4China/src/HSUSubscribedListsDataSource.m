@@ -24,12 +24,8 @@
     [super refresh];
     
     [self.data removeAllObjects];
-    if (self.count == 0 && [twitter isAuthorized]) {
-        [SVProgressHUD showWithStatus:_("Loading Lists")];
-    }
     __weak typeof(self)weakSelf = self;
     [twitter getListsWithScreenName:self.screenName success:^(id responseObj) {
-        [SVProgressHUD dismiss];
         NSArray *lists = responseObj;
         if (lists.count) {
             for (int i=lists.count-1; i>=0; i--) {
@@ -56,7 +52,6 @@
         [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
-        [SVProgressHUD dismiss];
         [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         weakSelf.loadingCount --;

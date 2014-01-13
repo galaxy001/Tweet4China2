@@ -33,7 +33,6 @@
             break;
         }
     }
-    [SVProgressHUD showWithStatus:self.count ? _("Updating...") : _("Loading...")];
     __weak typeof(self)weakSelf = self;
     [twitter getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
@@ -98,8 +97,6 @@
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
             weakSelf.loadingCount --;
-            
-            [SVProgressHUD dismiss];
         } failure:^(NSError *error) {
             [SVProgressHUD showErrorWithStatus:_("Load Messages failed")];
         }];

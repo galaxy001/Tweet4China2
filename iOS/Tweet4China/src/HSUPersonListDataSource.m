@@ -28,12 +28,7 @@
 {
     [super loadMore];
     
-    if (self.count == 0 && [twitter isAuthorized]) {
-        [SVProgressHUD showWithStatus:_("Loading")];
-    }
-    
     [self fetchDataWithSuccess:^(id responseObj) {
-        [SVProgressHUD dismiss];
         NSArray *users = responseObj;
         self.nextCursor = nil;
         self.prevCursor = nil;
