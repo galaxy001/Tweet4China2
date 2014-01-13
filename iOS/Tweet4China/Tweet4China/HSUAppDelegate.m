@@ -399,7 +399,7 @@ static HSUShadowsocksProxy *proxy;
     double delayInSeconds = 5.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, GCDBackgroundThread, ^(void){
-        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json"]];
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json.test"]];
         if (configJSON) {
             NSDictionary *config = [NSJSONSerialization JSONObjectWithData:configJSON options:0 error:nil];
 #ifdef FreeApp
@@ -410,6 +410,28 @@ static HSUShadowsocksProxy *proxy;
             if (serverList.count) {
                 BOOL selected = NO;
                 NSArray *localServerList = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
+                
+                BOOL hasNewServer;
+                for (NSDictionary *ns in serverList) {
+                    NSString *ns_server = S(@"%@:%@", ns[HSUShadowsocksSettings_Server], ns[HSUShadowsocksSettings_RemotePort]);
+                    BOOL found = NO;
+                    for (NSDictionary *ls in localServerList) {
+                        NSString *ls_server = S(@"%@:%@", ls[HSUShadowsocksSettings_Server], ls[HSUShadowsocksSettings_RemotePort]);
+                        if ([ns_server isEqualToString:ls_server]) {
+                            found = YES;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        hasNewServer = YES;
+                        break;
+                    }
+                }
+                
+                if (!hasNewServer) {
+                    return ;
+                }
+                
                 NSMutableArray *newServerList = @[].mutableCopy;
                 for (NSDictionary *ns in serverList) {
                     [newServerList addObject:ns.mutableCopy];
