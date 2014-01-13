@@ -109,10 +109,9 @@
 }
 
 - (void)switchMode {
-    NSLog(@"switch mode");
     if (actionV) {
         [UIView animateWithDuration:0.2 animations:^{
-            self.contentView.backgroundColor = kClearColor;
+            self.contentView.backgroundColor = IPAD ? kWhiteColor : kClearColor;
             self.statusView.alpha = 1;
             actionV.alpha = 0;
         } completion:^(BOOL finish){

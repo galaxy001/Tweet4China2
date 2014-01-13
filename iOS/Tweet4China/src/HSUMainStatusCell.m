@@ -225,7 +225,7 @@
     [screenNameL sizeToFit];
     screenNameL.leftTop = ccp(nameL.left, nameL.bottom+3);
     
-    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, textAL.width, [self.data.renderData[@"text_height"] floatValue]);
+    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, contentArea.width, [self.data.renderData[@"text_height"] floatValue]);
     
     [timePlaceL sizeToFit];
     timePlaceL.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);

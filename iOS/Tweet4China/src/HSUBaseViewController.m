@@ -216,8 +216,6 @@
 - (void)keyboardWillShow:(NSNotification *)notification {
     self.keyboardHeight = self.defaultKeyboardHeight;
     [self.view setNeedsDisplay];
-    
-//    [self.tableView setContentOffset:ccp(0, self.tableView.contentSize.height) animated:YES];
 }
 
 #pragma mark - TableView
@@ -238,11 +236,15 @@
     } else if ([data.dataType isEqualToString:kDataType_LoadMore]) {
         return NO;
     }
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
     if (IPAD) {
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         cell.contentView.backgroundColor = rgb(235, 238, 240);
     }
-    return YES;
 }
 
 - (void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath
