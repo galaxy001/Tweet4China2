@@ -22,6 +22,10 @@
     if (self) {
         self.requestCount = 200;
         self.data = [[NSMutableArray alloc] init];
+        
+        NSString *suiteName = S(@"tweet4china.%@", self.class.cacheKey);
+        self.cacheUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
+        
         notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
         notification_add_observer(HSUTwiterLogout, self, @selector(twitterLogout));
@@ -164,11 +168,11 @@
         }
     }
     if (cacheDataArr.count) {
-        [[NSUserDefaults standardUserDefaults] setObject:cacheDataArr forKey:self.class.cacheKey];
+        [self.cacheUserDefaults setObject:cacheDataArr forKey:self.class.cacheKey];
     } else {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:self.class.cacheKey];
+        [self.cacheUserDefaults removeObjectForKey:self.class.cacheKey];
     }
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.cacheUserDefaults synchronize];
 }
 
 + (NSString *)cacheKey
@@ -183,8 +187,11 @@
     if (!twitter.isAuthorized) {
         return dataSource;
     }
+    
+    NSString *suiteName = S(@"tweet4china.%@", self.class.cacheKey);
+    NSUserDefaults *cacheUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:suiteName];
     if (useCahce) {
-        NSArray *cacheDataArr = [[NSUserDefaults standardUserDefaults] arrayForKey:self.cacheKey];
+        NSArray *cacheDataArr = [cacheUserDefaults arrayForKey:self.cacheKey];
         if (cacheDataArr) {
             NSMutableArray *mData = [NSMutableArray arrayWithCapacity:cacheDataArr.count];
             for (NSDictionary *cacheData in cacheDataArr) {

@@ -365,22 +365,24 @@
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.pausesLocationUpdatesAutomatically = YES;
     
-    friends = [[NSUserDefaults standardUserDefaults] objectForKey:@"friends"];
+    NSUserDefaults *friendsUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"tweet4china.friends"];
+    friends = [friendsUserDefaults objectForKey:@"friends"];
     __weak typeof(self)weakSelf = self;
     [twitter getFriendsWithCount:100 success:^(id responseObj) {
         friends = responseObj[@"users"];
-        [[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"friends"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [friendsUserDefaults setObject:friends forKey:@"friends"];
+        [friendsUserDefaults synchronize];
         [weakSelf filterSuggestions];
     } failure:^(NSError *error) {
         
     }];
     
-    trends = [[NSUserDefaults standardUserDefaults] objectForKey:@"trends"];
+    NSUserDefaults *trendsUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"tweet4china.trends"];
+    trends = [trendsUserDefaults objectForKey:@"trends"];
     [twitter getTrendsWithSuccess:^(id responseObj) {
         trends = responseObj[0][@"trends"];
-        [[NSUserDefaults standardUserDefaults] setObject:trends forKey:@"trends"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [trendsUserDefaults setObject:trends forKey:@"trends"];
+        [trendsUserDefaults synchronize];
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf filterSuggestions];
         });
