@@ -88,6 +88,12 @@
 
 - (void)viewDidLoad
 {
+    if (Sys_Ver < 7) {
+        if (!self.startUrl) {
+            self.startUrl = @"https://www.google.com/ncr";
+        }
+    }
+    
     UIWebView *webView = [[UIWebView alloc] init];
     self.webView = webView;
     webView.scalesPageToFit = YES;
@@ -351,6 +357,9 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    if (self.viewDidAppearCount == 0) {
+        return;
+    }
     CGFloat statusHeight = 20;
     CGFloat pulledDown = scrollView.contentInset.top + scrollView.contentOffset.y; // distance of pushed up
     if (pulledDown < 0) {
@@ -547,18 +556,26 @@
 
 - (void)setURLTextFieldWidth
 {
+    CGFloat buttonItemWidth = 50;
+    if (Sys_Ver < 7) {
+        buttonItemWidth = 35;
+    }
     CGFloat left = 20;
     CGFloat urlTextFieldWidth = self.view.width - left - 20 - (self.navigationItem.rightBarButtonItem ? 30 : 0);
-    left += self.navigationItem.leftBarButtonItems.count * 50;
-    urlTextFieldWidth -= self.navigationItem.leftBarButtonItems.count * 50;
+    left += self.navigationItem.leftBarButtonItems.count * buttonItemWidth;
+    urlTextFieldWidth -= self.navigationItem.leftBarButtonItems.count * buttonItemWidth;
     
+    CGRect newFrame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
+    if (CGRectEqualToRect(self.urlTextField.frame, newFrame)) {
+        return;
+    }
     if (self.urlTextField.width &&
         self.urlTextField.width != urlTextFieldWidth) {
         [UIView animateWithDuration:.2 animations:^{
-            self.urlTextField.frame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
+            self.urlTextField.frame = newFrame;
         }];
     } else {
-        self.urlTextField.frame = ccr(left, 7, urlTextFieldWidth, navbar_height-14);
+        self.urlTextField.frame = newFrame;
     }
 }
 
@@ -667,6 +684,9 @@
 
 - (void)resetWebInset
 {
+    if (Sys_Ver < 7) {
+        return;
+    }
     static BOOL flag;
     CGFloat top = 0, bottom = 0;
     if (flag || (self.webView.request.URL && self.webView.scrollView.contentSize.height > self.webView.height)) {

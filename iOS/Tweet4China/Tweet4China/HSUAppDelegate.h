@@ -14,6 +14,7 @@
 @property (nonatomic, weak) UIViewController *tabController;
 @property (nonatomic, strong) NSDictionary *globalSettings;
 @property (nonatomic, copy) NSString *shadwosocksServer;
+@property (nonatomic) BOOL hasPro;
 
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;

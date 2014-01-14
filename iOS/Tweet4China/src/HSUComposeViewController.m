@@ -365,24 +365,30 @@
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.pausesLocationUpdatesAutomatically = YES;
     
-    NSUserDefaults *friendsUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"tweet4china.friends"];
-    friends = [friendsUserDefaults objectForKey:@"friends"];
+    NSString *friendsFileName = dp(@"tweet4china.friends");
+    NSData *json = [NSData dataWithContentsOfFile:friendsFileName];
+    if (json) {
+        friends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
+    }
     __weak typeof(self)weakSelf = self;
     [twitter getFriendsWithCount:100 success:^(id responseObj) {
         friends = responseObj[@"users"];
-        [friendsUserDefaults setObject:friends forKey:@"friends"];
-        [friendsUserDefaults synchronize];
+        NSData *json = [NSJSONSerialization dataWithJSONObject:friends options:0 error:nil];
+        [json writeToFile:friendsFileName atomically:NO];
         [weakSelf filterSuggestions];
     } failure:^(NSError *error) {
         
     }];
     
-    NSUserDefaults *trendsUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:@"tweet4china.trends"];
-    trends = [trendsUserDefaults objectForKey:@"trends"];
+    NSString *trendsFileName = dp(@"tweet4china.trends");
+    json = [NSData dataWithContentsOfFile:trendsFileName];
+    if (json) {
+        trends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
+    }
     [twitter getTrendsWithSuccess:^(id responseObj) {
         trends = responseObj[0][@"trends"];
-        [trendsUserDefaults setObject:trends forKey:@"trends"];
-        [trendsUserDefaults synchronize];
+        NSData *json = [NSJSONSerialization dataWithJSONObject:trends options:0 error:nil];
+        [json writeToFile:trendsFileName atomically:NO];
         dispatch_async(dispatch_get_main_queue(), ^{
             [weakSelf filterSuggestions];
         });

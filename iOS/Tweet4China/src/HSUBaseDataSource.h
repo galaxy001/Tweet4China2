@@ -19,7 +19,7 @@
 @class HSUBaseViewController;
 @interface HSUBaseDataSource : NSObject <UITableViewDataSource>
 
-@property (nonatomic, strong) NSUserDefaults *cacheUserDefaults;
+//@property (nonatomic, strong) NSUserDefaults *cacheUserDefaults;
 
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, weak) id<HSUBaseDataSourceDelegate> delegate;

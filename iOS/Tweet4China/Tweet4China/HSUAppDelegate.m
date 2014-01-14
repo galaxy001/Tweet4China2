@@ -50,9 +50,12 @@ static HSUShadowsocksProxy *proxy;
         if (IPAD) {
             settings[HSUSettingTextSize] = @"16";
         }
+        self.globalSettings = settings;
         [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    
+    self.hasPro = [[NSUserDefaults standardUserDefaults] boolForKey:@"has_pro"];
     
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
@@ -345,11 +348,17 @@ static HSUShadowsocksProxy *proxy;
 #ifndef FreeApp // free app is restrict for using time
     return YES;
 #endif
+    if (!self.hasPro) {
+        return YES;
+    }
     NSString *title = _("pro_alert_title");
     NSString *message = _("pro_message_title");
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("pro_alert_cancel_item")];
     RIButtonItem *buyItem = [RIButtonItem itemWithLabel:_("pro_alert_buy_item")];
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message cancelButtonItem:cancelItem otherButtonItems:buyItem, nil];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+                                                    message:message
+                                           cancelButtonItem:cancelItem
+                                           otherButtonItems:buyItem, nil];
     [alert show];
     buyItem.action = ^{
         [Flurry logEvent:@"buy_pro_confirm"];
@@ -396,12 +405,18 @@ static HSUShadowsocksProxy *proxy;
 
 - (void)updateConfig
 {
-    double delayInSeconds = 5.0;
+    double delayInSeconds = 1.0;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, GCDBackgroundThread, ^(void){
+#ifdef DEBUG
         NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json.test"]];
+#else
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json"]];
+#endif
         if (configJSON) {
             NSDictionary *config = [NSJSONSerialization JSONObjectWithData:configJSON options:0 error:nil];
+            
+            // update server
 #ifdef FreeApp
             NSArray *serverList = config[@"global"][@"free"][@"server_list"];
 #else
@@ -428,31 +443,39 @@ static HSUShadowsocksProxy *proxy;
                     }
                 }
                 
-                if (!hasNewServer) {
-                    return ;
-                }
-                
-                NSMutableArray *newServerList = @[].mutableCopy;
-                for (NSDictionary *ns in serverList) {
-                    [newServerList addObject:ns.mutableCopy];
-                }
-                for (NSDictionary *ls in localServerList) {
-                    if (![ls[HSUShadowsocksSettings_Buildin] boolValue]) {
-                        if ([ls[HSUShadowsocksSettings_Selected] boolValue]) {
-                            selected = YES;
-                        }
-                        [newServerList addObject:ls.mutableCopy];
+                if (hasNewServer) {
+                    NSMutableArray *newServerList = @[].mutableCopy;
+                    for (NSDictionary *ns in serverList) {
+                        [newServerList addObject:ns.mutableCopy];
                     }
+                    for (NSDictionary *ls in localServerList) {
+                        if (![ls[HSUShadowsocksSettings_Buildin] boolValue]) {
+                            if ([ls[HSUShadowsocksSettings_Selected] boolValue]) {
+                                selected = YES;
+                            }
+                            [newServerList addObject:ls.mutableCopy];
+                        }
+                    }
+                    
+                    if (!selected) {
+                        newServerList[arc4random_uniform(newServerList.count)][HSUShadowsocksSettings_Selected] = @YES;
+                    }
+                    
+                    [[NSUserDefaults standardUserDefaults] setObject:newServerList forKey:HSUShadowsocksSettings];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                    [Flurry logEvent:@"server_list_updated"];
                 }
-                
-                if (!selected) {
-                    newServerList[arc4random_uniform(newServerList.count)][HSUShadowsocksSettings_Selected] = @YES;
-                }
-                
-                [[NSUserDefaults standardUserDefaults] setObject:newServerList forKey:HSUShadowsocksSettings];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                [Flurry logEvent:@"server_list_updated"];
             }
+            
+            // pro
+#ifdef FreeApp
+            BOOL hasPro = [config[@"global"][@"free"][@"has_pro"] boolValue];
+            if (hasPro) {
+                [[NSUserDefaults standardUserDefaults] setBool:hasPro forKey:@"has_pro"];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                self.hasPro = hasPro;
+            }
+#endif
             
             
             // new version

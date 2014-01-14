@@ -18,6 +18,10 @@
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
 @property (nonatomic, strong) RETableViewManager *manager;
+@property (nonatomic, weak) REBoolItem *soundEffectItem;
+@property (nonatomic, weak) REBoolItem *photoPreviewItem;
+@property (nonatomic, weak) RERadioItem *textSizeItem;
+@property (nonatomic, weak) RERadioItem *cacheSizeItem;
 
 @end
 
@@ -59,10 +63,11 @@
           [self.navigationController pushViewController:accountsVC animated:YES];
       }]];
     
+#ifdef DEBUG
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:@"Shadowsocks"
+     [RETableViewItem itemWithTitle:_("Proxy Server")
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
                    selectionHandler:^(RETableViewItem *item)
       {
@@ -71,10 +76,12 @@
           HSUShadowsocksViewController *shadowsocksVC = [[HSUShadowsocksViewController alloc] init];
           [self.navigationController pushViewController:shadowsocksVC animated:YES];
       }]];
+#endif
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
     REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_("Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
+    self.soundEffectItem = soundEffectItem;
     [section addItem:soundEffectItem];
     __weak typeof(self) weakSelf = self;
     soundEffectItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -87,6 +94,7 @@
     };
     
     REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_("Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
+    self.photoPreviewItem = photoPreviewItem;
     [section addItem:photoPreviewItem];
     photoPreviewItem.switchValueChangeHandler = ^(REBoolItem *item) {
         
@@ -97,7 +105,7 @@
         }
     };
     
-    [section addItem:[RERadioItem itemWithTitle:_("Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
+    RERadioItem *textSizeItem = [RERadioItem itemWithTitle:_("Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -120,9 +128,11 @@
         }
         
         [weakSelf.navigationController pushViewController:optionsController animated:YES];
-    }]];
+    }];
+    self.textSizeItem = textSizeItem;
+    [section addItem:textSizeItem];
     
-    [section addItem:[RERadioItem itemWithTitle:_("Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
+    RERadioItem *cacheSizeItem = [RERadioItem itemWithTitle:_("Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -145,7 +155,9 @@
         }
         
         [weakSelf.navigationController pushViewController:optionsController animated:YES];
-    }]];
+    }];
+    self.cacheSizeItem = cacheSizeItem;
+    [section addItem:cacheSizeItem];
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
@@ -225,19 +237,10 @@
     // app settings
     NSDictionary *globalSettings = GlobalSettings;
     
-    RETableViewSection *section  = self.manager.sections[2];
-    
-    REBoolItem *boolItem = section.items[0];
-    BOOL soundEffect = boolItem.value;
-    
-    boolItem = section.items[1];
-    BOOL imagePreview = boolItem.value;
-    
-    RETextItem *textSizeItem = section.items[2];
-    NSString *textSize = textSizeItem.value;
-    
-    RETextItem *cacheSizeItem = section.items[3];
-    NSString *cacheSize = cacheSizeItem.value;
+    BOOL soundEffect = self.soundEffectItem.value;
+    BOOL imagePreview = self.photoPreviewItem.value;
+    NSString *textSize = self.textSizeItem.value;
+    NSString *cacheSize = self.cacheSizeItem.value;
     
     GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize, HSUSettingCacheSize: cacheSize};
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
