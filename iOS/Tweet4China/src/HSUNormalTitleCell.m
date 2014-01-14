@@ -19,8 +19,14 @@
 {
     [super setupWithData:data];
     
+    self.cornerLeftTop.hidden = YES;
+    self.cornerRightTop.hidden = YES;
+    self.cornerLeftBottom.hidden = YES;
+    self.cornerRightBottom.hidden = YES;
     self.textLabel.text = data.rawData[@"title"];
-    self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    if (IPHONE) {
+        self.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    }
     self.backgroundColor = kWhiteColor;
     self.contentView.backgroundColor = kClearColor;
     self.textLabel.backgroundColor = kClearColor;

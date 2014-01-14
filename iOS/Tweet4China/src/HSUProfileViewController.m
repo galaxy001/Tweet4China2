@@ -62,10 +62,8 @@
         self.useRefreshControl = NO;
         if (self.screenName) {
             self.dataSource = [[HSUProfileDataSource alloc] initWithScreenName:screenName];
-            [self checkUnread];
         }
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(updateScreenName));
-        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
         notification_add_observer(HSUTabControllerDidSelectViewControllerNotification, self, @selector(tabDidSelected:));
     }
     return self;
@@ -144,19 +142,6 @@
             }
         }
     }
-}
-
-- (void)checkUnread
-{
-    if (!self.dataSource ||
-        (!([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
-           [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]) &&
-         !self.profileView.dmIndicator)) {
-            
-#ifndef DEBUG
-            [HSUProfileDataSource checkUnreadForViewController:self];
-#endif
-        }
 }
 
 - (void)refreshDataIfNeed
@@ -381,7 +366,13 @@
         
         __weak typeof(self)weakSelf = self;
         if (self.relationshipLoaded) {
-            [self startDirectMessage];
+            if (self.followedMe) {
+                [self startDirectMessage];
+            } else {
+                NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), self.screenName, self.screenName, _("is not following you.")];
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
+                [alert show];
+            }
         } else {
             [SVProgressHUD showWithStatus:_("Please Wait")];
             NSString *screenName = self.screenName;

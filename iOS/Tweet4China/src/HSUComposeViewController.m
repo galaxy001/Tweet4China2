@@ -327,10 +327,10 @@
         postImage = self.defaultImage;
     }
     
-    CGFloat toolbar_height = 40;
+    CGFloat toolbarHeight = 40;
     
-    contentTV.frame = ccr(0, 0, self.view.width, self.view.height- MAX(keyboardHeight, 216)-toolbar_height);
-    toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbar_height);
+    contentTV.frame = ccr(0, 0, self.view.width, self.view.height- MAX(keyboardHeight, 216)-toolbarHeight);
+    toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbarHeight);
     extraPanelSV.top = toolbar.bottom;
     extraPanelSV.height = self.view.height - extraPanelSV.top;
     extraPanelSV.contentSize = ccs(extraPanelSV.width*2, extraPanelSV.height);
@@ -416,10 +416,10 @@
 {
     [super viewDidLayoutSubviews];
     
-    CGFloat toolbar_height = 40;
+    CGFloat toolbarHeight = 40;
     
-    contentTV.frame = ccr(0, 0, self.view.width, self.view.height - MAX(keyboardHeight, 216)-toolbar_height);
-    toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbar_height);
+    contentTV.frame = ccr(0, 0, self.view.width, self.view.height - MAX(keyboardHeight, 216)-toolbarHeight);
+    toolbar.frame = ccr(0, contentTV.bottom, self.view.width, toolbarHeight);
     extraPanelSV.top = toolbar.bottom;
     extraPanelSV.height = self.view.height - extraPanelSV.top;
     extraPanelSV.contentSize = ccs(extraPanelSV.width*2, extraPanelSV.height);

@@ -11,8 +11,6 @@
 #import "HSUComposeViewController.h"
 #import "HSUTabController.h"
 
-#define toolbar_height 44
-
 @interface HSUDraftsViewController ()
 
 @property (nonatomic, weak) UIToolbar *toolbar;

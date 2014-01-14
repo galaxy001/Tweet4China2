@@ -61,6 +61,8 @@ BOOL shadowsocksStarted;
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
 #define HSUiPadBgColor rgb(244, 248, 251)
 
+//#define MakeScreenshot
+
 #define SuppressPerformSelectorLeakWarning(Stuff) \
 do { \
 _Pragma("clang diagnostic push") \
@@ -111,7 +113,6 @@ _Pragma("clang diagnostic pop") \
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
 
-#define HSUStartRefreshingNotification @"HSUStartRefreshingNotification"
 #define HSUDeleteConversationNotification @"HSUDeleteConversationNotification"
 #define HSUConversationBackWithIncompletedSendingNotification @"HSUConversationBackWithIncompletedSendingNotification"
 #define HSUDraftsCountChangedNotification @"HSUDraftsCountChangedNotification"
@@ -174,6 +175,7 @@ _Pragma("clang diagnostic pop") \
 #define status_height 20
 #define navbar_height self.navigationController.navigationBar.height
 #define tabbar_height self.tabBarController.tabBar.height
+#define toolbar_height 44
 
 #define NetWorkStatus [twitter networkStatus]
 

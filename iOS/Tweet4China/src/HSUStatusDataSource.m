@@ -28,6 +28,11 @@
 - (void)refresh
 {
     // load context data, then call finish on delegate
+    if (self.loadingCount) {
+        return;
+    }
+    NSLog(@"refresh");
+    [super refresh];
     NSDictionary *status = [self.data[0] rawData];
     if ([status[@"in_reply_to_status_id_str"] length]) {
         __weak typeof(self)weakSelf = self;
@@ -35,7 +40,8 @@
             HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
             [weakSelf.data insertObject:chatCellData atIndex:0];
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:1];
-            [weakSelf refresh];
+            weakSelf.loadingCount --;
+//            [weakSelf refresh];
         } failure:^(NSError *error) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         }];

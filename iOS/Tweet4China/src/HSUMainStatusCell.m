@@ -305,6 +305,9 @@
         [contentArea addSubview:sourceButton];
     }
     
+    viaLabel.hidden = NO;
+    sourceButton.hidden = NO;
+    
     // place
     NSDictionary *placeInfo = rawData[@"place"];
     NSDictionary *geoInfo = rawData[@"geo"];

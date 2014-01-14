@@ -39,6 +39,7 @@
 - (HSUTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath;
 - (void)addEventWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events;
 
+- (void)refreshSilenced;
 - (void)refresh;
 - (void)loadMore;
 - (void)saveCache;

@@ -51,14 +51,11 @@
         [self.dataSource refresh];
     }
     
-//    self.navigationItem.leftBarButtonItems = self.navigationItem.rightBarButtonItems = nil;
+#ifdef MakeScreenshot
+    self.navigationItem.leftBarButtonItems = self.navigationItem.rightBarButtonItems = nil;
+#endif
     [super viewDidAppear:animated];
 }
-
-//- (BOOL)prefersStatusBarHidden
-//{
-//    return YES;
-//}
 
 - (void)tabDidSelected:(NSNotification *)notification
 {

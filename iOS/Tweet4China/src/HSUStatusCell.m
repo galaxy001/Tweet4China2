@@ -53,7 +53,8 @@
 {
     [super layoutSubviews];
     
-    self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.contentView.width-padding_S*4, self.contentView.height-padding_S*2);
+    self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.contentView.width-padding_S*3, self.contentView.height-padding_S*2);
+    flagIV.rightTop = ccp(self.contentView.width, 0);
 }
 
 - (void)setupWithData:(HSUTableCellData *)data
@@ -74,7 +75,6 @@
         flagIV.image = nil;
     }
     [flagIV sizeToFit];
-    flagIV.rightTop = ccp(self.contentView.width, 0);
     
     [self.statusView setupWithData:data];
     [self setupControl:self.statusView.avatarB forKey:@"touchAvatar"];

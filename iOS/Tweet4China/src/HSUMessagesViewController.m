@@ -42,6 +42,7 @@
     
     self.title = _("Direct Message");
     
+    self.view.height = 568;
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = kWhiteColor;
     

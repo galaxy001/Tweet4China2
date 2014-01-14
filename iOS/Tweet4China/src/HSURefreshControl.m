@@ -11,21 +11,7 @@
 
 @implementation HSURefreshControl
 
-- (void)dealloc
-{
-    notification_remove_observer(self);
-}
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        notification_add_observer(HSUStartRefreshingNotification, self, @selector(startRefreshing));
-    }
-    return self;
-}
-
-- (void)startRefreshing
++ (void)startRefreshing
 {
     if ([GlobalSettings[HSUSettingSoundEffect] boolValue]) {
         NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"psst1" ofType:@"wav"];
@@ -37,13 +23,16 @@
 
 - (void)endRefreshing
 {
-    [super endRefreshing];
-    if ([GlobalSettings[HSUSettingSoundEffect] boolValue]) {
-        NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"pop" ofType:@"wav"];
-        SystemSoundID soundID;
-        AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
-        AudioServicesPlaySystemSound(soundID);
+    if (self.isRefreshing) {
+        if ([GlobalSettings[HSUSettingSoundEffect] boolValue]) {
+            NSString *soundPath = [[NSBundle mainBundle] pathForResource:@"pop" ofType:@"wav"];
+            SystemSoundID soundID;
+            AudioServicesCreateSystemSoundID((__bridge CFURLRef)[NSURL fileURLWithPath: soundPath], &soundID);
+            AudioServicesPlaySystemSound(soundID);
+        }
     }
+    
+    [super endRefreshing];
 }
 
 @end

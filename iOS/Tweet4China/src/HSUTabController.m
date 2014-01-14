@@ -144,7 +144,7 @@
         if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
             if (idx == curIdx) {
                 if (![subView viewWithTag:indicator.tag]) {
-                    indicator.rightTop = ccp(subView.width-15, 0);
+                    indicator.rightTop = ccp(subView.width-10, 0);
                     [subView addSubview:indicator];
                 }
                 break;

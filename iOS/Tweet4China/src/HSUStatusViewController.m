@@ -75,7 +75,7 @@
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     
-    [self.dataSource refresh];
+//    [self.dataSource refresh];
     [self.dataSource loadMore];
 }
 
@@ -121,6 +121,13 @@
 #endif
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    if (scrollView.contentOffset.y < 10 - scrollView.contentInset.top) {
+        [self.dataSource refresh];
+    }
+}
+
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
     [self.refreshControl endRefreshing];
@@ -130,8 +137,8 @@
     
     [self.tableView reloadData];
     
-    if (fromIndex) {
-        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+status_height+navbar_height, self.tableView.width, self.tableView.height);
+    if (fromIndex == 0) {
+        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+self.tableView.contentInset.top, self.tableView.width, self.tableView.height);
         NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];
         NSIndexPath *firstIndexPath = indexPathsVisibleRows[0];
         NSInteger firstRow = firstIndexPath.row;

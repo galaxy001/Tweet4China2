@@ -135,10 +135,6 @@
         self.refreshControl = refreshControl;
     }
     
-//    if (self.hideBackButton) {
-//        self.navigationItem.backBarButtonItem = nil;
-//    }
-    
     [super viewDidLoad];
 }
 
@@ -277,11 +273,11 @@
     
     [self.tableView reloadData];
     if (fromIndex == 0) {
-        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+status_height+navbar_height, self.tableView.width, self.tableView.height);
+        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+self.tableView.contentInset.top,
+                                 self.tableView.width, self.tableView.height);
         NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];
         NSIndexPath *firstIndexPath = indexPathsVisibleRows[0];
-        NSInteger firstRow = firstIndexPath.row + length - 1;
-        if (firstRow < 0) firstRow = 0;
+        NSInteger firstRow = firstIndexPath.row + length;
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:firstRow inSection:0]
                               atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
     }

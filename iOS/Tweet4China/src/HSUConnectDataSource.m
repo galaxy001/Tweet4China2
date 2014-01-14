@@ -82,6 +82,7 @@
     [twitter getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         id loadMoreCellData = weakSelf.data.lastObject;
         [weakSelf.data removeLastObject];
+        NSUInteger oldCount = weakSelf.count;
         for (NSDictionary *tweet in responseObj) {
             HSUTableCellData *cellData =
             [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
@@ -96,7 +97,7 @@
         }
         [weakSelf saveCache];
         [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
-        [weakSelf.delegate dataSource:weakSelf didFinishLoadMoreWithError:nil];
+        [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:[responseObj count]];
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [twitter dealWithError:error errTitle:_("Load failed")];

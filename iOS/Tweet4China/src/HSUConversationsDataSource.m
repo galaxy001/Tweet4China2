@@ -7,6 +7,7 @@
 //
 
 #import "HSUConversationsDataSource.h"
+#import "HSUBaseViewController.h"
 
 @implementation HSUConversationsDataSource
 
@@ -21,7 +22,7 @@
 
 - (void)refresh
 {
-    [super refresh];
+    [self refreshSilenced];
     
     NSString *sinceId = nil;
     for (HSUTableCellData *cellData in self.data) {
@@ -83,6 +84,13 @@
                         rawData[@"messages"] = [rawData[@"messages"] arrayByAddingObjectsFromArray:messages];
                         oldCellData.rawData = rawData;
                         found = YES;
+                        for (NSDictionary *message in messages) {
+                            if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
+                                oldCellData.renderData[@"unread"] = @YES;
+                                break;
+                            }
+                        }
+                        break;
                     }
                 }
                 
@@ -90,6 +98,12 @@
                     HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:conversation
                                                                                   dataType:kDataType_Conversation];
                     [weakSelf.data insertObject:cellData atIndex:0];
+                    for (NSDictionary *message in messages) {
+                        if ([message[@"recipient"] isEqualToString:MyScreenName]) {
+                            cellData.renderData[@"unread"] = @YES;
+                            break;
+                        }
+                    }
                 }
             }
             
@@ -146,6 +160,28 @@
             cd.renderData[@"typingMessage"] = text;
         }
     }
+}
+
++ (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
+{
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
+    [twitter getDirectMessagesSinceID:latestIdStr success:^(id responseObj) {
+        id rMsgs = responseObj;
+        NSArray *messages = rMsgs;
+        if ([rMsgs count]) {
+            messages = [messages sortedArrayUsingComparator:^NSComparisonResult(id msg1, id msg2) {
+                NSString *id_str1 = msg1[@"id_str"];
+                NSString *id_str2 = msg2[@"id_str"];
+                return [id_str1 compare:id_str2];
+            }];
+        }
+        NSDictionary *msg = [messages lastObject];
+        [[NSUserDefaults standardUserDefaults] setObject:msg[@"id_str"] forKey:S(@"%@_first_id_str", self.class.cacheKey)];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [viewController dataSourceDidFindUnread:nil];
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 @end

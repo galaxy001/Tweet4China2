@@ -134,13 +134,13 @@
                                      forState:UIControlStateNormal];
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_pressed"] stretchableImageFromCenter]
                                      forState:UIControlStateHighlighted];
-        [self.followButton setImage:[UIImage imageNamed:@"icn_follow_checked"] forState:UIControlStateNormal];
+        [self.followButton setImage:[UIImage imageNamed:@"icn_follow_text_checked"] forState:UIControlStateNormal];
     } else {
-        [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
+        [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_standard_blue_border_default"] stretchableImageFromCenter]
                                      forState:UIControlStateNormal];
-        [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]
+        [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_standard_blue_border_pressed"] stretchableImageFromCenter]
                                      forState:UIControlStateHighlighted];
-        [self.followButton setImage:[UIImage imageNamed:@"icn_follow_default"] forState:UIControlStateNormal];
+        [self.followButton setImage:[UIImage imageNamed:@"icn_follow_text"] forState:UIControlStateNormal];
     }
     
     if ([data.renderData[@"sending_following_request"] boolValue]) {

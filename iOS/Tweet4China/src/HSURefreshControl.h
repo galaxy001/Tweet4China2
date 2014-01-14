@@ -10,4 +10,6 @@
 
 @interface HSURefreshControl : UIRefreshControl
 
++ (void)startRefreshing;
+
 @end

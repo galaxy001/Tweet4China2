@@ -18,6 +18,7 @@
 @property (nonatomic, weak) UILabel *snLabel;
 @property (nonatomic, weak) UILabel *timeLabel;
 @property (nonatomic, weak) UILabel *contentLabel;
+@property (nonatomic, weak) UIImageView *unreadIndicator;
 
 @end
 
@@ -70,6 +71,11 @@
         contentLabel.textColor = kGrayColor;
         contentLabel.highlightedTextColor = kWhiteColor;
         contentLabel.font = [UIFont systemFontOfSize:12];
+        
+        UIImageView *unreadIndicator = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"unread_indicator"]];
+        self.unreadIndicator = unreadIndicator;
+        [self.contentView addSubview:unreadIndicator];
+        unreadIndicator.hidden = YES;
     }
     return self;
 }
@@ -84,6 +90,7 @@
     self.timeLabel.leftTop = ccp(self.contentView.width-10-self.timeLabel.width, 12);
     self.snLabel.frame = ccr(self.nameLabel.right + 4, 12, self.timeLabel.left-self.nameLabel.right - 4, self.snLabel.height);
     self.contentLabel.frame = ccr(67, 28, self.contentView.width-67-32, self.contentLabel.height);
+    self.unreadIndicator.leftTop = ccp(5, 5);
 }
 
 + (CGFloat)heightForData:(HSUTableCellData *)data
@@ -111,6 +118,7 @@
     self.snLabel.text = sn;
     self.timeLabel.text = time;
     self.contentLabel.text = content;
+    self.unreadIndicator.hidden = ![data.renderData[@"unread"] boolValue];
     
     [self.nameLabel sizeToFit];
     [self.snLabel sizeToFit];

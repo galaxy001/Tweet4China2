@@ -12,16 +12,7 @@
 #import "HSUMessagesDataSource.h"
 #import "HSUCreateDirectMessageViewController.h"
 #import "HSUDirectMessagePersonsDataSource.h"
-
-#define toolbar_height 44
-
-@interface HSUConversationsViewController ()
-
-//@property (nonatomic, weak) UIToolbar *toolbar;
-//@property (nonatomic, assign) BOOL editing;
-//@property (nonatomic, weak) UIButton *editButton;
-
-@end
+#import "HSUTabController.h"
 
 @implementation HSUConversationsViewController
 
@@ -30,42 +21,35 @@
     self = [super init];
     if (self) {
         self.dataSourceClass = [HSUConversationsDataSource class];
-//        self.useRefreshControl = NO;
-//        self.title = _("Messages");
+        notification_add_observer(HSUDeleteConversationNotification, self, @selector(_conversationDeleted:));
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }
     return self;
 }
 
 - (void)viewDidLoad
 {
-    notification_add_observer(HSUDeleteConversationNotification, self, @selector(_conversationDeleted:));
     [super viewDidLoad];
-    UIBarButtonItem *composeBarButton;
-    if (Sys_Ver >= 7) {
-        composeBarButton = [[UIBarButtonItem alloc]
-                            initWithBarButtonSystemItem:UIBarButtonSystemItemCompose
-                            target:self
-                            action:@selector(_composeButtonTouched)];
-    } else {
-        UIButton *composeButton = [[UIButton alloc] init];
-        [composeButton addTarget:self action:@selector(_composeButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-        [composeButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_compose_dm"] forState:UIControlStateNormal];
-        [composeButton sizeToFit];
-        composeButton.width *= 1.4;
-        composeBarButton = [[UIBarButtonItem alloc] initWithCustomView:composeButton];
-    }
-    self.navigationItem.rightBarButtonItem = composeBarButton;
+    
+    [self.dataSource refresh];
+    self.navigationItem.leftBarButtonItem = self.actionBarButton;
+    self.navigationItem.rightBarButtonItem = self.composeBarButton;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
-    if (self.viewDidAppearCount == 0) {
-//        [self.dataSource refresh];
-    } else {
-        [self.tableView reloadData];
-    }
-    
     [super viewDidAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
+- (void)checkUnread
+{
+    if (self.dataSource) {
+        [self.dataSource refresh];
+    } else {
+        [HSUConversationsDataSource checkUnreadForViewController:self];
+    }
 }
 
 - (void)_closeButtonTouched
@@ -83,6 +67,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+    cellData.renderData[@"unread"] = @NO;
     
     HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:cellData.rawData];
     HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];

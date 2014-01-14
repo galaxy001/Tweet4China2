@@ -8,6 +8,7 @@
 
 #import "HSUBaseDataSource.h"
 #import "HSUBaseTableCell.h"
+#import "HSURefreshControl.h"
 
 @implementation HSUBaseDataSource
 
@@ -75,6 +76,9 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+#ifdef MakeScreenshot
+    return 0;
+#endif
     return 1;
 }
 
@@ -135,10 +139,15 @@
     }
 }
 
+- (void)refreshSilenced
+{
+    self.loadingCount ++;
+}
+
 - (void)refresh
 {
     self.loadingCount ++;
-    notification_post(HSUStartRefreshingNotification);
+    [HSURefreshControl startRefreshing];
 }
 
 - (void)loadMore
@@ -229,8 +238,7 @@
     NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
     if (firstIdStr) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
-        // method 'saveCache' will synchronize
-//        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     [self.data removeAllObjects];
     [self saveCache];
@@ -243,8 +251,7 @@
     NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
     if (firstIdStr) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
-        // method 'saveCache' will synchronize
-//        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     [self.data removeAllObjects];
     [self saveCache];
