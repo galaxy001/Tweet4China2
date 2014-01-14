@@ -9,7 +9,8 @@
 #import "HSUTabController.h"
 #import "HSUHomeViewController.h"
 #import "HSUConnectViewController.h"
-#import "HSUDiscoverViewController.h"
+//#import "HSUDiscoverViewController.h"
+#import "HSUWebBrowserViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUConversationsViewController.h"
 #import "HSUNavigationBar.h"
@@ -67,7 +68,7 @@
         // Discover
         UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                              toolbarClass:nil];
-        UIViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
+        UIViewController *discoverVC = [[HSUWebBrowserViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
         discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
                                                                image:[UIImage imageNamed:@"icn_tab_discover_default"]

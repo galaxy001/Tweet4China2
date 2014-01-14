@@ -71,7 +71,7 @@
 "Password" = "密碼";
 "Encryption Method" = "加密方法";
 "Finish Settings or Tap Cancel" = "完成設定或點擊取消";
-"Load search result failed" = "載入搜索結果失敗了";
+"Load search result failed" = "載入搜尋結果失敗了";
 "Search User" = "搜尋用戶";
 "Copy Content" = "拷貝內容";
 "Delete Tweet" = "刪除推文";
@@ -203,3 +203,6 @@
 "Open in Chrome" = "用Chrome打開";
 "Direct Message" = "訊息";
 "Proxy Server" = "代理服務器";
+"Address" = "網址";
+"Search Tweets" = "搜尋推文";
+"Current" = "當前頁";
