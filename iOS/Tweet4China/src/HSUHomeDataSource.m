@@ -8,6 +8,7 @@
 
 #import "HSUHomeDataSource.h"
 #import "HSUBaseViewController.h"
+#import <UIAlertView-Blocks/UIAlertView+Blocks.h>
 
 @implementation HSUHomeDataSource
 

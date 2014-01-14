@@ -1,5 +1,5 @@
 platform :ios, '6.0'
-pod 'OpenCam'
+pod 'OpenCam', :head
 pod 'SVProgressHUD', '1.0'
 pod 'NJKWebViewProgress', '0.2'
 pod 'twitter-text-objc', '1.6.1'
@@ -8,6 +8,7 @@ pod 'UIAlertView-Blocks', '0.0.1'
 pod 'Reachability', '3.1.1'
 pod 'Appirater', '2.0.2'
 pod 'TTTAttributedLabel', '1.8.0'
+pod 'SVWebViewController', :head
 pod 'HSUWebCache', :git => 'https://github.com/tuoxie007/HSUWebCache.git'
 pod 'NSString-MD5', :git => 'https://github.com/tuoxie007/NSString-MD5.git'
 pod 'FHSTwitterEngine', :git => 'https://github.com/tuoxie007/FHSTwitterEngine.git'

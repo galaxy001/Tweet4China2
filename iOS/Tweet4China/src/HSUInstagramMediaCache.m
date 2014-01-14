@@ -9,33 +9,33 @@
 #import "HSUInstagramMediaCache.h"
 
 
-static NSUserDefaults *instagramUserDefaults;
+static NSMutableDictionary *instagramCache;
 static NSUInteger instagramCount;
-const static NSString *InstagramUserDefaultsSuiteName = @"tweet4china.instagram.com";
+#define InstagramCacheFileName @"tweet4china.instagram"
 
 @implementation HSUInstagramMediaCache
 
 + (void)initialize
 {
-    instagramUserDefaults = [[NSUserDefaults alloc] initWithSuiteName:[InstagramUserDefaultsSuiteName copy]];
-    instagramCount = [[instagramUserDefaults dictionaryRepresentation] count];
+    instagramCache = [NSMutableDictionary dictionary];
 }
 
 + (void)setMediaUrl:(NSString *)mediaUrl forWebUrl:(NSString *)webUrl
 {
     if (instagramCount > 200) {
-        [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:[InstagramUserDefaultsSuiteName copy]];
+        [[NSFileManager defaultManager] removeItemAtPath:dp(InstagramCacheFileName) error:nil];
     }
-    if (![instagramUserDefaults stringForKey:webUrl]) {
-        [instagramUserDefaults setObject:mediaUrl forKey:webUrl];
-        [instagramUserDefaults synchronize];
+    if (![instagramCache objectForKey:webUrl]) {
+        instagramCache[webUrl] = mediaUrl;
+        NSData *json = [NSJSONSerialization dataWithJSONObject:instagramCache options:0 error:nil];
+        [json writeToFile:InstagramCacheFileName atomically:YES];
         instagramCount ++;
     }
 }
 
 + (NSString *)mediaUrlForWebUrl:(NSString *)webUrl
 {
-    return [instagramUserDefaults objectForKey:webUrl];
+    return [instagramCache objectForKey:webUrl];
 }
 
 @end

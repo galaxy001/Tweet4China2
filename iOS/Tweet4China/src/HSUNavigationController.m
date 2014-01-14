@@ -34,6 +34,8 @@
         progressBar.width = self.navigationBar.width;
         self.progressBar = progressBar;
     }
+    
+    self.view.backgroundColor = kWhiteColor;
 }
 
 - (void)viewWillAppear:(BOOL)animated
