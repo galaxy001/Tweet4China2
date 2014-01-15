@@ -39,12 +39,16 @@
         UITextField *searchTF;
         if (Sys_Ver >= 7) {
             searchTF = [[UITextField alloc] init];
+            UIImageView *searchIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_search"]];
+            searchIcon.contentMode = UIViewContentModeCenter;
+            searchIcon.size = ccs(searchIcon.width + 10, searchIcon.height + 15);
+            searchTF.leftView = searchIcon;
+            searchTF.leftViewMode = UITextFieldViewModeAlways;
         } else {
             searchTF = [[HSUSearchField alloc] init];
         }
         self.searchTF = searchTF;
         searchTF.placeholder = _("Search User");
-        searchTF.leftViewMode = UITextFieldViewModeAlways;
         searchTF.returnKeyType = UIReturnKeySearch;
         searchTF.autocorrectionType = UITextAutocorrectionTypeNo;
         searchTF.autocapitalizationType = UITextAutocapitalizationTypeNone;

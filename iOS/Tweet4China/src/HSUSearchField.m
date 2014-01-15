@@ -19,7 +19,7 @@
 // text position
 - (CGRect)editingRectForBounds:(CGRect)bounds
 {
-    return CGRectInset(bounds, 24, 4);
+    return [self textRectForBounds:bounds];
 }
 
 @end
