@@ -53,6 +53,7 @@
 #pragma mark - Liftstyle
 - (void)dealloc
 {
+    self.tableView.delegate = nil;
     notification_remove_observer(self);
 }
 

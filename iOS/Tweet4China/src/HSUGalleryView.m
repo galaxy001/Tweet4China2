@@ -32,6 +32,7 @@
 - (void)dealloc
 {
     notification_remove_observer(self);
+    imagePanel.delegate = nil;
 }
 
 - (id)_initWithData:(HSUTableCellData *)data

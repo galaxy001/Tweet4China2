@@ -16,6 +16,11 @@
 
 @implementation HSUSearchTweetsViewController
 
+- (void)dealloc
+{
+    self.searchTF.delegate = nil;
+}
+
 - (void)viewDidLoad
 {
     self.useRefreshControl = NO;
@@ -78,6 +83,7 @@
 {
     [super viewWillDisappear:animated];
     
+    [self.searchTF resignFirstResponder];
     self.searchTF.hidden = YES;
 }
 

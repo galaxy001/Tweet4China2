@@ -174,11 +174,11 @@
                 NSString *id_str2 = msg2[@"id_str"];
                 return [id_str1 compare:id_str2];
             }];
+            NSDictionary *msg = [messages lastObject];
+            [[NSUserDefaults standardUserDefaults] setObject:msg[@"id_str"] forKey:S(@"%@_first_id_str", self.class.cacheKey)];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [viewController dataSourceDidFindUnread:nil];
         }
-        NSDictionary *msg = [messages lastObject];
-        [[NSUserDefaults standardUserDefaults] setObject:msg[@"id_str"] forKey:S(@"%@_first_id_str", self.class.cacheKey)];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-        [viewController dataSourceDidFindUnread:nil];
     } failure:^(NSError *error) {
         
     }];

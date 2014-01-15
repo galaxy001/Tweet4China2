@@ -98,6 +98,10 @@
 
 - (void)dealloc
 {
+    contentTV.delegate = nil;
+    extraPanelSV.delegate = nil;
+    suggestionsTV.delegate = nil;
+    locationManager.delegate = nil;
     notification_remove_observer(self);
     [locationManager stopUpdatingLocation];
 }
