@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "HSUComposeViewController.h"
 #import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import <FHSTwitterEngine/OARequestParameter.h>

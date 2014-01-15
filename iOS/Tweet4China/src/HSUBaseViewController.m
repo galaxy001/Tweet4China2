@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "HSUBaseViewController.h"
 #import "HSUTexturedView.h"
 #import "HSUStatusCell.h"
@@ -416,6 +414,7 @@
 {
     HSUSettingsViewController *settingsVC = [[HSUSettingsViewController alloc] init];
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
     nav.viewControllers = @[settingsVC];
     [self presentViewController:nav animated:YES completion:nil];
     

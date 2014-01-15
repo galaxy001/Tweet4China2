@@ -6,7 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
 #import "HSUMainStatusCell.h"
 #import "HSUStatusCell.h"
 #import "NSDate+Additions.h"
@@ -16,7 +15,6 @@
 #import "HSUStatusActionView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
-#import "HSUMiniBrowser.h"
 #import "HSUInstagramMediaCache.h"
 
 #define ambient_H 14

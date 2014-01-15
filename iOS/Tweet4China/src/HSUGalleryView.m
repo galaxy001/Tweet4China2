@@ -6,10 +6,7 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "HSUGalleryView.h"
-#import <AFNetworking/AFNetworking.h>
 #import "HSUStatusActionView.h"
 #import "HSUStatusView.h"
 #import "HSUStatusViewController.h"
@@ -100,19 +97,9 @@
     if (self) {
         [self.spinner startAnimating];
         __weak typeof(&*self)weakSelf = self;
-        [self.imageView setImageWithURLRequest:[NSURLRequest requestWithURL:imageURL] placeholderImage:nil success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
-            weakSelf.imageView.image = image;
-            float zoomScale = 0;
-            if (weakSelf.imageView.width / weakSelf.imageView.height > weakSelf.width / weakSelf.height) {
-                zoomScale = weakSelf.width / weakSelf.imageView.width;
-            } else {
-                zoomScale = weakSelf.height / weakSelf.imageView.height;
-            }
-            imagePanel.maximumZoomScale = 2 * zoomScale;
-            imagePanel.minimumZoomScale = zoomScale;
-            imagePanel.zoomScale = zoomScale;
+        [self.imageView setImageWithUrlStr:imageURL.absoluteString placeHolder:nil success:^{
             [weakSelf.spinner stopAnimating];
-        } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error) {
+        } failure:^{
             [weakSelf.spinner stopAnimating];
         }];
     }

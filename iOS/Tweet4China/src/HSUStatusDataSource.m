@@ -31,7 +31,6 @@
     if (self.loadingCount) {
         return;
     }
-    NSLog(@"refresh");
     [super refresh];
     NSDictionary *status = [self.data[0] rawData];
     if ([status[@"in_reply_to_status_id_str"] length]) {

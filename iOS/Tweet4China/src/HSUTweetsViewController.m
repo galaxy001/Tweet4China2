@@ -10,7 +10,6 @@
 #import "HSUComposeViewController.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUGalleryView.h"
-#import "HSUMiniBrowser.h"
 #import "HSUStatusViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUProfileDataSource.h"
@@ -21,12 +20,6 @@
 #import "OpenInChromeController.h"
 #import <SVWebViewController/SVModalWebViewController.h>
 
-@interface HSUTweetsViewController ()
-
-@property (nonatomic, weak) UIViewController *modelVC;
-
-@end
-
 @implementation HSUTweetsViewController
 
 - (void)viewDidLoad
@@ -36,13 +29,6 @@
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     notification_add_observer(HSUStatusUpdatedNotification, self, @selector(statusUpdated:));
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    self.modelVC = nil;
 }
 
 - (void)galleryViewDidAppear
@@ -85,6 +71,7 @@
 
 #pragma mark - Common actions
 - (void)reply:(HSUTableCellData *)cellData {
+    [Flurry logEvent:S(@"reply in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     NSString *screen_name = rawData[@"user"][@"screen_name"];
     NSString *id_str = rawData[@"id_str"];
@@ -98,6 +85,7 @@
 }
 
 - (void)retweet:(HSUTableCellData *)cellData {
+    [Flurry logEvent:S(@"retweet in %@", [self.class description])];
     NSDictionary *status = cellData.rawData;
     BOOL isRetweetedStatus = NO;
     if (status[@"retweeted_status"]) {
@@ -232,6 +220,7 @@
 }
 
 - (void)favorite:(HSUTableCellData *)cellData {
+    [Flurry logEvent:S(@"favorite in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     if (rawData[@"retweeted_status"]) {
         rawData = rawData[@"retweeted_status"];
@@ -269,6 +258,7 @@
 
 - (void)delete:(HSUTableCellData *)cellData
 {
+    [Flurry logEvent:S(@"delete in %@", [self.class description])];
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     cancelItem.action = ^{
         [self.tableView reloadData];
@@ -293,7 +283,7 @@
 }
 
 - (void)more:(HSUTableCellData *)cellData {
-    
+    [Flurry logEvent:S(@"more in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil];
     uint count = 0;
@@ -307,7 +297,8 @@
     if (urls && urls.count) { // has link
         RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
         tweetLinkItem.action = ^{
-            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+            [Flurry logEvent:S(@"tweet link in %@", [self.class description])];
+            if ([self.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 [self _composeWithText:S(@" %@", link)];
             } else {
@@ -334,7 +325,8 @@
         
         RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
         copyLinkItem.action = ^{
-            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+            [Flurry logEvent:S(@"copy link in %@", [self.class description])];
+            if ([self.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
                 pasteboard.string = link;
@@ -363,7 +355,8 @@
         
         RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
         mailLinkItem.action = ^{
-            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+            [Flurry logEvent:S(@"mail link in %@", [self.class description])];
+            if ([self.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 NSString *subject = _("Link from Twitter");
                 NSString *body = S(@"<a href=\"%@\">%@</a>", link, link);
@@ -394,7 +387,8 @@
         
         RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_("Open in Safari")];
         openInSafariItem.action = ^{
-            if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+            [Flurry logEvent:S(@"open in safari in %@", [self.class description])];
+            if ([self.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                 [[UIApplication sharedApplication] openURL:[NSURL URLWithString:link]];
             } else {
@@ -422,7 +416,8 @@
         if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
             RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:_("Open in Chrome")];
             openInChromeItem.action = ^{
-                if ([self.modelVC isKindOfClass:[HSUMiniBrowser class]] || urls.count == 1) {
+                [Flurry logEvent:S(@"open in chrome in %@", [self.class description])];
+                if ([self.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                     NSString *link = [urls objectAtIndex:0][@"expanded_url"];
                     [[OpenInChromeController sharedInstance] openInChrome:[NSURL URLWithString:link] withCallbackURL:nil createNewTab:YES];
                 } else {
@@ -452,8 +447,9 @@
     NSString *id_str = rawData[@"id_str"];
     NSString *link = S(@"https://twitter.com/rtfocus/status/%@", id_str);
     
-    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy link of Tweet")];
+    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy Link of Tweet")];
     copyLinkToTweetItem.action = ^{
+        [Flurry logEvent:S(@"copy Link of tweet in %@", [self.class description])];
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = link;
     };
@@ -462,6 +458,7 @@
     
     RIButtonItem *mailTweetItem = [RIButtonItem itemWithLabel:_("Mail Tweet")];
     mailTweetItem.action = ^{
+        [Flurry logEvent:S(@"mail tweet in %@", [self.class description])];
         [twitter oembedStatus:id_str success:^(id responseObj) {
             notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
             NSString *subject = _("Link from Twitter");
@@ -478,6 +475,7 @@
     
     RIButtonItem *RTItem = [RIButtonItem itemWithLabel:_("RT")];
     RTItem.action = ^{
+        [Flurry logEvent:S(@"RT in %@", [self.class description])];
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
         NSString *authorScreenName = rawData[@"user"][@"screen_name"];
         NSString *text = rawData[@"text"];
@@ -510,7 +508,7 @@
     composeVC.defaultText = text;
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
-    [self.modelVC ?: self presentViewController:nav animated:YES completion:nil];
+    [self.presentedViewController ?: self presentViewController:nav animated:YES completion:nil];
 }
 
 #pragma mark - attributtedLabel delegate

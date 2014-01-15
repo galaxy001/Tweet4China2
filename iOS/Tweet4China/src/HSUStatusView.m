@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "HSUStatusView.h"
 #import "GTMNSString+HTML.h"
 #import <AFNetworking/AFNetworking.h>
@@ -261,7 +259,6 @@
                     }
                     self.data.renderData[@"has_photo"] = @YES;
                     self.data.renderData[@"photo_url"] = media[@"media_url_https"];
-                    self.data.renderData[@"photo_size"] = media[@"sizes"][@"large"];
                 }
             } else if (urls.count) {
                 for (NSDictionary *urlDict in urls) {

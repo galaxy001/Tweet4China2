@@ -11,7 +11,6 @@
 #import <FHSTwitterEngine/OAToken.h>
 #import <FHSTwitterEngine/OARequestParameter.h>
 #import <FHSTwitterEngine/OAMutableURLRequest.h>
-#import "HSUMiniBrowser.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSUShadowsocksViewController.h"
 #import <Reachability/Reachability.h>

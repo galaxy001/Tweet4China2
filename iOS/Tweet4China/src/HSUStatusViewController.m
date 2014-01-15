@@ -11,7 +11,6 @@
 #import "HSUMainStatusCell.h"
 #import "HSUComposeViewController.h"
 #import "HSUGalleryView.h"
-#import "HSUMiniBrowser.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUProfileViewController.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>

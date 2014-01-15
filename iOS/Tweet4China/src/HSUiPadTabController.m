@@ -9,10 +9,10 @@
 #import "HSUiPadTabController.h"
 #import "HSUHomeViewController.h"
 #import "HSUConnectViewController.h"
-#import "HSUDiscoverViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUNavigationBar.h"
 #import "HSUConversationsViewController.h"
+#import "HSUWebBrowserViewController.h"
 
 @interface HSUiPadTabController ()
 
@@ -56,8 +56,8 @@
         UINavigationController *discoverNav = [[HSUNavigationController alloc]
                                                initWithNavigationBarClass:[HSUNavigationBar class]
                                                toolbarClass:nil];
-        HSUDiscoverViewController *discoverVC = [[HSUDiscoverViewController alloc] init];
-        discoverVC.tabController = self;
+        HSUWebBrowserViewController *discoverVC = [[HSUWebBrowserViewController alloc] init];
+//        discoverVC.tabController = self;
         discoverNav.viewControllers = @[discoverVC];
         
         UINavigationController *meNav = [[HSUNavigationController alloc]

@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "HSUStatusCell.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import <FHSTwitterEngine/FHSTwitterEngine.h>

@@ -24,16 +24,7 @@
 {
     [self refreshSilenced];
     
-    NSString *sinceId = nil;
-    for (HSUTableCellData *cellData in self.data) {
-        NSDictionary *conversation = cellData.rawData;
-        NSArray *messages = conversation[@"messages"];
-        if (messages.count) {
-            NSDictionary *message = messages.lastObject;
-            sinceId = message[@"id_str"];
-            break;
-        }
-    }
+    NSString *sinceId = [[NSUserDefaults standardUserDefaults] stringForKey:S(@"%@_latest_id", [self.class cacheKey])];
     __weak typeof(self)weakSelf = self;
     [twitter getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
@@ -46,6 +37,12 @@
                 NSString *id_str2 = msg2[@"id_str"];
                 return [id_str1 compare:id_str2];
             }];
+            
+            NSString *latestID = messages.lastObject[@"id_str"];
+            if (latestID) {
+                [[NSUserDefaults standardUserDefaults] setObject:latestID forKey:S(@"%@_latest_id", [self.class cacheKey])];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+            }
             
             // reorgnize messages as dict, friend_screen_name as key, refered messages as value
             NSMutableDictionary *conversations = [[NSMutableDictionary alloc] init];

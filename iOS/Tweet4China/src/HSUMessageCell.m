@@ -7,7 +7,6 @@
 //
 
 #import "HSUMessageCell.h"
-#import <QuartzCore/QuartzCore.h>
 #import "HSUAttributedLabel.h"
 
 @interface HSUMessageCell ()

@@ -10,6 +10,7 @@
 #import <RETableViewManager/RETableViewOptionsController.h>
 #import <SVWebViewController/SVWebViewController.h>
 #import "HSUAddBookmarkViewController.h"
+#import "HSUTestNavViewController.h"
 
 @interface HSUWebBrowserViewController ()
 
@@ -57,7 +58,7 @@
         NSURL *URL = [NSURL URLWithString:url];
         if (URL) {
             weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
-            weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+//            weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
             [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
         } else {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:_("Address not found in your pasteboard") delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
@@ -114,7 +115,7 @@
                 [item deselectRowAnimated:YES];
                 
                 weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
-                weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+//                weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
                 [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
             };
             bookmarkItem.deletionHandler = ^(RETableViewItem *item) {
@@ -138,6 +139,7 @@
 {
     HSUAddBookmarkViewController *viewController = [[HSUAddBookmarkViewController alloc] init];
     HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:viewController];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:nav animated:YES completion:nil];
 }
 

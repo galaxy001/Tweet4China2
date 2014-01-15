@@ -9,9 +9,6 @@
 #import "HSUSearchPersonViewController.h"
 #import "HSUPersonListDataSource.h"
 #import "HSUSearchPersonDataSource.h"
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
-#import <QuartzCore/QuartzCore.h>
-#endif
 #import "HSUSearchField.h"
 
 @interface HSUSearchPersonViewController () <UITextFieldDelegate>

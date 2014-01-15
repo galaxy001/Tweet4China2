@@ -44,7 +44,6 @@
                 if ([type isEqualToString:@"photo"]) {
                     self.data.renderData[@"has_photo"] = @YES;
                     self.data.renderData[@"photo_url"] = media[@"media_url_https"];
-                    self.data.renderData[@"photo_size"] = media[@"sizes"][@"large"];
                 }
             } else if (urls.count) {
                 for (NSDictionary *urlDict in urls) {
