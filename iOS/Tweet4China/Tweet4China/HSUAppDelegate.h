@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSDictionary *globalSettings;
 @property (nonatomic, copy) NSString *shadwosocksServer;
 @property (nonatomic) BOOL hasPro;
+@property (nonatomic, weak) NSTimer *checkUnreadTimer;
 
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;

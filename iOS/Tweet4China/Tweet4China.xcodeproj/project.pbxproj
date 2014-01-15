@@ -243,7 +243,7 @@
 		96AD8E0A188524A10024698D /* btn_standard_blue_border_pressed@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 96AD8E06188524A10024698D /* btn_standard_blue_border_pressed@2x~ipad.png */; };
 		96AD8E0B188524A10024698D /* btn_standard_blue_border_pressed@2x~iphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 96AD8E07188524A10024698D /* btn_standard_blue_border_pressed@2x~iphone.png */; };
 		96AD8E0E1885656A0024698D /* HSUWebBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E0D1885656A0024698D /* HSUWebBrowserViewController.m */; };
-		96AD8E11188569FF0024698D /* HSUAddBookMarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E10188569FF0024698D /* HSUAddBookMarkViewController.m */; };
+		96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */; };
 		96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E1318856A240024698D /* HSURETableViewController.m */; };
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
@@ -668,8 +668,8 @@
 		96AD8E07188524A10024698D /* btn_standard_blue_border_pressed@2x~iphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_standard_blue_border_pressed@2x~iphone.png"; sourceTree = "<group>"; };
 		96AD8E0C1885656A0024698D /* HSUWebBrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUWebBrowserViewController.h; sourceTree = "<group>"; };
 		96AD8E0D1885656A0024698D /* HSUWebBrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUWebBrowserViewController.m; sourceTree = "<group>"; };
-		96AD8E0F188569FF0024698D /* HSUAddBookMarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAddBookMarkViewController.h; sourceTree = "<group>"; };
-		96AD8E10188569FF0024698D /* HSUAddBookMarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAddBookMarkViewController.m; sourceTree = "<group>"; };
+		96AD8E0F188569FF0024698D /* HSUAddBookmarkViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAddBookmarkViewController.h; sourceTree = "<group>"; };
+		96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAddBookmarkViewController.m; sourceTree = "<group>"; };
 		96AD8E1218856A240024698D /* HSURETableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSURETableViewController.h; sourceTree = "<group>"; };
 		96AD8E1318856A240024698D /* HSURETableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURETableViewController.m; sourceTree = "<group>"; };
 		96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
@@ -1224,8 +1224,8 @@
 				96AD8E0D1885656A0024698D /* HSUWebBrowserViewController.m */,
 				96AD8E1218856A240024698D /* HSURETableViewController.h */,
 				96AD8E1318856A240024698D /* HSURETableViewController.m */,
-				96AD8E0F188569FF0024698D /* HSUAddBookMarkViewController.h */,
-				96AD8E10188569FF0024698D /* HSUAddBookMarkViewController.m */,
+				96AD8E0F188569FF0024698D /* HSUAddBookmarkViewController.h */,
+				96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */,
 				96DECEBD187F2A6100E46809 /* HSUWebBrowserBookmarksDataSource.h */,
 				96DECEBE187F2A6100E46809 /* HSUWebBrowserBookmarksDataSource.m */,
 				96DECEC0187FBE3C00E46809 /* HSUWebBrowserTabsDataSource.h */,
@@ -1828,7 +1828,7 @@
 				96D292381743861F00AB4F8C /* HSUDraftCell.m in Sources */,
 				969F2F8818221E9500015765 /* HSUiPadTabController.m in Sources */,
 				96FA81D317450B6A00DB023A /* HSUDraftsCell.m in Sources */,
-				96AD8E11188569FF0024698D /* HSUAddBookMarkViewController.m in Sources */,
+				96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */,
 				966ACE33174B9B180050F110 /* HSUConversationsViewController.m in Sources */,
 				966ACE36174B9B210050F110 /* HSUMessagesViewController.m in Sources */,
 				96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */,

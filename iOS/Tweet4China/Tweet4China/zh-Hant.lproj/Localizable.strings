@@ -206,3 +206,6 @@
 "Address" = "網址";
 "Search Tweets" = "搜尋推文";
 "Current" = "當前頁";
+"Open Address from Pasteboard" = "打開粘貼板中的網址";
+"Address not found in your pasteboard" = "沒有在您的粘貼板中找到網址哎";
+"browser_tab_loading" = "載入中";

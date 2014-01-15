@@ -8,6 +8,6 @@
 
 #import "HSURETableViewController.h"
 
-@interface HSUAddBookMarkViewController : HSURETableViewController
+@interface HSUAddBookmarkViewController : HSURETableViewController
 
 @end

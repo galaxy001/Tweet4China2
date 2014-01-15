@@ -85,7 +85,11 @@ static HSUShadowsocksProxy *proxy;
     [Flurry logEvent:@"Launch" timed:YES];
 #endif
     
-    [NSTimer scheduledTimerWithTimeInterval:60 target:self selector:@selector(checkUnread) userInfo:nil repeats:YES];
+    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:60
+                                                             target:self
+                                                           selector:@selector(checkUnread)
+                                                           userInfo:nil
+                                                            repeats:YES];
     
     [self updateImageCacheSize];
     [self logJailBreak];
@@ -106,6 +110,11 @@ static HSUShadowsocksProxy *proxy;
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:60
+                                                             target:self
+                                                           selector:@selector(checkUnread)
+                                                           userInfo:nil
+                                                            repeats:YES];
     [self startShadowsocks];
     [Appirater appEnteredForeground:YES];
 #ifndef DEBUG
@@ -117,6 +126,7 @@ static HSUShadowsocksProxy *proxy;
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
     [proxy stop];
+    [self.checkUnreadTimer invalidate];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url

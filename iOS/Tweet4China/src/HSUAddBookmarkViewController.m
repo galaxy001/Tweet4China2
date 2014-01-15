@@ -6,16 +6,16 @@
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUAddBookMarkViewController.h"
+#import "HSUAddBookmarkViewController.h"
 #import <RETableViewManager/RETableViewOptionsController.h>
 
-@interface HSUAddBookMarkViewController ()
+@interface HSUAddBookmarkViewController ()
 
 @property (nonatomic, weak) RETextItem *nameItem, *urlItem;
 
 @end
 
-@implementation HSUAddBookMarkViewController
+@implementation HSUAddBookmarkViewController
 
 - (id)init
 {
@@ -29,13 +29,24 @@
     RETableViewSection *section = [RETableViewSection section];
     [self.manager addSection:section];
     
+    __weak typeof(self)weakSelf = self;
     RETextItem *nameItem = [RETextItem itemWithTitle:_("Name")];
     self.nameItem = nameItem;
     [section addItem:nameItem];
+    nameItem.onChange = ^(RETextItem *item) {
+        if (weakSelf.nameItem.value.length && weakSelf.urlItem.value.length) {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
+    };
     
     RETextItem *urlItem = [RETextItem itemWithTitle:_("Address")];
     self.urlItem = urlItem;
     [section addItem:urlItem];
+    urlItem.onChange = ^(RETextItem *item) {
+        if (weakSelf.nameItem.value.length && weakSelf.urlItem.value.length) {
+            self.navigationItem.rightBarButtonItem.enabled = YES;
+        }
+    };
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
                                              initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
@@ -45,6 +56,7 @@
                                               initWithBarButtonSystemItem:UIBarButtonSystemItemSave
                                               target:self
                                               action:@selector(save)];
+    self.navigationItem.rightBarButtonItem.enabled = NO;
 }
 
 - (void)save

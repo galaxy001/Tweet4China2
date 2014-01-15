@@ -9,7 +9,7 @@
 #import "HSUWebBrowserViewController.h"
 #import <RETableViewManager/RETableViewOptionsController.h>
 #import <SVWebViewController/SVWebViewController.h>
-#import "HSUAddBookMarkViewController.h"
+#import "HSUAddBookmarkViewController.h"
 
 @interface HSUWebBrowserViewController ()
 
@@ -41,6 +41,50 @@
 {
     [super viewWillAppear:animated];
     
+    [self.tabSection removeAllItems];
+    if (!self.tabSection) {
+        RETableViewSection *section = [RETableViewSection section];
+        self.tabSection = section;
+        [self.manager addSection:section];
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    RETableViewItem *openAddressItem = [[RETableViewItem alloc] initWithTitle:_("Open Address from Pasteboard") accessoryType:UITableViewCellAccessoryNone selectionHandler:^(RETableViewItem *item) {
+        NSString *url = [UIPasteboard generalPasteboard].string;
+        if (![url hasPrefix:@"http"]) {
+            url = S(@"http://%@", url);
+        }
+        NSURL *URL = [NSURL URLWithString:url];
+        if (URL) {
+            weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
+            weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+            [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:_("Address not found in your pasteboard") delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
+            [alert show];
+        }
+    }];
+    [self.tabSection addItem:openAddressItem];
+    
+    if (self.webViewController) {
+        
+        NSString *title = [[self.webViewController.viewControllers.lastObject navigationItem] title];
+        if ([title length]) {
+            title = S(@"%@ - %@", _("Current"), title);
+        } else {
+            title = S(@"%@ - %@", _("Current"), _("browser_tab_loading"));
+        }
+        
+        RETableViewItem *currentItem = [RETableViewItem itemWithTitle:title
+                                                        accessoryType:UITableViewCellAccessoryNone
+                                                     selectionHandler:^(RETableViewItem *item)
+                                        {
+                                            [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:nil];
+                                        }];
+        self.currentItem = currentItem;
+        [self.tabSection addItem:currentItem];
+    }
+    
     NSArray *bookmarks = [[NSUserDefaults standardUserDefaults] arrayForKey:@"bookmarks"];
     if (!bookmarks) {
         bookmarks = @[@{@"name": @"Google", @"url": @"http://www.google.com/ncr"},
@@ -55,7 +99,7 @@
         [self.manager removeSection:self.bookmarkSection];
         
         __weak typeof(self)weakSelf = self;
-        RETableViewSection *section = [RETableViewSection section];
+        RETableViewSection *section = [RETableViewSection sectionWithHeaderTitle:_("Bookmarks")];
         self.bookmarkSection = section;
         [self.manager addSection:section];
         
@@ -63,41 +107,28 @@
             NSString *name = bookmark[@"name"];
             NSString *url = bookmark[@"url"];
             
-            [section addItem:
-             [RETableViewItem itemWithTitle:name
-                              accessoryType:UITableViewCellAccessoryDisclosureIndicator
-                           selectionHandler:^(RETableViewItem *item)
-              {
-                  [item deselectRowAnimated:YES];
-                  
-                  weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
-                  weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
-                  [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
-              }]];
+            RETableViewItem *bookmarkItem = [RETableViewItem itemWithTitle:name];
+            bookmarkItem.accessoryType = UITableViewCellAccessoryNone;
+            bookmarkItem.selectionHandler = ^(RETableViewItem *item)
+            {
+                [item deselectRowAnimated:YES];
+                
+                weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
+                weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+                [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
+            };
+            bookmarkItem.deletionHandler = ^(RETableViewItem *item) {
+                NSMutableArray *bookmarks = [[[NSUserDefaults standardUserDefaults] arrayForKey:@"bookmarks"] mutableCopy];
+                NSInteger index = [bookmarks indexOfObject:bookmark];
+                if (bookmarks.count > index) {
+                    [bookmarks removeObjectAtIndex:index];
+                    [[NSUserDefaults standardUserDefaults] setObject:bookmarks forKey:@"bookmarks"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+            };
+            bookmarkItem.editingStyle = UITableViewCellEditingStyleDelete;
+            [section addItem:bookmarkItem];
         }
-    }
-    
-    if (self.webViewController) {
-        
-        NSString *title = [[self.webViewController.viewControllers.lastObject navigationItem] title];
-        if ([title length]) {
-            title = [title length] ? S(@"%@ - %@", _("Current"), title) : _("Current");
-        }
-        
-        [self.manager removeSection:self.tabSection];
-        RETableViewSection *section = [RETableViewSection section];
-        self.tabSection = section;
-        [self.manager addSection:section];
-        
-        __weak typeof(self)weakSelf = self;
-        RETableViewItem *currentItem = [RETableViewItem itemWithTitle:title
-                                                        accessoryType:UITableViewCellAccessoryNone
-                                                     selectionHandler:^(RETableViewItem *item)
-                                        {
-                                            [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:nil];
-                                        }];
-        self.currentItem = currentItem;
-        [self.tabSection addItem:currentItem];
     }
     
     [self.tableView reloadData];
@@ -105,7 +136,7 @@
 
 - (void)add
 {
-    HSUAddBookMarkViewController *viewController = [[HSUAddBookMarkViewController alloc] init];
+    HSUAddBookmarkViewController *viewController = [[HSUAddBookmarkViewController alloc] init];
     HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:viewController];
     [self presentViewController:nav animated:YES completion:nil];
 }
