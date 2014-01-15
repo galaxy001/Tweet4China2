@@ -442,7 +442,7 @@
 
 - (BOOL)shouldAutorotate
 {
-    return IPAD;
+    return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
 }
 
 - (void)reloadData

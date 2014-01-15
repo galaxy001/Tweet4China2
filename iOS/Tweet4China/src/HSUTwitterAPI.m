@@ -204,39 +204,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
             [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
             [twitter authorizeByOAuth];
         });
-        return;
+    } else {
+        [[HSUAppDelegate shared] startShadowsocks];
     }
-    
-    
-    if (shadowsocksStarted && !self.isAuthorizing) {
-        self.authorizing = YES;
-        double delayInSeconds = 1.0;
-        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-            [self authorizeByFHSTwitterEngine];
-        });
-    }
-}
-
-- (void)authorizeByFHSTwitterEngine
-{
-    RIButtonItem *loginItem = [RIButtonItem itemWithLabel:_("Login")];
-    loginItem.action = ^{
-        [self authorizeByOAuth];
-    };
-    RIButtonItem *registerItem = [RIButtonItem itemWithLabel:_("Register")];
-    registerItem.action = ^{
-        self.authorizing = NO;
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-        HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:[NSURL URLWithString:@"https://mobile.twitter.com/signup"] cellData:nil];
-        nav.viewControllers = @[miniBrowser];
-        [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
-    };
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Login to twitter")
-                                                    message:nil
-                                           cancelButtonItem:nil
-                                           otherButtonItems:loginItem, registerItem, nil];
-    [alert show];
 }
 
 - (void)authorizeByOAuth

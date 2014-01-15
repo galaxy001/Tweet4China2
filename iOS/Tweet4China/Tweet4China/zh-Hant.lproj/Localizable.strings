@@ -86,8 +86,8 @@
 "Copy Link" = "拷貝鏈接";
 "Mail Link" = "用郵件分享鏈接";
 "Link from Twitter" = "來自推特的鏈接";
-"Copy link to Tweet" = "拷貝鏈接到推文中";
-"Mail Tweet" = "有郵件分享推文";
+"Copy link to Tweet" = "拷貝推文的網址";
+"Mail Tweet" = "用郵件分享推文";
 "Fetch HTML failed" = "獲取HTML失敗了";
 "Open in Safari" = "用Safari打開";
 "Login" = "登錄";

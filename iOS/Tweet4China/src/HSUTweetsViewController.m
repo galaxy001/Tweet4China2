@@ -19,6 +19,7 @@
 #import "HSUStatusCell.h"
 #import "HSUSearchTweetsDataSource.h"
 #import "OpenInChromeController.h"
+#import <SVWebViewController/SVModalWebViewController.h>
 
 @interface HSUTweetsViewController ()
 
@@ -451,7 +452,7 @@
     NSString *id_str = rawData[@"id_str"];
     NSString *link = S(@"https://twitter.com/rtfocus/status/%@", id_str);
     
-    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy link to Tweet")];
+    RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy link of Tweet")];
     copyLinkToTweetItem.action = ^{
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         pasteboard.string = link;
@@ -544,6 +545,7 @@
     };
     RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
     mailLinkItem.action = ^{
+        [self.presentedViewController dismiss];
         NSString *body = S(@"<a href=\"%@\">%@</a><br><br>", url.absoluteString, url.absoluteString);
         NSString *subject = _("Link from Twitter");
         [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
@@ -619,12 +621,9 @@
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
 {
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:webURL cellData:cellData];
-    miniBrowser.viewController = self;
-    nav.viewControllers = @[miniBrowser];
-    [self presentViewController:nav animated:YES completion:nil];
-    self.modelVC = miniBrowser;
+    SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithURL:webURL];
+    webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+    [self presentViewController:webViewController animated:YES completion:NULL];
 }
 
 - (void)statusUpdated:(NSNotification *)notification

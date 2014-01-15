@@ -141,4 +141,9 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
+- (BOOL)shouldAutorotate
+{
+    return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
+}
+
 @end

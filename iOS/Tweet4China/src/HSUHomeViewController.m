@@ -80,9 +80,9 @@
          !([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
            [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]))) {
             
-#ifndef DEBUG
+//#ifndef DEBUG
             [HSUHomeDataSource checkUnreadForViewController:self];
-#endif
+//#endif
         }
 }
 

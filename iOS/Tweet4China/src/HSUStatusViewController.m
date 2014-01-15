@@ -170,7 +170,13 @@
     for (HSUTableCellData *cellData in self.dataSource.data) {
         if (cellData.rawData != self.mainStatus && height == 0) {
             NSDictionary *status = cellData.rawData;
-            self.navigationItem.title = S(@"%@ @%@", _("Reply to"), status[@"user"][@"screen_name"]);
+            NSString *name = status[@"user"][@"screen_name"];
+            if ([name isEqualToString:MyScreenName]) {
+                name = _("Me");
+            } else {
+                name = S(@"@%@", name);
+            }
+            self.navigationItem.title = S(@"%@ %@", _("Reply to"), name);
             continue;
         }
         height += [cellData.renderData[@"height"] floatValue];
@@ -238,14 +244,6 @@
 - (void)tappedPhoto:(NSString *)imageUrl withCellData:(HSUTableCellData *)cellData
 {
     [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
-}
-
-- (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
-{
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    HSUMiniBrowser *miniBrowser = [[HSUMiniBrowser alloc] initWithURL:webURL cellData:cellData];
-    nav.viewControllers = @[miniBrowser];
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)delete:(HSUTableCellData *)cellData
