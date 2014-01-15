@@ -288,6 +288,7 @@
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
 {
     [self.refreshControl endRefreshing];
+    
     if (error) {
         NSLog(@"%@", error);
     } else {
@@ -304,9 +305,8 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
 {
-    if (error.code == 204) {
-        [self.tableView reloadData];
-    } else if (error == nil) {
+    if ([[self.dataSource.data.lastObject dataType] isEqualToString:kDataType_LoadMore]) {
+        [self.dataSource.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Error)}];
         [self.tableView reloadData];
     }
 }

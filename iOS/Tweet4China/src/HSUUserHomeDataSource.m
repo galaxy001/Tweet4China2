@@ -17,9 +17,7 @@
         NSDictionary *tweet = [responseObj lastObject];
         weakSelf.lastStatusID = tweet[@"id_str"];
         success(responseObj);
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
+    } failure:failure];
 }
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
@@ -29,9 +27,7 @@
         NSDictionary *tweet = [responseObj lastObject];
         weakSelf.lastStatusID = tweet[@"id_str"];
         success(responseObj);
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
+    } failure:failure];
 }
 
 - (void)saveCache

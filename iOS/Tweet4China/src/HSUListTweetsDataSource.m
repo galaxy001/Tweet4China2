@@ -25,22 +25,14 @@
     if (!latestIdStr) {
         latestIdStr = @"1";
     }
-    [twitter getListTimelineWithListID:self.list[@"id_str"] sinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
-        success(responseObj);
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
+    [twitter getListTimelineWithListID:self.list[@"id_str"] sinceID:latestIdStr count:self.requestCount success:success failure:failure];
 }
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
-    [twitter getListTimelineWithListID:self.list[@"id_str"] maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
-        success(responseObj);
-    } failure:^(NSError *error) {
-        failure(error);
-    }];
+    [twitter getListTimelineWithListID:self.list[@"id_str"] maxID:lastStatusId count:self.requestCount success:success failure:failure];
 }
 
 @end
