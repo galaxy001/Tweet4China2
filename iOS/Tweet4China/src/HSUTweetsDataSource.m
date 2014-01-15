@@ -37,8 +37,10 @@
             for (int i=tweets.count-1; i>=0; i--) {
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
+                cellData.renderData[@"unread"] = @YES;
                 [weakSelf.data insertObject:cellData atIndex:0];
             }
+            weakSelf.unreadCount = tweets.count;
             
             HSUTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
@@ -48,9 +50,9 @@
                 [weakSelf.data addObject:loadMoreCellData];
             }
             if ([tweets count]) {
-                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+                [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
             } else {
-                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+                [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
             }
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];

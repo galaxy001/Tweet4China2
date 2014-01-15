@@ -213,12 +213,29 @@
     [self.view setNeedsDisplay];
 }
 
+- (void)unreadCountChanged
+{
+    
+}
+
 #pragma mark - TableView
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     Class cellClass = [self cellClassForDataType:data.dataType];
     return [cellClass heightForData:data];
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+    if ([cellData.renderData[@"unread"] boolValue]) {
+        cellData.renderData[@"unread"] = @NO;
+        if (indexPath.row < self.dataSource.unreadCount) {
+            self.dataSource.unreadCount = indexPath.row;
+            [self unreadCountChanged];
+        }
+    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath

@@ -15,6 +15,8 @@
 
 @interface HSUHomeViewController ()
 
+@property (nonatomic, weak) UILabel *unreadCountLabel;
+
 @end
 
 @implementation HSUHomeViewController
@@ -37,6 +39,21 @@
     self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
     
     [super viewDidLoad];
+    
+    UILabel *unreadCountLabel = [[UILabel alloc] init];
+    self.unreadCountLabel = unreadCountLabel;
+    [self.view addSubview:unreadCountLabel];
+    unreadCountLabel.backgroundColor = kBlackColor;
+    unreadCountLabel.textColor = kWhiteColor;
+    unreadCountLabel.font = [UIFont boldSystemFontOfSize:10];
+    unreadCountLabel.textAlignment = NSTextAlignmentCenter;
+    unreadCountLabel.layer.cornerRadius = 3;
+    unreadCountLabel.alpha = 0.8;
+    unreadCountLabel.text = @"200";
+    [unreadCountLabel sizeToFit];
+    unreadCountLabel.height += 2 * unreadCountLabel.layer.cornerRadius;
+    unreadCountLabel.text = nil;
+    unreadCountLabel.hidden = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -55,6 +72,24 @@
     self.navigationItem.leftBarButtonItems = self.navigationItem.rightBarButtonItems = nil;
 #endif
     [super viewDidAppear:animated];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    self.unreadCountLabel.rightTop = ccp(kWinWidth-kIPADMainViewPadding*2-10, -3 + self.tableView.contentInset.top);
+}
+
+- (void)unreadCountChanged
+{
+    self.unreadCountLabel.text = S(@"%ld", (long)self.dataSource.unreadCount);
+    if (self.dataSource.unreadCount > 99) {
+        self.unreadCountLabel.width = 30;
+    } else {
+        self.unreadCountLabel.width = 20;
+    }
+    self.unreadCountLabel.hidden = self.dataSource.unreadCount <= 0;
 }
 
 - (void)tabDidSelected:(NSNotification *)notification

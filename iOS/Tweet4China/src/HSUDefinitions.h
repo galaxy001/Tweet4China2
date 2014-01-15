@@ -50,6 +50,7 @@
 #import <SVProgressHUD/SVProgressHUD.h>
 #import "HSUNavigationController.h"
 #import "Flurry.h"
+#import "NSArray+Additions.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>

@@ -42,6 +42,9 @@
 		960640EF17D08E81000B1032 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640EE17D08E81000B1032 /* libcrypto.a */; };
 		960640F017D08EAC000B1032 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640EE17D08E81000B1032 /* libcrypto.a */; };
 		960DFEE817E426F700D6BEB1 /* HSUFavoritesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */; };
+		960E805518866F1500B1F165 /* T4CViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805418866F1500B1F165 /* T4CViewController.m */; };
+		960E805B188683C600B1F165 /* NSArray+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805A188683C600B1F165 /* NSArray+Additions.m */; };
+		960E805E1886878300B1F165 /* T4CTableCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805D1886878300B1F165 /* T4CTableCellData.m */; };
 		9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF6617086E320038935C /* CFNetwork.framework */; };
 		9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF69170899E00038935C /* AudioToolbox.framework */; };
 		9628175016DE5EDC00ABF0AD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
@@ -384,6 +387,12 @@
 		960640EE17D08E81000B1032 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = "3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib/libcrypto.a"; sourceTree = "<group>"; };
 		960DFEE617E426F700D6BEB1 /* HSUFavoritesDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUFavoritesDataSource.h; sourceTree = "<group>"; };
 		960DFEE717E426F700D6BEB1 /* HSUFavoritesDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUFavoritesDataSource.m; sourceTree = "<group>"; };
+		960E805318866F1500B1F165 /* T4CViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CViewController.h; sourceTree = "<group>"; };
+		960E805418866F1500B1F165 /* T4CViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CViewController.m; sourceTree = "<group>"; };
+		960E8059188683C600B1F165 /* NSArray+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Additions.h"; sourceTree = "<group>"; };
+		960E805A188683C600B1F165 /* NSArray+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Additions.m"; sourceTree = "<group>"; };
+		960E805C1886878300B1F165 /* T4CTableCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CTableCellData.h; sourceTree = "<group>"; };
+		960E805D1886878300B1F165 /* T4CTableCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CTableCellData.m; sourceTree = "<group>"; };
 		9612AF6617086E320038935C /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9612AF69170899E00038935C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9628174C16DE5EDC00ABF0AD /* Tweet4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweet4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -843,6 +852,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		960E805218866EDB00B1F165 /* T4C */ = {
+			isa = PBXGroup;
+			children = (
+				960E805318866F1500B1F165 /* T4CViewController.h */,
+				960E805418866F1500B1F165 /* T4CViewController.m */,
+				960E805C1886878300B1F165 /* T4CTableCellData.h */,
+				960E805D1886878300B1F165 /* T4CTableCellData.m */,
+			);
+			name = T4C;
+			sourceTree = "<group>";
+		};
 		9628174316DE5EDC00ABF0AD = {
 			isa = PBXGroup;
 			children = (
@@ -1112,6 +1132,7 @@
 		962817A316DE5FDF00ABF0AD /* src */ = {
 			isa = PBXGroup;
 			children = (
+				960E805218866EDB00B1F165 /* T4C */,
 				9639B91C16FDF59E0032177F /* Additions */,
 				96BE216916EC744B00226799 /* Common */,
 				96BE216816EC743400226799 /* Classes */,
@@ -1365,6 +1386,8 @@
 				967F635A17550B4D00CB8730 /* HSUSendBarButtonItem.m */,
 				9666CDDA18702D650044DB0A /* HSUAttributedLabel.h */,
 				9666CDDB18702D650044DB0A /* HSUAttributedLabel.m */,
+				960E8059188683C600B1F165 /* NSArray+Additions.h */,
+				960E805A188683C600B1F165 /* NSArray+Additions.m */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1734,9 +1757,11 @@
 				9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */,
 				96D91E031813B288001A8188 /* HSUSearchPersonViewController.m in Sources */,
 				966498BD16F3041500BC901A /* UIImageView+Additions.m in Sources */,
+				960E805B188683C600B1F165 /* NSArray+Additions.m in Sources */,
 				96AD8E0E1885656A0024698D /* HSUWebBrowserViewController.m in Sources */,
 				966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */,
 				966E1909184CAB5600B5482C /* HSUListMembersDataSource.m in Sources */,
+				960E805518866F1500B1F165 /* T4CViewController.m in Sources */,
 				9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */,
 				966E191B184CB06300B5482C /* HSUListCell.m in Sources */,
 				96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */,
@@ -1783,6 +1808,7 @@
 				967272B31733CC2100B6E30A /* HSUTweetsViewController.m in Sources */,
 				967272B61733CCB500B6E30A /* HSUTweetsDataSource.m in Sources */,
 				96A11F2117D0BFB600F98ABD /* HSUProxySettingsViewController.m in Sources */,
+				960E805E1886878300B1F165 /* T4CTableCellData.m in Sources */,
 				9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */,
 				967272B91733E3E500B6E30A /* HSUUserHomeDataSource.m in Sources */,
 				969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */,
