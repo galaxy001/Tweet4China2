@@ -14,6 +14,7 @@
 @property (nonatomic, copy) NSString *dataType;
 @property (nonatomic, strong) NSDictionary *rawData;
 @property (nonatomic, strong) NSMutableDictionary *renderData;
+@property (nonatomic, weak) id delegate;
 
 - (id)initWithRawData:(NSDictionary *)rawData dataType:(NSString *)dataType;
 - (id)initWithCacheData:(NSDictionary *)cacheData;

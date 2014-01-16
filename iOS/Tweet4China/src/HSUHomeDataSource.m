@@ -29,6 +29,15 @@
     }];
 }
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.useCache = YES;
+    }
+    return self;
+}
+
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
@@ -85,17 +94,6 @@
     } failure:^(NSError *error) {
         failure(error);
     }];
-}
-
--(void)saveCache
-{
-    [super saveCache];
-    
-    if (self.count) {
-        NSString *firstIdStr = [self rawDataAtIndex:0][@"id_str"];
-        [[NSUserDefaults standardUserDefaults] setObject:firstIdStr forKey:S(@"%@_first_id_str", [self.class cacheKey])];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
 }
 
 @end

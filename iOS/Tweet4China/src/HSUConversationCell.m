@@ -117,7 +117,7 @@
     self.snLabel.text = sn;
     self.timeLabel.text = time;
     self.contentLabel.text = content;
-    self.unreadIndicator.hidden = ![data.renderData[@"unread"] boolValue];
+    self.unreadIndicator.hidden = ![data.renderData[@"unread_dm"] boolValue];
     
     [self.nameLabel sizeToFit];
     [self.snLabel sizeToFit];

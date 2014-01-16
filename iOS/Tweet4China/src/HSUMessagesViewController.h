@@ -12,5 +12,7 @@
 
 @property (nonatomic, strong) NSDictionary *myProfile;
 @property (nonatomic, strong) NSDictionary *herProfile;
+@property (nonatomic, assign) BOOL followedMe;
+@property (nonatomic, assign) BOOL relactionshipLoaded;
 
 @end

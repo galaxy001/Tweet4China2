@@ -209,8 +209,10 @@
         tweetsButton.frame = ccr(0, 1, 107, referenceButtonBGView.height-2);
         [tweetsButton setTitleColor:bw(153) forState:UIControlStateNormal];
         tweetsButton.titleLabel.font = [UIFont systemFontOfSize:9];
-        [tweetsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -55, 0, 0)];
         [tweetsButton setTitle:_("TWEETS") forState:UIControlStateNormal];
+        CGFloat titleWidth = [[tweetsButton titleForState:UIControlStateNormal] sizeWithFont:tweetsButton.titleLabel.font].width;
+        CGFloat left = tweetsButton.width/2 - titleWidth/2 - 10;
+        [tweetsButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -left, 0, left)];
         [tweetsButton setTapTarget:delegate action:@selector(tweetsButtonTouched)];
         
         UILabel *tweetsCountLabel = [[UILabel alloc] init];
@@ -228,8 +230,10 @@
         followingButton.frame = ccr(tweetsButton.right+1, 1, 105, tweetsButton.height);
         [followingButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followingButton.titleLabel.font = [UIFont systemFontOfSize:9];
-        [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -38.5, 0, 0)];
         [followingButton setTitle:_("FOLLOWING") forState:UIControlStateNormal];
+        titleWidth = [[followingButton titleForState:UIControlStateNormal] sizeWithFont:followingButton.titleLabel.font].width;
+        left = followingButton.width/2 - titleWidth/2 - 10;
+        [followingButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -left, 0, left)];
         [followingButton setTapTarget:delegate action:@selector(followingsButtonTouched)];
         
         UILabel *followingCountLabel = [[UILabel alloc] init];
@@ -247,8 +251,10 @@
         followersButton.frame = ccr(followingButton.right+1, 1, 106, followingButton.height);
         [followersButton setTitleColor:bw(153) forState:UIControlStateNormal];
         followersButton.titleLabel.font = [UIFont systemFontOfSize:9];
-        [followersButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -37.5, 0, 0)];
         [followersButton setTitle:_("FOLLOWERS") forState:UIControlStateNormal];
+        titleWidth = [[followersButton titleForState:UIControlStateNormal] sizeWithFont:followingButton.titleLabel.font].width;
+        left = followingButton.width/2 - titleWidth/2 - 10;
+        [followersButton setTitleEdgeInsets:UIEdgeInsetsMake(0, -left, 0, left)];
         [followersButton setTapTarget:delegate action:@selector(followersButtonTouched)];
         
         UILabel *followersCountLabel = [[UILabel alloc] init];
@@ -372,6 +378,7 @@
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil success:nil failure:nil];
     self.screenNameLabel.text = [profile[@"screen_name"] twitterScreenName];
+    [self.screenNameLabel sizeToFit];
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];
     [self.descLabel sizeToFit];

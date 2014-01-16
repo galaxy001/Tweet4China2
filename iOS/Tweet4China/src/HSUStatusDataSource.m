@@ -31,7 +31,7 @@
     if (self.loadingCount) {
         return;
     }
-    [super refresh];
+    [super refreshSilenced];
     NSDictionary *status = [self.data[0] rawData];
     if ([status[@"in_reply_to_status_id_str"] length]) {
         __weak typeof(self)weakSelf = self;
@@ -71,6 +71,11 @@
         }
     } failure:^(NSError *error) {
     }];
+}
+
+- (void)clearCache
+{
+    
 }
 
 @end

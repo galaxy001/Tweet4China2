@@ -147,6 +147,7 @@
 - (void)refresh
 {
     self.loadingCount ++;
+    
     [HSURefreshControl startRefreshing];
 }
 
@@ -162,6 +163,9 @@
 
 - (void)saveCache
 {
+    if (!self.useCache) {
+        return;
+    }
     uint cacheSize = kRequestDataCountViaWifi;
     NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
     for (HSUTableCellData *cellData in self.data) {
@@ -180,6 +184,14 @@
     } else {
         [[NSFileManager defaultManager] removeItemAtPath:fileName error:nil];
     }
+    
+    if (self.count) {
+        NSString *firstIdStr = [self rawDataAtIndex:0][@"id_str"];
+        [[NSUserDefaults standardUserDefaults] setObject:firstIdStr forKey:S(@"%@_first_id_str", [self.class cacheKey])];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str", [self.class cacheKey])];
+    }
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (NSString *)cacheKey
@@ -235,30 +247,23 @@
     [self.delegate reloadData];
 }
 
-- (void)twitterLoginSuccess:(NSNotification *)notification
+- (void)clearCache
 {
-    NSString *firstIdKey = S(@"%@_first_id_str", self.class.cacheKey);
-    NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
-    if (firstIdStr) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    self.unreadCount = 0;
+    
     [self.data removeAllObjects];
     [self saveCache];
     [self.delegate reloadData];
 }
 
+- (void)twitterLoginSuccess:(NSNotification *)notification
+{
+    [self clearCache];
+}
+
 - (void)twitterLogout
 {
-    NSString *firstIdKey = S(@"%@_first_id_str", self.class.cacheKey);
-    NSString *firstIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:firstIdKey];
-    if (firstIdStr) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:firstIdKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    [self.data removeAllObjects];
-    [self saveCache];
-    [self.delegate reloadData];
+    [self clearCache];
 }
 
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController

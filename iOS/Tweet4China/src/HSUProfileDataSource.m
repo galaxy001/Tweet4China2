@@ -88,7 +88,7 @@
 
 - (void)refresh
 {
-    [super refresh];
+    [super refreshSilenced];
     
     [self refreshLocalData];
     

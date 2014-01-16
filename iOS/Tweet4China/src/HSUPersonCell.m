@@ -109,7 +109,7 @@
     } else if (followingCount > 1000) {
         followingCountStr = S(@"%0.1fK", followingCount/1000.0);
     }
-    NSString *ffInfoText = [NSString stringWithFormat:@"%@ %@ %@ %@",
+    NSString *ffInfoText = [NSString stringWithFormat:@"%@ %@   %@ %@",
                             followersCountStr, _("Followers"), followingCountStr, _("Following")];
     NSMutableAttributedString *ffInfoTextWithAttributes = [[NSMutableAttributedString alloc] initWithString:ffInfoText];
     [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName

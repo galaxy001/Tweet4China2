@@ -14,6 +14,7 @@
 #import <Appirater/Appirater.h>
 #import <HSUWebCache/HSUWebCache.h>
 #import "HSUProfileViewController.h"
+#import "HSUAppDelegate.h"
 
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
@@ -63,7 +64,7 @@
           [self.navigationController pushViewController:accountsVC animated:YES];
       }]];
     
-#ifdef DEBUG
+//#ifndef FreeApp
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
@@ -73,10 +74,14 @@
       {
           [item deselectRowAnimated:YES];
           
+          if (![[HSUAppDelegate shared] buyProApp]) {
+              return ;
+          }
+          
           HSUShadowsocksViewController *shadowsocksVC = [[HSUShadowsocksViewController alloc] init];
           [self.navigationController pushViewController:shadowsocksVC animated:YES];
       }]];
-#endif
+//#endif
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
@@ -159,6 +164,35 @@
     self.cacheSizeItem = cacheSizeItem;
     [section addItem:cacheSizeItem];
     
+    [section addItem:[RETableViewItem
+                      itemWithTitle:_("Clean Cache")
+                      accessoryType:UITableViewCellAccessoryNone
+                      selectionHandler:^(RETableViewItem *item)
+    {
+        [item deselectRowAnimated:YES];
+        
+        [SVProgressHUD showWithStatus:nil];
+        dispatch_async(GCDMainThread, ^{
+            NSError *error = [HSUWebCache cleanCache];
+            if (error) {
+                [Flurry logError:@"clean_cache_failed" message:nil error:error];
+            }
+            NSString *cachePath = tp(@"");
+            for (NSString *subDir in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:cachePath error:nil]) {
+                if ([subDir hasSuffix:@".localstorage"] ||
+                    [subDir hasPrefix:@"me.tuoxie"]) {
+                    NSString *subPath = tp(subDir);
+                    [[NSFileManager defaultManager] removeItemAtPath:subPath error:&error];
+                    if (error) {
+                        [Flurry logError:@"clean_cache_failed" message:nil error:error];
+                        break;
+                    }
+                }
+            }
+            [SVProgressHUD dismiss];
+        });
+    }]];
+    
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
@@ -182,6 +216,17 @@
           [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
           [item deselectRowAnimated:YES];
       }]];
+#ifdef FreeApp
+    [section addItem:
+     [RETableViewItem itemWithTitle:_("Buy Pro")
+                      accessoryType:UITableViewCellAccessoryNone
+                   selectionHandler:^(RETableViewItem *item)
+      {
+          [[HSUAppDelegate shared] buyProApp];
+          
+          [item deselectRowAnimated:YES];
+      }]];
+#endif
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
@@ -203,6 +248,15 @@
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
         [item deselectRowAnimated:YES];
     }]];
+    [section addItem:
+     [RETableViewItem itemWithTitle:_("OpenCam (Github)")
+                      accessoryType:UITableViewCellAccessoryNone
+                   selectionHandler:^(RETableViewItem *item)
+      {
+          NSString *url = @"https://github.com/tuoxie007/OpenCam";
+          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+          [item deselectRowAnimated:YES];
+      }]];
     [section addItem:
      [RETableViewItem itemWithTitle:_("Official Blog (Tumblr)")
                                       accessoryType:UITableViewCellAccessoryNone

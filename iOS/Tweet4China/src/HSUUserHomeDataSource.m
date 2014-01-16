@@ -30,9 +30,4 @@
     } failure:failure];
 }
 
-- (void)saveCache
-{
-    
-}
-
 @end

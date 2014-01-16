@@ -17,7 +17,6 @@
 @property (nonatomic, weak) UIImageView *textViewBackground;
 @property (nonatomic, weak) UITextView *textView;
 @property (nonatomic, weak) UILabel *wordCountLabel;
-@property (nonatomic, assign) float keyboardHeight;
 @property (nonatomic, assign) BOOL layoutForTextChanged;
 
 @property (nonatomic, strong) UIBarButtonItem *actionsBarButtonItem;
@@ -94,6 +93,23 @@
     wordCountLabel.shadowColor = kWhiteColor;
     wordCountLabel.shadowOffset = ccs(0, 1);
     wordCountLabel.backgroundColor = kClearColor;
+    
+    __weak typeof(self)weakSelf = self;
+    [twitter lookupFriendshipsWithScreenNames:@[self.herProfile[@"screen_name"]] success:^(id responseObj) {
+        weakSelf.relactionshipLoaded = YES;
+        weakSelf.followedMe = NO;
+        NSDictionary *ship = responseObj[0];
+        NSArray *connections = ship[@"connections"];
+        if ([connections isKindOfClass:[NSArray class]]) {
+            for (NSString *connection in connections) {
+                if ([connection isEqualToString:@"followed_by"]) {
+                    weakSelf.followedMe = YES;
+                    break;
+                }
+            }
+        }
+    } failure:^(NSError *error) {
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -106,6 +122,7 @@
                                                  target:self
                                                  action:@selector(dismiss)];
     }
+    self.view.backgroundColor = kWhiteColor;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -120,6 +137,9 @@
 {
     [super viewDidLayoutSubviews];
     
+    if (self.tableView.height > self.view.height) {
+        self.view.height = self.tableView.height;
+    }
     if (self.textView.width == 0) {
         if (self.textView.hasText) {
             self.textView.size = ccs(self.view.width-45, 0);
@@ -135,15 +155,10 @@
     }
     self.textView.left = 12;
     
-    if (self.viewDidAppearCount == 0 || self.layoutForTextChanged) {
-        self.layoutForTextChanged = NO;
-        [self _resetToolbarLocation];
-        [self _scrollToBottom];
-    } else {
-        [self _resetToolbarLocation];
-        [self _scrollToBottom];
-        self.navigationItem.rightBarButtonItem = self.sendBarButtonItem;
-    }
+    [self _resetToolbarLocation];
+    [self _scrollToBottom];
+    self.layoutForTextChanged = NO;
+    self.navigationItem.rightBarButtonItem = self.sendBarButtonItem;
 }
 
 - (void)textViewDidChange:(UITextView *)textView
@@ -178,17 +193,44 @@
     
     CGSize textViewBackgroundSize = ccs(textViewSize.width, textViewSize.height-8);
     CGSize toolbarSize = ccs(self.width, textViewBackgroundSize.height+9+7);
+    UIEdgeInsets inset = self.tableView.contentInset;
+    inset.bottom = toolbarSize.height;
+    if (Sys_Ver >= 7) {
+        if (self.keyboardHeight == 0) {
+            inset.bottom += tabbar_height;
+        }
+    }
     
-    self.tableView.height = self.view.height - MAX(self.keyboardHeight, self.tableView.contentInset.bottom);
+    self.tableView.height = self.view.height - self.keyboardHeight;
+    self.tableView.contentInset = inset;
     self.toolbar.size = toolbarSize;
-    self.toolbar.bottom = self.tableView.bottom;
-    
-    self.textViewBackground.leftTop = ccp(5, self.toolbar.top + 9);
     self.textViewBackground.size = textViewBackgroundSize;
+    self.textView.size = textViewSize;
     
+    if (self.layoutForTextChanged) {
+        [self doResetToolbarLocation];
+    } else {
+        if (self.toolbar.top == 0) {
+            self.toolbar.bottom = self.tableView.bottom - (Sys_Ver >= 7 ? tabbar_height : 0);
+            self.textViewBackground.leftTop = ccp(5, self.toolbar.top + 9);
+            self.wordCountLabel.rightCenter = ccp(self.width-10, self.toolbar.rightCenter.y);
+            self.textView.top = self.toolbar.top + 5;
+            self.textView.width = self.width - self.textView.left * 2 - self.wordCountLabel.width;
+        }
+        __weak typeof(self)weakSelf = self;
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView animateWithDuration:self.keyboardAnimationDuration animations:^{
+            [weakSelf doResetToolbarLocation];
+        }];
+    }
+}
+
+- (void)doResetToolbarLocation
+{
+    self.toolbar.top = self.tableView.bottom - self.tableView.contentInset.bottom;
+    self.textViewBackground.leftTop = ccp(5, self.toolbar.top + 9);
     self.wordCountLabel.rightCenter = ccp(self.width-10, self.toolbar.rightCenter.y);
     
-    self.textView.size = textViewSize;
     self.textView.top = self.toolbar.top + 5;
     self.textView.width = self.width - self.textView.left * 2 - self.wordCountLabel.width;
 }
@@ -209,6 +251,35 @@
 
 - (void)_sendButtonTouched
 {
+    if (!self.relactionshipLoaded) {
+        __weak typeof(self)weakSelf = self;
+        [twitter lookupFriendshipsWithScreenNames:@[self.herProfile[@"screen_name"]] success:^(id responseObj) {
+            weakSelf.relactionshipLoaded = YES;
+            weakSelf.followedMe = NO;
+            NSDictionary *ship = responseObj[0];
+            NSArray *connections = ship[@"connections"];
+            if ([connections isKindOfClass:[NSArray class]]) {
+                for (NSString *connection in connections) {
+                    if ([connection isEqualToString:@"followed_by"]) {
+                        weakSelf.followedMe = YES;
+                        break;
+                    }
+                }
+            }
+            [weakSelf _sendButtonTouched];
+        } failure:^(NSError *error) {
+            weakSelf.relactionshipLoaded = YES; // just try
+            [weakSelf _sendButtonTouched];
+        }];
+    }
+    
+    if (!self.followedMe) {
+        NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), self.herProfile[@"screen_name"], self.herProfile[@"screen_name"], _("is not following you.")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
+        [alert show];
+        return;
+    }
+    
     NSMutableDictionary *message = [NSMutableDictionary dictionary];
     message[@"sender"] = self.myProfile;
     message[@"recipient"] = self.herProfile;

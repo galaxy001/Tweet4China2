@@ -62,7 +62,7 @@
     UILabel *retweetCountL;
     UIButton *retweetsButton;
     UILabel *favoriteCountL;
-    UILabel *favoriteCountWordL;
+    UIButton *favoritesButton;
     UIView *retweetFavoritePannel;
 }
 
@@ -170,11 +170,11 @@
         favoriteCountL.textColor = kBlackColor;
         favoriteCountL.hidden = YES;
         
-        favoriteCountWordL = [[UILabel alloc] init];
-        [retweetFavoritePannel addSubview:favoriteCountWordL];
-        favoriteCountWordL.font = [UIFont systemFontOfSize:12];
-        favoriteCountWordL.textColor = kGrayColor;
-        favoriteCountWordL.hidden = YES;
+        favoritesButton = [[UIButton alloc] init];
+        [retweetFavoritePannel addSubview:favoritesButton];
+        favoritesButton.titleLabel.font = [UIFont systemFontOfSize:12];
+        [favoritesButton setTitleColor:kGrayColor forState:UIControlStateNormal];
+        favoritesButton.hidden = YES;
         
         viaLabel = [[UILabel alloc] init];
         [retweetFavoritePannel addSubview:viaLabel];
@@ -241,7 +241,7 @@
     retweetCountL.leftCenter = ccp(retweetCountL.left, retweetFavoritePannel.height/2);
     retweetsButton.leftCenter = ccp(retweetsButton.left, retweetFavoritePannel.height/2);
     favoriteCountL.leftCenter = ccp(favoriteCountL.left, retweetFavoritePannel.height/2);
-    favoriteCountWordL.leftCenter = ccp(favoriteCountWordL.left, retweetFavoritePannel.height/2);
+    favoritesButton.leftCenter = ccp(favoritesButton.left, retweetFavoritePannel.height/2);
     
     if (sourceButton.superview == contentArea) {
         sourceButton.rightCenter = ccp(contentArea.width, timePlaceL.center.y);
@@ -501,12 +501,12 @@
         favoriteCountL.hidden = NO;
         favoriteCountL.text = S(@"%d", favoriteCount);
         [favoriteCountL sizeToFit];
-        favoriteCountWordL.hidden = NO;
-        favoriteCountWordL.text = favoriteCount > 1 ? _("FAVORITES")
-                                                    : _("FAVORITE");
-        [favoriteCountWordL sizeToFit];
+        favoritesButton.hidden = NO;
+        [favoritesButton setTitle:favoriteCount > 1 ? _("FAVORITES")
+                                                    : _("FAVORITE") forState:UIControlStateNormal];
+        [favoritesButton sizeToFit];
         favoriteCountL.left = favoriteLeft;
-        favoriteCountWordL.left = favoriteCountL.right + 3;
+        favoritesButton.left = favoriteCountL.right + 3;
     }
     
     // set action events
@@ -516,6 +516,7 @@
     [self setupControl:actionV.moreB forKey:@"more"];
     [self setupControl:actionV.deleteB forKey:@"delete"];
     [self setupControl:retweetsButton forKey:@"retweets"];
+    [self setupControl:favoritesButton forKey:@"favorites"];
     [self setupControl:avatarB forKey:@"touchAvatar"];
 }
 
@@ -667,7 +668,7 @@
 #pragma mark - attributtedLabel delegate
 - (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
 {
-    id delegate = self.data.renderData[@"delegate"];
+    id delegate = self.data.delegate;
     [delegate performSelector:@selector(attributedLabelDidLongPressed:) withObject:label];
 }
 
@@ -676,7 +677,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.renderData[@"delegate"];
+    id delegate = self.data.delegate;
     [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -685,7 +686,7 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.renderData[@"delegate"];
+    id delegate = self.data.delegate;
     [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -744,7 +745,7 @@
 - (void)_firePhotoTap:(UITapGestureRecognizer *)tap
 {
     if (tap.state == UIGestureRecognizerStateEnded && imageView.image) {
-        id delegate = self.data.renderData[@"photo_tap_delegate"];
+        id delegate = self.data.delegate;
         if ([delegate respondsToSelector:@selector(tappedPhoto:withCellData:)]) {
             [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:self.data.renderData[@"photo_url"] withObject:self.data];
         }

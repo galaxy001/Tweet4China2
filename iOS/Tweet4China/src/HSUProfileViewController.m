@@ -241,6 +241,10 @@
             [self listsButtonTouched];
             return;
         } else if ([rawData[@"action"] isEqualToString:kAction_Photos]) {
+            if (![[HSUAppDelegate shared] buyProApp]) {
+                return;
+            }
+            
             [self photosButtonTouched];
             return;
         }

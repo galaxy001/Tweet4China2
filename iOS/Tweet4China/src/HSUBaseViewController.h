@@ -20,6 +20,7 @@
 @property (nonatomic, assign) BOOL useRefreshControl;
 @property (nonatomic, assign) uint viewDidAppearCount;
 @property (nonatomic, assign) float keyboardHeight;
+@property (nonatomic, assign) float keyboardAnimationDuration;
 @property (nonatomic, assign) BOOL useDefaultStatusView;
 @property (nonatomic, assign) BOOL statusBarHidden;
 

@@ -88,7 +88,7 @@
     self.dataSource.delegate = self;
     
     for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.renderData[@"delegate"] = self;
+        cellData.delegate = self;
     }
     
     UITableView *tableView;
@@ -197,8 +197,9 @@
 
 - (void)keyboardFrameChanged:(NSNotification *)notification
 {
-    NSValue* keyboardFrame = [notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    NSValue *keyboardFrame = [notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
     self.keyboardHeight = keyboardFrame.CGRectValue.size.height;
+    self.keyboardAnimationDuration = [[notification.userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue];
     self.defaultKeyboardHeight = self.keyboardHeight;
     [self.view setNeedsLayout];
 }
@@ -284,7 +285,7 @@
 {
     [self.refreshControl endRefreshing];
     for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.renderData[@"delegate"] = self;
+        cellData.delegate = self;
     }
     
     [self.tableView reloadData];
@@ -310,7 +311,7 @@
         NSLog(@"%@", error);
     } else {
         for (HSUTableCellData *cellData in self.dataSource.allData) {
-            cellData.renderData[@"delegate"] = self;
+            cellData.delegate = self;
         }
         
         [self.tableView reloadData];
@@ -323,9 +324,13 @@
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
 {
     if ([[self.dataSource.data.lastObject dataType] isEqualToString:kDataType_LoadMore]) {
-        [self.dataSource.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Error)}];
-        [self.tableView reloadData];
+        if (error && error.code != 204) {
+            [self.dataSource.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Error)}];
+        } else {
+            [self.dataSource.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+        }
     }
+    [self.tableView reloadData];
 }
 
 - (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource

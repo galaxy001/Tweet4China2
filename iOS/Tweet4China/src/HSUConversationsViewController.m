@@ -31,13 +31,16 @@
 {
     [super viewDidLoad];
     
-    [self.dataSource refresh];
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItem = self.composeBarButton;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (self.viewDidAppearCount == 0 || self.dataSource.count == 0) {
+        [self.dataSource refresh];
+    }
+    
     [super viewDidAppear:animated];
     
     [self.tableView reloadData];
@@ -67,7 +70,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
-    cellData.renderData[@"unread"] = @NO;
+    cellData.renderData[@"unread_dm"] = @NO;
     
     HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:cellData.rawData];
     HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];

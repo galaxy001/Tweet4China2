@@ -532,7 +532,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.renderData[@"delegate"];
+    id delegate = self.data.delegate;
     [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -541,7 +541,7 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.renderData[@"delegate"];
+    id delegate = self.data.delegate;
     [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -550,7 +550,7 @@
 - (void)imageButtonTouched
 {
     if ([self.imagePreviewButton imageForState:UIControlStateNormal]) {
-        id delegate = self.data.renderData[@"delegate"];
+        id delegate = self.data.delegate;
         [delegate performSelector:@selector(openPhoto:withCellData:)
                        withObject:[self.imagePreviewButton imageForState:UIControlStateNormal]
                        withObject:self.data];

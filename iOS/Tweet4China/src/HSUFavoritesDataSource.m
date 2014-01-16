@@ -43,9 +43,4 @@
     }];
 }
 
-- (void)saveCache
-{
-    
-}
-
 @end

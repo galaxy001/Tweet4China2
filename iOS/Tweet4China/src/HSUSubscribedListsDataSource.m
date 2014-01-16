@@ -21,7 +21,7 @@
 
 - (void)refresh
 {
-    [super refresh];
+    [super refreshSilenced];
     
     [self.data removeAllObjects];
     __weak typeof(self)weakSelf = self;

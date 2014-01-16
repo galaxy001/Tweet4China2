@@ -202,60 +202,53 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)startShadowsocks
 {
-    NSArray *sss = [[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings];
+    NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
     if (!sss) {
-#ifdef FreeApp
-        sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山",
-                  HSUShadowsocksSettings_Server: @"162.243.150.109",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"纽约",
-                  HSUShadowsocksSettings_Server: @"162.243.81.212",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"纽约",
-                  HSUShadowsocksSettings_Server: @"192.241.245.82",
-                  HSUShadowsocksSettings_RemotePort: @"1026",
-                  HSUShadowsocksSettings_Method: @"AES-128-CFB"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"纽约",
-                  HSUShadowsocksSettings_Server: @"192.241.205.25",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"纽约",
-                  HSUShadowsocksSettings_Server: @"162.243.233.180",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"青岛",
-                  HSUShadowsocksSettings_Server: @"115.28.20.25",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
-                ];
-#else
-        sss = @[@{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"旧金山",
-                  HSUShadowsocksSettings_Server: @"192.241.197.97",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"阿姆斯特丹",
-                  HSUShadowsocksSettings_Server: @"95.85.33.168",
-                  HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy,
-                
-                @{HSUShadowsocksSettings_Buildin: @YES,
-                  HSUShadowsocksSettings_Desc: @"青岛",
-                  HSUShadowsocksSettings_Server: @"115.28.20.25",
-                  HSUShadowsocksSettings_RemotePort: @"1024",
-                  HSUShadowsocksSettings_Method: @"Table"}.mutableCopy
-                ];
+        sss = @[].mutableCopy;
+        
+#ifndef FreeApp
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"旧金山",
+                         HSUShadowsocksSettings_Server: @"192.241.197.97",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"阿姆斯特丹",
+                         HSUShadowsocksSettings_Server: @"95.85.33.168",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+        sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES; // select from the pro severs
 #endif
-        sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES;
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"旧金山",
+                         HSUShadowsocksSettings_Server: @"162.243.150.109",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"纽约",
+                         HSUShadowsocksSettings_Server: @"192.241.245.82",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"纽约",
+                         HSUShadowsocksSettings_Server: @"192.241.205.25",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"纽约",
+                         HSUShadowsocksSettings_Server: @"162.243.233.180",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
+#ifdef FreeApp
+        sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
+#endif
+        
+        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
+                         HSUShadowsocksSettings_Desc: @"青岛",
+                         HSUShadowsocksSettings_Server: @"115.28.20.25",
+                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
@@ -358,9 +351,9 @@ static HSUShadowsocksProxy *proxy;
 #ifndef FreeApp // free app is restrict for using time
     return YES;
 #endif
-    if (!self.hasPro) {
-        return YES;
-    }
+//    if (!self.hasPro) {
+//        return YES;
+//    }
     NSString *title = _("pro_alert_title");
     NSString *message = _("pro_message_title");
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("pro_alert_cancel_item")];

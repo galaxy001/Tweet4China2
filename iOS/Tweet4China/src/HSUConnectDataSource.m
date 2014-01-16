@@ -29,14 +29,20 @@
     }];
 }
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.useCache = YES;
+    }
+    return self;
+}
+
 - (void)refresh
 {
     [super refresh];
     
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
-    if (!latestIdStr) {
-        latestIdStr = @"1";
-    }
     __weak typeof(self)weakSelf = self;
     [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
@@ -120,17 +126,6 @@
     }
     
     return [super tableView:tableView cellForRowAtIndexPath:indexPath];
-}
-
--(void)saveCache
-{
-    [super saveCache];
-    
-    if (self.count) {
-        NSString *firstIdStr = [self rawDataAtIndex:0][@"id_str"];
-        [[NSUserDefaults standardUserDefaults] setObject:firstIdStr forKey:S(@"%@_first_id_str", [self.class cacheKey])];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
 }
 
 @end

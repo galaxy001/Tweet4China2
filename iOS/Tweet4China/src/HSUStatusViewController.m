@@ -18,6 +18,7 @@
 #import "HSUiPadTabController.h"
 #import "HSURetweetersDataSource.h"
 #import "HSUPersonListViewController.h"
+#import <SVWebViewController/SVModalWebViewController.h>
 
 @interface HSUStatusViewController ()
 
@@ -48,10 +49,6 @@
     self.dataSource = [[self.dataSourceClass alloc] initWithDelegate:self status:self.mainStatus];
     
     [super viewDidLoad];
-    
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.renderData[@"photo_tap_delegate"] = self;
-    }
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
     
@@ -131,7 +128,7 @@
 {
     [self.refreshControl endRefreshing];
     for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.renderData[@"delegate"] = self;
+        cellData.delegate = self;
     }
     
     [self.tableView reloadData];
@@ -275,6 +272,14 @@
     HSUPersonListViewController *retweetersVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
     [self.navigationController pushViewController:retweetersVC animated:YES];
     [dataSource refresh];
+}
+
+- (void)favorites:(HSUTableCellData *)cellData
+{
+    NSString *statusID = cellData.rawData[@"id_str"];
+    SVModalWebViewController *webVC = [[SVModalWebViewController alloc] initWithAddress:S(@"http://favstar.fm/t/%@", statusID)];
+    webVC.modalPresentationStyle = UIModalPresentationPageSheet;
+    [self presentViewController:webVC animated:YES completion:nil];
 }
 
 - (BOOL)prefersStatusBarHidden

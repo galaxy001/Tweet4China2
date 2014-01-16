@@ -157,7 +157,7 @@
 "api_request_failed_alert_message" = "當前網路狀況似乎不太好，您可以稍後再試，或者可以換一台伺服器试试看";
 "jailbreak_alert_message" = "出於安全的考慮，Tweet4China Pro暫不支援越獄設備，請前往下載免費版";
 "Jailbreak Device" = "越獄設備";
-"Cache Size" = "圖片緩存";
+"Cache Size" = "圖片緩存大小";
 "pro_alert_title" = "購買Pro版";
 "pro_message_title" = "更快的網路，更多的功能！";
 "pro_alert_cancel_item" = "以後再說";

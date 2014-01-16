@@ -13,6 +13,7 @@
 - (void)fetchDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     if (![self.keyword length]) {
+        success(@[]);
         return;
     }
     NSString *keyword = self.keyword;

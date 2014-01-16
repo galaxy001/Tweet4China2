@@ -15,6 +15,7 @@
 {
     self = [super init];
     if (self) {
+        self.useCache = YES;
         notification_add_observer(HSUConversationBackWithIncompletedSendingNotification, self, @selector(_conversationBack:));
     }
     return self;
@@ -24,7 +25,7 @@
 {
     [self refreshSilenced];
     
-    NSString *sinceId = [[NSUserDefaults standardUserDefaults] stringForKey:S(@"%@_latest_id", [self.class cacheKey])];
+    NSString *sinceId = [[NSUserDefaults standardUserDefaults] stringForKey:S(@"%@_first_id_str_refresh", [self.class cacheKey])];
     __weak typeof(self)weakSelf = self;
     [twitter getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
@@ -40,8 +41,12 @@
             
             NSString *latestID = messages.lastObject[@"id_str"];
             if (latestID) {
-                [[NSUserDefaults standardUserDefaults] setObject:latestID forKey:S(@"%@_latest_id", [self.class cacheKey])];
+                [[NSUserDefaults standardUserDefaults] setObject:latestID forKey:S(@"%@_first_id_str_refresh", [self.class cacheKey])];
                 [[NSUserDefaults standardUserDefaults] synchronize];
+                
+                if (![[(UIViewController *)weakSelf.delegate view] window]) { // not appear
+                    [weakSelf.delegate dataSourceDidFindUnread:nil];
+                }
             }
             
             // reorgnize messages as dict, friend_screen_name as key, refered messages as value
@@ -83,7 +88,7 @@
                         found = YES;
                         for (NSDictionary *message in messages) {
                             if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
-                                oldCellData.renderData[@"unread"] = @YES;
+                                oldCellData.renderData[@"unread_dm"] = @YES;
                                 break;
                             }
                         }
@@ -96,13 +101,23 @@
                                                                                   dataType:kDataType_Conversation];
                     [weakSelf.data insertObject:cellData atIndex:0];
                     for (NSDictionary *message in messages) {
-                        if ([message[@"recipient"] isEqualToString:MyScreenName]) {
-                            cellData.renderData[@"unread"] = @YES;
+                        if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
+                            cellData.renderData[@"unread_dm"] = @YES;
                             break;
                         }
                     }
                 }
             }
+            
+            [self.data sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                HSUTableCellData *cellData1 = obj1;
+                HSUTableCellData *cellData2 = obj2;
+                NSArray *messages1 = cellData1.rawData[@"messages"];
+                NSArray *messages2 = cellData2.rawData[@"messages"];
+                NSDictionary *message1 = [messages1 lastObject];
+                NSDictionary *message2 = [messages2 lastObject];
+                return [message2[@"id"] compare:message1[@"id"]];
+            }];
             
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
@@ -161,7 +176,7 @@
 
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
 {
-    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
+    NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str_unread", self.class.cacheKey)];
     [twitter getDirectMessagesSinceID:latestIdStr success:^(id responseObj) {
         id rMsgs = responseObj;
         NSArray *messages = rMsgs;
@@ -172,13 +187,22 @@
                 return [id_str1 compare:id_str2];
             }];
             NSDictionary *msg = [messages lastObject];
-            [[NSUserDefaults standardUserDefaults] setObject:msg[@"id_str"] forKey:S(@"%@_first_id_str", self.class.cacheKey)];
+            [[NSUserDefaults standardUserDefaults] setObject:msg[@"id_str"] forKey:S(@"%@_first_id_str_unread", self.class.cacheKey)];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [viewController dataSourceDidFindUnread:nil];
         }
     } failure:^(NSError *error) {
         
     }];
+}
+
+- (void)clearCache
+{
+    [super clearCache];
+    
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str_unread", self.class.cacheKey)];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str_refresh", self.class.cacheKey)];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

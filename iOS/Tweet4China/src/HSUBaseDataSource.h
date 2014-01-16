@@ -31,6 +31,7 @@
 @property (nonatomic, assign) NSUInteger requestCount;
 @property (nonatomic, assign) BOOL noMoreData;
 @property (nonatomic) NSInteger unreadCount;
+@property (nonatomic, assign) BOOL useCache;
 
 - (NSDictionary *)rawDataAtIndex:(NSInteger)index;
 - (NSMutableDictionary *)renderDataAtIndex:(NSInteger)index;
@@ -40,6 +41,7 @@
 - (HSUTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath;
 - (void)addEventWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events;
 
+- (void)clearCache;
 - (void)refreshSilenced;
 - (void)refresh;
 - (void)loadMore;
