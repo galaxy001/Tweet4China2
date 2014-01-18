@@ -81,8 +81,7 @@
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
-    NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
+    NSString *lastStatusId = [self rawDataAtIndex:self.count-2][@"id_str"];
     [twitter getHomeTimelineWithMaxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         success(responseObj);
     } failure:^(NSError *error) {

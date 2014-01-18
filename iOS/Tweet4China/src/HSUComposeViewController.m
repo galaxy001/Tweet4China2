@@ -485,6 +485,7 @@
     }
     if (contentChanged || postImage) {
         if ([textAtFist isEqualToString:contentTV.text]) {
+            [self dismiss];
             return;
         }
         if (contentTV.text.length == 0 && !postImage) {

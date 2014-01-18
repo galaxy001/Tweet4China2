@@ -588,7 +588,7 @@
     });
     testSizeLabel.text = text;
     
-    CGFloat cellWidth = [HSUCommonTools winWidth] - padding_S * 4;
+    CGFloat cellWidth = [HSUCommonTools winWidth] - padding_S * 2 - kIPADMainViewPadding * 2;
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(cellWidth, 0)].height + 3;
     data.renderData[@"text_height"] = @(textHeight);
     return textHeight;
@@ -630,13 +630,13 @@
     CGFloat summaryHeight = [data.renderData[@"photo_height"] floatValue];
     if (summaryHeight) {
         height += time_summary_Distance;
-        CGFloat contentWidth = [HSUCommonTools winWidth] - padding_S * 4;
+        CGFloat contentWidth = [HSUCommonTools winWidth] - padding_S * 2 - kIPADMainViewPadding * 2;
         if (summaryWidth > contentWidth) {
             summaryHeight = summaryHeight * contentWidth / summaryWidth;
             summaryWidth = contentWidth;
-        } else {
-            summaryHeight /= 2;
+        } else if (IPHONE) {
             summaryWidth /= 2;
+            summaryHeight /= 2;
         }
         height += summaryHeight;
         data.renderData[@"photo_fit_width"] = @(summaryWidth);

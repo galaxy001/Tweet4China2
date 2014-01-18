@@ -20,6 +20,7 @@
 #import "OpenInChromeController.h"
 #import <SVWebViewController/SVModalWebViewController.h>
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
+#import <AFNetworking/AFNetworking.h>
 
 @implementation HSUTweetsViewController
 
@@ -479,32 +480,39 @@
         [SVProgressHUD showWithStatus:_("Translating")];
         dispatch_async(GCDBackgroundThread, ^{
             NSString *text = rawData[@"retweeted_status"][@"text"] ?: rawData[@"text"];
-            text = [text stringRemovedEmoji];
+            text = [[text stringRemovedEmoji] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             if (text.length) {
                 text = [text URLEncodedString];
                 NSString *url = S(@"http://fanyi.youdao.com/openapi.do?keyfrom=Tweet4China&key=955554580&type=data&doctype=json&version=1.1&q=%@", text);
-                NSData *youdaoData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
-                if (youdaoData) {
-                    NSDictionary *youdaoDict = [NSJSONSerialization JSONObjectWithData:youdaoData options:0 error:nil];
-                    NSString *youdaoResult = youdaoDict[@"translation"];
-                    if ([youdaoResult isKindOfClass:[NSArray class]]) {
-                        NSString *chineseText = [(NSArray *)youdaoResult firstObject];
-                        if (chineseText) {
-                            [SVProgressHUD dismiss];
-                            dispatch_async(GCDMainThread, ^{
-                                RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("OK")];
-                                RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy")];
-                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:chineseText cancelButtonItem:cancelItem otherButtonItems:copyItem, nil];
-                                [alert show];
-                                copyItem.action = ^{
-                                    [UIPasteboard generalPasteboard].string = chineseText;
-                                };
-                            });
-                            return ;
+                NSMutableURLRequest *request = [[NSURLRequest requestWithURL:[NSURL URLWithString:url]] mutableCopy];
+                [request setTimeoutInterval:30];
+                AFJSONRequestOperation *op = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+                    
+                    if ([JSON isKindOfClass:[NSDictionary class]]) {
+                        NSDictionary *youdaoDict = JSON;
+                        NSString *youdaoResult = youdaoDict[@"translation"];
+                        if ([youdaoResult isKindOfClass:[NSArray class]]) {
+                            NSString *chineseText = [(NSArray *)youdaoResult firstObject];
+                            if (chineseText) {
+                                [SVProgressHUD dismiss];
+                                dispatch_async(GCDMainThread, ^{
+                                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("OK")];
+                                    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy")];
+                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:chineseText cancelButtonItem:cancelItem otherButtonItems:copyItem, nil];
+                                    [alert show];
+                                    copyItem.action = ^{
+                                        [UIPasteboard generalPasteboard].string = chineseText;
+                                    };
+                                });
+                                return ;
+                            }
                         }
                     }
-                }
-                [SVProgressHUD showErrorWithStatus:_("Translate failed")];
+                    [SVProgressHUD showErrorWithStatus:_("Translate failed")];
+                } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error, id JSON) {
+                    [SVProgressHUD showErrorWithStatus:_("Translate failed")];
+                }];
+                [op start];
             } else {
                 [SVProgressHUD showErrorWithStatus:_("No word can be translated")];
             }
