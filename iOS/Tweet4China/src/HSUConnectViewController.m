@@ -8,7 +8,6 @@
 
 #import "HSUConnectViewController.h"
 #import "HSUConnectDataSource.h"
-#import "HSURefreshControl.h"
 #import "HSUTabController.h"
 #import "HSUiPadTabController.h"
 
@@ -43,7 +42,6 @@
     [super viewDidAppear:animated];
     
     if (self.dataSource.count == 0) {
-        [self.refreshControl beginRefreshing];
         [self.dataSource refresh];
     }
 }
@@ -53,7 +51,6 @@
     if (self.navigationController == notification.object) {
         if (self.view.window) {
             if (self.tableView.contentOffset.y <= 0) {
-                [self.refreshControl beginRefreshing];
                 [self.dataSource refresh];
             }
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];

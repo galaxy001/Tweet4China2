@@ -9,7 +9,6 @@
 #import "HSUHomeViewController.h"
 #import "HSUHomeDataSource.h"
 #import "HSUProxySettingsViewController.h"
-#import "HSURefreshControl.h"
 #import "HSUTabController.h"
 #import "HSUiPadTabController.h"
 
@@ -64,7 +63,6 @@
     }
     
     if (self.dataSource.count == 0) {
-        [self.refreshControl beginRefreshing];
         [self.dataSource refresh];
     }
     
@@ -97,7 +95,6 @@
     if (self.navigationController == notification.object) {
         if (self.view.window) {
             if (self.tableView.contentOffset.y <= 0) {
-                [self.refreshControl beginRefreshing];
                 [self.dataSource refresh];
             }
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];
@@ -126,6 +123,5 @@
 {
     [super dataSourceDidFindUnread:dataSource];
 }
-
 
 @end

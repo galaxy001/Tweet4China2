@@ -126,7 +126,6 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
-    [self.refreshControl endRefreshing];
     for (HSUTableCellData *cellData in self.dataSource.allData) {
         cellData.delegate = self;
     }
@@ -212,7 +211,8 @@
         uint length = defaultText.length - authorScreenName.length - 2;
         composeVC.defaultSelectedRange = NSMakeRange(start, length);
     } else {
-        [defaultText appendFormat:@" @%@ ", authorScreenName];
+        [defaultText appendFormat:@"@%@ ", authorScreenName];
+        composeVC.defaultSelectedRange = NSMakeRange(defaultText.length, 0);
     }
     composeVC.defaultText = defaultText;
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];

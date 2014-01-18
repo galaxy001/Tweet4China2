@@ -535,6 +535,11 @@
     [actionSheet addButtonItem:RTItem];
     count ++;
     
+    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:_("Share")];
+    shareItem.action = ^{
+    };
+    [actionSheet addButtonItem:shareItem];
+    
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
     

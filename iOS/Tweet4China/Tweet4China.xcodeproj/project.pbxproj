@@ -72,7 +72,6 @@
 		9628E6D917312240005A9EC9 /* NSString+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628E6D817312240005A9EC9 /* NSString+Additions.m */; };
 		9628E6DC17312B8E005A9EC9 /* HSUProfileDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628E6DB17312B8E005A9EC9 /* HSUProfileDataSource.m */; };
 		9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628E6DE1731325D005A9EC9 /* HSUNormalTitleCell.m */; };
-		962AB00616FB324D00D44566 /* HSURefreshControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 962AB00516FB324D00D44566 /* HSURefreshControl.m */; };
 		962AB00816FB330A00D44566 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962AB00716FB330A00D44566 /* AVFoundation.framework */; };
 		962AB00C16FB345B00D44566 /* pop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 962AB00A16FB345B00D44566 /* pop.wav */; };
 		962AB00D16FB345B00D44566 /* psst1.wav in Resources */ = {isa = PBXBuildFile; fileRef = 962AB00B16FB345B00D44566 /* psst1.wav */; };
@@ -195,6 +194,7 @@
 		9696D84116F21DB6005D7AAB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9696D84016F21DB6005D7AAB /* CoreText.framework */; };
 		96992C9A188A63C400AADDC2 /* HSUGeneralSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992C99188A63C400AADDC2 /* HSUGeneralSettingsViewController.m */; };
 		96992C9D188A669700AADDC2 /* HSUAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992C9C188A669700AADDC2 /* HSUAboutViewController.m */; };
+		96992CA2188AAAF300AADDC2 /* icn_arrow_notif_dark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96992CA1188AAAF300AADDC2 /* icn_arrow_notif_dark@2x.png */; };
 		969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B6FB01720489400420F01 /* HSUMainStatusCell.m */; };
 		969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B6FB317204BC800420F01 /* HSUStatusDataSource.m */; };
 		969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B7434173FA8370072EFC0 /* HSUChatStatusCell.m */; };
@@ -438,8 +438,6 @@
 		9628E6DB17312B8E005A9EC9 /* HSUProfileDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUProfileDataSource.m; sourceTree = "<group>"; };
 		9628E6DD1731325D005A9EC9 /* HSUNormalTitleCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNormalTitleCell.h; sourceTree = "<group>"; };
 		9628E6DE1731325D005A9EC9 /* HSUNormalTitleCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNormalTitleCell.m; sourceTree = "<group>"; };
-		962AB00416FB324D00D44566 /* HSURefreshControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSURefreshControl.h; sourceTree = "<group>"; };
-		962AB00516FB324D00D44566 /* HSURefreshControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURefreshControl.m; sourceTree = "<group>"; };
 		962AB00716FB330A00D44566 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		962AB00A16FB345B00D44566 /* pop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pop.wav; sourceTree = "<group>"; };
 		962AB00B16FB345B00D44566 /* psst1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = psst1.wav; sourceTree = "<group>"; };
@@ -611,6 +609,7 @@
 		96992C99188A63C400AADDC2 /* HSUGeneralSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUGeneralSettingsViewController.m; sourceTree = "<group>"; };
 		96992C9B188A669700AADDC2 /* HSUAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAboutViewController.h; sourceTree = "<group>"; };
 		96992C9C188A669700AADDC2 /* HSUAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAboutViewController.m; sourceTree = "<group>"; };
+		96992CA1188AAAF300AADDC2 /* icn_arrow_notif_dark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_arrow_notif_dark@2x.png"; sourceTree = "<group>"; };
 		969B6FAF1720489400420F01 /* HSUMainStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUMainStatusCell.h; sourceTree = "<group>"; };
 		969B6FB01720489400420F01 /* HSUMainStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUMainStatusCell.m; sourceTree = "<group>"; };
 		969B6FB217204BC800420F01 /* HSUStatusDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUStatusDataSource.h; sourceTree = "<group>"; };
@@ -962,6 +961,7 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				96992CA1188AAAF300AADDC2 /* icn_arrow_notif_dark@2x.png */,
 				96AD8E04188524A10024698D /* btn_standard_blue_border_default@2x~ipad.png */,
 				96AD8E05188524A10024698D /* btn_standard_blue_border_default@2x~iphone.png */,
 				96AD8E06188524A10024698D /* btn_standard_blue_border_pressed@2x~ipad.png */,
@@ -1388,8 +1388,6 @@
 				964827AE16E37ACF0002345B /* HSUTexturedView.m */,
 				96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */,
 				96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */,
-				962AB00416FB324D00D44566 /* HSURefreshControl.h */,
-				962AB00516FB324D00D44566 /* HSURefreshControl.m */,
 				96D291B31742879400AB4F8C /* HSUDraftManager.h */,
 				96D291B41742879400AB4F8C /* HSUDraftManager.m */,
 				967F635917550B4D00CB8730 /* HSUSendBarButtonItem.h */,
@@ -1572,6 +1570,7 @@
 				96E34B53170167580066CD5E /* button-bar-camera@2x.png in Resources */,
 				96E34B54170167580066CD5E /* button-bar-hashtag@2x.png in Resources */,
 				96AD8DFB188517AF0024698D /* icn_tab_message_selected@2x~ipad.png in Resources */,
+				96992CA2188AAAF300AADDC2 /* icn_arrow_notif_dark@2x.png in Resources */,
 				96E34B55170167580066CD5E /* compose-geo-highlighted@2x.png in Resources */,
 				9628A6FC17F81F7B005374F1 /* icn_tab_home_selected@2x~iphone.png in Resources */,
 				96E34B56170167580066CD5E /* compose-geo@2x.png in Resources */,
@@ -1777,7 +1776,6 @@
 				96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */,
 				96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */,
 				9687DF74186C5A9100431DA2 /* GCDAsyncSocket.m in Sources */,
-				962AB00616FB324D00D44566 /* HSURefreshControl.m in Sources */,
 				966E1900184C9F7500B5482C /* HSUSubscribedListsDataSource.m in Sources */,
 				967A55E716FCD30900581274 /* HSUTableCellData.m in Sources */,
 				967A55EA16FCD3DA00581274 /* HSUUIEvent.m in Sources */,

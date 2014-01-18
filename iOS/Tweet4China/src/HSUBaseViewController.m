@@ -9,7 +9,6 @@
 #import "HSUBaseViewController.h"
 #import "HSUTexturedView.h"
 #import "HSUStatusCell.h"
-#import "HSURefreshControl.h"
 #import "HSULoadMoreCell.h"
 #import "HSUTabController.h"
 #import "HSUComposeViewController.h"
@@ -34,6 +33,7 @@
 #import "HSUPhotoCell.h"
 #import "HSUSearchTweetsDataSource.h"
 #import "HSUSearchTweetsViewController.h"
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface HSUBaseViewController ()
 
@@ -126,13 +126,10 @@
     UIView *footerView = [[UIView alloc] initWithFrame:CGRectZero];
     footerView.backgroundColor = [UIColor clearColor];
     [self.tableView setTableFooterView:footerView];
-    
-    if (self.useRefreshControl) {
-        HSURefreshControl *refreshControl = [[HSURefreshControl alloc] init];
-        [refreshControl addTarget:self.dataSource action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
-        [tableView addSubview:refreshControl];
-        self.refreshControl = refreshControl;
-    }
+    //        HSURefreshControl *refreshControl = [[HSURefreshControl alloc] init];
+    //        [refreshControl addTarget:self.dataSource action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    //        [tableView addSubview:refreshControl];
+    //        self.refreshControl = refreshControl;
     
     [super viewDidLoad];
 }
@@ -173,6 +170,15 @@
 
 - (void)viewDidAppear:(BOOL)animated
 {
+    if (self.viewDidAppearCount == 0 && self.useRefreshControl) {
+        __weak typeof(self)weakSelf = self;
+        [self.tableView addPullToRefreshWithActionHandler:^{
+            [weakSelf.dataSource refresh];
+        }];
+        self.tableView.pullToRefreshView.soundEffectEnabled = YES;
+        self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
+    }
+    
     [super viewDidAppear:animated];
     
     self.viewDidAppearCount ++;
@@ -283,7 +289,6 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
-    [self.refreshControl endRefreshing];
     for (HSUTableCellData *cellData in self.dataSource.allData) {
         cellData.delegate = self;
     }
@@ -297,6 +302,7 @@
         NSInteger firstRow = firstIndexPath.row + length;
         [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:firstRow inSection:0]
                               atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+        [self.tableView.pullToRefreshView stopAnimating];
     }
     
     [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
@@ -305,8 +311,6 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
 {
-    [self.refreshControl endRefreshing];
-    
     if (error) {
         NSLog(@"%@", error);
     } else {
@@ -319,6 +323,7 @@
 
     [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
     [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
+    [self.tableView.pullToRefreshView stopAnimating];
 }
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
@@ -475,6 +480,11 @@
 {
     double progress = [notification.object doubleValue];
     [((HSUNavigationController *)self.navigationController) updateProgress:progress];
+}
+
+- (void)dataSourceWillStartRefresh:(HSUBaseDataSource *)dataSource
+{
+    
 }
 
 @end

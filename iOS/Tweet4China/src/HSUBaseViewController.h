@@ -8,14 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "HSUBaseDataSource.h"
-#import "HSURefreshControl.h"
 #import "HSUiPadTabController.h"
 
 @interface HSUBaseViewController : UIViewController <UITableViewDelegate, HSUBaseDataSourceDelegate, UITabBarControllerDelegate>
 
 @property (nonatomic, strong) Class dataSourceClass;
 @property (nonatomic, strong) HSUBaseDataSource *dataSource;
-@property (nonatomic, weak) HSURefreshControl *refreshControl;
 @property (nonatomic, weak) UITableView *tableView;
 @property (nonatomic, assign) BOOL useRefreshControl;
 @property (nonatomic, assign) uint viewDidAppearCount;

@@ -8,7 +8,6 @@
 
 #import "HSUBaseDataSource.h"
 #import "HSUBaseTableCell.h"
-#import "HSURefreshControl.h"
 
 @implementation HSUBaseDataSource
 
@@ -148,7 +147,7 @@
 {
     self.loadingCount ++;
     
-    [HSURefreshControl startRefreshing];
+    [self.delegate dataSourceWillStartRefresh:self];
 }
 
 - (void)loadMore

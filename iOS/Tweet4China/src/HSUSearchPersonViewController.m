@@ -92,12 +92,6 @@
     self.searchTF.hidden = YES;
 }
 
-- (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error
-{
-    [super dataSource:dataSource didFinishLoadMoreWithError:error];
-    [((UIRefreshControl *)self.refreshControl) endRefreshing];
-}
-
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     [self.dataSource.data removeAllObjects];

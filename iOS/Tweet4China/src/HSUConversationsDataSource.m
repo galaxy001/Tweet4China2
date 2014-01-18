@@ -23,7 +23,7 @@
 
 - (void)refresh
 {
-    [self refreshSilenced];
+    [super refresh];
     
     NSString *sinceId;
     HSUTableCellData *firstData = self.data.firstObject;

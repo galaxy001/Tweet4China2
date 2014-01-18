@@ -57,6 +57,7 @@
 @protocol HSUBaseDataSourceDelegate <NSObject>
 
 - (void)reloadData;
+- (void)dataSourceWillStartRefresh:(HSUBaseDataSource *)dataSource;
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error;
 - (void)dataSource:(HSUBaseDataSource *)dataSource didFinishLoadMoreWithError:(NSError *)error;
