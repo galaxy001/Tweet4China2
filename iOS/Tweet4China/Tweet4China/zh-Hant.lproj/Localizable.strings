@@ -209,3 +209,10 @@
 "Open Address from Pasteboard" = "打開粘貼板中的網址";
 "Address not found in your pasteboard" = "沒有在您的粘貼板中找到網址哎";
 "browser_tab_loading" = "載入中";
+"Clean Cache" = "清理緩存";
+"Buy Pro" = "購買Pro版";
+"Copy Link of Tweet" = "拷貝推文的網址";
+"Translate to Chinese" = "翻譯至中文";
+"Translating" = "正在獲取翻譯結果";
+"Copy" = "拷貝";
+"Translate failed" = "翻譯失敗了";

@@ -15,9 +15,6 @@
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
 {
     NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
-    if (!latestIdStr) {
-        latestIdStr = @"1";
-    }
     [twitter getHomeTimelineSinceID:latestIdStr count:1 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         NSString *lastIdStr = tweets.lastObject[@"id_str"];
@@ -41,9 +38,6 @@
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
-    if (!latestIdStr) {
-        latestIdStr = @"1";
-    }
     [twitter getHomeTimelineSinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
         success(responseObj);
         // ask follow author

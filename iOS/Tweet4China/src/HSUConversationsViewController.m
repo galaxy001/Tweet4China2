@@ -20,7 +20,7 @@
 {
     self = [super init];
     if (self) {
-        self.dataSourceClass = [HSUConversationsDataSource class];
+        self.dataSource = [HSUConversationsDataSource dataSourceWithDelegate:self useCache:YES];
         notification_add_observer(HSUDeleteConversationNotification, self, @selector(_conversationDeleted:));
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }

@@ -22,9 +22,6 @@
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
-    if (!latestIdStr) {
-        latestIdStr = @"1";
-    }
     [twitter getListTimelineWithListID:self.list[@"id_str"] sinceID:latestIdStr count:self.requestCount success:success failure:failure];
 }
 

@@ -53,7 +53,11 @@
             }
             [self.data addObject:loadMoreCellData];
             
-            [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+            if (self.nextCursor) {
+                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+            } else {
+                [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+            }
             [self.delegate preprocessDataSourceForRender:self];
         } else {
             [self.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];

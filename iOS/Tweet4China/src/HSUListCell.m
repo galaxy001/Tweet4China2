@@ -41,6 +41,8 @@
         [self.contentView addSubview:descLabel];
         descLabel.backgroundColor = kClearColor;
         descLabel.font = [UIFont systemFontOfSize:14];
+        descLabel.numberOfLines = 0;
+        descLabel.lineBreakMode = NSLineBreakByWordWrapping;
         if (Sys_Ver < 7) {
             descLabel.highlightedTextColor = kWhiteColor;
         }
@@ -99,7 +101,11 @@
 
 + (CGFloat)heightForData:(HSUTableCellData *)data
 {
-    return 63;
+    NSString *description = data.rawData[@"description"];
+    CGSize descSize = [description
+                       sizeWithFont:[UIFont systemFontOfSize:14]
+                       constrainedToSize:ccs([HSUCommonTools winWidth]-62, 1000)];
+    return floorf(descSize.height) + 47;
 }
 
 - (void)layoutSubviews
@@ -107,7 +113,7 @@
     [self.nameLabel sizeToFit];
     [self.creatorLabel sizeToFit];
     [self.memberCountLabel sizeToFit];
-    [self.descLabel sizeToFit];
+    self.descLabel.size = [self.descLabel sizeThatFits:ccs(self.contentView.width - 62, 0)];
     
     self.nameLabel.leftTop = ccp(12, 7);
     self.creatorLabel.leftBottom = self.nameLabel.rightBottom;

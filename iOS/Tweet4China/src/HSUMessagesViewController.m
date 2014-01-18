@@ -228,6 +228,9 @@
 - (void)doResetToolbarLocation
 {
     self.toolbar.top = self.tableView.bottom - self.tableView.contentInset.bottom;
+    if (IPAD) { // todo
+        self.toolbar.top -=  15;
+    }
     self.textViewBackground.leftTop = ccp(5, self.toolbar.top + 9);
     self.wordCountLabel.rightCenter = ccp(self.width-10, self.toolbar.rightCenter.y);
     

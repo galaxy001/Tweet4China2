@@ -213,10 +213,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     FHSTwitterEngine *engine = self.engine;
     UIViewController *viewController = [HSUAppDelegate shared].window.rootViewController.presentedViewController ?: [HSUAppDelegate shared].window.rootViewController;
     [engine showOAuthLoginControllerFromViewController:viewController
-                                        withCompletion:^(BOOL success)
+                                        withCompletion:^(int success)
      {
-         [HSUTwitterAPI shared].authorizing = NO;
-         if (success) {
+         if (success == YES) {
+             [HSUTwitterAPI shared].authorizing = NO;
              [[HSUTwitterAPI shared] syncGetUserSettingsWithSuccess:^(id responseObj) {
                  NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
                  NSMutableDictionary *us = [responseObj mutableCopy];
@@ -232,6 +232,35 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                  notification_post_with_objct_and_userinfo(HSUTwiterLoginSuccess, self, @{@"success": @NO, @"error": error});
                  [Flurry logEvent:@"authorize_by_oauth_failed" withParameters:@{@"network": NetWorkStatus}];
              }];
+         } else if (success == NO) {
+             if ([Reachability reachabilityForInternetConnection].isReachable) {
+                 RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Retry Later")];
+                 RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_("Change Server")];
+                 UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Connection failed")
+                                                                 message:_("api_request_failed_alert_message")
+                                                        cancelButtonItem:cancelItem
+                                                        otherButtonItems:changeServerItem, nil];
+                 changeServerItem.action = ^{
+                     HSUShadowsocksViewController *ssVC = [[HSUShadowsocksViewController alloc] init];
+                     HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:ssVC];
+                     UIViewController *rootVC = [HSUAppDelegate shared].tabController;
+                     if (rootVC.presentedViewController) {
+                         rootVC = rootVC.presentedViewController;
+                     }
+                     [rootVC presentViewController:nav animated:YES completion:^{
+                         [HSUTwitterAPI shared].authorizing = NO;
+                     }];
+                 };
+                 cancelItem.action = ^{
+                     [HSUTwitterAPI shared].authorizing = NO;
+                 };
+                 [alert show];
+             } else {
+                 [HSUTwitterAPI shared].authorizing = NO;
+                 [SVProgressHUD showErrorWithStatus:_("Check your network")];
+             }
+         } else {
+             [HSUTwitterAPI shared].authorizing = NO;
          }
      }];
 }
@@ -392,8 +421,12 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)getListTimelineWithListID:(NSString *)listID sinceID:(NSString *)sinceID count:(int)count success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    NSMutableDictionary *params = [@{} mutableCopy];
+    if (sinceID) params[@"since_id"] = sinceID;
+    if (count) params[@"count"] = @(count);
+    params[@"list_id"] = listID;
     [self sendGETWithUrl:url_lists_statuses
-              parameters:@{@"list_id": listID, @"since_id": sinceID, @"count": @(count)}
+              parameters:params
                  success:success
                  failure:failure];
 }
@@ -739,7 +772,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
 #ifdef DEBUG
-//    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
+    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
     FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];
@@ -836,7 +869,11 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         changeServerItem.action = ^{
             HSUShadowsocksViewController *ssVC = [[HSUShadowsocksViewController alloc] init];
             HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:ssVC];
-            [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+            UIViewController *rootVC = [HSUAppDelegate shared].tabController;
+            if (rootVC.presentedViewController) {
+                rootVC = rootVC.presentedViewController;
+            }
+            [rootVC presentViewController:nav animated:YES completion:nil];
         };
         [alert show];
     } else {

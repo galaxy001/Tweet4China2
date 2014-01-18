@@ -56,7 +56,7 @@
         searchTF.delegate = self;
         if (Sys_Ver >= 7) {
             searchTF.size = ccs(self.width-100, 40);
-            searchTF.leftTop = ccp(60, 3);
+            searchTF.leftTop = ccp(70, 3);
         } else {
             searchTF.font = [UIFont systemFontOfSize:14];
             searchTF.size = ccs(self.width-75, 25);

@@ -43,10 +43,13 @@
         NSString *title = ssserver ? S(@"%@:%@", ssserver, ssport) : _("Default");
         if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
             title = S(@"%@ %d", _("Buildin Server"), ([sss indexOfObject:ss] + 1));
-            if (ss[HSUShadowsocksSettings_Desc]) {
+            if ([ss[HSUShadowsocksSettings_Desc] length]) {
                 title = S(@"%@ (%@)", title, ss[HSUShadowsocksSettings_Desc]);
             }
         } else {
+            if ([ss[HSUShadowsocksSettings_Desc] length]) {
+                title = S(@"%@ (%@)", ss[HSUShadowsocksSettings_Desc], title);
+            }
             self.navigationItem.rightBarButtonItem = self.editButtonItem;
         }
         
@@ -80,11 +83,12 @@
         }
         item.deletionHandler = ^(RETableViewItem *item) {
             NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
-            for (NSDictionary *ss in sss) {
+            for (NSInteger i=0; i<sss.count; i++) {
+                NSDictionary *ss = sss[i];
                 if ([ss[HSUShadowsocksSettings_Server] isEqualToString:ssserver] &&
                     [ss[HSUShadowsocksSettings_RemotePort] isEqualToString:ssport]) {
                     
-                    [sss removeObject:ss];
+                    [sss removeObjectAtIndex:i];
                 }
             }
             [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];

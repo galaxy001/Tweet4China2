@@ -25,7 +25,12 @@
 {
     [self refreshSilenced];
     
-    NSString *sinceId = [[NSUserDefaults standardUserDefaults] stringForKey:S(@"%@_first_id_str_refresh", [self.class cacheKey])];
+    NSString *sinceId;
+    HSUTableCellData *firstData = self.data.firstObject;
+    if (firstData) {
+        sinceId = [firstData.rawData[@"messages"] lastObject][@"id_str"];
+    }
+    
     __weak typeof(self)weakSelf = self;
     [twitter getDirectMessagesSinceID:sinceId success:^(id responseObj) {
         id rMsgs = responseObj;
@@ -41,9 +46,6 @@
             
             NSString *latestID = messages.lastObject[@"id_str"];
             if (latestID) {
-                [[NSUserDefaults standardUserDefaults] setObject:latestID forKey:S(@"%@_first_id_str_refresh", [self.class cacheKey])];
-                [[NSUserDefaults standardUserDefaults] synchronize];
-                
                 if (![[(UIViewController *)weakSelf.delegate view] window]) { // not appear
                     [weakSelf.delegate dataSourceDidFindUnread:nil];
                 }
@@ -124,10 +126,12 @@
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
             weakSelf.loadingCount --;
         } failure:^(NSError *error) {
-            [SVProgressHUD showErrorWithStatus:_("Load Messages failed")];
+            weakSelf.loadingCount --;
+            [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
         }];
     } failure:^(NSError *error) {
-        [SVProgressHUD showErrorWithStatus:_("Load Messages failed")];
+        weakSelf.loadingCount --;
+        [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:error];
     }];
 }
 
@@ -201,7 +205,6 @@
     [super clearCache];
     
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str_unread", self.class.cacheKey)];
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str_refresh", self.class.cacheKey)];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 

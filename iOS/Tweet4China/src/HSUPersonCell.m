@@ -120,10 +120,10 @@
                                      range:NSMakeRange(0, followersCountStr.length)];
     [ffInfoTextWithAttributes addAttribute:NSForegroundColorAttributeName
                                      value:kBlackColor
-                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 1, followingCountStr.length)];
+                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 3, followingCountStr.length)];
     [ffInfoTextWithAttributes addAttribute:NSFontAttributeName
                                      value:[UIFont boldSystemFontOfSize:12]
-                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 1, followingCountStr.length)];
+                                     range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 3, followingCountStr.length)];
     self.ffInfoLabel.attributedText = ffInfoTextWithAttributes;
     [self.ffInfoLabel sizeToFit];
     

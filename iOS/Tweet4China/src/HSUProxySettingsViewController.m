@@ -13,6 +13,8 @@
 @interface HSUProxySettingsViewController () <RETableViewManagerDelegate>
 
 @property (nonatomic, strong) RETableViewManager *manager;
+@property (nonatomic, strong) RETextItem *nameItem, *serverItem, *portItem, *passowrdItem;
+@property (nonatomic, strong) RERadioItem *methodItem;
 
 @end
 
@@ -27,41 +29,49 @@
     RETableViewSection *section = [RETableViewSection section];
     [self.manager addSection:section];
     
+    NSString *name = self.shadowsocks[HSUShadowsocksSettings_Desc];
+    self.nameItem = [RETextItem itemWithTitle:@"Name" value:name placeholder:nil];
+    [section addItem:self.nameItem];
+    
     NSString *server = self.shadowsocks[HSUShadowsocksSettings_Server];
-    [section addItem:[RETextItem itemWithTitle:@"Host" value:server placeholder:nil]];
+    self.serverItem = [RETextItem itemWithTitle:@"Host" value:server placeholder:nil];
+    [section addItem:self.serverItem];
     
     NSString *remotePort = self.shadowsocks[HSUShadowsocksSettings_RemotePort];
-    [section addItem:[RENumberItem itemWithTitle:@"Port" value:remotePort ?: @"" placeholder:nil format:@"XXXXX"]];
+    self.portItem = [RENumberItem itemWithTitle:@"Port" value:remotePort ?: @"" placeholder:nil format:@"XXXXX"];
+    [section addItem:self.portItem];
     
     NSString *passowrd = self.shadowsocks[HSUShadowsocksSettings_Password];
-    [section addItem:[RETextItem itemWithTitle:@"Password" value:passowrd placeholder:nil]];
+    self.passowrdItem = [RETextItem itemWithTitle:@"Password" value:passowrd placeholder:nil];
+    [section addItem:self.passowrdItem];
     
     __weak __typeof(&*self) weakSelf = self;
     NSString *method = self.shadowsocks[HSUShadowsocksSettings_Method] ?: @"Table";
-    [section addItem:
-     [RERadioItem itemWithTitle:@"Method"
-                          value:method
-               selectionHandler:^(RERadioItem *item)
-    {
-        [item deselectRowAnimated:YES];
-        
-        NSArray *options = @[@"Table", @"AES-256-CFB", @"AES-192-CFB", @"AES-128-CFB", @"BF-CFB"];
-        
-        RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
-            [weakSelf.navigationController popViewControllerAnimated:YES];
-            
-            [item reloadRowWithAnimation:UITableViewRowAnimationNone];
-        }];
-        
-        optionsController.delegate = weakSelf;
-        optionsController.style = section.style;
-        if (weakSelf.tableView.backgroundView == nil) {
-            optionsController.tableView.backgroundColor = weakSelf.tableView.backgroundColor;
-            optionsController.tableView.backgroundView = nil;
-        }
-        
-        [weakSelf.navigationController pushViewController:optionsController animated:YES];
-    }]];
+    self.methodItem =
+    [RERadioItem itemWithTitle:@"Method"
+                         value:method
+              selectionHandler:^(RERadioItem *item)
+     {
+         [item deselectRowAnimated:YES];
+         
+         NSArray *options = @[@"Table", @"AES-256-CFB", @"AES-192-CFB", @"AES-128-CFB", @"BF-CFB"];
+         
+         RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
+             [weakSelf.navigationController popViewControllerAnimated:YES];
+             
+             [item reloadRowWithAnimation:UITableViewRowAnimationNone];
+         }];
+         
+         optionsController.delegate = weakSelf;
+         optionsController.style = section.style;
+         if (weakSelf.tableView.backgroundView == nil) {
+             optionsController.tableView.backgroundColor = weakSelf.tableView.backgroundColor;
+             optionsController.tableView.backgroundView = nil;
+         }
+         
+         [weakSelf.navigationController pushViewController:optionsController animated:YES];
+     }];
+    [section addItem:self.methodItem];
     
     if (self.navigationController.viewControllers.count == 1) {
         self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
@@ -80,47 +90,44 @@
 
 - (void)done
 {
-    RETableViewSection *section  = self.manager.sections[0];
-    
-    RETextItem *serverItem = section.items[0];
-    RENumberItem *portItem = section.items[1];
-    RETextItem *passowrdItem = section.items[2];
-    RETextItem *methodItem = section.items[3];
-    if (!serverItem.value || !portItem.value || !passowrdItem.value || !methodItem.value) {
+    if (!self.serverItem.value || !self.portItem.value || !self.passowrdItem.value || !self.methodItem.value) {
         return;
     }
     
     // read new settings
     NSMutableDictionary *ss = self.shadowsocks.mutableCopy ?: [NSMutableDictionary dictionary];
-    ss[HSUShadowsocksSettings_Server] = serverItem.value;
-    ss[HSUShadowsocksSettings_RemotePort] = portItem.value;
-    ss[HSUShadowsocksSettings_Password] = passowrdItem.value;
-    ss[HSUShadowsocksSettings_Method] = methodItem.value;
-    if (self.navigationController.viewControllers.count == 1) {
-        ss[HSUShadowsocksSettings_Selected] = @YES;
-    }
+    ss[HSUShadowsocksSettings_Server] = self.serverItem.value;
+    ss[HSUShadowsocksSettings_RemotePort] = self.portItem.value;
+    ss[HSUShadowsocksSettings_Password] = self.passowrdItem.value;
+    ss[HSUShadowsocksSettings_Method] = self.methodItem.value;
+    ss[HSUShadowsocksSettings_Desc] = self.nameItem.value ?: @"";
     
     NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
+    for (NSInteger i=0; i<sss.count; i++) {
+        NSDictionary *s = sss[i];
+        if ([s[HSUShadowsocksSettings_Server] isEqualToString:ss[HSUShadowsocksSettings_Server]] &&
+            [s[HSUShadowsocksSettings_RemotePort] isEqualToString:ss[HSUShadowsocksSettings_RemotePort]]) {
+            
+            __weak typeof(self)weakSelf = self;
+            RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+            RIButtonItem *overrideItem = [RIButtonItem itemWithLabel:_("Override")];
+            overrideItem.action = ^{
+                sss[i] = s;
+                [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+            };
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Server Existed") message:_("You wanna override it?") cancelButtonItem:cancelItem otherButtonItems:overrideItem, nil];
+            [alert show];
+            return;
+        }
+    }
+    
     [sss addObject:ss];
     [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
-    // setting for first launch in opensource or network problem accoured
-    // not pushed from settings view controller
-    if ([ss[HSUShadowsocksSettings_Selected] boolValue]) {
-        if (![[HSUAppDelegate shared] startShadowsocks]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil
-                                                            message:_("Finish Settings or Tap Cancel")
-                                                           delegate:nil
-                                                  cancelButtonTitle:_("OK")
-                                                  otherButtonTitles:nil, nil];
-            [alert show];
-        } else {
-            [self dismiss];
-        }
-    } else {
-        [self.navigationController popViewControllerAnimated:YES];
-    }
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 @end

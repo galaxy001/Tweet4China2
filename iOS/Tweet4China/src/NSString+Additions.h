@@ -14,5 +14,7 @@
 
 - (NSString *)reversedString;
 - (NSString *)twitterScreenName;
+- (BOOL)isEmoji;
+- (NSString *)stringRemovedEmoji;
 
 @end

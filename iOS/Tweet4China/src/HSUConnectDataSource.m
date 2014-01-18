@@ -15,9 +15,6 @@
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController
 {
     NSString *latestIdStr = [[NSUserDefaults standardUserDefaults] objectForKey:S(@"%@_first_id_str", self.class.cacheKey)];
-    if (!latestIdStr) {
-        latestIdStr = @"1";
-    }
     [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:1 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         NSString *lastIdStr = tweets.lastObject[@"id_str"];
@@ -47,8 +44,17 @@
     [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
         BOOL oldCount = self.count;
+        BOOL newCount = 0;
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {
+                // todo: ugly code, remove duplicated data
+                for (HSUTableCellData *cellData in weakSelf.data) {
+                    NSDictionary *rawData = cellData.rawData;
+                    if ([rawData[@"id_str"] isEqualToString:tweets[i][@"id_str"]]) {
+                        continue;
+                    }
+                    newCount ++;
+                }
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
                 [weakSelf.data insertObject:cellData atIndex:0];
@@ -65,7 +71,7 @@
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        if (tweets.count >= weakSelf.requestCount || oldCount == 0) {
+        if (newCount >= weakSelf.requestCount || oldCount == 0) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         } else {
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];
@@ -75,6 +81,7 @@
     } failure:^(NSError *error) {
         [twitter dealWithError:error errTitle:_("Load failed")];
         [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
+        weakSelf.loadingCount --;
     }];
 }
 
@@ -82,8 +89,7 @@
 {
     [super loadMore];
     
-    HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
-    NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
+    NSString *lastStatusId = [self rawDataAtIndex:self.count-2][@"id_str"];
     __weak typeof(self)weakSelf = self;
     [twitter getMentionsTimelineSinceID:nil maxID:lastStatusId count:self.requestCount success:^(id responseObj) {
         id loadMoreCellData = weakSelf.data.lastObject;

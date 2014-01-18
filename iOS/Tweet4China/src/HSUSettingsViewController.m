@@ -208,7 +208,7 @@
                       accessoryType:UITableViewCellAccessoryNone
                    selectionHandler:^(RETableViewItem *item)
       {
-          NSString *subject = @"[Tweet4China 2.6] Feedback";
+          NSString *subject = @"[Tweet4China 2.7] Feedback";
           NSString *body = _("\nDescribe the problem please");
           NSString *url = [NSString stringWithFormat:@"mailto:support@tuoxie.me?subject=%@&body=%@",
                            [subject stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],
