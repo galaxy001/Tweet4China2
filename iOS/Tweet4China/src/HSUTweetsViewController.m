@@ -114,10 +114,10 @@
                 }
                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
                 [weakSelf.dataSource saveCache];
-                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                notification_post(HSUStatusCellOtherCellSwipedNotification);
                 [weakSelf.tableView reloadData];
             } failure:^(NSError *error) {
-                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                notification_post(HSUStatusCellOtherCellSwipedNotification);
                 [twitter dealWithError:error errTitle:_("Delete retweet failed")];
             }];
         } else {
@@ -141,10 +141,10 @@
                                 }
                                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
                                 [weakSelf.dataSource saveCache];
-                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                notification_post(HSUStatusCellOtherCellSwipedNotification);
                                 [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
-                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                notification_post(HSUStatusCellOtherCellSwipedNotification);
                                 [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                             }];
                             found = YES;
@@ -152,10 +152,10 @@
                         }
                     }
                     if (!found) {
-                        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                        notification_post(HSUStatusCellOtherCellSwipedNotification);
                     }
                 } failure:^(NSError *error) {
-                    notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    notification_post(HSUStatusCellOtherCellSwipedNotification);
                     [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                 }];
             } else {
@@ -178,10 +178,10 @@
                                 }
                                 notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
                                 [weakSelf.dataSource saveCache];
-                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                notification_post(HSUStatusCellOtherCellSwipedNotification);
                                 [weakSelf.tableView reloadData];
                             } failure:^(NSError *error) {
-                                notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                                notification_post(HSUStatusCellOtherCellSwipedNotification);
                                 [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                             }];
                             found = YES;
@@ -189,10 +189,10 @@
                         }
                     }
                     if (!found) {
-                        notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                        notification_post(HSUStatusCellOtherCellSwipedNotification);
                     }
                 } failure:^(NSError *error) {
-                    notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+                    notification_post(HSUStatusCellOtherCellSwipedNotification);
                     [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                 }];
             }
@@ -212,10 +212,10 @@
             }
             notification_post_with_object(HSUStatusUpdatedNotification, cellData.rawData);
             [weakSelf.dataSource saveCache];
-            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            notification_post(HSUStatusCellOtherCellSwipedNotification);
             [weakSelf.tableView reloadData];
         } failure:^(NSError *error) {
-            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            notification_post(HSUStatusCellOtherCellSwipedNotification);
             [twitter dealWithError:error errTitle:_("Retweet failed")];
         }];
     }
@@ -462,13 +462,13 @@
     mailTweetItem.action = ^{
         [Flurry logEvent:S(@"mail tweet in %@", [self.class description])];
         [twitter oembedStatus:id_str success:^(id responseObj) {
-            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            notification_post(HSUStatusCellOtherCellSwipedNotification);
             NSString *subject = _("Link from Twitter");
             [HSUCommonTools sendMailWithSubject:subject
                                            body:responseObj[@"html"]
                       presentFromViewController:self];
         } failure:^(NSError *error) {
-            notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+            notification_post(HSUStatusCellOtherCellSwipedNotification);
             [twitter dealWithError:error errTitle:_("Fetch HTML failed")];
         }];
     };
@@ -540,6 +540,9 @@
     
     [actionSheet setCancelButtonIndex:count];
     [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+    
+    notification_post(HSUStatusCellOtherCellSwipedNotification);
+    [self.tableView reloadData];
 }
 
 - (void)touchAvatar:(HSUTableCellData *)cellData

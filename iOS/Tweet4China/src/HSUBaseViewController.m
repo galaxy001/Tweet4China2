@@ -168,7 +168,7 @@
     NSIndexPath *selection = [self.tableView indexPathForSelectedRow];
 	if (selection)
 		[self.tableView deselectRowAtIndexPath:selection animated:YES];
-    notification_post(kNotification_HSUStatusCell_OtherCellSwiped);
+    notification_post(HSUStatusCellOtherCellSwipedNotification);
 }
 
 - (void)viewDidAppear:(BOOL)animated

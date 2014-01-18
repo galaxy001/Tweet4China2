@@ -12,7 +12,7 @@
 
 #define padding_S 10
 
-#define kNotification_HSUStatusCell_OtherCellSwiped @"HSUStatusCell_OtherCellSwiped"
+#define HSUStatusCellOtherCellSwipedNotification @"HSUStatusCell_OtherCellSwiped"
 
 @class HSUStatusView;
 @interface HSUStatusCell : HSUBaseTableCell
