@@ -109,4 +109,14 @@ static HSUMailHelper *mailHelper;
     [[HSUMailHelper getInstance] sendMailWithSubject:subject body:body presentFromViewController:viewController];
 }
 
++ (NSString *)version
+{
+    NSString *verNum = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+#ifdef FreeApp
+    return [NSString stringWithFormat:@"Tweet4China Free %@", verNum];
+#else
+    return [NSString stringWithFormat:@"Tweet4China Pro %@", verNum];
+#endif
+}
+
 @end

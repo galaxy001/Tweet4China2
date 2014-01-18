@@ -193,6 +193,8 @@
 		96924688172E6E93007720D4 /* icn_nav_bar_light_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96924684172E6E93007720D4 /* icn_nav_bar_light_close@2x.png */; };
 		9696D80216F1AAB5005D7AAB /* HSUHomeDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 9696D80116F1AAB4005D7AAB /* HSUHomeDataSource.m */; };
 		9696D84116F21DB6005D7AAB /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9696D84016F21DB6005D7AAB /* CoreText.framework */; };
+		96992C9A188A63C400AADDC2 /* HSUGeneralSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992C99188A63C400AADDC2 /* HSUGeneralSettingsViewController.m */; };
+		96992C9D188A669700AADDC2 /* HSUAboutViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992C9C188A669700AADDC2 /* HSUAboutViewController.m */; };
 		969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B6FB01720489400420F01 /* HSUMainStatusCell.m */; };
 		969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B6FB317204BC800420F01 /* HSUStatusDataSource.m */; };
 		969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 969B7434173FA8370072EFC0 /* HSUChatStatusCell.m */; };
@@ -605,6 +607,10 @@
 		9696D80016F1AAB4005D7AAB /* HSUHomeDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUHomeDataSource.h; sourceTree = "<group>"; };
 		9696D80116F1AAB4005D7AAB /* HSUHomeDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUHomeDataSource.m; sourceTree = "<group>"; };
 		9696D84016F21DB6005D7AAB /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		96992C98188A63C400AADDC2 /* HSUGeneralSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUGeneralSettingsViewController.h; sourceTree = "<group>"; };
+		96992C99188A63C400AADDC2 /* HSUGeneralSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUGeneralSettingsViewController.m; sourceTree = "<group>"; };
+		96992C9B188A669700AADDC2 /* HSUAboutViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUAboutViewController.h; sourceTree = "<group>"; };
+		96992C9C188A669700AADDC2 /* HSUAboutViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAboutViewController.m; sourceTree = "<group>"; };
 		969B6FAF1720489400420F01 /* HSUMainStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUMainStatusCell.h; sourceTree = "<group>"; };
 		969B6FB01720489400420F01 /* HSUMainStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUMainStatusCell.m; sourceTree = "<group>"; };
 		969B6FB217204BC800420F01 /* HSUStatusDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUStatusDataSource.h; sourceTree = "<group>"; };
@@ -1350,6 +1356,10 @@
 				966E18E3184C6CC000B5482C /* HSUNavigationController.m */,
 				9666CDDF187129100044DB0A /* HSUSettingsViewController.h */,
 				9666CDE0187129100044DB0A /* HSUSettingsViewController.m */,
+				96992C98188A63C400AADDC2 /* HSUGeneralSettingsViewController.h */,
+				96992C99188A63C400AADDC2 /* HSUGeneralSettingsViewController.m */,
+				96992C9B188A669700AADDC2 /* HSUAboutViewController.h */,
+				96992C9C188A669700AADDC2 /* HSUAboutViewController.m */,
 				9666CDE218719AE10044DB0A /* HSUAccountsViewController.h */,
 				9666CDE318719AE10044DB0A /* HSUAccountsViewController.m */,
 				9666CDE518719B180044DB0A /* HSUShadowsocksViewController.h */,
@@ -1775,7 +1785,9 @@
 				9639B92216FE1AD20032177F /* UIView+Additions.m in Sources */,
 				96BFCAF0188259B500D13F4B /* HSUSearchTweetsDataSource.m in Sources */,
 				96E34B4417015ECD0066CD5E /* HSUComposeViewController.m in Sources */,
+				96992C9D188A669700AADDC2 /* HSUAboutViewController.m in Sources */,
 				966E1906184CAB0D00B5482C /* HSUListTweetsDataSource.m in Sources */,
+				96992C9A188A63C400AADDC2 /* HSUGeneralSettingsViewController.m in Sources */,
 				603909459EA4EB003D8703B6 /* UIImage+Additions.m in Sources */,
 				60390DA90C44901CEEB0F319 /* UIButton+Additions.m in Sources */,
 				9666CDF518752A5F0044DB0A /* HSUEditProfileViewController.m in Sources */,

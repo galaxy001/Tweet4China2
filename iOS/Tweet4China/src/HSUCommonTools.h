@@ -20,6 +20,7 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 + (BOOL)isIPad;
 + (CGFloat)winWidth;
 + (CGFloat)winHeight;
++ (NSString *)version;
 
 + (void)sendMailWithSubject:(NSString *)subject body:(NSString *)body presentFromViewController:(UIViewController *)viewController;
 
