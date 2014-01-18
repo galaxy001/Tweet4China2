@@ -131,17 +131,22 @@
 - (void)_fireTapGesture:(UIGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateEnded) {
-        if (Sys_Ver >= 7) {
-            notification_post(HSUGalleryViewDidDisappear);
-        } else {
-            [[UIApplication sharedApplication] setStatusBarHidden:NO];
-        }
-        [UIView animateWithDuration:.3 animations:^{
-            self.alpha = 0;
-        } completion:^(BOOL finished) {
-            [self removeFromSuperview];
-        }];
+        [self dismiss];
     }
+}
+
+- (void)dismiss
+{
+    if (Sys_Ver >= 7) {
+        notification_post(HSUGalleryViewDidDisappear);
+    } else {
+        [[UIApplication sharedApplication] setStatusBarHidden:NO];
+    }
+    [UIView animateWithDuration:.3 animations:^{
+        self.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+    }];
 }
 
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
@@ -149,12 +154,18 @@
     if (gesture.state == UIGestureRecognizerStateBegan) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
         RIButtonItem *saveItem = [RIButtonItem itemWithLabel:_("Save Image")];
+        __weak typeof(self)weakSelf = self;
         saveItem.action = ^{
-            UIImageWriteToSavedPhotosAlbum(self.imageView.image, nil, nil, nil);
+            UIImageWriteToSavedPhotosAlbum(weakSelf.imageView.image, weakSelf, @selector(image:didFinishSavingWithError:contextInfo:), nil);
         };
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:saveItem, nil];
         [actionSheet showInView:self.window];
     }
+}
+
+- (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;
+{
+    [self dismiss];
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView
