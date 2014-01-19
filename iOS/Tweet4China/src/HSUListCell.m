@@ -97,6 +97,16 @@
     self.descLabel.text = description;
     self.modeIcon.hidden = [mode isEqualToString:@"public"];
     [self.creatorAvatar setImageWithUrlStr:creatorAvatarUrl placeHolder:nil];
+    
+    if ([data.renderData[@"hide_creator"] boolValue]) {
+        self.creatorAvatar.hidden = YES;
+    }
+    
+    if ([data.renderData[@"listed"] boolValue]) {
+        self.accessoryType = UITableViewCellAccessoryCheckmark;
+    } else {
+        self.accessoryType = UITableViewCellAccessoryNone;
+    }
 }
 
 + (CGFloat)heightForData:(HSUTableCellData *)data

@@ -15,6 +15,7 @@
 #import "HSUShadowsocksViewController.h"
 #import <Reachability/Reachability.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import "HSUAccountsViewController.h"
 
 #define API_URL ([url substringFromIndex:28])
 
@@ -44,6 +45,9 @@ static NSString * const url_lists_subscriptions = @"https://api.twitter.com/1.1/
 static NSString * const url_lists_subscribers_create = @"https://api.twitter.com/1.1/lists/subscribers/create.json";
 static NSString * const url_lists_subscribers_destroy = @"https://api.twitter.com/1.1/lists/subscribers/destroy.json";
 static NSString * const url_lists_subscribers = @"https://api.twitter.com/1.1/lists/subscribers.json";
+static NSString * const url_lists_memberships = @"https://api.twitter.com/1.1/lists/memberships.json";
+static NSString * const url_lists_members_create = @"https://api.twitter.com/1.1/lists/members/create.json";
+static NSString * const url_lists_members_destroy = @"https://api.twitter.com/1.1/lists/members/destroy.json";
 
 static NSString * const url_statuses_home_timeline = @"https://api.twitter.com/1.1/statuses/home_timeline.json";
 static NSString * const url_statuses_update = @"https://api.twitter.com/1.1/statuses/update.json";
@@ -196,6 +200,21 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
             return;
         }
         self.authorizing = YES;
+        
+        NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy];
+        if (userSettings.count) {
+            [UIApplication sharedApplication].keyWindow.userInteractionEnabled = NO;
+            double delayInSeconds = 1.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+            dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                [UIApplication sharedApplication].keyWindow.userInteractionEnabled = YES;
+                HSUAccountsViewController *accountsVC = [[HSUAccountsViewController alloc] init];
+                HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:accountsVC];
+                [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
+                return;
+            });
+        }
+        
         [UIApplication sharedApplication].keyWindow.userInteractionEnabled = NO;
         double delayInSeconds = 1.0;
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
@@ -457,6 +476,34 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                parameters:@{@"list_id": listID}
                   success:success
                   failure:failure];
+}
+- (void)getListsListedUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendGETWithUrl:url_lists_memberships
+               parameters:@{@"screen_name": screenName}
+                  success:success
+                  failure:failure];
+}
+- (void)getMyListsListedUser:(NSString *)screenName success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendGETWithUrl:url_lists_memberships
+              parameters:@{@"screen_name": screenName, @"filter_to_owned_lists": @YES}
+                 success:success
+                 failure:failure];
+}
+- (void)createMember:(NSString *)screenName toList:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_members_create
+              parameters:@{@"screen_name": screenName, @"list_id": listID}
+                 success:success
+                 failure:failure];
+}
+- (void)destroyMember:(NSString *)screenName toList:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+{
+    [self sendPOSTWithUrl:url_lists_members_destroy
+              parameters:@{@"screen_name": screenName, @"list_id": listID}
+                 success:success
+                 failure:failure];
 }
 - (void)unsubscribeListWithListID:(NSString *)listID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {

@@ -33,6 +33,7 @@
     
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItem = self.composeBarButton;
+    self.navigationItem.title = _("Messages");
 }
 
 - (void)viewDidAppear:(BOOL)animated

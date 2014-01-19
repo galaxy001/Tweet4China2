@@ -21,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        self.dataSourceClass = [HSUConnectDataSource class];
+        self.dataSource = [HSUConnectDataSource dataSourceWithDelegate:self useCache:YES];
         [self checkUnread];
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
         notification_add_observer(HSUTabControllerDidSelectViewControllerNotification, self, @selector(tabDidSelected:));
@@ -35,6 +35,8 @@
     self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
     
     [super viewDidLoad];
+    
+    self.navigationItem.title = _("Connect");
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -51,6 +53,7 @@
     if (self.navigationController == notification.object) {
         if (self.view.window) {
             if (self.tableView.contentOffset.y <= 0) {
+                [self.tableView setContentOffset:ccp(0, -120)];
                 [self.dataSource refresh];
             }
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];

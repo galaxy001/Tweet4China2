@@ -58,7 +58,11 @@
                  [[NSUserDefaults standardUserDefaults] removeObjectForKey:[HSUConversationsDataSource cacheKey]];
                  [[NSUserDefaults standardUserDefaults] removeObjectForKey:S(@"%@_first_id_str", [HSUProfileDataSource cacheKey])];
                  [[NSUserDefaults standardUserDefaults] synchronize];
-                 [weakSelf.navigationController popViewControllerAnimated:YES];
+                 if (weakSelf.navigationController.viewControllers.count > 1) {
+                     [weakSelf.navigationController popViewControllerAnimated:YES];
+                 } else {
+                     [weakSelf dismiss];
+                 }
              }
              [item deselectRowAnimated:YES];
          }];

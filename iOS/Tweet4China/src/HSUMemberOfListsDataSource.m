@@ -14,7 +14,7 @@
 {
     [self.data removeAllObjects];
     __weak typeof(self)weakSelf = self;
-    [twitter getListsSubscribedWithScreenName:self.screenName count:10000 success:^(id responseObj) {
+    [twitter getListsListedUser:self.screenName success:^(id responseObj) {
         NSArray *lists = responseObj[@"lists"];
         if (lists.count) {
             for (int i=lists.count-1; i>=0; i--) {

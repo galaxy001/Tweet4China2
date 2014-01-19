@@ -53,6 +53,8 @@
     unreadCountLabel.height += 2 * unreadCountLabel.layer.cornerRadius;
     unreadCountLabel.text = nil;
     unreadCountLabel.hidden = YES;
+    
+    self.navigationItem.title = _("Home");
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -95,6 +97,7 @@
     if (self.navigationController == notification.object) {
         if (self.view.window) {
             if (self.tableView.contentOffset.y <= 0) {
+                [self.tableView setContentOffset:ccp(0, -120)];
                 [self.dataSource refresh];
             }
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:0 inSection:0];

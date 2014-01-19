@@ -282,9 +282,4 @@
     [self presentViewController:webVC animated:YES completion:nil];
 }
 
-- (BOOL)prefersStatusBarHidden
-{
-    return self.statusBarHidden;
-}
-
 @end

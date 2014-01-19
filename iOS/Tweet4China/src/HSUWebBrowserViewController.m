@@ -35,6 +35,8 @@
                                               initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                               target:self
                                               action:@selector(add)];
+    
+    self.navigationItem.title = _("Browser");
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -39,6 +39,7 @@
 @property (nonatomic, strong) UIButton *settingsButton;
 
 @property (nonatomic, strong) UIButton *messagesButton;
+@property (nonatomic, strong) UIButton *listButton;
 
 @property (nonatomic, weak) UIView *contentView;
 
@@ -278,6 +279,7 @@
         UIButton *settingsButton;
         UIButton *messagesButton;
         UIButton *followButton;
+        UIButton *listButton;
         if ([screenName isEqualToString:MyScreenName]) {
             // settingsButton
             settingsButton = [[UIButton alloc] init];
@@ -303,6 +305,18 @@
                                       forState:UIControlStateHighlighted];
             [messagesButton setImage:[UIImage imageNamed:@"icn_profile_messages"] forState:UIControlStateNormal];
             messagesButton.size = ccs(42, 30);
+            
+            // list button
+            listButton = [[UIButton alloc] init];
+            self.listButton = listButton;
+            [buttonsPanel addSubview:listButton];
+            [listButton setTapTarget:delegate action:@selector(listButtonTouched)];
+            [listButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_default"] stretchableImageFromCenter]
+                                  forState:UIControlStateNormal];
+            [listButton setBackgroundImage:[[UIImage imageNamed:@"btn_floating_segment_selected"] stretchableImageFromCenter]
+                                  forState:UIControlStateHighlighted];
+            [listButton setImage:[UIImage imageNamed:@"icn_activity_listed_default"] forState:UIControlStateNormal];
+            listButton.size = ccs(42, 30);
             
             // followButton
             followButton = [[UIButton alloc] init];
@@ -357,6 +371,7 @@
         }
         if (self.messagesButton) {
             self.settingsButton.rightCenter = ccp(self.messagesButton.left - 10, buttonHeight);
+            self.listButton.rightCenter = ccp(self.messagesButton.left - 10, buttonHeight);
         } else {
             self.settingsButton.rightCenter = ccp(buttonsPanelWidth - 10, buttonHeight);
         }
@@ -364,6 +379,7 @@
         self.followButton.rightCenter = ccp(buttonsPanelWidth - 10, buttonHeight);
         self.settingsButton.leftCenter = ccp(10, buttonHeight);
         self.messagesButton.leftCenter = ccp(10, buttonHeight);
+        self.listButton.leftCenter = ccp(self.messagesButton.right+10, buttonHeight);
     }
 }
 

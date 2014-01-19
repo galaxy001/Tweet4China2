@@ -32,6 +32,7 @@
 #import "HSUListsViewController.h"
 #import "HSUPhotosViewController.h"
 #import "HSURecentPhotosDataSource.h"
+#import "HSUSelectListsViewController.h"
 
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
@@ -82,6 +83,14 @@
     }
     self.tableView.tableHeaderView = profileView;
     self.profileView = profileView;
+    
+    if ([self isMe]) {
+        self.navigationItem.title = _("Me");
+    } else if (self.profile) {
+        self.navigationItem.title = self.profile[@"name"];
+    } else {
+        self.navigationItem.title = self.screenName;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -198,6 +207,8 @@
         profiles[twitter.myScreenName] = profile;
         [[NSUserDefaults standardUserDefaults] setObject:profiles forKey:HSUUserProfiles];
         [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        self.navigationItem.title = profile[@"name"];
     }
 }
 
@@ -658,6 +669,32 @@
         [[NSUserDefaults standardUserDefaults] synchronize];
         [_addFriendButtonIndicator removeFromSuperview];
     }
+}
+
+- (void)listButtonTouched
+{
+    [SVProgressHUD showWithStatus:nil];
+    [twitter getListsWithScreenName:MyScreenName success:^(id responseObj) {
+        NSArray *mySubLists = responseObj;
+        NSMutableArray *myLists = [NSMutableArray array];
+        for (NSDictionary *mySubList in mySubLists) {
+            if ([mySubList[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
+                [myLists addObject:mySubList];
+            }
+        }
+        [twitter getMyListsListedUser:self.screenName success:^(id responseObj) {
+            [SVProgressHUD dismiss];
+            NSDictionary *dict = responseObj;
+            NSArray *listedLists = dict[@"lists"];
+            HSUSelectListsViewController *selectListsVC = [[HSUSelectListsViewController alloc] initWithMyLists:myLists listedLists:listedLists user:self.screenName];
+            HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:selectListsVC];
+            [self presentViewController:nav animated:YES completion:nil];
+        } failure:^(NSError *error) {
+            [SVProgressHUD showErrorWithStatus:_("Load lists failed")];
+        }];
+    } failure:^(NSError *error) {
+        [SVProgressHUD showErrorWithStatus:_("Load lists failed")];
+    }];
 }
 
 @end
