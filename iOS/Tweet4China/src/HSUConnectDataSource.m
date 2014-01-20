@@ -40,6 +40,7 @@
     [super refresh];
     
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
+    self.lastRefreshRequestCount = self.requestCount;
     __weak typeof(self)weakSelf = self;
     [twitter getMentionsTimelineSinceID:latestIdStr maxID:nil count:self.requestCount success:^(id responseObj) {
         NSArray *tweets = responseObj;
@@ -71,7 +72,7 @@
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        if (newCount >= weakSelf.requestCount || oldCount == 0) {
+        if (newCount >= weakSelf.lastRefreshRequestCount || oldCount == 0) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         } else {
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];

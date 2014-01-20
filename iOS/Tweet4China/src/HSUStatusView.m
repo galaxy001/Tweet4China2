@@ -377,8 +377,9 @@
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
-        } else if ((mediaUrl = [HSUInstagramMediaCache mediaUrlForWebUrl:url])) {
+        } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
             self.data.renderData[@"photo_url"] = mediaUrl;
+            self.data.renderData[@"instagram_media_id"] = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
@@ -393,12 +394,13 @@
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
-                    NSString *imageUrl = JSON[@"url"];
-                    if ([imageUrl hasSuffix:@".mp4"]) {
-                        weakSelf.data.renderData[@"video_url"] = imageUrl;
-                    } else {
-                        if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
-                            [HSUInstagramMediaCache setMediaUrl:imageUrl forWebUrl:url];
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
+                        [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
+                        weakSelf.data.renderData[@"instagram_media_id"] = JSON[@"media_id"];
+                        NSString *imageUrl = JSON[@"url"];
+                        if ([imageUrl hasSuffix:@".mp4"]) {
+                            weakSelf.data.renderData[@"video_url"] = imageUrl;
+                        } else {
                             weakSelf.data.renderData[@"photo_url"] = imageUrl;
                             weakSelf.imagePreviewButton.hidden = NO;
                             [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl

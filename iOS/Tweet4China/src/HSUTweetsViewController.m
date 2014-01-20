@@ -24,6 +24,7 @@
 #import "WXApi.h"
 #import "HSUActivityWeixin.h"
 #import "HSUActivityWeixinMoments.h"
+#import "HSUInstagramHandler.h"
 
 @implementation HSUTweetsViewController
 
@@ -698,6 +699,9 @@
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
 {
+    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.renderData[@"instagram_media_id"]]) {
+        return;
+    }
     SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithURL:webURL];
     webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
     [self presentViewController:webViewController animated:YES completion:NULL];

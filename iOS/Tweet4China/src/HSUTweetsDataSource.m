@@ -30,7 +30,7 @@
         BOOL oldCount = self.count;
         if (tweets.count) {
             
-            if (tweets.count >= weakSelf.requestCount) {
+            if (tweets.count >= weakSelf.lastRefreshRequestCount) {
                 [weakSelf.data removeAllObjects];
             }
             
@@ -57,7 +57,7 @@
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
-        if (tweets.count >= weakSelf.requestCount || oldCount == 0) {
+        if (tweets.count >= weakSelf.lastRefreshRequestCount || oldCount == 0) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         } else {
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:tweets.count];

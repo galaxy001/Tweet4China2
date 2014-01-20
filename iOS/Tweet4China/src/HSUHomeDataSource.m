@@ -38,6 +38,7 @@
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
     NSString *latestIdStr = [self rawDataAtIndex:0][@"id_str"];
+    self.lastRefreshRequestCount = self.requestCount;
     [twitter getHomeTimelineSinceID:latestIdStr count:self.requestCount success:^(id responseObj) {
         success(responseObj);
         // ask follow author

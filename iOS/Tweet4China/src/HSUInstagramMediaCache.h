@@ -10,7 +10,7 @@
 
 @interface HSUInstagramMediaCache : NSObject
 
-+ (void)setMediaUrl:(NSString *)mediaUrl forWebUrl:(NSString *)webUrl;
-+ (NSString *)mediaUrlForWebUrl:(NSString *)webUrl;
++ (void)setMedia:(NSDictionary *)media forWebUrl:(NSString *)webUrl;
++ (NSDictionary *)mediaForWebUrl:(NSString *)webUrl;
 
 @end

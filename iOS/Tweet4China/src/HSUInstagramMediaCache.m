@@ -11,29 +11,35 @@
 
 static NSMutableDictionary *instagramCache;
 static NSUInteger instagramCount;
-#define InstagramCacheFileName @"tweet4china.instagram"
+#define InstagramCacheFileName @"tweet4china.instagram.cache"
 
 @implementation HSUInstagramMediaCache
 
 + (void)initialize
 {
-    instagramCache = [NSMutableDictionary dictionary];
+    NSData *data = [NSData dataWithContentsOfFile:dp(InstagramCacheFileName)];
+    if (data) {
+        instagramCache = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    }
+    if (!instagramCache) {
+        instagramCache = [NSMutableDictionary dictionary];
+    }
 }
 
-+ (void)setMediaUrl:(NSString *)mediaUrl forWebUrl:(NSString *)webUrl
++ (void)setMedia:(NSDictionary *)media forWebUrl:(NSString *)webUrl
 {
     if (instagramCount > 200) {
         [[NSFileManager defaultManager] removeItemAtPath:dp(InstagramCacheFileName) error:nil];
     }
     if (![instagramCache objectForKey:webUrl]) {
-        instagramCache[webUrl] = mediaUrl;
+        instagramCache[webUrl] = media;
         NSData *json = [NSJSONSerialization dataWithJSONObject:instagramCache options:0 error:nil];
-        [json writeToFile:InstagramCacheFileName atomically:YES];
+        [json writeToFile:dp(InstagramCacheFileName) atomically:YES];
         instagramCount ++;
     }
 }
 
-+ (NSString *)mediaUrlForWebUrl:(NSString *)webUrl
++ (NSDictionary *)mediaForWebUrl:(NSString *)webUrl
 {
     return [instagramCache objectForKey:webUrl];
 }

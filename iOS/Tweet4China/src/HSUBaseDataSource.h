@@ -29,6 +29,7 @@
 //@property (nonatomic, assign, getter = isLoading) BOOL loading;
 @property (nonatomic, assign) NSUInteger loadingCount;
 @property (nonatomic, assign) NSUInteger requestCount;
+@property (nonatomic, assign) NSInteger lastRefreshRequestCount;
 @property (nonatomic, assign) BOOL noMoreData;
 @property (nonatomic) NSInteger unreadCount;
 @property (nonatomic, assign) BOOL useCache;
