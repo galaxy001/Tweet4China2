@@ -31,6 +31,22 @@
     return scaledImage;
 }
 
+- (UIImage*)scaleToHeight:(CGFloat)height
+{
+    if (height >= self.size.height) {
+        return self;
+    }
+    CGSize newSize;
+    newSize.height = height;
+    newSize.width = self.size.width/self.size.height*newSize.height;
+    
+    UIGraphicsBeginImageContext(newSize);
+    [self drawInRect:CGRectMake(0, 0, floorf(newSize.width)+1, floorf(newSize.height)+1)];
+    UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return scaledImage;
+}
+
 -(UIImage *)subImageAtRect:(CGRect)rect
 {
 	rect = ccr(rect.origin.x*self.scale, rect.origin.y*self.scale, rect.size.width*self.scale, rect.size.height*self.scale);

@@ -568,7 +568,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     FHSTwitterEngine *engine = self.engine;
     NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
     
-    [engine postTweet:status withImageData:imageData inReplyTo:inReplyToID location:location placeId:placeId success:success failure:failure progress:^(double progress) {
+    [engine postTweet:status withImageData:imageData inReplyTo:inReplyToID location:location placeId:placeId success:^(id responseObj) {
+        notification_post_with_object(HSUPostTweetProgressChangedNotification, @(1));
+    } failure:failure progress:^(double progress) {
         notification_post_with_object(HSUPostTweetProgressChangedNotification, @(progress));
     }];
 }

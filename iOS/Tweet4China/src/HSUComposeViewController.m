@@ -93,6 +93,7 @@
     NSString *geoCode;
     
     BOOL suggested;
+    BOOL photoEdited;
 }
 
 - (void)dealloc
@@ -521,6 +522,10 @@
     NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
     NSDictionary *draft = [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:status imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
     
+    if (photoEdited) {
+        UIImageWriteToSavedPhotosAlbum(postImage, 0, 0, 0);
+    }
+    
     [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
         [[HSUDraftManager shared] removeDraft:draft];
     } failure:^(NSError *error) {
@@ -851,6 +856,7 @@
 {
     if (cameraViewController.photo) {
         [self photoSelected:cameraViewController.photo];
+        photoEdited = cameraViewController.photoEdited;
     } else {
         [contentTV becomeFirstResponder];
     }

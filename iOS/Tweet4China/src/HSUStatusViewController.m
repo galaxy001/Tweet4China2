@@ -197,10 +197,13 @@
     NSMutableString *defaultText = [[NSMutableString alloc] init];
     HSUTableCellData *mainStatus = [self.dataSource dataAtIndex:0];
     NSString *authorScreenName = mainStatus.rawData[@"user"][@"screen_name"];
-    composeVC.defaultTitle = S(@"Reply to @%@", authorScreenName);
+    composeVC.defaultTitle = S(@"Reply @%@", authorScreenName);
     NSString *statusId = mainStatus.rawData[@"id_str"];
     composeVC.inReplyToStatusId = statusId;
     NSArray *userMentions = mainStatus.rawData[@"entities"][@"user_mentions"];
+#ifdef DEBUG
+    [defaultText appendString:@"我是T4C客服: "];
+#endif
     if (userMentions && userMentions.count) {
         [defaultText appendFormat:@"@%@ ", authorScreenName];
         for (NSDictionary *userMention in userMentions) {
@@ -208,6 +211,9 @@
             [defaultText appendFormat:@"@%@ ", screenName];
         }
         uint start = authorScreenName.length + 2;
+#ifdef DEBUG
+        start += 9;
+#endif
         uint length = defaultText.length - authorScreenName.length - 2;
         composeVC.defaultSelectedRange = NSMakeRange(start, length);
     } else {

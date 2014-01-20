@@ -120,6 +120,8 @@
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
+    
     [self.nameLabel sizeToFit];
     [self.creatorLabel sizeToFit];
     [self.memberCountLabel sizeToFit];
