@@ -104,4 +104,24 @@
     }
 }
 
+- (void)dataSource:(HSUBaseDataSource *)dataSource didFinishRefreshWithError:(NSError *)error
+{
+    [super dataSource:dataSource didFinishRefreshWithError:error];
+    
+    if (!error) {
+        if (self.navigationController.viewControllers.lastObject != self) {
+            UIViewController *nextVC = self.navigationController.viewControllers[1];
+            if ([nextVC isKindOfClass:[HSUMessagesViewController class]]) {
+                HSUMessagesViewController *messagesVC = (HSUMessagesViewController *)nextVC;
+                for (HSUTableCellData *cellData in self.dataSource.data) {
+                    NSDictionary *conversation = cellData.rawData;
+                    if ([conversation[@"user"][@"screen_name"] isEqualToString:messagesVC.herProfile[@"screen_name"]]) {
+                        [messagesVC updateConversation:conversation];
+                    }
+                }
+            }
+        }
+    }
+}
+
 @end

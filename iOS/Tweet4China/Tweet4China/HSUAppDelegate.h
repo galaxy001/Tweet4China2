@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "WXApi.h"
 
-@interface HSUAppDelegate : UIResponder <UIApplicationDelegate>
+@interface HSUAppDelegate : UIResponder <UIApplicationDelegate, WXApiDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, weak) UIViewController *tabController;

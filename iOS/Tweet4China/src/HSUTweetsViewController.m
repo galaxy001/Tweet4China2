@@ -21,6 +21,9 @@
 #import <SVWebViewController/SVModalWebViewController.h>
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
 #import <AFNetworking/AFNetworking.h>
+#import "WXApi.h"
+#import "HSUActivityWeixin.h"
+#import "HSUActivityWeixinMoments.h"
 
 @implementation HSUTweetsViewController
 
@@ -535,11 +538,6 @@
     [actionSheet addButtonItem:RTItem];
     count ++;
     
-    RIButtonItem *shareItem = [RIButtonItem itemWithLabel:_("Share")];
-    shareItem.action = ^{
-    };
-    [actionSheet addButtonItem:shareItem];
-    
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
     
@@ -604,19 +602,44 @@
         NSString *subject = _("Link from Twitter");
         [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:self];
     };
-    RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_("Open in Safari")];
+    
+    RIButtonItem *weixinItem;
+    RIButtonItem *momentsItem;
+    if ([WXApi isWXAppInstalled]) {
+        weixinItem = [RIButtonItem itemWithLabel:_("Weixin")];
+        weixinItem.action = ^{
+            [HSUActivityWeixin shareLink:url.absoluteString
+                                   title:_("Share a link from Twitter")
+                             description:label.text];
+        };
+        momentsItem = [RIButtonItem itemWithLabel:_("Weixin Moments")];
+        momentsItem.action = ^{
+            [HSUActivityWeixinMoments shareLink:url.absoluteString
+                                          title:_("Share a link from Twitter")
+                                    description:label.text];
+        };
+    }
+    RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:@"Safari"];
     openInSafariItem.action = ^{
         [[UIApplication sharedApplication] openURL:url];
     };
     UIActionSheet *linkActionSheet;
     if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
-        RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:_("Open in Chrome")];
+        RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:@"Chrome"];
         openInChromeItem.action = ^{
             [[OpenInChromeController sharedInstance] openInChrome:url withCallbackURL:nil createNewTab:YES];
         };
-        linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, openInChromeItem, nil];
+        if ([WXApi isWXAppInstalled]) {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, weixinItem, momentsItem, openInSafariItem, openInChromeItem, nil];
+        } else {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, openInChromeItem, nil];
+        }
     } else {
-        linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, nil];
+        if ([WXApi isWXAppInstalled]) {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, weixinItem, momentsItem, openInSafariItem, nil];
+        } else {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, nil];
+        }
     }
     
     [linkActionSheet showInView:self.view.window];

@@ -26,6 +26,9 @@
 #define Flurry_API_Key Pro_Flurry_API_Key
 #endif
 
+#define WXAppID @"wxf12b4ac0a3c0c4d8"
+#define WXAppKey @"8adda3d2bca193381a5fae61812bb37d"
+
 #import "UIImageView+Additions.h"
 #import "HSUNetworkActivityIndicatorManager.h"
 #import <UIAlertView-Blocks/UIAlertView+Blocks.h>

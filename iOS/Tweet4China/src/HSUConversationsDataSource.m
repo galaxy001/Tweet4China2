@@ -8,6 +8,7 @@
 
 #import "HSUConversationsDataSource.h"
 #import "HSUBaseViewController.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 @implementation HSUConversationsDataSource
 
@@ -46,6 +47,7 @@
             
             NSString *latestID = messages.lastObject[@"id_str"];
             if (latestID) {
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                 if (![[(UIViewController *)weakSelf.delegate view] window]) { // not appear
                     [weakSelf.delegate dataSourceDidFindUnread:nil];
                 }

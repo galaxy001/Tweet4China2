@@ -84,17 +84,17 @@
     [super layoutSubviews];
     
     self.replyIcon.leftTop = ccp(10, 20);
-    self.avatarView.frame = ccr(29, 10, 32, 32);
-    self.nameLabel.leftTop = ccp(66, 10);
+    self.avatarView.frame = ccr(29, 10, 48, 48);
+    self.nameLabel.leftTop = ccp(self.avatarView.right + 5, 10);
     self.timeLabel.leftTop = ccp(self.contentView.width-10-self.timeLabel.width, 12);
     self.snLabel.frame = ccr(self.nameLabel.right + 4, 12, self.timeLabel.left-self.nameLabel.right - 4, self.snLabel.height);
-    self.contentLabel.frame = ccr(67, 28, self.contentView.width-67-32, self.contentLabel.height);
+    self.contentLabel.frame = ccr(self.avatarView.right + 6, self.nameLabel.top+22, self.contentView.width-self.avatarView.right-6-32, self.contentLabel.height);
     self.unreadIndicator.leftTop = ccp(5, 5);
 }
 
 + (CGFloat)heightForData:(HSUTableCellData *)data
 {
-    return 53;
+    return 70;
 }
 
 - (void)setupWithData:(HSUTableCellData *)data

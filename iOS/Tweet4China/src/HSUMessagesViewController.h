@@ -15,4 +15,6 @@
 @property (nonatomic, assign) BOOL followedMe;
 @property (nonatomic, assign) BOOL relactionshipLoaded;
 
+- (void)updateConversation:(NSDictionary *)conversation;
+
 @end

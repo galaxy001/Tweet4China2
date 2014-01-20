@@ -149,6 +149,7 @@
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     CGSize size = [self.contentLabel sizeThatFits:ccs(225, 0)];
     self.contentLabel.size = ccs(MAX(size.width, 30), size.height);
+    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
 }
 
 @end

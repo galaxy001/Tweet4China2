@@ -94,6 +94,7 @@ static HSUShadowsocksProxy *proxy;
     [self updateImageCacheSize];
     [self logJailBreak];
     [self updateConfig];
+    [self registerWeixinApp];
     
     notification_add_observer(SVProgressHUDWillAppearNotification, self, @selector(disableWindowUserinterface));
     notification_add_observer(SVProgressHUDWillDisappearNotification, self, @selector(enbleWindowUserinterface));
@@ -155,6 +156,15 @@ static HSUShadowsocksProxy *proxy;
     if ([action isEqualToString:@"post"] && queriesDict[@"message"]) {
         NSString *msg = queriesDict[@"message"];
         [self postWithMessage:msg image:nil selectedRange:NSMakeRange(0, msg.length)];
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    if ([WXApi handleOpenURL:url delegate:self]) {
         return YES;
     }
     return NO;
@@ -515,6 +525,11 @@ static HSUShadowsocksProxy *proxy;
 - (void)enbleWindowUserinterface
 {
     self.window.userInteractionEnabled = YES;
+}
+
+- (void)registerWeixinApp
+{
+    [WXApi registerApp:WXAppID];
 }
 
 @end

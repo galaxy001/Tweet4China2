@@ -10,6 +10,7 @@
 #import "HSUMessagesDataSource.h"
 #import "HSUSendBarButtonItem.h"
 #import <UIAlertView-Blocks/UIActionSheet+Blocks.h>
+#import "HSUProfileViewController.h"
 
 @interface HSUMessagesViewController () <UITextViewDelegate>
 
@@ -110,6 +111,8 @@
         }
     } failure:^(NSError *error) {
     }];
+    
+    [self preprocessDataSourceForRender:self.dataSource];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -156,7 +159,7 @@
     self.textView.left = 12;
     
     [self _resetToolbarLocation];
-    [self _scrollToBottom];
+    [self _scrollToBottomWithAnimation:NO];
     self.layoutForTextChanged = NO;
     self.navigationItem.rightBarButtonItem = self.sendBarButtonItem;
 }
@@ -179,6 +182,7 @@
 {
     [super preprocessDataSourceForRender:dataSource];
     
+    [dataSource addEventWithName:@"touchAvatar" target:self action:@selector(touchAvatar:) events:UIControlEventTouchUpInside];
     [dataSource addEventWithName:@"retry" target:self action:@selector(retry:) events:UIControlEventTouchUpInside];
 }
 
@@ -238,9 +242,9 @@
     self.textView.width = self.width - self.textView.left * 2 - self.wordCountLabel.width;
 }
 
-- (void)_scrollToBottom
+- (void)_scrollToBottomWithAnimation:(BOOL)animation
 {
-    [self.tableView setContentOffset:ccp(0, MAX(self.tableView.contentSize.height-self.tableView.height+self.tableView.contentInset.bottom, 0)) animated:NO];
+    [self.tableView setContentOffset:ccp(0, MAX(self.tableView.contentSize.height-self.tableView.height+self.tableView.contentInset.bottom, 0)) animated:animation];
 }
 
 - (void)backButtonTouched
@@ -300,7 +304,7 @@
     [self _retrySendMessage:message];
     self.textView.text = nil;
     [self textViewDidChange:self.textView];
-    [self _scrollToBottom];
+    [self _scrollToBottomWithAnimation:NO];
 }
 
 - (void)retry:(HSUTableCellData *)cellData
@@ -330,6 +334,24 @@
         message[@"failed"] = @(YES);
         [weakSelf.tableView reloadData];
     }];
+}
+
+- (void)updateConversation:(NSDictionary *)conversation
+{
+    HSUMessagesDataSource *messagesDataSource = [[HSUMessagesDataSource alloc] initWithConversation:conversation];
+    self.dataSource = messagesDataSource;
+    self.tableView.dataSource = messagesDataSource;
+    [self.tableView reloadData];
+    [self _scrollToBottomWithAnimation:YES];
+    [self preprocessDataSourceForRender:self.dataSource];
+}
+
+- (void)touchAvatar:(HSUTableCellData *)cellData
+{
+    NSString *screenName = cellData.rawData[@"sender"][@"screen_name"];
+    HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+    profileVC.profile = cellData.rawData[@"sender"];
+    [self.navigationController pushViewController:profileVC animated:YES];
 }
 
 @end
