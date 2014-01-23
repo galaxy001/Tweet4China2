@@ -38,14 +38,14 @@
             }
         }
         
-        NSDictionary *tweet = [tweetsWithPhoto lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
-        
         success(tweetsWithPhoto);
         
-        if (tweetsWithPhoto.count == 0 || [responseObj count] < weakSelf.requestCount) {
-            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
-        }
+        NSDictionary *tweet = [responseObj lastObject];
+        weakSelf.lastStatusID = tweet[@"id_str"];
+        
+//        if ([responseObj count] < weakSelf.requestCount) {
+//            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+//        }
     } failure:^(NSError *error) {
         failure(error);
     }];
@@ -78,14 +78,14 @@
             }
         }
         
-        NSDictionary *tweet = [tweetsWithPhoto lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
-        
         success(tweetsWithPhoto);
         
-        if (tweetsWithPhoto.count == 0 || [responseObj count] < weakSelf.requestCount) {
-            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
-        }
+        NSDictionary *tweet = [responseObj lastObject];
+        weakSelf.lastStatusID = tweet[@"id_str"];
+        
+//        if ([responseObj count] < weakSelf.requestCount) {
+//            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
+//        }
     } failure:^(NSError *error) {
         failure(error);
     }];
@@ -99,5 +99,11 @@
     }
     return NO;
 }
+
+- (NSUInteger)requestCount
+{
+    return MIN([super requestCount] * 5, 200);
+}
+
 
 @end

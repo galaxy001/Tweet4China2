@@ -77,7 +77,7 @@
 {
     [super layoutSubviews];
     
-    self.avatarButton.layer.cornerRadius = avatar_corner_radius;
+    [self.avatarButton makeCornerRadius];
     self.followButton.right = self.contentView.width - 10;
     self.verifyFlag.leftTop = ccp(self.nameLabel.right + 3, self.nameLabel.top);
 }

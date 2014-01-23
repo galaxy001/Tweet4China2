@@ -43,7 +43,8 @@
     
     [super viewDidLoad];
     
-    UISegmentedControl *typeControl = [[UISegmentedControl alloc] initWithItems:@[_("Tweets"), _("User")]];
+    UISegmentedControl *typeControl = [[UISegmentedControl alloc] initWithItems:@[_("Tweets"),
+                                                                                  _("User")]];
     self.typeControl = typeControl;
     [self.tableView addSubview:typeControl];
     typeControl.selectedSegmentIndex = 0;

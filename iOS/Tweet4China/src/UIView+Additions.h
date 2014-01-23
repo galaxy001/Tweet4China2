@@ -17,5 +17,6 @@
 @property (nonatomic, readwrite) CGSize size;
 
 - (NSString *)frameStr;
+- (void)makeCornerRadius;
 
 @end

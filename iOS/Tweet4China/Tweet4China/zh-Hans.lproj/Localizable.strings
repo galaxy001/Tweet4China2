@@ -232,3 +232,11 @@
 "Weixin send failed" = "微信发送失败了";
 "Weixin Moments" = "微信朋友圈";
 "Browser" = "浏览器";
+"Updating your user settings..." = "正在更新您的推特设置...";
+"Load user settings failed" = "加载您的推特设置失败了";
+"Open Twitter Website" = "打开推特网页";
+"Location disabled" = "推特定位已关闭";
+"Round Avatar" = "圆头像";
+"Desktop Web Browser" = "模拟桌面浏览器";
+"Exclude Replies" = "过滤评论推文";
+"User" = "用户";

@@ -16,6 +16,7 @@
     self = [super init];
     if (self) {
         notification_add_observer(HSUStatusDidDelete, self, @selector(statusDidDelete:));
+        notification_add_observer(HSUSettingExcludeRepliesChangedNotification, self, @selector(clearCache));
     }
     return self;
 }
@@ -35,6 +36,11 @@
             }
             
             for (int i=tweets.count-1; i>=0; i--) {
+                if ([setting(HSUSettingExcludeReplies) boolValue]) {
+                    if ([tweets[i][@"in_reply_to_status_id"] integerValue]) {
+                        continue;
+                    }
+                }
                 HSUTableCellData *cellData =
                 [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
                 cellData.renderData[@"unread"] = @YES;
@@ -65,6 +71,7 @@
         weakSelf.loadingCount --;
     } failure:^(NSError *error) {
         [twitter dealWithError:error errTitle:_("Load failed")];
+        [weakSelf.data.lastObject setRawData:@{@"status": (!error ||error.code == 204) ? @(kLoadMoreCellStatus_NoMore) : @(kLoadMoreCellStatus_Error)}];
         [weakSelf.delegate dataSource:self didFinishRefreshWithError:error];
         weakSelf.loadingCount --;
     }];
@@ -80,6 +87,11 @@
         [weakSelf.data removeLastObject];
         NSUInteger oldCount = weakSelf.count;
         for (NSDictionary *tweet in responseObj) {
+            if ([setting(HSUSettingExcludeReplies) boolValue]) {
+                if ([tweet[@"in_reply_to_status_id"] integerValue]) {
+                    continue;
+                }
+            }
             HSUTableCellData *cellData =
             [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
             [weakSelf.data addObject:cellData];

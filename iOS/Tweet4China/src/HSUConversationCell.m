@@ -82,7 +82,7 @@
 {
     [super layoutSubviews];
     
-    self.avatarView.layer.cornerRadius = avatar_corner_radius;
+    [self.avatarView makeCornerRadius];
     self.replyIcon.leftTop = ccp(10, 20);
     self.avatarView.frame = ccr(29, 10, 48, 48);
     self.nameLabel.leftTop = ccp(self.avatarView.right + 5, 10);

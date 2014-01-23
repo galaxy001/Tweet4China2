@@ -210,7 +210,7 @@
 {
     [super layoutSubviews];
     
-    avatarB.layer.cornerRadius = avatar_corner_radius;
+    [avatarB makeCornerRadius];
     contentArea.frame = ccr(padding_S, padding_S, self.contentView.width-padding_S*4, self.contentView.height-padding_S-actionV_H);
     
     ambientArea.frame = ccr(0, 0, contentArea.width, ambient_S);

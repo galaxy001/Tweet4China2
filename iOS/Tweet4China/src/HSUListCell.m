@@ -121,7 +121,7 @@
 {
     [super layoutSubviews];
     
-    self.creatorAvatar.layer.cornerRadius = avatar_corner_radius;
+    [self.creatorAvatar makeCornerRadius];
     [self.nameLabel sizeToFit];
     [self.creatorLabel sizeToFit];
     [self.memberCountLabel sizeToFit];

@@ -18,6 +18,7 @@
 @property (nonatomic, weak) RERadioItem *textSizeItem;
 @property (nonatomic, weak) REBoolItem *roundAvatarItem;
 @property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
+@property (nonatomic, weak) REBoolItem *excludeRepliesItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
 @property (nonatomic, weak) RETableViewItem *cleanCacheItem;
 
@@ -38,7 +39,8 @@
     RETableViewSection *section = [RETableViewSection section];
     [self.manager addSection:section];
     
-    REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_("Sound Effect") value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
+    REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_("Sound Effect")
+                                                      value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
     self.soundEffectItem = soundEffectItem;
     [section addItem:soundEffectItem];
     __weak typeof(self) weakSelf = self;
@@ -51,7 +53,8 @@
         }
     };
     
-    REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_("Photo Preview") value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
+    REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_("Photo Preview")
+                                                       value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
     self.photoPreviewItem = photoPreviewItem;
     [section addItem:photoPreviewItem];
     photoPreviewItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -63,7 +66,8 @@
         }
     };
     
-    RERadioItem *textSizeItem = [RERadioItem itemWithTitle:_("Text Size") value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
+    RERadioItem *textSizeItem = [RERadioItem itemWithTitle:_("Text Size")
+                                                     value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -90,7 +94,8 @@
     self.textSizeItem = textSizeItem;
     [section addItem:textSizeItem];
     
-    REBoolItem *roundAvatarItem = [REBoolItem itemWithTitle:_("Round Avatar") value:[GlobalSettings[HSUSettingRoundAvatar] boolValue]];
+    REBoolItem *roundAvatarItem = [REBoolItem itemWithTitle:_("Round Avatar")
+                                                      value:[GlobalSettings[HSUSettingRoundAvatar] boolValue]];
     self.roundAvatarItem = roundAvatarItem;
     [section addItem:roundAvatarItem];
     roundAvatarItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -102,7 +107,8 @@
         }
     };
     
-    REBoolItem *desktopUserAgentItem = [REBoolItem itemWithTitle:_("Desktop Web Browser") value:[GlobalSettings[HSUSettingDesktopUserAgent] boolValue]];
+    REBoolItem *desktopUserAgentItem = [REBoolItem itemWithTitle:_("Desktop Web Browser")
+                                                           value:[GlobalSettings[HSUSettingDesktopUserAgent] boolValue]];
     self.desktopUserAgentItem = desktopUserAgentItem;
     [section addItem:desktopUserAgentItem];
     desktopUserAgentItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -115,7 +121,22 @@
         
     };
     
-    RERadioItem *cacheSizeItem = [RERadioItem itemWithTitle:_("Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
+    REBoolItem *excludeRepliesItem = [REBoolItem itemWithTitle:_("Exclude Replies")
+                                                         value:[GlobalSettings[HSUSettingExcludeReplies] boolValue]];
+    self.excludeRepliesItem = excludeRepliesItem;
+    [section addItem:excludeRepliesItem];
+    excludeRepliesItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+        
+    };
+    
+    RERadioItem *cacheSizeItem = [RERadioItem itemWithTitle:_("Cache Size")
+                                                      value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -184,18 +205,34 @@
     BOOL imagePreview = self.photoPreviewItem.value;
     BOOL roundAvatar = self.roundAvatarItem.value;
     BOOL desktopUserAgent = self.desktopUserAgentItem.value;
+    BOOL excludeReplies = self.excludeRepliesItem.value;
     NSString *textSize = self.textSizeItem.value;
     NSString *cacheSize = self.cacheSizeItem.value;
     
-    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize, HSUSettingCacheSize: cacheSize, HSUSettingRoundAvatar: @(roundAvatar), HSUSettingDesktopUserAgent: @(desktopUserAgent)};
+    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect),
+                       HSUSettingPhotoPreview: @(imagePreview),
+                       HSUSettingTextSize: textSize,
+                       HSUSettingCacheSize: cacheSize,
+                       HSUSettingRoundAvatar: @(roundAvatar),
+                       HSUSettingDesktopUserAgent: @(desktopUserAgent),
+                       HSUSettingExcludeReplies: @(excludeReplies)};
+    
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
-        if (![globalSettings[HSUSettingDesktopUserAgent] boolValue] == [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {
+        if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {
             notification_post(HSUSettingUserAgentChangedNotification);
+        }
+        if ([globalSettings[HSUSettingExcludeReplies] boolValue] != [GlobalSettings[HSUSettingExcludeReplies] boolValue]) {
+            notification_post(HSUSettingExcludeRepliesChangedNotification);
         }
         [[NSUserDefaults standardUserDefaults] setValue:GlobalSettings forKey:HSUSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
         notification_post_with_object(HSUSettingsUpdatedNotification, GlobalSettings);
         [[HSUAppDelegate shared] updateImageCacheSize];
+        if (desktopUserAgent) {
+            [HSUCommonTools switchToDesktopUserAgent];
+        } else {
+            [HSUCommonTools resetUserAgent];
+        }
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];

@@ -348,7 +348,6 @@
 		96DABC76172AF5BF001AD70A /* HSUStatusActionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DABC75172AF5BE001AD70A /* HSUStatusActionView.m */; };
 		96DEB785179D447F005D3FAF /* HSUTwitterAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DEB784179D447F005D3FAF /* HSUTwitterAPI.m */; };
 		96DEBF261890FCF900618AD2 /* HSUSearchPersonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DEBF231890FCF900618AD2 /* HSUSearchPersonViewController.m */; };
-		96DEBF2A1891011000618AD2 /* HSUModalWebViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96DEBF291891011000618AD2 /* HSUModalWebViewController.m */; };
 		96DECEC8187FD6A300E46809 /* btn_bookmark_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DECEC6187FD6A300E46809 /* btn_bookmark_selected@2x.png */; };
 		96DECEC9187FD6A300E46809 /* btn_bookmark@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DECEC7187FD6A300E46809 /* btn_bookmark@2x.png */; };
 		96E34B4117006B1C0066CD5E /* bg_dm_count@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96E34B4017006B1C0066CD5E /* bg_dm_count@2x.png */; };
@@ -846,8 +845,6 @@
 		96DEB784179D447F005D3FAF /* HSUTwitterAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUTwitterAPI.m; sourceTree = "<group>"; };
 		96DEBF221890FCF900618AD2 /* HSUSearchPersonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonViewController.h; sourceTree = "<group>"; };
 		96DEBF231890FCF900618AD2 /* HSUSearchPersonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonViewController.m; sourceTree = "<group>"; };
-		96DEBF281891011000618AD2 /* HSUModalWebViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUModalWebViewController.h; sourceTree = "<group>"; };
-		96DEBF291891011000618AD2 /* HSUModalWebViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUModalWebViewController.m; sourceTree = "<group>"; };
 		96DECEC6187FD6A300E46809 /* btn_bookmark_selected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_bookmark_selected@2x.png"; sourceTree = "<group>"; };
 		96DECEC7187FD6A300E46809 /* btn_bookmark@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "btn_bookmark@2x.png"; sourceTree = "<group>"; };
 		96E34B4017006B1C0066CD5E /* bg_dm_count@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_dm_count@2x.png"; sourceTree = "<group>"; };
@@ -1537,8 +1534,6 @@
 				96992D44188D059900AADDC2 /* HSUActivityWeixin.m */,
 				96992D46188D094200AADDC2 /* HSUActivityWeixinMoments.h */,
 				96992D47188D094200AADDC2 /* HSUActivityWeixinMoments.m */,
-				96DEBF281891011000618AD2 /* HSUModalWebViewController.h */,
-				96DEBF291891011000618AD2 /* HSUModalWebViewController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -2076,7 +2071,6 @@
 				96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */,
 				966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */,
 				966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */,
-				96DEBF2A1891011000618AD2 /* HSUModalWebViewController.m in Sources */,
 				96FAB148174BDBBC00C8C854 /* HSUMessageCell.m in Sources */,
 				96C951F618795A6300D3AC9A /* HSUSearchField.m in Sources */,
 				96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */,

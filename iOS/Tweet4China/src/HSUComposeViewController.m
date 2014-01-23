@@ -709,8 +709,8 @@
 - (void)geoButtonTouched {
     NSDictionary *userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings][MyScreenName];
     if (![userSettings[@"geo_enabled"] boolValue]) {
-        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cance")];
-        RIButtonItem *openItem = [RIButtonItem itemWithLabel:_("Open Twitter")];
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *openItem = [RIButtonItem itemWithLabel:_("Open Twitter Website")];
         __weak typeof(self)weakSelf = self;
         openItem.action = ^{
             [HSUCommonTools switchToDesktopUserAgent];

@@ -14,7 +14,6 @@
 @property(nonatomic, assign) UIEdgeInsets hitTestEdgeInsets;
 
 - (void)setTapTarget:(id)target action:(SEL)action;
-
 - (void)showSpinner:(BOOL)show;
 
 @end

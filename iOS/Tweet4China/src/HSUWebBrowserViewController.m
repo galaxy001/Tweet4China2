@@ -10,7 +10,6 @@
 #import <RETableViewManager/RETableViewOptionsController.h>
 #import <SVWebViewController/SVWebViewController.h>
 #import "HSUAddBookmarkViewController.h"
-#import "HSUModalWebViewController.h"
 #import "HSUSettingsViewController.h"
 
 @interface HSUWebBrowserViewController ()
@@ -18,7 +17,7 @@
 @property (nonatomic, weak) RETableViewSection *bookmarkSection;
 @property (nonatomic, weak) RETableViewSection *tabSection;
 @property (nonatomic, weak) RETableViewItem *currentItem;
-@property (nonatomic, strong) HSUModalWebViewController *webViewController;
+@property (nonatomic, strong) SVModalWebViewController *webViewController;
 
 @end
 
@@ -80,7 +79,7 @@
         }
         NSURL *URL = [NSURL URLWithString:url];
         if (URL) {
-            weakSelf.webViewController = [[HSUModalWebViewController alloc] initWithAddress:url];
+            weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
 //            weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
             [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
         } else {
@@ -137,7 +136,7 @@
             {
                 [item deselectRowAnimated:YES];
                 
-                weakSelf.webViewController = [[HSUModalWebViewController alloc] initWithAddress:url];
+                weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
 //                weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
                 [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
             };

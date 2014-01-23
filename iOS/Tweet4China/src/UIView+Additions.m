@@ -153,4 +153,9 @@
     return NSStringFromCGRect(self.frame);
 }
 
+- (void)makeCornerRadius
+{
+    self.layer.cornerRadius = ([[HSUAppDelegate shared].globalSettings[HSUSettingRoundAvatar] boolValue] ? self.width/2 : ceilf(5/self.width));
+}
+
 @end

@@ -76,7 +76,7 @@
 {
     [super layoutSubviews];
     
-    self.avatarButton.layer.cornerRadius = avatar_corner_radius;
+    [self.avatarButton makeCornerRadius];
     self.timeLabel.topCenter = ccp(self.contentView.width/2, 6);
     if (self.isMyself) {
         self.avatarButton.rightTop = ccp(self.contentView.width-5, 6);

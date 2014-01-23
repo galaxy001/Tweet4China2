@@ -145,6 +145,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUUserProfiles @"HSUUserProfiles"
 #define kDiscoverHomePage @"HSUDiscoverHomePage"
 
+#define setting(key) [[[NSUserDefaults standardUserDefaults] objectForKey:HSUSettings] objectForKey:key]
 #define HSUShadowsocksSettings_Desc @"desc"
 #define HSUShadowsocksSettings_Server @"server"
 #define HSUShadowsocksSettings_RemotePort @"remote_port"
@@ -160,14 +161,14 @@ _Pragma("clang diagnostic pop") \
 #define HSUSettings @"HSUSettings"
 #define HSUSettingsUpdatedNotification @"HSUSettingsUpdatedNotification"
 #define HSUSettingUserAgentChangedNotification @"HSUSettingUserAgentChangedNotification"
+#define HSUSettingExcludeRepliesChangedNotification @"HSUSettingExcludeRepliesChangedNotification"
 #define HSUSettingSoundEffect @"sound_effect"
 #define HSUSettingPhotoPreview @"photo_preview"
 #define HSUSettingTextSize @"text_size"
 #define HSUSettingCacheSize @"cache_size"
 #define HSUSettingRoundAvatar @"round_avatar"
 #define HSUSettingDesktopUserAgent @"desktop_useragent"
-
-#define avatar_corner_radius ([[HSUAppDelegate shared].globalSettings[HSUSettingRoundAvatar] boolValue] ? 24 : 5)
+#define HSUSettingExcludeReplies @"exclude_replies"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"
@@ -182,6 +183,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUBookmarkUpdatedNotification @"HSUBookmarkUpdatedNotification"
 
 #define status_height 20
+//[[UIApplication sharedApplication] statusBarFrame].size.height
 #define navbar_height self.navigationController.navigationBar.height
 #define tabbar_height self.tabBarController.tabBar.height
 #define toolbar_height 44

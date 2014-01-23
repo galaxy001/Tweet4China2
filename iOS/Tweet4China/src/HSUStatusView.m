@@ -179,7 +179,7 @@
     } else {
         avatarB.frame = ccr(avatarB.left, 0, avatarB.width, avatarB.height);
     }
-    avatarB.layer.cornerRadius = avatar_corner_radius;
+    [avatarB makeCornerRadius];
     
     infoArea.frame = ccr(ambientL.left, avatarB.top, cw-ambientL.left, info_H);
     textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, [self.data.renderData[@"text_height"] floatValue] + 3);
