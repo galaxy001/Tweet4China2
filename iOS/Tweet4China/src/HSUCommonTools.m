@@ -84,6 +84,14 @@ static HSUMailHelper *mailHelper;
 
 @implementation HSUCommonTools
 
+static NSString *defaultUserAgent;
+
++ (void)initialize
+{
+    UIWebView *webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    defaultUserAgent = [webView stringByEvaluatingJavaScriptFromString:@"navigator.userAgent"];
+}
+
 + (BOOL)isIPhone
 {
     return [[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone;
@@ -117,6 +125,35 @@ static HSUMailHelper *mailHelper;
 #else
     return [NSString stringWithFormat:@"Tweet4China Pro %@", verNum];
 #endif
+}
+
++ (void)switchToDesktopUserAgent
+{
+    if ([self isDesktopUserAgent]) {
+        return;
+    }
+    NSMutableDictionary *userDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] mutableCopy];
+    userDefaults[@"UserAgent"] = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.63 Safari/537.36";
+    [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaults];
+}
+
++ (void)resetUserAgent
+{
+    if (![self isDesktopUserAgent]) {
+        return;
+    }
+    NSMutableDictionary *userDefaults = [[[NSUserDefaults standardUserDefaults] dictionaryRepresentation] mutableCopy];
+    userDefaults[@"UserAgent"] = defaultUserAgent;
+    [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaults];
+}
+
++ (BOOL)isDesktopUserAgent
+{
+    NSString *userAgent = [[NSUserDefaults standardUserDefaults] objectForKey:@"UserAgent"];
+    if (userAgent && [userAgent rangeOfString:@"Chrome"].location != NSNotFound) {
+        return YES;
+    }
+    return NO;
 }
 
 @end

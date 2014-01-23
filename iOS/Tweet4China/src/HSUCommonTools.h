@@ -21,6 +21,9 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 + (CGFloat)winWidth;
 + (CGFloat)winHeight;
 + (NSString *)version;
++ (void)switchToDesktopUserAgent;
++ (void)resetUserAgent;
++ (BOOL)isDesktopUserAgent;
 
 + (void)sendMailWithSubject:(NSString *)subject body:(NSString *)body presentFromViewController:(UIViewController *)viewController;
 

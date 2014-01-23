@@ -10,13 +10,15 @@
 #import <RETableViewManager/RETableViewOptionsController.h>
 #import <SVWebViewController/SVWebViewController.h>
 #import "HSUAddBookmarkViewController.h"
+#import "HSUModalWebViewController.h"
+#import "HSUSettingsViewController.h"
 
 @interface HSUWebBrowserViewController ()
 
 @property (nonatomic, weak) RETableViewSection *bookmarkSection;
 @property (nonatomic, weak) RETableViewSection *tabSection;
 @property (nonatomic, weak) RETableViewItem *currentItem;
-@property (nonatomic, strong) SVModalWebViewController *webViewController;
+@property (nonatomic, strong) HSUModalWebViewController *webViewController;
 
 @end
 
@@ -31,10 +33,30 @@
 {
     [super viewDidLoad];
     
+    UIButton *actionButton = [[UIButton alloc] init];
+    [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+    if (Sys_Ver >= 7) {
+        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
+    } else {
+        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
+    }
+    [actionButton sizeToFit];
+    
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
+        UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+        UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+        [actionButton addSubview:indicator];
+        indicator.leftTop = ccp(actionButton.width-10, 0);
+    }
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                               initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                               target:self
                                               action:@selector(add)];
+    
+    notification_add_observer(HSUSettingUserAgentChangedNotification, self, @selector(userAgentChanged));
     
     self.navigationItem.title = _("Browser");
 }
@@ -58,7 +80,7 @@
         }
         NSURL *URL = [NSURL URLWithString:url];
         if (URL) {
-            weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
+            weakSelf.webViewController = [[HSUModalWebViewController alloc] initWithAddress:url];
 //            weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
             [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
         } else {
@@ -115,7 +137,7 @@
             {
                 [item deselectRowAnimated:YES];
                 
-                weakSelf.webViewController = [[SVModalWebViewController alloc] initWithAddress:url];
+                weakSelf.webViewController = [[HSUModalWebViewController alloc] initWithAddress:url];
 //                weakSelf.webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
                 [weakSelf presentViewController:weakSelf.webViewController animated:YES completion:NULL];
             };
@@ -142,6 +164,24 @@
     HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:viewController];
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (void)_actionButtonTouched
+{
+    HSUSettingsViewController *settingsVC = [[HSUSettingsViewController alloc] init];
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.modalPresentationStyle = UIModalPresentationFormSheet;
+    nav.viewControllers = @[settingsVC];
+    [self presentViewController:nav animated:YES completion:nil];
+    
+    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
+        notification_post(HSUActionBarTouchedNotification);
+    }
+}
+
+- (void)userAgentChanged
+{
+    self.webViewController = nil;
 }
 
 - (BOOL)shouldAutorotate

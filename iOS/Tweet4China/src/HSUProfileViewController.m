@@ -72,6 +72,9 @@
 
 - (void)viewDidLoad
 {
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    
     [super viewDidLoad];
     
     HSUProfileView *profileView = [[HSUProfileView alloc]
@@ -103,12 +106,6 @@
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    
-    if (self.isMe) { // me tab
-        self.navigationItem.rightBarButtonItem = self.addFriendBarButton;
-    } else {
-        self.navigationItem.rightBarButtonItem = self.composeBarButton;
-    }
     
     if (!self.presenting) {
         [self refreshDataIfNeed];

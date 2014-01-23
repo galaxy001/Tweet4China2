@@ -76,7 +76,6 @@
         self.creatorAvatar = creatorAvatar;
         [self.contentView addSubview:creatorAvatar];
         creatorAvatar.size = ccs(32, 32);
-        creatorAvatar.layer.cornerRadius = 5;
         creatorAvatar.clipsToBounds = YES;
     }
     return self;
@@ -122,6 +121,7 @@
 {
     [super layoutSubviews];
     
+    self.creatorAvatar.layer.cornerRadius = avatar_corner_radius;
     [self.nameLabel sizeToFit];
     [self.creatorLabel sizeToFit];
     [self.memberCountLabel sizeToFit];

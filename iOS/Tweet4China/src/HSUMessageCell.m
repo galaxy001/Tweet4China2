@@ -59,7 +59,6 @@
         UIButton *avatarButton = [[UIButton alloc] init];
         [self.contentView addSubview:avatarButton];
         self.avatarButton = avatarButton;
-        avatarButton.layer.cornerRadius = 5;
         avatarButton.layer.masksToBounds = YES;
         avatarButton.size = ccs(50, 50);
         
@@ -77,6 +76,7 @@
 {
     [super layoutSubviews];
     
+    self.avatarButton.layer.cornerRadius = avatar_corner_radius;
     self.timeLabel.topCenter = ccp(self.contentView.width/2, 6);
     if (self.isMyself) {
         self.avatarButton.rightTop = ccp(self.contentView.width-5, 6);

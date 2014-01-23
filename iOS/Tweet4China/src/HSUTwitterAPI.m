@@ -593,7 +593,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     NSMutableDictionary *params = [@{} mutableCopy];
     if (sinceID) params[@"cursor"] = sinceID;
     if (screenName) params[@"screen_name"] = screenName;
-    params[@"count"] = @"100";
+    params[@"count"] = @"50";
     [self sendGETWithUrl:url_followers_ids
               parameters:params
                  success:^(id responseObj)
@@ -611,7 +611,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     NSMutableDictionary *params = [@{} mutableCopy];
     if (sinceID) params[@"cursor"] = sinceID;
     if (screenName) params[@"screen_name"] = screenName;
-    params[@"count"] = @"100";
+    params[@"count"] = @"50";
     [self sendGETWithUrl:url_friends_ids
               parameters:params
                  success:^(id responseObj)

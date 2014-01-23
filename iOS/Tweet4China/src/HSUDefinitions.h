@@ -159,10 +159,15 @@ _Pragma("clang diagnostic pop") \
 #define GlobalSettings ([HSUAppDelegate shared].globalSettings)
 #define HSUSettings @"HSUSettings"
 #define HSUSettingsUpdatedNotification @"HSUSettingsUpdatedNotification"
+#define HSUSettingUserAgentChangedNotification @"HSUSettingUserAgentChangedNotification"
 #define HSUSettingSoundEffect @"sound_effect"
 #define HSUSettingPhotoPreview @"photo_preview"
 #define HSUSettingTextSize @"text_size"
 #define HSUSettingCacheSize @"cache_size"
+#define HSUSettingRoundAvatar @"round_avatar"
+#define HSUSettingDesktopUserAgent @"desktop_useragent"
+
+#define avatar_corner_radius ([[HSUAppDelegate shared].globalSettings[HSUSettingRoundAvatar] boolValue] ? 24 : 5)
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"

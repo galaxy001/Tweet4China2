@@ -98,7 +98,7 @@
     [self.tableView reloadData];
     
     ((HSUSearchPersonDataSource *)self.dataSource).keyword = self.searchTF.text;
-    [self.dataSource loadMore];
+    [self.dataSource refresh];
     [textField resignFirstResponder];
     return NO;
 }

@@ -6,19 +6,35 @@
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUSearchTweetsViewController.h"
+#import "HSUSearchViewController.h"
 #import "HSUSearchField.h"
 #import "HSUSearchTweetsDataSource.h"
+#import "HSUSearchPersonDataSource.h"
 
-@interface HSUSearchTweetsViewController () <UITextFieldDelegate>
+@interface HSUSearchViewController () <UITextFieldDelegate>
+
+@property (nonatomic, weak) UISegmentedControl *typeControl;
+@property (nonatomic, strong) HSUSearchTweetsDataSource *searchTweetsDataSource;
+@property (nonatomic, strong) HSUSearchPersonDataSource *searchPeronsDataSource;
 
 @end
 
-@implementation HSUSearchTweetsViewController
+@implementation HSUSearchViewController
 
 - (void)dealloc
 {
     self.searchTF.delegate = nil;
+}
+
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.searchTweetsDataSource = [[HSUSearchTweetsDataSource alloc] init];
+        self.searchPeronsDataSource = [[HSUSearchPersonDataSource alloc] init];
+        self.dataSource = self.searchTweetsDataSource;
+    }
+    return self;
 }
 
 - (void)viewDidLoad
@@ -27,7 +43,19 @@
     
     [super viewDidLoad];
     
-    self.navigationItem.rightBarButtonItem = nil;
+    UISegmentedControl *typeControl = [[UISegmentedControl alloc] initWithItems:@[_("Tweets"), _("User")]];
+    self.typeControl = typeControl;
+    [self.tableView addSubview:typeControl];
+    typeControl.selectedSegmentIndex = 0;
+    [typeControl addTarget:self action:@selector(typeControlValueChanged:) forControlEvents:UIControlEventValueChanged];
+    if (Sys_Ver >= 7) {
+        [typeControl setWidth:100 forSegmentAtIndex:0];
+        [typeControl setWidth:100 forSegmentAtIndex:1];
+    } else {
+        [typeControl setWidth:150 forSegmentAtIndex:0];
+        [typeControl setWidth:150 forSegmentAtIndex:1];
+        typeControl.transform = CGAffineTransformMakeScale(.7, .7);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -89,6 +117,31 @@
     
     [self.searchTF resignFirstResponder];
     self.searchTF.hidden = YES;
+}
+
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    CGFloat originTableViewContentInsetTop = 0;
+    if (Sys_Ver >= 7) {
+        originTableViewContentInsetTop = status_height + navbar_height;
+    }
+    self.tableView.contentInset = edi(originTableViewContentInsetTop + 10 + self.typeControl.height + 10, 0, tabbar_height, 0);
+    self.typeControl.topCenter = ccp(self.view.width/2, originTableViewContentInsetTop + 10 - self.tableView.contentInset.top);
+}
+
+- (void)typeControlValueChanged:(UISegmentedControl *)segmentControl
+{
+    if (segmentControl.selectedSegmentIndex == 0) {
+        self.dataSource = self.searchTweetsDataSource;
+    } else if (segmentControl.selectedSegmentIndex == 1) {
+        self.dataSource = self.searchPeronsDataSource;
+    }
+    self.tableView.dataSource = self.dataSource;
+    self.dataSource.delegate = self;
+    [self.tableView reloadData];
+    [self.searchTF becomeFirstResponder];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField

@@ -36,7 +36,6 @@
         UIImageView *avatarView = [[UIImageView alloc] init];
         [self.contentView addSubview:avatarView];
         self.avatarView = avatarView;
-        avatarView.layer.cornerRadius = 3;
         avatarView.layer.masksToBounds = YES;
         
         UILabel *nameLabel = [[UILabel alloc] init];
@@ -83,6 +82,7 @@
 {
     [super layoutSubviews];
     
+    self.avatarView.layer.cornerRadius = avatar_corner_radius;
     self.replyIcon.leftTop = ccp(10, 20);
     self.avatarView.frame = ccr(29, 10, 48, 48);
     self.nameLabel.leftTop = ccp(self.avatarView.right + 5, 10);
@@ -105,6 +105,7 @@
     NSString *name = user[@"name"];
     NSString *sn = [user[@"screen_name"] twitterScreenName];
     NSString *avatarUrl = user[@"profile_image_url_https"];
+    avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:data.rawData[@"created_at"]];
     NSString *time = createdDate.pureTwitterDisplay;
     NSDictionary *latestMessage = [data.rawData[@"messages"] lastObject];

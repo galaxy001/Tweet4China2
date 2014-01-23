@@ -213,9 +213,9 @@
             NSArray *cacheDataArr = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
             NSMutableArray *mData = [NSMutableArray arrayWithCapacity:cacheDataArr.count];
             for (NSDictionary *cacheData in cacheDataArr) {
-                if ([cacheDataArr indexOfObject:cacheData] < 100) {
-                    continue;
-                }
+//                if ([cacheDataArr indexOfObject:cacheData] < 100) {
+//                    continue;
+//                }
                 [mData addObject:[[HSUTableCellData alloc] initWithCacheData:cacheData]];
             }
             if (![((HSUTableCellData *)mData.lastObject).dataType isEqualToString:kDataType_LoadMore]) {

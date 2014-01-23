@@ -8,7 +8,7 @@
 
 #import "HSUTweetsViewController.h"
 
-@interface HSUSearchTweetsViewController : HSUTweetsViewController
+@interface HSUSearchViewController : HSUTweetsViewController
 
 @property (nonatomic, weak) UITextField *searchTF;
 

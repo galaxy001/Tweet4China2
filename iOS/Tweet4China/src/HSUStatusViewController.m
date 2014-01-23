@@ -46,6 +46,9 @@
 
 - (void)viewDidLoad
 {
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton];
+    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
+    
     self.dataSource = [[self.dataSourceClass alloc] initWithDelegate:self status:self.mainStatus];
     
     [super viewDidLoad];
@@ -73,16 +76,6 @@
     
 //    [self.dataSource refresh];
     [self.dataSource loadMore];
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-                                              initWithBarButtonSystemItem:UIBarButtonSystemItemReply
-                                              target:self
-                                              action:@selector(_composeButtonTouched)];
 }
 
 - (void)viewDidAppear:(BOOL)animated

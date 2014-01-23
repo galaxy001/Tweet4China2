@@ -12,15 +12,28 @@
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
+    if (![self.keyword length]) {
+        success(@[]);
+        return;
+    }
+    NSString *keyword = self.keyword;
     __weak typeof(self)weakSelf = self;
     [twitter searchTweetsWithKeyword:self.keyword sinceID:self.lastStatusID count:100 success:^(id responseObj) {
+        if (![weakSelf.keyword isEqualToString:keyword]) {
+            return ;
+        }
         NSArray *tweets = responseObj[@"statuses"];
         NSDictionary *tweet = tweets.lastObject;
         if (tweet) {
             weakSelf.lastStatusID = tweet[@"id_str"];
         }
         success(tweets);
-    } failure:failure];
+    } failure:^(NSError *error) {
+        if (![weakSelf.keyword isEqualToString:keyword]) {
+            return ;
+        }
+        failure(error);
+    }];
 }
 
 - (void)fetchRefreshDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure

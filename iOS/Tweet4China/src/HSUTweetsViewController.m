@@ -479,7 +479,7 @@
     [actionSheet addButtonItem:mailTweetItem];
     count ++;
     
-    RIButtonItem *translateItem = [RIButtonItem itemWithLabel:_("Translate to Chinese")];
+    RIButtonItem *translateItem = [RIButtonItem itemWithLabel:_("Translate by Youdao")];
     translateItem.action = ^{
         [SVProgressHUD showWithStatus:_("Translating")];
         dispatch_async(GCDBackgroundThread, ^{

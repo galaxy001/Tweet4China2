@@ -16,6 +16,8 @@
 @property (nonatomic, weak) REBoolItem *soundEffectItem;
 @property (nonatomic, weak) REBoolItem *photoPreviewItem;
 @property (nonatomic, weak) RERadioItem *textSizeItem;
+@property (nonatomic, weak) REBoolItem *roundAvatarItem;
+@property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
 @property (nonatomic, weak) RETableViewItem *cleanCacheItem;
 
@@ -88,6 +90,31 @@
     self.textSizeItem = textSizeItem;
     [section addItem:textSizeItem];
     
+    REBoolItem *roundAvatarItem = [REBoolItem itemWithTitle:_("Round Avatar") value:[GlobalSettings[HSUSettingRoundAvatar] boolValue]];
+    self.roundAvatarItem = roundAvatarItem;
+    [section addItem:roundAvatarItem];
+    roundAvatarItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
+    
+    REBoolItem *desktopUserAgentItem = [REBoolItem itemWithTitle:_("Desktop Web Browser") value:[GlobalSettings[HSUSettingDesktopUserAgent] boolValue]];
+    self.desktopUserAgentItem = desktopUserAgentItem;
+    [section addItem:desktopUserAgentItem];
+    desktopUserAgentItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+        
+    };
+    
     RERadioItem *cacheSizeItem = [RERadioItem itemWithTitle:_("Cache Size") value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
@@ -155,11 +182,16 @@
     
     BOOL soundEffect = self.soundEffectItem.value;
     BOOL imagePreview = self.photoPreviewItem.value;
+    BOOL roundAvatar = self.roundAvatarItem.value;
+    BOOL desktopUserAgent = self.desktopUserAgentItem.value;
     NSString *textSize = self.textSizeItem.value;
     NSString *cacheSize = self.cacheSizeItem.value;
     
-    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize, HSUSettingCacheSize: cacheSize};
+    GlobalSettings = @{HSUSettingSoundEffect: @(soundEffect), HSUSettingPhotoPreview: @(imagePreview), HSUSettingTextSize: textSize, HSUSettingCacheSize: cacheSize, HSUSettingRoundAvatar: @(roundAvatar), HSUSettingDesktopUserAgent: @(desktopUserAgent)};
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
+        if (![globalSettings[HSUSettingDesktopUserAgent] boolValue] == [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {
+            notification_post(HSUSettingUserAgentChangedNotification);
+        }
         [[NSUserDefaults standardUserDefaults] setValue:GlobalSettings forKey:HSUSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
         notification_post_with_object(HSUSettingsUpdatedNotification, GlobalSettings);

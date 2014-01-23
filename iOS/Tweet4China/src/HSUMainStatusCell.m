@@ -91,7 +91,6 @@
         
         avatarB = [[UIButton alloc] init];
         [contentArea addSubview:avatarB];
-        avatarB.layer.cornerRadius = 5;
         avatarB.layer.masksToBounds = YES;
         avatarB.backgroundColor = bw(229);
         
@@ -211,6 +210,7 @@
 {
     [super layoutSubviews];
     
+    avatarB.layer.cornerRadius = avatar_corner_radius;
     contentArea.frame = ccr(padding_S, padding_S, self.contentView.width-padding_S*4, self.contentView.height-padding_S-actionV_H);
     
     ambientArea.frame = ccr(0, 0, contentArea.width, ambient_S);
@@ -309,9 +309,11 @@
     // place
     NSDictionary *placeInfo = rawData[@"place"];
     NSDictionary *geoInfo = rawData[@"geo"];
+    
     if ([placeInfo isKindOfClass:[NSDictionary class]]) {
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
-        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, place];
+        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
         [timePlaceL sizeToFit];
         viaLabel.hidden = YES;
         sourceButton.hidden = YES;
@@ -321,12 +323,16 @@
             if (coordinates.count == 2) {
                 CLLocationDirection latitude = [coordinates[0] doubleValue];
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
+                NSString *place = S(@"%@, %@", geoInfo[@"coordinates"][0], geoInfo[@"coordinates"][1]);
+                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+                timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
                 
                 CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                 CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
                 [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
                     for (CLPlacemark * placemark in placemarks) {
-                        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timePlaceL.text, placemark.name];
+                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+                        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, placemark.name];
                         [timePlaceL sizeToFit];
                         viaLabel.hidden = YES;
                         sourceButton.hidden = YES;

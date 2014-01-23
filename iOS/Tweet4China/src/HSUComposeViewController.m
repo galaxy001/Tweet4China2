@@ -15,9 +15,8 @@
 #import <MapKit/MapKit.h>
 #import "HSUSendBarButtonItem.h"
 #import <twitter-text-objc/TwitterText.h>
-#ifdef __IPHONE_6_0
 #import <OpenCam/OpenCam.h>
-#endif
+#import <SVWebViewController/SVModalWebViewController.h>
 
 #define kMaxWordLen 140
 #define kSingleLineHeight 45
@@ -51,6 +50,8 @@
 @end
 
 @interface HSUComposeViewController () <UITextViewDelegate, UIScrollViewDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate, MKMapViewDelegate, UITableViewDataSource, UITableViewDelegate, OCMCameraViewControllerDelegate>
+
+@property (nonatomic, assign) BOOL changingSettings;
 
 @end
 
@@ -363,6 +364,26 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    if (self.changingSettings) {
+        self.changingSettings = NO;
+        [HSUCommonTools resetUserAgent];
+        [SVProgressHUD showWithStatus:_("Updating your user settings...")];
+        [twitter getUserSettingsWithSuccess:^(id responseObj) {
+            [SVProgressHUD dismiss];
+            NSMutableDictionary *userSettings = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings] mutableCopy] ?: [NSMutableDictionary dictionary];
+            NSMutableDictionary *myUserSettings = [userSettings[MyScreenName] mutableCopy];
+            NSDictionary *myNewUserSettings = responseObj;
+            for (NSString *key in myNewUserSettings) {
+                myUserSettings[key] = myNewUserSettings[key];
+            }
+            userSettings[MyScreenName] = myUserSettings;
+            [[NSUserDefaults standardUserDefaults] setObject:userSettings forKey:HSUUserSettings];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+        } failure:^(NSError *error) {
+            [SVProgressHUD showErrorWithStatus:_("Load user settings failed")];
+        }];
+    }
     
     locationManager = [[CLLocationManager alloc] init];
     locationManager.delegate = self;
@@ -686,6 +707,20 @@
 }
 
 - (void)geoButtonTouched {
+    NSDictionary *userSettings = [[NSUserDefaults standardUserDefaults] objectForKey:HSUUserSettings][MyScreenName];
+    if (![userSettings[@"geo_enabled"] boolValue]) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cance")];
+        RIButtonItem *openItem = [RIButtonItem itemWithLabel:_("Open Twitter")];
+        __weak typeof(self)weakSelf = self;
+        openItem.action = ^{
+            [HSUCommonTools switchToDesktopUserAgent];
+            SVModalWebViewController *web = [[SVModalWebViewController alloc] initWithAddress:@"https://twitter.com/settings/security"];
+            [weakSelf presentViewController:web animated:YES completion:nil];
+            weakSelf.changingSettings = YES;
+        };
+        [[[UIAlertView alloc] initWithTitle:_("Location disabled") message:_("You location is disabled, go to twitter's website and change it in your private settings.") cancelButtonItem:cancelItem otherButtonItems:openItem, nil] show];
+        return;
+    }
     if (contentTV.isFirstResponder ||  extraPanelSV.contentOffset.x == 0) {
         if (contentTV.isFirstResponder) {
             [locationManager startUpdatingLocation];
@@ -851,24 +886,20 @@
     return NO;
 }
 
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+- (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
-    [contentTV becomeFirstResponder];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
-{
-    UIImage *image = info[UIImagePickerControllerEditedImage] ?: info[UIImagePickerControllerOriginalImage];
-    image = image.imageRotatedToUp;
-    [self photoSelected:image];
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (cameraViewController.photo) {
+        [self photoSelected:cameraViewController.photo];
+        photoEdited = cameraViewController.photoEdited;
+    } else {
+        [contentTV becomeFirstResponder];
+    }
 }
 
 - (void)selectPhoto
 {
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
-    cameraVC.maxWidth = 640;
+    cameraVC.maxWidth = 1136;
     cameraVC.delegate = self;
     [self presentViewController:cameraVC animated:YES completion:nil];
     [Flurry logEvent:@"start_opencam"];

@@ -29,13 +29,13 @@
     }];
 }
 
-- (void)loadMore
+- (void)refresh
 {
     self.loadingCount ++;
     
+    [self.data removeAllObjects];
     [self fetchDataWithSuccess:^(id responseObj) {
         NSArray *users = responseObj;
-        [self.data removeAllObjects];
         for (NSDictionary *user in users) {
             HSUTableCellData *cellData =
             [[HSUTableCellData alloc] initWithRawData:user dataType:kDataType_Person];

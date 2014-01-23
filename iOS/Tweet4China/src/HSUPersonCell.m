@@ -29,7 +29,6 @@
         [self.contentView addSubview:avatarButton];
         self.avatarButton = avatarButton;
         avatarButton.frame = ccr(14, 10, 48, 48);
-        avatarButton.layer.cornerRadius = 4;
         avatarButton.layer.masksToBounds = YES;
         avatarButton.backgroundColor = bw(229);
         
@@ -78,6 +77,7 @@
 {
     [super layoutSubviews];
     
+    self.avatarButton.layer.cornerRadius = avatar_corner_radius;
     self.followButton.right = self.contentView.width - 10;
     self.verifyFlag.leftTop = ccp(self.nameLabel.right + 3, self.nameLabel.top);
 }
@@ -156,5 +156,6 @@
 {
     return 75;
 }
+
 
 @end

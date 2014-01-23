@@ -25,14 +25,13 @@
 #import "HSUDraftsCell.h"
 #import "HSUConversationCell.h"
 #import "HSUMessageCell.h"
-#import "HSUSearchPersonViewController.h"
 #import "HSUListCell.h"
 #import "HSUSettingsViewController.h"
 #import "HSUiPadTabController.h"
 #import "HSUSearchPersonDataSource.h"
 #import "HSUPhotoCell.h"
 #import "HSUSearchTweetsDataSource.h"
-#import "HSUSearchTweetsViewController.h"
+#import "HSUSearchViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface HSUBaseViewController ()
@@ -434,8 +433,7 @@
 
 - (void)_searchButtonTouched
 {
-    HSUSearchTweetsDataSource *dataSource = [[HSUSearchTweetsDataSource alloc] init];
-    HSUSearchTweetsViewController *searchVC = [[HSUSearchTweetsViewController alloc] initWithDataSource:dataSource];
+    HSUSearchViewController *searchVC = [[HSUSearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:YES];
 }
 
