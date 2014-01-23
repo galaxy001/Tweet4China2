@@ -121,10 +121,4 @@
         }
 }
 
-#pragma mark - dataSource delegate
-- (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource
-{
-    [super dataSourceDidFindUnread:dataSource];
-}
-
 @end

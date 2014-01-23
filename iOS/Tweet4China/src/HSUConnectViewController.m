@@ -77,12 +77,4 @@
     }
 }
 
-#pragma mark - dataSource delegate
-- (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource
-{
-    [super dataSourceDidFindUnread:dataSource];
-}
-
-#pragma mark - TableView delegate
-
 @end

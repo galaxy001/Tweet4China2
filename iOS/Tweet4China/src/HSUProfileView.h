@@ -17,7 +17,6 @@
 
 - (id)initWithScreenName:(NSString *)screenName width:(CGFloat)width delegate:(id<HSUProfileViewDelegate>)delegate;
 - (void)setupWithProfile:(NSDictionary *)profile;
-- (void)showDMIndicator;
 - (void)hideDMIndicator;
 - (void)showFollowed;
 

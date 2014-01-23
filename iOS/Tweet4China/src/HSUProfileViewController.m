@@ -114,15 +114,6 @@
         [self refreshDataIfNeed];
     }
     self.presenting = NO;
-    
-    if (self.isMe &&
-        ([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
-         [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController])) {
-            
-        [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
-        [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController];
-        [self.profileView showDMIndicator];
-    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -615,15 +606,6 @@
 - (BOOL)isMe
 {
     return [self.profile[@"screen_name"] isEqualToString:MyScreenName] || self.navigationController.viewControllers.count == 1;
-}
-
-- (void)dataSourceDidFindUnread:(HSUBaseDataSource *)dataSource
-{
-    if (!self.view.window) {
-        [super dataSourceDidFindUnread:dataSource];
-    } else {
-        [self.profileView showDMIndicator];
-    }
 }
 
 - (UIBarButtonItem *)addFriendBarButton

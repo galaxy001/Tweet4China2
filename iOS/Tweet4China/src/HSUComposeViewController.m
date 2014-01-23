@@ -851,18 +851,6 @@
     return NO;
 }
 
-#ifdef __IPHONE_6_0
-- (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
-{
-    if (cameraViewController.photo) {
-        [self photoSelected:cameraViewController.photo];
-        photoEdited = cameraViewController.photoEdited;
-    } else {
-        [contentTV becomeFirstResponder];
-    }
-}
-#endif
-
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -879,35 +867,11 @@
 
 - (void)selectPhoto
 {
-#ifdef __IPHONE_6_0
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
     cameraVC.maxWidth = 640;
     cameraVC.delegate = self;
     [self presentViewController:cameraVC animated:YES completion:nil];
-#else
-    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
-    RIButtonItem *photoItem = [RIButtonItem itemWithLabel:_("Select From Camera")];
-    RIButtonItem *captureItem = [RIButtonItem itemWithLabel:_("Take a Picture")];
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:photoItem, captureItem, nil];
-    [actionSheet showInView:self.view.window];
-    cancelItem.action = ^{
-        [contentTV becomeFirstResponder];
-    };
-    photoItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-    };
-    captureItem.action = ^{
-        UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
-        picker.editing = YES;
-        picker.delegate = self;
-        [self.navigationController presentViewController:picker animated:YES completion:nil];
-    };
-#endif
+    [Flurry logEvent:@"start_opencam"];
 }
 
 @end

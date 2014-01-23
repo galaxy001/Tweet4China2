@@ -202,6 +202,12 @@
     }];
 }
 
+- (void)twitterLoginSuccess:(NSNotification *)notification
+{
+    [super twitterLoginSuccess:notification];
+    [self refresh];
+}
+
 - (void)clearCache
 {
     [super clearCache];

@@ -320,9 +320,11 @@
         
         [self.tableView reloadData];
     }
-
-    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
-    [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
+    
+    if (self.view.window) {
+        [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem]; // for iPhone
+        [((HSUiPadTabController *)self.tabController) hideUnreadIndicatorOnViewController:self.navigationController]; // for iPad
+    }
     [self.tableView.pullToRefreshView stopAnimating];
 }
 

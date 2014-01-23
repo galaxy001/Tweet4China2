@@ -94,7 +94,7 @@
     section = [RETableViewSection section];
     [self.manager addSection:section];
     [section addItem:
-     [RETableViewItem itemWithTitle:_("Rate on App Store")
+     [RETableViewItem itemWithTitle:_("Rate Tweet4China")
                       accessoryType:UITableViewCellAccessoryNone
                    selectionHandler:^(RETableViewItem *item)
       {

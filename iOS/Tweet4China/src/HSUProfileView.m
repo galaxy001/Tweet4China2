@@ -491,17 +491,6 @@
     return self.infoBGView.image;
 }
 
-- (void)showDMIndicator
-{
-    if (!self.dmIndicator) {
-        UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-        UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-        [self.messagesButton.superview addSubview:indicator];
-        indicator.rightTop = self.messagesButton.rightTop;
-        self.dmIndicator = indicator;
-    }
-}
-
 - (void)hideDMIndicator
 {
     [self.dmIndicator removeFromSuperview];

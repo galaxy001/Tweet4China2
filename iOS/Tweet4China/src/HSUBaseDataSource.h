@@ -51,6 +51,7 @@
 + (NSString *)cacheKey;
 - (void)removeCellData:(HSUTableCellData *)cellData;
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController;
+- (void)twitterLoginSuccess:(NSNotification *)notification;
 
 @end
 

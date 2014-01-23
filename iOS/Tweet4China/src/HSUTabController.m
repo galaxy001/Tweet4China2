@@ -17,9 +17,8 @@
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
-@property (nonatomic, retain) NSMutableArray *tabBarItems;
-@property (nonatomic, weak) UIButton *selectedTabBarItem;
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
+@property (nonatomic, strong) NSArray *unreadIndicators;
 
 @end
 
@@ -136,23 +135,20 @@
         return;
     }
     
-    UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-    UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-    indicator.tag = 111;
-    uint curIdx = 0;
-    for (UIView *subView in self.tabBar.subviews) {
-        if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
-            if (idx == curIdx) {
-                if (![subView viewWithTag:indicator.tag]) {
-                    indicator.rightTop = ccp(subView.width-10, 0);
-                    [subView addSubview:indicator];
-                }
-                break;
-            } else {
-                curIdx ++;
-            }
+    if (!self.unreadIndicators) {
+        NSMutableArray *unreadIndicators = [NSMutableArray arrayWithCapacity:self.tabBar.items.count];
+        for (int i=0; i<self.tabBar.items.count; i++) {
+            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
+            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
+            indicator.hidden = YES;
+            indicator.leftTop = ccp(35 + i * self.tabBar.width / self.tabBar.items.count, 0);
+            [self.tabBar addSubview:indicator];
+            [unreadIndicators addObject:indicator];
+            self.unreadIndicators = unreadIndicators;
         }
     }
+    
+    [self.unreadIndicators[idx] setHidden:NO];
 }
 
 - (void)hideUnreadIndicatorOnTabBarItem:(UITabBarItem *)tabBarItem
@@ -162,19 +158,7 @@
         return;
     }
     
-    uint curIdx = 0;
-    for (UIView *subView in self.tabBar.subviews) {
-        if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
-            if (idx == curIdx) {
-                if ([subView.subviews.lastObject isKindOfClass:[UIImageView class]]) {
-                    [subView.subviews.lastObject removeFromSuperview];
-                }
-                break;
-            } else {
-                curIdx ++;
-            }
-        }
-    }
+    [self.unreadIndicators[idx] setHidden:YES];
 }
 
 - (BOOL)hasUnreadIndicatorOnTabBarItem:(UITabBarItem *)tabBarItem
@@ -184,19 +168,7 @@
         return NO;
     }
     
-    uint curIdx = 0;
-    for (UIView *subView in self.tabBar.subviews) {
-        if ([subView isKindOfClass:NSClassFromString(@"UITabBarButton")]) {
-            if (idx == curIdx) {
-                if ([subView.subviews.lastObject isKindOfClass:[UIImageView class]]) {
-                    return YES;
-                }
-            } else {
-                curIdx ++;
-            }
-        }
-    }
-    return NO;
+    return [self.unreadIndicators[idx] isHidden];
 }
 
 - (void)hideUnreadIndicators
