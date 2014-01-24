@@ -200,7 +200,7 @@
 		96992CD2188ADB4A00AADDC2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
 		96992CD8188ADB4A00AADDC2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 96992CD6188ADB4A00AADDC2 /* InfoPlist.strings */; };
 		96992CDA188ADB4A00AADDC2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992CD9188ADB4A00AADDC2 /* main.m */; };
-		96992CE9188ADB4A00AADDC2 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96992CE8188ADB4A00AADDC2 /* Images.xcassets */; };
+		96992CE9188ADB4A00AADDC2 /* FBImages.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 96992CE8188ADB4A00AADDC2 /* FBImages.xcassets */; };
 		96992D06188ADC0700AADDC2 /* FBCTabController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992D05188ADC0700AADDC2 /* FBCTabController.m */; };
 		96992D0B188ADCAA00AADDC2 /* FBCAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992D08188ADCAA00AADDC2 /* FBCAppDelegate.m */; };
 		96992D0C188ADCAA00AADDC2 /* FBCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96992D0A188ADCAA00AADDC2 /* FBCViewController.m */; };
@@ -670,7 +670,7 @@
 		96992CD7188ADB4A00AADDC2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		96992CD9188ADB4A00AADDC2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		96992CDB188ADB4A00AADDC2 /* FB4China-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "FB4China-Prefix.pch"; sourceTree = "<group>"; };
-		96992CE8188ADB4A00AADDC2 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		96992CE8188ADB4A00AADDC2 /* FBImages.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = FBImages.xcassets; sourceTree = "<group>"; };
 		96992CEF188ADB4A00AADDC2 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		96992D04188ADC0700AADDC2 /* FBCTabController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FBCTabController.h; sourceTree = "<group>"; };
 		96992D05188ADC0700AADDC2 /* FBCTabController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FBCTabController.m; sourceTree = "<group>"; };
@@ -1321,7 +1321,7 @@
 			isa = PBXGroup;
 			children = (
 				96992D03188ADC0700AADDC2 /* fbc-src */,
-				96992CE8188ADB4A00AADDC2 /* Images.xcassets */,
+				96992CE8188ADB4A00AADDC2 /* FBImages.xcassets */,
 				96992CD4188ADB4A00AADDC2 /* Supporting Files */,
 			);
 			path = FB4China;
@@ -1910,7 +1910,7 @@
 				96992D16188B0F8A00AADDC2 /* pop.wav in Resources */,
 				96992D17188B0F8A00AADDC2 /* psst1.wav in Resources */,
 				96992D15188B0F0600AADDC2 /* icn_arrow_notif_dark@2x.png in Resources */,
-				96992CE9188ADB4A00AADDC2 /* Images.xcassets in Resources */,
+				96992CE9188ADB4A00AADDC2 /* FBImages.xcassets in Resources */,
 				96992D31188B9A9200AADDC2 /* icn_tab_friends_default@2x~ipad.png in Resources */,
 				96992D34188BA38D00AADDC2 /* icn_nav_back@2x.png in Resources */,
 				96992CD8188ADB4A00AADDC2 /* InfoPlist.strings in Resources */,
@@ -2326,8 +2326,8 @@
 		96992CFD188ADB4B00AADDC2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_APPICON_NAME = FBAppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = FBLaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
@@ -2353,8 +2353,8 @@
 		96992CFE188ADB4B00AADDC2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_APPICON_NAME = FBAppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = FBLaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;

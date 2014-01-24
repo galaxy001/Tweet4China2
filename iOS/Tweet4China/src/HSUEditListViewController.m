@@ -71,7 +71,11 @@
     __weak typeof(self)weakSelf = self;
     if (self.list) {
         [SVProgressHUD showWithStatus:nil];
-        [twitter createListWithName:name desc:desc mode:private?@"private":@"public" success:^(id responseObj) {
+        [twitter updateListWithListID:self.list[@"id_str"]
+                                 name:name desc:desc
+                                 mode:private?@"private":@"public"
+                              success:^(id responseObj)
+        {
             [weakSelf.delegate editListViewControllerDidSaveList:responseObj];
             [weakSelf dismiss];
             [SVProgressHUD dismiss];

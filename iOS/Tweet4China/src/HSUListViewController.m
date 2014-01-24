@@ -34,6 +34,7 @@
         self.membersDataSource = [[HSUListMembersDataSource alloc] initWithList:list];
         self.membersDataSource.delegate = self;
         self.dataSource = self.tweetsDataSource;
+        self.useRefreshControl = NO;
     }
     return self;
 }
@@ -105,6 +106,7 @@
 - (void)editListViewControllerDidSaveList:(NSDictionary *)list
 {
     self.navigationItem.title = list[@"name"];
+    self.tweetsDataSource.list = list;
 }
 
 - (void)subscribe

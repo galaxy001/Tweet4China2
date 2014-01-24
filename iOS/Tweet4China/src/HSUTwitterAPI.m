@@ -466,7 +466,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)createListWithName:(NSString *)name desc:(NSString *)desc mode:(NSString *)mode success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:url_lists_create
-               parameters:@{@"name": name, @"description": desc, @"mode": mode}
+               parameters:@{@"name": name, @"description": desc?:@"", @"mode": mode?:@"public"}
                   success:success
                   failure:failure];
 }

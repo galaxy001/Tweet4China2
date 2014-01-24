@@ -121,7 +121,7 @@
 - (void)editListViewControllerDidSaveList:(NSDictionary *)list
 {
     HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:list dataType:kDataType_List];
-    [self.subscribedListsDataSource.data addObject:cellData];
+    [self.subscribedListsDataSource.data insertObject:cellData atIndex:0];
     [self.tableView reloadData];
 }
 

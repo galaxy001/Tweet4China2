@@ -51,6 +51,16 @@
     
     self.dataSource = [[self.dataSourceClass alloc] initWithDelegate:self status:self.mainStatus];
     
+    NSString *name = self.mainStatus[@"in_reply_to_screen_name"];
+    if (name.length) {
+        if ([name isEqualToString:MyScreenName]) {
+            name = _("Me");
+        } else {
+            name = S(@"@%@", name);
+        }
+        self.navigationItem.title = S(@"%@ %@", _("Reply to"), name);
+    }
+    
     [super viewDidLoad];
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
@@ -157,14 +167,6 @@
     CGFloat height = 0;
     for (HSUTableCellData *cellData in self.dataSource.data) {
         if (cellData.rawData != self.mainStatus && height == 0) {
-            NSDictionary *status = cellData.rawData;
-            NSString *name = status[@"user"][@"screen_name"];
-            if ([name isEqualToString:MyScreenName]) {
-                name = _("Me");
-            } else {
-                name = S(@"@%@", name);
-            }
-            self.navigationItem.title = S(@"%@ %@", _("Reply to"), name);
             continue;
         }
         height += [cellData.renderData[@"height"] floatValue];

@@ -19,7 +19,7 @@ static NSUInteger instagramCount;
 {
     NSData *data = [NSData dataWithContentsOfFile:dp(InstagramCacheFileName)];
     if (data) {
-        instagramCache = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        instagramCache = [[NSJSONSerialization JSONObjectWithData:data options:0 error:nil] mutableCopy];
     }
     if (!instagramCache) {
         instagramCache = [NSMutableDictionary dictionary];
