@@ -471,6 +471,7 @@
         suggestionsTV.hidden = YES;
         contentShadowV.hidden = YES;
         if (suggested) {
+            suggested = NO;
             NSRange selectedRange = contentTV.selectedRange;
             NSString *text = contentTV.text;
             contentTV.text = nil;
