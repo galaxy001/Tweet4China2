@@ -43,6 +43,8 @@ static HSUShadowsocksProxy *proxy;
         settings[HSUSettingSoundEffect] = @YES;
         settings[HSUSettingPhotoPreview] = @YES;
         settings[HSUSettingTextSize] = @"14";
+        settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
+        settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
         settings[HSUSettingCacheSize] = @"16MB";
 #ifdef FreeApp
         settings[HSUSettingPhotoPreview] = @NO;

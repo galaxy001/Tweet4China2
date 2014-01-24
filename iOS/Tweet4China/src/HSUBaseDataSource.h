@@ -9,9 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "HSUTwitterAPI.h"
 
-#define kRequestDataCountViaWifi 50
-#define kRequestDataCountViaWWAN 20
-
 @protocol HSUBaseDataSourceDelegate;
 @class HSUTableCellData;
 @class HSUUIEvent;

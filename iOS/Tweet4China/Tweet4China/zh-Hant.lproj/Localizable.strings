@@ -240,3 +240,5 @@
 "Desktop Web Browser" = "模擬桌面瀏覽器";
 "Exclude Replies" = "過濾評論推文";
 "User" = "用戶";
+"Page Count (WiFi)" = "每頁推文數 (WiFi)";
+"Page Count (3G/2G)" = "每頁推文數 (3G/2G)";

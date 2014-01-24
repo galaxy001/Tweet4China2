@@ -150,4 +150,9 @@
     return 44;
 }
 
+- (BOOL)filterData:(NSDictionary *)data
+{
+    return YES;
+}
+
 @end

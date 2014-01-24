@@ -65,6 +65,9 @@ BOOL shadowsocksStarted;
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
 #define HSUiPadBgColor rgb(244, 248, 251)
 
+#define kRequestDataCountViaWifi 50
+#define kRequestDataCountViaWWAN 20
+
 //#define MakeScreenshot
 
 #define SuppressPerformSelectorLeakWarning(Stuff) \
@@ -167,6 +170,8 @@ _Pragma("clang diagnostic pop") \
 #define HSUSettingTextSize @"text_size"
 #define HSUSettingCacheSize @"cache_size"
 #define HSUSettingRoundAvatar @"round_avatar"
+#define HSUSettingPageCount @"page_count"
+#define HSUSettingPageCountWWAN @"page_count_wwan"
 #define HSUSettingDesktopUserAgent @"desktop_useragent"
 #define HSUSettingExcludeReplies @"exclude_replies"
 

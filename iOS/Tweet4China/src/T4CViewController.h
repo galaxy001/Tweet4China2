@@ -30,6 +30,8 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 - (void)refresh;
 - (void)loadMore;
 
+- (BOOL)filterData:(NSDictionary *)data;
+
 - (void)requestDidFinishLoadingWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadingWithError:(NSError *)error;
 

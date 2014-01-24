@@ -114,9 +114,9 @@
 - (NSUInteger)requestCount
 {
     if ([Reachability reachabilityForInternetConnection].isReachableViaWiFi) {
-        return kRequestDataCountViaWifi;
+        return [setting(HSUSettingPageCount) integerValue] ?: kRequestDataCountViaWifi;
     } else {
-        return kRequestDataCountViaWWAN;
+        return [setting(HSUSettingPageCountWWAN) integerValue] ?: kRequestDataCountViaWWAN;
     }
 }
 

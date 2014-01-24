@@ -19,6 +19,8 @@
 @property (nonatomic, weak) REBoolItem *roundAvatarItem;
 @property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
 @property (nonatomic, weak) REBoolItem *excludeRepliesItem;
+@property (nonatomic, weak) RERadioItem *pageCountItem;
+@property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
 @property (nonatomic, weak) RETableViewItem *cleanCacheItem;
 
@@ -135,8 +137,73 @@
         
     };
     
-    RERadioItem *cacheSizeItem = [RERadioItem itemWithTitle:_("Cache Size")
-                                                      value:GlobalSettings[HSUSettingCacheSize] selectionHandler:^(RERadioItem *item) {
+    RERadioItem *pageCountItem =
+    [RERadioItem itemWithTitle:_("Page Count (WiFi)")
+                         value:GlobalSettings[HSUSettingPageCount] ?: S(@"%d", kRequestDataCountViaWifi)
+              selectionHandler:^(RERadioItem *item)
+     {
+         [item deselectRowAnimated:YES];
+         
+         if (![[HSUAppDelegate shared] buyProApp]) {
+             return ;
+         }
+         
+         NSArray *options = @[@"20", @"50", @"100", @"200"];
+         
+         RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
+             [weakSelf.navigationController popViewControllerAnimated:YES];
+             
+             [item reloadRowWithAnimation:UITableViewRowAnimationNone];
+         }];
+         
+         optionsController.delegate = weakSelf;
+         optionsController.style = section.style;
+         if (weakSelf.tableView.backgroundView == nil) {
+             optionsController.tableView.backgroundColor = weakSelf.tableView.backgroundColor;
+             optionsController.tableView.backgroundView = nil;
+         }
+         
+         [weakSelf.navigationController pushViewController:optionsController animated:YES];
+     }];
+    self.pageCountItem = pageCountItem;
+    [section addItem:pageCountItem];
+    
+    RERadioItem *pageCountWWANItem =
+    [RERadioItem itemWithTitle:_("Page Count (3G/2G)")
+                         value:GlobalSettings[HSUSettingPageCountWWAN] ?: S(@"%d", kRequestDataCountViaWWAN)
+              selectionHandler:^(RERadioItem *item)
+     {
+         [item deselectRowAnimated:YES];
+         
+         if (![[HSUAppDelegate shared] buyProApp]) {
+             return ;
+         }
+         
+         NSArray *options = @[@"20", @"50", @"100", @"200"];
+         
+         RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
+             [weakSelf.navigationController popViewControllerAnimated:YES];
+             
+             [item reloadRowWithAnimation:UITableViewRowAnimationNone];
+         }];
+         
+         optionsController.delegate = weakSelf;
+         optionsController.style = section.style;
+         if (weakSelf.tableView.backgroundView == nil) {
+             optionsController.tableView.backgroundColor = weakSelf.tableView.backgroundColor;
+             optionsController.tableView.backgroundView = nil;
+         }
+         
+         [weakSelf.navigationController pushViewController:optionsController animated:YES];
+     }];
+    self.pageCountWWANItem = pageCountWWANItem;
+    [section addItem:pageCountWWANItem];
+    
+    RERadioItem *cacheSizeItem =
+    [RERadioItem itemWithTitle:_("Cache Size")
+                         value:GlobalSettings[HSUSettingCacheSize]
+              selectionHandler:^(RERadioItem *item)
+    {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -206,6 +273,8 @@
     BOOL roundAvatar = self.roundAvatarItem.value;
     BOOL desktopUserAgent = self.desktopUserAgentItem.value;
     BOOL excludeReplies = self.excludeRepliesItem.value;
+    NSString *pageCount = self.pageCountItem.value;
+    NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
     NSString *cacheSize = self.cacheSizeItem.value;
     
@@ -214,6 +283,8 @@
                        HSUSettingTextSize: textSize,
                        HSUSettingCacheSize: cacheSize,
                        HSUSettingRoundAvatar: @(roundAvatar),
+                       HSUSettingPageCount: pageCount,
+                       HSUSettingPageCountWWAN: pageCountWWAN,
                        HSUSettingDesktopUserAgent: @(desktopUserAgent),
                        HSUSettingExcludeReplies: @(excludeReplies)};
     
