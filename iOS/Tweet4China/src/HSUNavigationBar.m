@@ -18,6 +18,7 @@
 {
     if (!set) {
         if (Sys_Ver < 7) {
+            [self setBackgroundColor:kBlackColor];
             [self setBackgroundImage:[[UIImage imageNamed:@"bg_nav_bar"] stretchableImageFromCenter] forBarMetrics:UIBarMetricsDefault];
         } else {
             if (IPAD) {

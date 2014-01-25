@@ -41,11 +41,9 @@
         success(tweetsWithPhoto);
         
         NSDictionary *tweet = [responseObj lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
-        
-//        if ([responseObj count] < weakSelf.requestCount) {
-//            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
-//        }
+        if (tweet) {
+            weakSelf.lastStatusID = tweet[@"id_str"];
+        }
     } failure:^(NSError *error) {
         failure(error);
     }];
@@ -81,11 +79,9 @@
         success(tweetsWithPhoto);
         
         NSDictionary *tweet = [responseObj lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
-        
-//        if ([responseObj count] < weakSelf.requestCount) {
-//            [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
-//        }
+        if (tweet) {
+            weakSelf.lastStatusID = tweet[@"id_str"];
+        }
     } failure:^(NSError *error) {
         failure(error);
     }];

@@ -11,6 +11,7 @@
 #import "HSUListTweetsDataSource.h"
 #import "HSUListSubscribersDataSource.h"
 #import "HSUListMembersDataSource.h"
+#import "HSUProfileViewController.h"
 
 @interface HSUListViewController () <HSUEditListViewControllerDelegate>
 
@@ -150,6 +151,19 @@
     if (self.dataSource.count == 0) {
         [self.dataSource refresh];
     }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    if ([data.dataType isEqualToString:kDataType_Person]) {
+        NSString *screenName = data.rawData[@"screen_name"];
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+        profileVC.profile = data.rawData;
+        [self.navigationController pushViewController:profileVC animated:YES];
+        return;
+    }
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 @end

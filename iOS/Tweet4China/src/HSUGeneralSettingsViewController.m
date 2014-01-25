@@ -138,7 +138,7 @@
     };
     
     RERadioItem *pageCountItem =
-    [RERadioItem itemWithTitle:_("Page Count (WiFi)")
+    [RERadioItem itemWithTitle:_("Page Size (WiFi)")
                          value:GlobalSettings[HSUSettingPageCount] ?: S(@"%d", kRequestDataCountViaWifi)
               selectionHandler:^(RERadioItem *item)
      {
@@ -169,7 +169,7 @@
     [section addItem:pageCountItem];
     
     RERadioItem *pageCountWWANItem =
-    [RERadioItem itemWithTitle:_("Page Count (3G/2G)")
+    [RERadioItem itemWithTitle:_("Page Size (3G/2G)")
                          value:GlobalSettings[HSUSettingPageCountWWAN] ?: S(@"%d", kRequestDataCountViaWWAN)
               selectionHandler:^(RERadioItem *item)
      {

@@ -240,5 +240,5 @@
 "Desktop Web Browser" = "模拟桌面浏览器";
 "Exclude Replies" = "过滤评论推文";
 "User" = "用户";
-"Page Count (WiFi)" = "每页推文数 (WiFi)";
-"Page Count (3G/2G)" = "每页推文数 (3G/2G)";
+"Page Size (WiFi)" = "每页推文数 (WiFi)";
+"Page Size (3G/2G)" = "每页推文数 (3G/2G)";

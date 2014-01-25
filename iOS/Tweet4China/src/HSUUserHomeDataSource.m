@@ -15,7 +15,9 @@
     __weak typeof(self)weakSelf = self;
     [twitter getUserTimelineWithScreenName:self.screenName sinceID:nil count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
+        if (tweet) {
+            weakSelf.lastStatusID = tweet[@"id_str"];
+        }
         success(responseObj);
     } failure:failure];
 }
@@ -25,7 +27,9 @@
     __weak typeof(self)weakSelf = self;
     [twitter getUserTimelineWithScreenName:self.screenName maxID:self.lastStatusID count:self.requestCount success:^(id responseObj) {
         NSDictionary *tweet = [responseObj lastObject];
-        weakSelf.lastStatusID = tweet[@"id_str"];
+        if (tweet) {
+            weakSelf.lastStatusID = tweet[@"id_str"];
+        }
         success(responseObj);
     } failure:failure];
 }

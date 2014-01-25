@@ -55,14 +55,10 @@
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [weakSelf.data addObject:loadMoreCellData];
             }
-            if ([tweets count]) {
-                [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
-            } else {
-                [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_NoMore)}];
-            }
             [weakSelf saveCache];
             [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         }
+        [weakSelf.data.lastObject setRawData:@{@"status": @([responseObj count] ? kLoadMoreCellStatus_Done : kLoadMoreCellStatus_NoMore)}];
         if (tweets.count >= weakSelf.lastRefreshRequestCount || oldCount == 0) {
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
         } else {
@@ -98,7 +94,7 @@
         }
         [weakSelf.data addObject:loadMoreCellData];
         
-        [weakSelf.data.lastObject setRawData:@{@"status": @(kLoadMoreCellStatus_Done)}];
+        [weakSelf.data.lastObject setRawData:@{@"status": @([responseObj count] ? kLoadMoreCellStatus_Done : kLoadMoreCellStatus_NoMore)}];
         [weakSelf saveCache];
         [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
         [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:oldCount length:[responseObj count]];

@@ -48,18 +48,6 @@
     
     // setup navgation bar buttons
     UIBarButtonItem *sendButtonItem = [[UIBarButtonItem alloc] init];
-    if (Sys_Ver < 7) {
-        NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
-                                     UITextAttributeTextShadowColor: kWhiteColor,
-                                     UITextAttributeTextShadowOffset: [NSValue valueWithCGPoint:ccp(0, 1)]};
-        self.navigationController.navigationBar.titleTextAttributes = attributes;
-        NSDictionary *disabledAttributes = @{UITextAttributeTextColor: bw(129),
-                                             UITextAttributeTextShadowColor: kWhiteColor,
-                                             UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
-        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateNormal];
-        [sendButtonItem setTitleTextAttributes:attributes forState:UIControlStateHighlighted];
-        [sendButtonItem setTitleTextAttributes:disabledAttributes forState:UIControlStateDisabled];
-    }
     self.sendBarButtonItem = sendButtonItem;
     sendButtonItem.title = _("Send");
     sendButtonItem.target = self;
@@ -234,6 +222,8 @@
     self.toolbar.top = self.tableView.bottom - self.tableView.contentInset.bottom;
     if (IPAD) { // todo
         self.toolbar.top -=  15;
+    } else if (Sys_Ver < 7 && self.keyboardHeight) {
+        self.toolbar.top += tabbar_height;
     }
     self.textViewBackground.leftTop = ccp(5, self.toolbar.top + 9);
     self.wordCountLabel.rightCenter = ccp(self.width-10, self.toolbar.rightCenter.y);
