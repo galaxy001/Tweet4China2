@@ -10,15 +10,15 @@
 
 @interface HSUTweetsViewController : HSUBaseViewController
 
-@property (nonatomic, weak) HSUTableCellData *cellDataInNextPage;
+@property (nonatomic, weak) T4CTableCellData *cellDataInNextPage;
 
-- (void)reply:(HSUTableCellData *)cellData;
-- (void)retweet:(HSUTableCellData *)cellData;
-- (void)favorite:(HSUTableCellData *)cellData;
-- (void)more:(HSUTableCellData *)cellData;
+- (void)reply:(T4CTableCellData *)cellData;
+- (void)retweet:(T4CTableCellData *)cellData;
+- (void)favorite:(T4CTableCellData *)cellData;
+- (void)more:(T4CTableCellData *)cellData;
 
-- (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData;
-- (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData;
-- (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData;
+- (void)openPhoto:(UIImage *)photo withCellData:(T4CTableCellData *)cellData;
+- (void)openPhotoURL:(NSURL *)photoURL withCellData:(T4CTableCellData *)cellData;
+- (void)openWebURL:(NSURL *)webURL withCellData:(T4CTableCellData *)cellData;
 
 @end

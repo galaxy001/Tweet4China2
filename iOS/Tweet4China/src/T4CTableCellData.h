@@ -13,7 +13,13 @@
 @property (nonatomic, copy) NSString *dataType;
 @property (nonatomic, strong) NSDictionary *rawData;
 @property (nonatomic) CGFloat cellHeight;
-@property (nonatomic) id target;
+@property (nonatomic, weak) id target;
 @property (nonatomic, strong) NSArray *events;
+@property (nonatomic, assign) BOOL unread;
+
+- (id)initWithRawData:(NSDictionary *)rawData dataType:(NSString *)dataType;
+- (id)initWithCacheData:(NSDictionary *)cacheData;
+
+- (NSDictionary *)cacheData;
 
 @end

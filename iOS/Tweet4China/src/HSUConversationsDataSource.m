@@ -9,6 +9,7 @@
 #import "HSUConversationsDataSource.h"
 #import "HSUBaseViewController.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "T4CConversationCellData.h"
 
 @implementation HSUConversationsDataSource
 
@@ -27,7 +28,7 @@
     [super refresh];
     
     NSString *sinceId;
-    HSUTableCellData *firstData = self.data.firstObject;
+    T4CTableCellData *firstData = self.data.firstObject;
     if (firstData) {
         sinceId = [firstData.rawData[@"messages"] lastObject][@"id_str"];
     }
@@ -83,7 +84,7 @@
                 conversation[@"created_at"] = latestMessage[@"created_at"];
                 
                 BOOL found = NO;
-                for (HSUTableCellData *oldCellData in weakSelf.data) {
+                for (T4CConversationCellData *oldCellData in weakSelf.data) {
                     if ([oldCellData.rawData[@"user"][@"screen_name"] isEqualToString:sender_sn] ||
                         [oldCellData.rawData[@"user"][@"screen_name"] isEqualToString:recipient_sn]) {
                         NSMutableDictionary *rawData = oldCellData.rawData.mutableCopy;
@@ -92,7 +93,7 @@
                         found = YES;
                         for (NSDictionary *message in messages) {
                             if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
-                                oldCellData.renderData[@"unread_dm"] = @YES;
+                                oldCellData.unreadDM = YES;
                                 break;
                             }
                         }
@@ -101,12 +102,12 @@
                 }
                 
                 if (!found) {
-                    HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:conversation
-                                                                                  dataType:kDataType_Conversation];
+                    T4CConversationCellData *cellData = [[T4CConversationCellData alloc] initWithRawData:conversation
+                                                                                                dataType:kDataType_Conversation];
                     [weakSelf.data insertObject:cellData atIndex:0];
                     for (NSDictionary *message in messages) {
                         if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
-                            cellData.renderData[@"unread_dm"] = @YES;
+                            cellData.unreadDM = YES;
                             break;
                         }
                     }
@@ -114,8 +115,8 @@
             }
             
             [self.data sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                HSUTableCellData *cellData1 = obj1;
-                HSUTableCellData *cellData2 = obj2;
+                T4CTableCellData *cellData1 = obj1;
+                T4CTableCellData *cellData2 = obj2;
                 NSArray *messages1 = cellData1.rawData[@"messages"];
                 NSArray *messages2 = cellData2.rawData[@"messages"];
                 NSDictionary *message1 = [messages1 lastObject];
@@ -140,7 +141,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        HSUTableCellData *cellData = [self dataAtIndexPath:indexPath];
+        T4CTableCellData *cellData = [self dataAtIndexPath:indexPath];
         NSArray *messages = cellData.rawData[@"messages"];
         for (NSDictionary *message in messages) {
             [twitter deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
@@ -158,7 +159,7 @@
 + (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce
 {
     HSUConversationsDataSource *dataSource = [super dataSourceWithDelegate:delegate useCache:useCahce];
-    HSUTableCellData *lastCellData = dataSource.data.lastObject;
+    T4CTableCellData *lastCellData = dataSource.data.lastObject;
     if (lastCellData &&
         [lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
         
@@ -173,9 +174,9 @@
     NSDictionary *conversation = obj[0];
     NSString *text = obj[1];
     for (uint i=0; i<self.count; i++) {
-        HSUTableCellData *cd = [self dataAtIndex:i];
+        T4CConversationCellData *cd = (T4CConversationCellData *)[self dataAtIndex:i];
         if (cd.rawData == conversation) {
-            cd.renderData[@"typingMessage"] = text;
+            cd.typingMessage = text;
         }
     }
 }

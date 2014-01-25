@@ -30,10 +30,10 @@
     return self;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CStatusCellData *)data
 {
     NSDictionary *rawData = data.rawData;
-    if (!data.renderData[@"photo_url"]) {
+    if (!data.photoUrl) {
         NSDictionary *entities = rawData[@"entities"];
         if (entities) {
             NSArray *medias = entities[@"media"];
@@ -42,8 +42,8 @@
                 NSDictionary *media = medias[0];
                 NSString *type = media[@"type"];
                 if ([type isEqualToString:@"photo"]) {
-                    self.data.renderData[@"has_photo"] = @YES;
-                    self.data.renderData[@"photo_url"] = media[@"media_url_https"];
+                    self.data.hasPhoto = YES;
+                    self.data.photoUrl = media[@"media_url_https"];
                 }
             } else if (urls.count) {
                 for (NSDictionary *urlDict in urls) {
@@ -70,19 +70,19 @@
         
     } else if ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"]) {
         
-        NSString *mediaUrl = self.data.renderData[@"photo_url"];
+        NSString *mediaUrl = self.data.photoUrl;
         if (mediaUrl) {
-            self.data.renderData[@"photo_url"] = mediaUrl;
+            self.data.photoUrl = mediaUrl;
             [self.photoView setImageWithUrlStr:mediaUrl placeHolder:nil];
             return mediaUrl;
         } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
-            self.data.renderData[@"photo_url"] = mediaUrl;
-            self.data.renderData[@"instagram_media_id"] = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
+            self.data.photoUrl = mediaUrl;
+            self.data.instagramMediaID = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
             [self.photoView setImageWithUrlStr:mediaUrl placeHolder:nil];
             return mediaUrl;
         } else {
             NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-            self.data.renderData[@"instagram_url"] = instagramAPIUrl;
+            self.data.instagramUrl = instagramAPIUrl;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
             __weak typeof(self) weakSelf = self;
             AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
@@ -91,13 +91,13 @@
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
                     NSString *imageUrl = JSON[@"url"];
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.instagramUrl]) {
                         [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
-                        weakSelf.data.renderData[@"instagram_media_id"] = JSON[@"media_id"];
+                        weakSelf.data.instagramMediaID = JSON[@"media_id"];
                         if ([imageUrl hasSuffix:@".mp4"]) {
-                            weakSelf.data.renderData[@"video_url"] = imageUrl;
+                            weakSelf.data.videoUrl = imageUrl;
                         } else {
-                            weakSelf.data.renderData[@"photo_url"] = imageUrl;
+                            weakSelf.data.photoUrl = imageUrl;
                             [weakSelf.photoView setImageWithUrlStr:imageUrl placeHolder:nil];
                         }
                     }

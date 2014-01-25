@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import "T4CStatusCellData.h"
 
 typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
     HSUStatusViewStyle_Default = 0,
@@ -18,14 +19,14 @@ typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
 
 @interface HSUStatusView : UIView <TTTAttributedLabelDelegate>
 
-@property (nonatomic, strong) HSUTableCellData *data;
+@property (nonatomic, strong) T4CStatusCellData *data;
 @property (nonatomic, assign) HSUStatusViewStyle style;
 @property (nonatomic, strong) UIButton *avatarB;
 @property (nonatomic, weak) UIButton *imagePreviewButton;
 
 - (id)initWithFrame:(CGRect)frame style:(HSUStatusViewStyle)style;
 
-- (void)setupWithData:(HSUTableCellData *)cellData;
-+ (CGFloat)heightForData:(HSUTableCellData *)data constraintWidth:(CGFloat)constraintWidth;
+- (void)setupWithData:(T4CTableCellData *)cellData;
++ (CGFloat)heightForData:(T4CTableCellData *)data constraintWidth:(CGFloat)constraintWidth;
 
 @end

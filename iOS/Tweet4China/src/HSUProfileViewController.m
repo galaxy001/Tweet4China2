@@ -221,7 +221,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     NSDictionary *rawData = data.rawData;
     if ([data.dataType isEqualToString:kDataType_NormalTitle]) {
         if ([rawData[@"action"] isEqualToString:kAction_UserTimeline]) {

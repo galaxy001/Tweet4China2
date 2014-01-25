@@ -65,7 +65,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_DefaultStatus]) {
         self.cellDataInNextPage = data;
         HSUStatusViewController *statusVC = [[HSUStatusViewController alloc] initWithStatus:data.rawData];
@@ -76,7 +76,7 @@
 }
 
 #pragma mark - Common actions
-- (void)reply:(HSUTableCellData *)cellData {
+- (void)reply:(T4CTableCellData *)cellData {
     [Flurry logEvent:S(@"reply in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     NSString *screen_name = rawData[@"user"][@"screen_name"];
@@ -90,7 +90,7 @@
     [self presentViewController:nav animated:YES completion:nil];
 }
 
-- (void)retweet:(HSUTableCellData *)cellData {
+- (void)retweet:(T4CTableCellData *)cellData {
     [Flurry logEvent:S(@"retweet in %@", [self.class description])];
     NSDictionary *status = cellData.rawData;
     BOOL isRetweetedStatus = NO;
@@ -225,7 +225,7 @@
     }
 }
 
-- (void)favorite:(HSUTableCellData *)cellData {
+- (void)favorite:(T4CTableCellData *)cellData {
     [Flurry logEvent:S(@"favorite in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     if (rawData[@"retweeted_status"]) {
@@ -262,7 +262,7 @@
     }
 }
 
-- (void)delete:(HSUTableCellData *)cellData
+- (void)delete:(T4CTableCellData *)cellData
 {
     [Flurry logEvent:S(@"delete in %@", [self.class description])];
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
@@ -288,7 +288,7 @@
     [actionSheet showInView:self.view.window];
 }
 
-- (void)more:(HSUTableCellData *)cellData {
+- (void)more:(T4CTableCellData *)cellData {
     [Flurry logEvent:S(@"more in %@", [self.class description])];
     NSDictionary *rawData = cellData.rawData;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil];
@@ -549,7 +549,7 @@
     [self.tableView reloadData];
 }
 
-- (void)touchAvatar:(HSUTableCellData *)cellData
+- (void)touchAvatar:(T4CTableCellData *)cellData
 {
     NSString *screenName = cellData.rawData[@"retweeted_status"][@"user"][@"screen_name"] ?: cellData.rawData[@"user"][@"screen_name"];
     HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
@@ -571,7 +571,7 @@
 {
     // User Link
     NSURL *url = [arguments objectForKey:@"url"];
-    //    HSUTableCellData *cellData = [arguments objectForKey:@"cell_data"];
+    //    T4CTableCellData *cellData = [arguments objectForKey:@"cell_data"];
     if ([url.absoluteString hasPrefix:@"user://"] ||
         [url.absoluteString hasPrefix:@"tag://"]) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
@@ -649,7 +649,7 @@
 - (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithArguments:(NSDictionary *)arguments
 {
     NSURL *url = [arguments objectForKey:@"url"];
-    HSUTableCellData *cellData = [arguments objectForKey:@"cell_data"];
+    T4CStatusCellData *cellData = [arguments objectForKey:@"cell_data"];
     if ([url.absoluteString hasPrefix:@"user://"]) {
         NSString *screenName = [url.absoluteString substringFromIndex:7];
         HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
@@ -662,7 +662,7 @@
         [self.navigationController pushViewController:tweetsVC animated:YES];
         [searchDataSource refresh];
     } else {
-        NSString *attr = cellData.renderData[@"attr"];
+        NSString *attr = cellData.attr;
         if ([attr isEqualToString:@"photo"]) {
             NSString *mediaURLHttps;
             NSArray *medias = cellData.rawData[@"entities"][@"media"];
@@ -681,7 +681,7 @@
     }
 }
 
-- (void)openPhoto:(UIImage *)photo withCellData:(HSUTableCellData *)cellData
+- (void)openPhoto:(UIImage *)photo withCellData:(T4CTableCellData *)cellData
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData image:photo];
     galleryView.viewController = self;
@@ -689,7 +689,7 @@
     [galleryView showWithAnimation:YES];
 }
 
-- (void)openPhotoURL:(NSURL *)photoURL withCellData:(HSUTableCellData *)cellData
+- (void)openPhotoURL:(NSURL *)photoURL withCellData:(T4CStatusCellData *)cellData
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData imageURL:photoURL];
     galleryView.viewController = self;
@@ -697,9 +697,9 @@
     [galleryView showWithAnimation:YES];
 }
 
-- (void)openWebURL:(NSURL *)webURL withCellData:(HSUTableCellData *)cellData
+- (void)openWebURL:(NSURL *)webURL withCellData:(T4CStatusCellData *)cellData
 {
-    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.renderData[@"instagram_media_id"]]) {
+    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.instagramMediaID]) {
         return;
     }
     SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithURL:webURL];

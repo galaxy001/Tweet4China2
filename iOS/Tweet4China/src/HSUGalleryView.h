@@ -13,8 +13,8 @@
 
 @property (nonatomic, weak) HSUBaseViewController *viewController;
 
-- (id)initWithData:(HSUTableCellData *)data image:(UIImage *)image;
-- (id)initWithData:(HSUTableCellData *)data imageURL:(NSURL *)imageURL;
+- (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image;
+- (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL;
 
 - (void)showWithAnimation:(BOOL)animation;
 

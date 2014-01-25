@@ -49,21 +49,21 @@
         if (tweets.count) {
             for (int i=tweets.count-1; i>=0; i--) {
                 // todo: ugly code, remove duplicated data
-                for (HSUTableCellData *cellData in weakSelf.data) {
+                for (T4CTableCellData *cellData in weakSelf.data) {
                     NSDictionary *rawData = cellData.rawData;
                     if ([rawData[@"id_str"] isEqualToString:tweets[i][@"id_str"]]) {
                         continue;
                     }
                     newCount ++;
                 }
-                HSUTableCellData *cellData =
-                [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
+                T4CTableCellData *cellData =
+                [[T4CTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
                 [weakSelf.data insertObject:cellData atIndex:0];
             }
             
-            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
+            T4CTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
-                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+                T4CTableCellData *loadMoreCellData = [[T4CTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [weakSelf.data addObject:loadMoreCellData];
@@ -97,8 +97,8 @@
         [weakSelf.data removeLastObject];
         NSUInteger oldCount = weakSelf.count;
         for (NSDictionary *tweet in responseObj) {
-            HSUTableCellData *cellData =
-            [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
+            T4CTableCellData *cellData =
+            [[T4CTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
             [weakSelf.data addObject:cellData];
         }
         [weakSelf.data addObject:loadMoreCellData];
@@ -123,7 +123,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (!self.loadingCount && self.count > 1) {
-        HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
+        T4CTableCellData *cellData = [self dataAtIndex:indexPath.row];
         if ([cellData.dataType isEqualToString:kDataType_LoadMore]) {
             if (![cellData.rawData[@"status"] intValue] == kLoadMoreCellStatus_NoMore) {
                 cellData.rawData = @{@"status": @(kLoadMoreCellStatus_Loading)};

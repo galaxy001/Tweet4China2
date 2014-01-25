@@ -40,7 +40,7 @@
     return self;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CTableCellData *)data
 {
     NSInteger status = [data.rawData[@"status"] integerValue];
     if (status == kLoadMoreCellStatus_Done) {
@@ -62,7 +62,7 @@
     }
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     return kLoadMoreCellHeight;
 }

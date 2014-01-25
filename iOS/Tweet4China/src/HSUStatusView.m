@@ -182,7 +182,7 @@
     [avatarB makeCornerRadius];
     
     infoArea.frame = ccr(ambientL.left, avatarB.top, cw-ambientL.left, info_H);
-    textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, [self.data.renderData[@"text_height"] floatValue] + 3);
+    textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, self.data.textHeight + 3);
     
     [timeL sizeToFit];
     timeL.frame = ccr(infoArea.width-timeL.width, -1, timeL.width, timeL.height);
@@ -199,7 +199,7 @@
     self.imagePreviewButton.frame = ccr(textAL.left, textAL.bottom+5, MIN(textAL.width, PhotoPreviewMaxWidth), MIN(textAL.width, PhotoPreviewMaxWidth)/2);
 }
 
-- (void)setupWithData:(HSUTableCellData *)cellData
+- (void)setupWithData:(T4CStatusCellData *)cellData
 {
     self.data = cellData;
     
@@ -243,9 +243,9 @@
     
     // attr
     attrI.imageName = nil;
-    if (!self.data.renderData[@"attr_name"] || ([self.data.renderData[@"has_photo"] boolValue] && !self.data.renderData[@"photo_url"])) {
+    if (!self.data.attr || (self.data.hasPhoto && !self.data.photoUrl)) {
         if ([rawData[@"in_reply_to_status_id_str"] length]) {
-            self.data.renderData[@"attr_name"] = @"convo";
+            self.data.attr = @"convo";
         }
         if (entities) {
             NSArray *medias = entities[@"media"];
@@ -254,23 +254,23 @@
                 NSDictionary *media = medias[0];
                 NSString *type = media[@"type"];
                 if ([type isEqualToString:@"photo"]) {
-                    if (!self.data.renderData[@"attr_name"]) {
-                        self.data.renderData[@"attr_name"] = @"photo";
+                    if (!self.data.attr) {
+                        self.data.attr = @"photo";
                     }
-                    self.data.renderData[@"has_photo"] = @YES;
-                    self.data.renderData[@"photo_url"] = media[@"media_url_https"];
+                    self.data.hasPhoto = YES;
+                    self.data.photoUrl = media[@"media_url_https"];
                 }
             } else if (urls.count) {
                 for (NSDictionary *urlDict in urls) {
                     NSString *expandedUrl = urlDict[@"expanded_url"];
                     NSString *aName = [self _attrForUrl:expandedUrl];
-                    if (!self.data.renderData[@"attr_name"]) {
+                    if (!self.data.attr) {
                         if (aName) {
-                            self.data.renderData[@"attr_name"] = aName;
+                            self.data.attr = aName;
                         }
                     }
                     if ([aName isEqualToString:@"photo"]) {
-                        self.data.renderData[@"has_photo"] = @YES;
+                        self.data.hasPhoto = YES;
                     }
                     if (aName) {
                         break;
@@ -278,33 +278,33 @@
                 }
             }
         }
-        if (!self.data.renderData[@"attr_name"] && ([geo isKindOfClass:[NSDictionary class]] ||
+        if (!self.data.attr && ([geo isKindOfClass:[NSDictionary class]] ||
                                                     [place isKindOfClass:[NSDictionary class]])) {
             if ([geo isKindOfClass:[NSDictionary class]]) {
                 if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
                     //                attrName = @"geo";
-                    self.data.renderData[@"attr_name"] = @"geo";
+                    self.data.attr = @"geo";
                 }
             } else if ([place isKindOfClass:[NSDictionary class]]) {
                 //            attrName = @"geo";
-                self.data.renderData[@"attr_name"] = @"geo";
+                self.data.attr = @"geo";
             }
         }
         
-        if (!self.data.renderData[@"attr_name"]) {
-            self.data.renderData[@"attr_name"] = @"";
+        if (!self.data.attr) {
+            self.data.attr = @"";
         }
     }
     
-    if ([self.data.renderData[@"attr_name"] length]) {
-        attrI.imageName = S(@"ic_tweet_attr_%@_default", self.data.renderData[@"attr_name"]);
+    if ([self.data.attr length]) {
+        attrI.imageName = S(@"ic_tweet_attr_%@_default", self.data.attr);
     } else {
         attrI.imageName = nil;
     }
     self.imagePreviewButton.hidden = YES;
-    if ([self.data.renderData[@"has_photo"] boolValue] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if (self.data.hasPhoto && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
         self.imagePreviewButton.hidden = NO;
-        [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
+        [self.imagePreviewButton setImageWithUrlStr:self.data.photoUrl
                                            forState:UIControlStateNormal
                                         placeHolder:nil];
     }
@@ -332,7 +332,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([self.data.renderData[@"attr_name"] isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([self.data.attr isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -371,22 +371,22 @@
     } else if ([GlobalSettings[HSUSettingPhotoPreview] boolValue] &&
                ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
         
-        NSString *mediaUrl = self.data.renderData[@"photo_url"];
+        NSString *mediaUrl = self.data.photoUrl;
         if (mediaUrl) {
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
         } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
-            self.data.renderData[@"photo_url"] = mediaUrl;
-            self.data.renderData[@"instagram_media_id"] = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
+            self.data.photoUrl = mediaUrl;
+            self.data.instagramMediaID = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
         } else {
             NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-            self.data.renderData[@"instagram_url"] = instagramAPIUrl;
+            self.data.instagramUrl = instagramAPIUrl;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
             __weak typeof(self) weakSelf = self;
             AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
@@ -394,14 +394,14 @@
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.instagramUrl]) {
                         [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
-                        weakSelf.data.renderData[@"instagram_media_id"] = JSON[@"media_id"];
+                        weakSelf.data.instagramMediaID = JSON[@"media_id"];
                         NSString *imageUrl = JSON[@"url"];
                         if ([imageUrl hasSuffix:@".mp4"]) {
-                            weakSelf.data.renderData[@"video_url"] = imageUrl;
+                            weakSelf.data.videoUrl = imageUrl;
                         } else {
-                            weakSelf.data.renderData[@"photo_url"] = imageUrl;
+                            weakSelf.data.photoUrl = imageUrl;
                             weakSelf.imagePreviewButton.hidden = NO;
                             [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl
                                                                    forState:UIControlStateNormal
@@ -419,7 +419,7 @@
     return nil;
 }
 
-+ (CGFloat)_textHeightWithCellData:(HSUTableCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName
++ (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName
 {
     NSDictionary *status = data.rawData;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
@@ -471,11 +471,11 @@
     testSizeLabel.text = text;
     
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(constraintWidth, 0)].height;
-    data.renderData[@"text_height"] = @(textHeight);
+    data.textHeight = textHeight;
     return textHeight;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data constraintWidth:(CGFloat)constraintWidth
++ (CGFloat)heightForData:(T4CTableCellData *)data constraintWidth:(CGFloat)constraintWidth
 {
     NSDictionary *rawData = data.rawData;
     
@@ -534,7 +534,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.delegate;
+    id delegate = self.data.target;
     [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -543,7 +543,7 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.delegate;
+    id delegate = self.data.target;
     [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -552,7 +552,7 @@
 - (void)imageButtonTouched
 {
     if ([self.imagePreviewButton imageForState:UIControlStateNormal]) {
-        id delegate = self.data.delegate;
+        id delegate = self.data.target;
         [delegate performSelector:@selector(openPhoto:withCellData:)
                        withObject:[self.imagePreviewButton imageForState:UIControlStateNormal]
                        withObject:self.data];

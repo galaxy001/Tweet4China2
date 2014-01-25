@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "T4CTableCellData.h"
 
 typedef NS_ENUM(NSInteger, T4CLoadingState) {
     T4CLoadingState_Done,
@@ -16,7 +15,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
     T4CLoadingState_NoMore,
 };
 
-@interface T4CViewController : UITableViewController
+@interface T4CTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSMutableArray *data;
 @property (nonatomic) NSUInteger topID, bottomID;
@@ -24,13 +23,14 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 @property (nonatomic, readonly) NSUInteger requestCount;
 @property (nonatomic, readonly) NSDictionary *requestParams;
 @property (nonatomic, readonly) NSString *dataKey;
-@property (nonatomic, readonly) NSString *dataType;
 @property (nonatomic) T4CLoadingState refreshState, loadMoreState;
+@property (nonatomic, assign) BOOL pullToRefresh, infiniteScrolling;
 
 - (void)refresh;
 - (void)loadMore;
 
 - (BOOL)filterData:(NSDictionary *)data;
+- (NSString *)dataTypeOfData:(NSDictionary *)data;
 
 - (void)requestDidFinishLoadingWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadingWithError:(NSError *)error;

@@ -7,6 +7,7 @@
 //
 
 #import "HSUSelectListsViewController.h"
+#import "T4CListCellData.h"
 
 @interface HSUSelectListsViewController ()
 
@@ -25,13 +26,13 @@
         self.screenName = screenName;
         NSMutableArray *data = [NSMutableArray arrayWithCapacity:myLists.count];
         for (NSDictionary *myList in myLists) {
-            HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:myList dataType:kDataType_List];
-            cellData.renderData[@"hide_creator"] = @YES;
+            T4CListCellData *cellData = [[T4CListCellData alloc] initWithRawData:myList dataType:kDataType_List];
+            cellData.hideCreator = YES;
             NSString *myListID = myList[@"id_str"];
             for (NSDictionary *listedList in listedLists) {
                 NSString *listedListID = listedList[@"id_str"];
                 if ([myListID isEqualToString:listedListID]) {
-                    cellData.renderData[@"listed"] = @YES;
+                    cellData.listed = YES;
                     break;
                 }
             }
@@ -57,8 +58,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
-    cellData.renderData[@"listed"] = @(![cellData.renderData[@"listed"] boolValue]);
+    T4CListCellData *cellData = (T4CListCellData *)[self.dataSource dataAtIndexPath:indexPath];
+    cellData.listed = !cellData.listed;
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         cell.accessoryType = UITableViewCellAccessoryNone;
@@ -69,10 +70,10 @@
 
 - (void)done
 {
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
+    for (T4CListCellData *cellData in self.dataSource.allData) {
         NSDictionary *myList = cellData.rawData;
         BOOL found = NO;
-        if ([cellData.renderData[@"listed"] boolValue]) {
+        if (cellData.listed) {
             for (NSDictionary *listedList in self.listedlists) {
                 if ([listedList[@"id_str"] isEqualToString:myList[@"id_str"]]) {
                     found = YES;

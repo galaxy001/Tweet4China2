@@ -7,6 +7,7 @@
 //
 
 #import "HSUPersonCell.h"
+#import "T4CPersonCellData.h"
 
 @interface HSUPersonCell ()
 
@@ -82,7 +83,7 @@
     self.verifyFlag.leftTop = ccp(self.nameLabel.right + 3, self.nameLabel.top);
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CPersonCellData *)data
 {
     [super setupWithData:data];
     
@@ -141,7 +142,7 @@
         [self.followButton setImage:[UIImage imageNamed:@"icn_follow_text"] forState:UIControlStateNormal];
     }
     
-    if ([data.renderData[@"sending_following_request"] boolValue]) {
+    if (data.sendingFollowingRequest) {
         self.followButton.enabled = NO;
     } else {
         self.followButton.enabled = YES;
@@ -152,7 +153,7 @@
     [self setupControl:self.followButton forKey:@"follow"];
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     return 75;
 }

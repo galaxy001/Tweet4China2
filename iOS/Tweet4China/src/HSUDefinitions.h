@@ -42,7 +42,6 @@
 #import "HSUTwitterAPI.h"
 #import "HSUAppDelegate.h"
 #import "NSString+Additions.h"
-#import "HSUTableCellData.h"
 #import "HSUUIEvent.h"
 #import "HSUCommonTools.h"
 #import "HSULoadMoreCell.h"
@@ -54,6 +53,7 @@
 #import "HSUNavigationController.h"
 #import "Flurry.h"
 #import "NSArray+Additions.h"
+#import "T4CTableCellData.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -130,6 +130,7 @@ _Pragma("clang diagnostic pop") \
 #define HSUStatusDidDelete @"HSUStatusDidDelete"
 
 #define kDataType_MainStatus @"MainStatus"
+#define kDataType_Status @"Status"
 #define kDataType_DefaultStatus @"DefaultStatus"
 #define kDataType_ChatStatus @"ChatStatus"
 #define kDataType_Person @"Person"

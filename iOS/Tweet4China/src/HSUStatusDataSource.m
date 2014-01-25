@@ -16,7 +16,7 @@
     if (self) {
         self.mainStatus = status;
         
-        HSUTableCellData *mainCellData = [[HSUTableCellData alloc] initWithRawData:status dataType:kDataType_MainStatus];
+        T4CTableCellData *mainCellData = [[T4CTableCellData alloc] initWithRawData:status dataType:kDataType_MainStatus];
         [self.data addObject:mainCellData];
         
         self.delegate = delegate;
@@ -36,7 +36,7 @@
     if ([status[@"in_reply_to_status_id_str"] length]) {
         __weak typeof(self)weakSelf = self;
         [twitter getDetailsForStatus:status[@"in_reply_to_status_id_str"] success:^(id responseObj) {
-            HSUTableCellData *chatCellData = [[HSUTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
+            T4CTableCellData *chatCellData = [[T4CTableCellData alloc] initWithRawData:responseObj dataType:kDataType_ChatStatus];
             [weakSelf.data insertObject:chatCellData atIndex:0];
             [weakSelf.delegate dataSource:weakSelf insertRowsFromIndex:0 length:1];
             weakSelf.loadingCount --;
@@ -60,7 +60,7 @@
         NSUInteger newTweetsCount = 0;
         for (NSDictionary *tweet in tweets) {
             if ([tweet[@"in_reply_to_status_id_str"] isEqualToString:mainStatusID]) {
-                HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_ChatStatus];
+                T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:tweet dataType:kDataType_ChatStatus];
                 [weakSelf.data addObject:cellData];
                 newTweetsCount += 1;
             }

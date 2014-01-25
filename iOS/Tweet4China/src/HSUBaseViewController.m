@@ -86,8 +86,8 @@
     }
     self.dataSource.delegate = self;
     
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.delegate = self;
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
+        cellData.target = self;
     }
     
     UITableView *tableView;
@@ -227,16 +227,16 @@
 #pragma mark - TableView
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     Class cellClass = [self cellClassForDataType:data.dataType];
     return [cellClass heightForData:data];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
-    if ([cellData.renderData[@"unread"] boolValue]) {
-        cellData.renderData[@"unread"] = @NO;
+    T4CTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+    if (cellData.unread) {
+        cellData.unread = NO;
         if (indexPath.row < self.dataSource.unreadCount) {
             self.dataSource.unreadCount = indexPath.row;
             [self unreadCountChanged];
@@ -246,9 +246,9 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndex:indexPath.row];
+    T4CTableCellData *data = [self.dataSource dataAtIndex:indexPath.row];
     if ([data.dataType isEqualToString:kDataType_DefaultStatus]) {
-        if ([data.renderData[@"mode"] isEqualToString:@"action"]) {
+        if ([((T4CStatusCellData *)data).mode isEqualToString:@"action"]) {
             return NO;
         }
     } else if ([data.dataType isEqualToString:kDataType_LoadMore]) {
@@ -275,7 +275,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_LoadMore]) {
         [self.dataSource loadMore];
     }
@@ -288,8 +288,8 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.delegate = self;
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
+        cellData.target = self;
     }
     
     [self.tableView reloadData];
@@ -313,8 +313,8 @@
     if (error) {
         NSLog(@"%@", error);
     } else {
-        for (HSUTableCellData *cellData in self.dataSource.allData) {
-            cellData.delegate = self;
+        for (T4CTableCellData *cellData in self.dataSource.allData) {
+            cellData.target = self;
         }
         
         [self.tableView reloadData];

@@ -92,7 +92,7 @@
     }
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     TTTAttributedLabel *testSizeLabel = [[HSUAttributedLabel alloc] init];
     testSizeLabel.textColor = rgb(38, 38, 38);
@@ -113,7 +113,7 @@
     return MAX(6+10+5+7+textHeight+7+6, 6+50+6);
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CTableCellData *)data
 {
     [super setupWithData:data];
     

@@ -7,7 +7,10 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "T4CConversationCellData.h"
 
 @interface HSUConversationCell : HSUBaseTableCell
+
+@property (nonatomic, strong) T4CConversationCellData *data;
 
 @end

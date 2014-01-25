@@ -23,7 +23,7 @@
     UIScrollView *imagePanel;
     HSUStatusView *statusView;
     
-    HSUTableCellData *cellData;
+    T4CTableCellData *cellData;
 }
 
 - (void)dealloc
@@ -32,7 +32,7 @@
     imagePanel.delegate = nil;
 }
 
-- (id)_initWithData:(HSUTableCellData *)data
+- (id)_initWithData:(T4CTableCellData *)data
 {
     self = [super initWithFrame:[UIApplication sharedApplication].keyWindow.bounds];
     if (self) {
@@ -73,7 +73,7 @@
     return self;
 }
 
-- (id)initWithData:(HSUTableCellData *)data image:(UIImage *)image
+- (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image
 {
     self = [self _initWithData:data];
     if (self) {
@@ -91,7 +91,7 @@
     return self;
 }
 
-- (id)initWithData:(HSUTableCellData *)data imageURL:(NSURL *)imageURL
+- (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL
 {
     self = [self _initWithData:data];
     if (self) {

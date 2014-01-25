@@ -92,12 +92,12 @@
     self.unreadIndicator.leftTop = ccp(5, 5);
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     return 70;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CConversationCellData *)data
 {
     [super setupWithData:data];
     
@@ -118,7 +118,7 @@
     self.snLabel.text = sn;
     self.timeLabel.text = time;
     self.contentLabel.text = content;
-    self.unreadIndicator.hidden = ![data.renderData[@"unread_dm"] boolValue];
+    self.unreadIndicator.hidden = !data.unreadDM;
     
     [self.nameLabel sizeToFit];
     [self.snLabel sizeToFit];

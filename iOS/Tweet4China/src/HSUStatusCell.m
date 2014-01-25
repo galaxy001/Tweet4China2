@@ -11,14 +11,16 @@
 #import <FHSTwitterEngine/FHSTwitterEngine.h>
 #import "HSUStatusView.h"
 #import "HSUStatusActionView.h"
+#import "T4CStatusCellData.h"
+
+@interface HSUStatusCell ()
+
+@property (nonatomic, weak) UIImageView *flagIV;
+@property (nonatomic, weak) HSUStatusActionView *actionV;
+
+@end
 
 @implementation HSUStatusCell
-{
-    UIImageView *flagIV;
-    HSUStatusActionView *actionV;
-    
-    BOOL retweeted, favorited;
-}
 
 + (HSUStatusViewStyle)statusStyle
 {
@@ -41,8 +43,9 @@
         
         [self.contentView addSubview:self.statusView];
         
-        flagIV = [[UIImageView alloc] init];
+        UIImageView *flagIV = [[UIImageView alloc] init];
         [self.contentView addSubview:flagIV];
+        self.flagIV = flagIV;
     }
     return self;
 }
@@ -52,49 +55,46 @@
     [super layoutSubviews];
     
     self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.contentView.width-padding_S*3, self.contentView.height-padding_S*2);
-    flagIV.rightTop = ccp(self.contentView.width, 0);
+    self.flagIV.rightTop = ccp(self.contentView.width, 0);
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CStatusCellData *)data
 {
     [super setupWithData:data];
     
     NSDictionary *rawData = data.rawData;
-    retweeted = [rawData[@"retweeted_status"][@"retweeted"] boolValue] || [rawData[@"retweeted"] boolValue];
-    favorited = [rawData[@"retweeted_status"][@"favorited"] boolValue] || [rawData[@"favorited"] boolValue];
+    BOOL retweeted = [rawData[@"retweeted_status"][@"retweeted"] boolValue] || [rawData[@"retweeted"] boolValue];
+    BOOL favorited = [rawData[@"retweeted_status"][@"favorited"] boolValue] || [rawData[@"favorited"] boolValue];
     
     if (retweeted && favorited) {
-        flagIV.image = [UIImage imageNamed:@"ic_dogear_both"];
+        self.flagIV.image = [UIImage imageNamed:@"ic_dogear_both"];
     } else if (retweeted) {
-        flagIV.image = [UIImage imageNamed:@"ic_dogear_rt"];
+        self.flagIV.image = [UIImage imageNamed:@"ic_dogear_rt"];
     } else if (favorited) {
-        flagIV.image = [UIImage imageNamed:@"ic_dogear_fave"];
+        self.flagIV.image = [UIImage imageNamed:@"ic_dogear_fave"];
     } else {
-        flagIV.image = nil;
+        self.flagIV.image = nil;
     }
-    [flagIV sizeToFit];
+    [self.flagIV sizeToFit];
     
     [self.statusView setupWithData:data];
     [self setupControl:self.statusView.avatarB forKey:@"touchAvatar"];
     
     self.contentView.backgroundColor = kClearColor;
     self.statusView.alpha = 1;
-    self.data.renderData[@"mode"] = @"default";
+    self.data.mode = @"default";
     
-    actionV.hidden = YES;
+    self.actionV.hidden = YES;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CStatusCellData *)data
 {
-    NSMutableDictionary *renderData = data.renderData;
-    if (renderData) {
-        if (renderData[@"height"]) {
-            return [renderData[@"height"] floatValue];
-        }
+    if (data.cellHeight) {
+        return data.cellHeight;
     }
     
     CGFloat height = [HSUStatusView heightForData:data constraintWidth:[HSUCommonTools winWidth] - 20 - padding_S*2] + padding_S * 2;
-    renderData[@"height"] = @(height);
+    data.cellHeight = height;
     return height;
 }
 
@@ -107,18 +107,19 @@
 }
 
 - (void)switchMode {
-    if (actionV) {
+    if (self.actionV) {
         [UIView animateWithDuration:0.2 animations:^{
             self.contentView.backgroundColor = IPAD ? kWhiteColor : kClearColor;
             self.statusView.alpha = 1;
-            actionV.alpha = 0;
+            self.actionV.alpha = 0;
         } completion:^(BOOL finish){
-            [actionV removeFromSuperview];
-            actionV = nil;
+            [self.actionV removeFromSuperview];
+            self.actionV = nil;
         }];
-        self.data.renderData[@"mode"] = @"default";
+        self.data.mode = @"default";
     } else {
-        actionV = [[HSUStatusActionView alloc] initWithStatus:self.data.rawData style:HSUStatusActionViewStyle_Default];
+        HSUStatusActionView *actionV = [[HSUStatusActionView alloc] initWithStatus:self.data.rawData style:HSUStatusActionViewStyle_Default];
+        self.actionV = actionV;
         [self.contentView addSubview:actionV];
         UIColor *actionBGC = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_swipe_tile"]];
         actionV.backgroundColor = actionBGC;
@@ -138,13 +139,13 @@
         }];
         
         notification_post_with_object(HSUStatusCellOtherCellSwipedNotification, self);
-        self.data.renderData[@"mode"] = @"action";
+        self.data.mode = @"action";
     }
 }
 
 - (void)otherCellSwiped:(NSNotification *)notification {
     if (notification.object != self) {
-        if (actionV && !actionV.hidden) {
+        if (self.actionV && !self.actionV.hidden) {
             [self switchMode];
         }
     }

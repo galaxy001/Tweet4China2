@@ -10,4 +10,32 @@
 
 @implementation T4CTableCellData
 
+- (id)initWithRawData:(NSDictionary *)rawData dataType:(NSString *)dataType
+{
+    self = [self init];
+    if (self) {
+        self.dataType = dataType;
+        self.rawData = rawData;
+    }
+    return self;
+}
+
+- (id)initWithCacheData:(NSDictionary *)cacheData
+{
+    self = [self init];
+    if (self) {
+        self.dataType = cacheData[@"data_type"];
+        if ([self.dataType isEqualToString:@"Status"]) {
+            self.dataType = @"DefaultStatus";
+        }
+        self.rawData = cacheData[@"raw_data"];
+    }
+    return self;
+}
+
+- (NSDictionary *)cacheData
+{
+    return @{@"data_type": self.dataType, @"raw_data": self.rawData};
+}
+
 @end

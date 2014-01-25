@@ -8,7 +8,10 @@
 
 #import "HSUBaseTableCell.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import "T4CStatusCellData.h"
 
 @interface HSUMainStatusCell : HSUBaseTableCell <TTTAttributedLabelDelegate>
+
+@property (nonatomic, strong) T4CStatusCellData *data;
 
 @end

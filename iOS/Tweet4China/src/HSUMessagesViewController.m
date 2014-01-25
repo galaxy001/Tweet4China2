@@ -288,7 +288,7 @@
     message[@"recipient_screen_name"] = self.herProfile[@"screen_name"];
     message[@"text"] = self.textView.text;
     message[@"sending"] = @(YES);
-    HSUTableCellData *appendingCellData = [[HSUTableCellData alloc] initWithRawData:message dataType:kDataType_Message];
+    T4CTableCellData *appendingCellData = [[T4CTableCellData alloc] initWithRawData:message dataType:kDataType_Message];
     [self.dataSource.data addObject:appendingCellData];
     [self preprocessDataSourceForRender:self.dataSource];
     [self _retrySendMessage:message];
@@ -297,7 +297,7 @@
     [self _scrollToBottomWithAnimation:NO];
 }
 
-- (void)retry:(HSUTableCellData *)cellData
+- (void)retry:(T4CTableCellData *)cellData
 {
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     RIButtonItem *retryItem = [RIButtonItem itemWithLabel:_("Retry Send")];
@@ -336,7 +336,7 @@
     [self preprocessDataSourceForRender:self.dataSource];
 }
 
-- (void)touchAvatar:(HSUTableCellData *)cellData
+- (void)touchAvatar:(T4CTableCellData *)cellData
 {
     NSString *screenName = cellData.rawData[@"sender"][@"screen_name"];
     HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];

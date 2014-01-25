@@ -14,6 +14,7 @@
 #import "HSUConversationsViewController.h"
 #import "HSUNavigationBar.h"
 #import "HSUGalleryView.h"
+#import "T4CHomeViewController.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -36,7 +37,7 @@
         // Home
         UINavigationController *homeNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                          toolbarClass:nil];
-        UIViewController *homeVC = [[HSUHomeViewController alloc] init];
+        UIViewController *homeVC = [[T4CHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
         homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Home")
                                                            image:[UIImage imageNamed:@"icn_tab_home_default"]

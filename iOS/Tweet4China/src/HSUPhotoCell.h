@@ -7,7 +7,10 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "T4CStatusCellData.h"
 
 @interface HSUPhotoCell : HSUBaseTableCell
+
+@property (nonatomic, strong) T4CStatusCellData *data;
 
 @end

@@ -81,9 +81,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_List]) {
-        HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+        T4CTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
         HSUListViewController *listVC = [[HSUListViewController alloc] initWithList:cellData.rawData];
         listVC.title = cellData.rawData[@"description"];
         [self.navigationController pushViewController:listVC animated:YES];
@@ -120,7 +120,7 @@
 
 - (void)editListViewControllerDidSaveList:(NSDictionary *)list
 {
-    HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:list dataType:kDataType_List];
+    T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:list dataType:kDataType_List];
     [self.subscribedListsDataSource.data insertObject:cellData atIndex:0];
     [self.tableView reloadData];
 }
