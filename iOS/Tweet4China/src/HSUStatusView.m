@@ -475,7 +475,7 @@
     return textHeight;
 }
 
-+ (CGFloat)heightForData:(T4CTableCellData *)data constraintWidth:(CGFloat)constraintWidth
++ (CGFloat)heightForData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth
 {
     NSDictionary *rawData = data.rawData;
     

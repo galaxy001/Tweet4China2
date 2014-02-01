@@ -82,6 +82,21 @@
 		9633E5E4174D20EF009062B7 /* ic_dm_reply_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5DE174D20EF009062B7 /* ic_dm_reply_default@2x.png */; };
 		9633E5E6174D20EF009062B7 /* ic_dm_reply_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9633E5E0174D20EF009062B7 /* ic_dm_reply_pressed@2x.png */; };
 		9633E5E9174D2258009062B7 /* HSUConversationCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9633E5E8174D2258009062B7 /* HSUConversationCell.m */; };
+		9634CCFB189AB23700B408CC /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175116DE5EDC00ABF0AD /* Foundation.framework */; };
+		9634CCFC189AB23700B408CC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175316DE5EDC00ABF0AD /* CoreGraphics.framework */; };
+		9634CCFD189AB23700B408CC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
+		9634CD03189AB23700B408CC /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9634CD01189AB23700B408CC /* InfoPlist.strings */; };
+		9634CD05189AB23700B408CC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9634CD04189AB23700B408CC /* main.m */; };
+		9634CD09189AB23700B408CC /* G4CAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9634CD08189AB23700B408CC /* G4CAppDelegate.m */; };
+		9634CD12189AB23700B408CC /* G4CViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9634CD11189AB23700B408CC /* G4CViewController.m */; };
+		9634CD14189AB23700B408CC /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9634CD13189AB23700B408CC /* Images.xcassets */; };
+		9634CD2E189AB33600B408CC /* View.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9634CD2D189AB33600B408CC /* View.xib */; };
+		9634CD32189AB6E100B408CC /* UIView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9634CD31189AB6E100B408CC /* UIView+Additions.m */; };
+		9634CD38189ABAC800B408CC /* NSString+URLEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 9634CD37189ABAC800B408CC /* NSString+URLEncoding.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		9634CD39189ABD4400B408CC /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 9687DF73186C5A9100431DA2 /* GCDAsyncSocket.m */; };
+		9634CD3A189ABE0200B408CC /* libFlurry_4.3.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96865E8D186E6C89004C0D5B /* libFlurry_4.3.0.a */; };
+		9634CD3B189ABE3D00B408CC /* libshadowsocks.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 960640C017D0858F000B1032 /* libshadowsocks.a */; };
+		9634CD3C189ABE4900B408CC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962817BA16DE5FF100ABF0AD /* SystemConfiguration.framework */; };
 		9639B91B16FDF0B10032177F /* ic_inset_larry@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9639B91A16FDF0B10032177F /* ic_inset_larry@2x.png */; };
 		9639B92216FE1AD20032177F /* UIView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 9639B92116FE1AD20032177F /* UIView+Additions.m */; };
 		9648276116E230910002345B /* bg_tab_bar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9648275F16E230910002345B /* bg_tab_bar@2x.png */; };
@@ -510,6 +525,22 @@
 		9633E5E0174D20EF009062B7 /* ic_dm_reply_pressed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_dm_reply_pressed@2x.png"; sourceTree = "<group>"; };
 		9633E5E7174D2258009062B7 /* HSUConversationCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConversationCell.h; sourceTree = "<group>"; };
 		9633E5E8174D2258009062B7 /* HSUConversationCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUConversationCell.m; sourceTree = "<group>"; };
+		9634CCFA189AB23700B408CC /* G4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = G4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9634CD00189AB23700B408CC /* G4China-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "G4China-Info.plist"; sourceTree = "<group>"; };
+		9634CD02189AB23700B408CC /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		9634CD04189AB23700B408CC /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		9634CD06189AB23700B408CC /* G4China-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "G4China-Prefix.pch"; sourceTree = "<group>"; };
+		9634CD07189AB23700B408CC /* G4CAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = G4CAppDelegate.h; sourceTree = "<group>"; };
+		9634CD08189AB23700B408CC /* G4CAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = G4CAppDelegate.m; sourceTree = "<group>"; };
+		9634CD10189AB23700B408CC /* G4CViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = G4CViewController.h; sourceTree = "<group>"; };
+		9634CD11189AB23700B408CC /* G4CViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = G4CViewController.m; sourceTree = "<group>"; };
+		9634CD13189AB23700B408CC /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9634CD2D189AB33600B408CC /* View.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = View.xib; sourceTree = "<group>"; };
+		9634CD30189AB6E100B408CC /* UIView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Additions.h"; sourceTree = "<group>"; };
+		9634CD31189AB6E100B408CC /* UIView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Additions.m"; sourceTree = "<group>"; };
+		9634CD34189ABA5300B408CC /* libPods-FHSTwitterEngine.a */ = {isa = PBXFileReference; lastKnownFileType = file; name = "libPods-FHSTwitterEngine.a"; path = "Pods/build/Debug-iphoneos/libPods-FHSTwitterEngine.a"; sourceTree = "<group>"; };
+		9634CD36189ABAC800B408CC /* NSString+URLEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+URLEncoding.h"; sourceTree = "<group>"; };
+		9634CD37189ABAC800B408CC /* NSString+URLEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+URLEncoding.m"; sourceTree = "<group>"; };
 		9639B91A16FDF0B10032177F /* ic_inset_larry@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_inset_larry@2x.png"; sourceTree = "<group>"; };
 		9639B92016FE1AD20032177F /* UIView+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Additions.h"; sourceTree = "<group>"; };
 		9639B92116FE1AD20032177F /* UIView+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Additions.m"; sourceTree = "<group>"; };
@@ -919,6 +950,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9634CCF7189AB23700B408CC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9634CD3C189ABE4900B408CC /* SystemConfiguration.framework in Frameworks */,
+				9634CD3B189ABE3D00B408CC /* libshadowsocks.a in Frameworks */,
+				9634CD3A189ABE0200B408CC /* libFlurry_4.3.0.a in Frameworks */,
+				9634CCFC189AB23700B408CC /* CoreGraphics.framework in Frameworks */,
+				9634CCFD189AB23700B408CC /* UIKit.framework in Frameworks */,
+				9634CCFB189AB23700B408CC /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96992CCC188ADB4A00AADDC2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1001,6 +1045,7 @@
 				9628175516DE5EDC00ABF0AD /* Tweet4China */,
 				960640C217D08590000B1032 /* shadowsocks */,
 				96992CD3188ADB4A00AADDC2 /* FB4China */,
+				9634CCFE189AB23700B408CC /* G4China */,
 				9628174E16DE5EDC00ABF0AD /* Frameworks */,
 				9628174D16DE5EDC00ABF0AD /* Products */,
 				07814875B32540D3A6C87982 /* Pods.xcconfig */,
@@ -1013,6 +1058,7 @@
 				9628174C16DE5EDC00ABF0AD /* Tweet4China.app */,
 				960640C017D0858F000B1032 /* libshadowsocks.a */,
 				96992CCF188ADB4A00AADDC2 /* FB4China.app */,
+				9634CCFA189AB23700B408CC /* G4China.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1020,6 +1066,7 @@
 		9628174E16DE5EDC00ABF0AD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9634CD34189ABA5300B408CC /* libPods-FHSTwitterEngine.a */,
 				9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */,
 				96A6360E186AE11300BA9868 /* AssetsLibrary.framework */,
 				96A6360C186AE0F600BA9868 /* CoreImage.framework */,
@@ -1295,6 +1342,35 @@
 				9631AD181714738F006A4C0F /* GTMNSString+HTML.m */,
 			);
 			path = "GTMNSString+HTML";
+			sourceTree = "<group>";
+		};
+		9634CCFE189AB23700B408CC /* G4China */ = {
+			isa = PBXGroup;
+			children = (
+				9634CD30189AB6E100B408CC /* UIView+Additions.h */,
+				9634CD31189AB6E100B408CC /* UIView+Additions.m */,
+				9634CD07189AB23700B408CC /* G4CAppDelegate.h */,
+				9634CD08189AB23700B408CC /* G4CAppDelegate.m */,
+				9634CD10189AB23700B408CC /* G4CViewController.h */,
+				9634CD11189AB23700B408CC /* G4CViewController.m */,
+				9634CD36189ABAC800B408CC /* NSString+URLEncoding.h */,
+				9634CD37189ABAC800B408CC /* NSString+URLEncoding.m */,
+				9634CD2D189AB33600B408CC /* View.xib */,
+				9634CD13189AB23700B408CC /* Images.xcassets */,
+				9634CCFF189AB23700B408CC /* Supporting Files */,
+			);
+			path = G4China;
+			sourceTree = "<group>";
+		};
+		9634CCFF189AB23700B408CC /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				9634CD00189AB23700B408CC /* G4China-Info.plist */,
+				9634CD01189AB23700B408CC /* InfoPlist.strings */,
+				9634CD04189AB23700B408CC /* main.m */,
+				9634CD06189AB23700B408CC /* G4China-Prefix.pch */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		9639B91C16FDF59E0032177F /* Additions */ = {
@@ -1634,6 +1710,23 @@
 			productReference = 9628174C16DE5EDC00ABF0AD /* Tweet4China.app */;
 			productType = "com.apple.product-type.application";
 		};
+		9634CCF9189AB23700B408CC /* G4China */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9634CD2B189AB23700B408CC /* Build configuration list for PBXNativeTarget "G4China" */;
+			buildPhases = (
+				9634CCF6189AB23700B408CC /* Sources */,
+				9634CCF7189AB23700B408CC /* Frameworks */,
+				9634CCF8189AB23700B408CC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = G4China;
+			productName = G4China;
+			productReference = 9634CCFA189AB23700B408CC /* G4China.app */;
+			productType = "com.apple.product-type.application";
+		};
 		96992CCE188ADB4A00AADDC2 /* FB4China */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 96992D01188ADB4B00AADDC2 /* Build configuration list for PBXNativeTarget "FB4China" */;
@@ -1708,6 +1801,7 @@
 			targets = (
 				9628174B16DE5EDC00ABF0AD /* Tweet4China */,
 				96992CCE188ADB4A00AADDC2 /* FB4China */,
+				9634CCF9189AB23700B408CC /* G4China */,
 				960640BF17D0858F000B1032 /* shadowsocks */,
 			);
 		};
@@ -1896,6 +1990,16 @@
 				969F2FBE1823D3B000015765 /* btn_standard_default@2x~iphone.png in Resources */,
 				9666CDFE187698690044DB0A /* unread_indicator@2x.png in Resources */,
 				967F63531753A89900CB8730 /* direct-message-bar@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9634CCF8189AB23700B408CC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9634CD14189AB23700B408CC /* Images.xcassets in Resources */,
+				9634CD2E189AB33600B408CC /* View.xib in Resources */,
+				9634CD03189AB23700B408CC /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2102,6 +2206,19 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9634CCF6189AB23700B408CC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9634CD39189ABD4400B408CC /* GCDAsyncSocket.m in Sources */,
+				9634CD38189ABAC800B408CC /* NSString+URLEncoding.m in Sources */,
+				9634CD32189AB6E100B408CC /* UIView+Additions.m in Sources */,
+				9634CD05189AB23700B408CC /* main.m in Sources */,
+				9634CD12189AB23700B408CC /* G4CViewController.m in Sources */,
+				9634CD09189AB23700B408CC /* G4CAppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		96992CCB188ADB4A00AADDC2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -2137,6 +2254,14 @@
 				9628175916DE5EDC00ABF0AD /* en */,
 				96A63619186B12C100BA9868 /* zh-Hans */,
 				96A6361A186B12C300BA9868 /* zh-Hant */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		9634CD01189AB23700B408CC /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9634CD02189AB23700B408CC /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -2343,6 +2468,67 @@
 			};
 			name = Release;
 		};
+		9634CD27189AB23700B408CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "G4China/G4China-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "G4China/G4China-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		9634CD28189AB23700B408CC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "G4China/G4China-Prefix.pch";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "G4China/G4China-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
 		96992CFD188ADB4B00AADDC2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2433,6 +2619,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		9634CD2B189AB23700B408CC /* Build configuration list for PBXNativeTarget "G4China" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9634CD27189AB23700B408CC /* Debug */,
+				9634CD28189AB23700B408CC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		96992D01188ADB4B00AADDC2 /* Build configuration list for PBXNativeTarget "FB4China" */ = {
 			isa = XCConfigurationList;
