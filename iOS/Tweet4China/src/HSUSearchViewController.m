@@ -10,6 +10,7 @@
 #import "HSUSearchField.h"
 #import "HSUSearchTweetsDataSource.h"
 #import "HSUSearchPersonDataSource.h"
+#import "HSUProfileViewController.h"
 
 @interface HSUSearchViewController () <UITextFieldDelegate>
 
@@ -156,6 +157,68 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     [self.navigationController.navigationBar endEditing:YES];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    if ([data.dataType isEqualToString:kDataType_Person]) {
+        [self touchAvatar:data];
+        return;
+    }
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+}
+
+- (void)touchAvatar:(HSUTableCellData *)cellData
+{
+    if ([cellData.dataType isEqualToString:kDataType_Person]) {
+        NSString *screenName = cellData.rawData[@"screen_name"];
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+        profileVC.profile = cellData.rawData;
+        [self.navigationController pushViewController:profileVC animated:YES];
+    } else {
+        NSString *screenName = cellData.rawData[@"retweeted_status"][@"user"][@"screen_name"] ?: cellData.rawData[@"user"][@"screen_name"];
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+        profileVC.profile = cellData.rawData[@"retweeted_status"][@"user"] ?: cellData.rawData[@"user"];
+        [self.navigationController pushViewController:profileVC animated:YES];
+    }
+}
+
+- (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource
+{
+    [super preprocessDataSourceForRender:dataSource];
+    [dataSource addEventWithName:@"follow" target:self action:@selector(follow:) events:UIControlEventTouchUpInside];
+}
+
+- (void)follow:(HSUTableCellData *)cellData
+{
+    NSString *screenName = cellData.rawData[@"screen_name"];
+    cellData.renderData[@"sending_following_request"] = @(YES);
+    [self.tableView reloadData];
+    
+    if ([cellData.rawData[@"following"] boolValue]) {
+        __weak typeof(self)weakSelf = self;
+        [twitter unFollowUser:screenName success:^(id responseObj) {
+            cellData.renderData[@"sending_following_request"] = @(NO);
+            NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
+            rawData[@"following"] = @(NO);
+            cellData.rawData = rawData;
+            [weakSelf.tableView reloadData];
+        } failure:^(NSError *error) {
+            [twitter dealWithError:error errTitle:_("Unfollow failed")];
+        }];
+    } else {
+        __weak typeof(self)weakSelf = self;
+        [twitter followUser:screenName success:^(id responseObj) {
+            cellData.renderData[@"sending_following_request"] = @(NO);
+            NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
+            rawData[@"following"] = @(YES);
+            cellData.rawData = rawData;
+            [weakSelf.tableView reloadData];
+        } failure:^(NSError *error) {
+            [twitter dealWithError:error errTitle:_("Follow failed")];
+        }];
+    }
 }
 
 @end
