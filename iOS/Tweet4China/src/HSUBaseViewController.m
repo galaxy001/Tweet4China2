@@ -60,6 +60,7 @@
     if (self) {
         self.dataSourceClass = [HSUBaseDataSource class];
         self.useRefreshControl = YES;
+        notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
     }
     return self;
 }
@@ -174,7 +175,7 @@
         [self.tableView addPullToRefreshWithActionHandler:^{
             [weakSelf.dataSource refresh];
         }];
-        self.tableView.pullToRefreshView.soundEffectEnabled = YES;
+        self.tableView.pullToRefreshView.soundEffectEnabled = [[HSUAppDelegate shared].globalSettings[HSUSettingSoundEffect] boolValue];
         self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
     }
     
@@ -485,6 +486,11 @@
 - (void)dataSourceWillStartRefresh:(HSUBaseDataSource *)dataSource
 {
     
+}
+
+- (void)settingsUpdated:(NSNotification *)notification
+{
+    self.tableView.pullToRefreshView.soundEffectEnabled = [[HSUAppDelegate shared].globalSettings[HSUSettingSoundEffect] boolValue];
 }
 
 @end
