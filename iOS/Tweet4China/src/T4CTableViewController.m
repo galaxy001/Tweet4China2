@@ -17,6 +17,7 @@
 #import "HSUChatStatusCell.h"
 #import "HSUMainStatusCell.h"
 #import "T4CLoadingRepliedStatusCell.h"
+#import "T4CNewFollowersCell.h"
 
 @interface T4CTableViewController ()
 
@@ -38,13 +39,13 @@
                            kDataType_Gap: [T4CGapCell class],
                            kDataType_ChatStatus: [HSUChatStatusCell class],
                            kDataType_MainStatus: [HSUMainStatusCell class],
-                           kDataType_LoadingReply: [T4CLoadingRepliedStatusCell class]};
+                           kDataType_LoadingReply: [T4CLoadingRepliedStatusCell class],
+                           kDataType_NewFollowers: [T4CNewFollowersCell class]};
         
         self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class],
                                kDataType_Gap: [T4CGapCellData class],
                                kDataType_ChatStatus: [T4CStatusCellData class],
-                               kDataType_MainStatus: [T4CStatusCellData class],
-                               kDataType_LoadingReply: [T4CTableCellData class]};
+                               kDataType_MainStatus: [T4CStatusCellData class]};
         
         self.data = @[].mutableCopy;
     }
@@ -65,6 +66,11 @@
     if (!self.data.count) {
         [self refresh];
     }
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
     // register table view cell
     for (NSString *dataType in self.cellTypes) {
@@ -76,8 +82,10 @@
         [self.tableView addPullToRefreshWithActionHandler:^{
             [weakSelf refresh];
         }];
-        self.tableView.pullToRefreshView.soundEffectEnabled = YES;
-        self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
+        self.tableView.pullToRefreshView.soundEffectEnabled = [setting(HSUSettingSoundEffect) boolValue];
+        if (!self.tableView.pullToRefreshView.arrow) {
+            self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
+        }
     }
     if (self.infiniteScrolling) {
         [self.tableView addInfiniteScrollingWithActionHandler:^{
@@ -258,8 +266,8 @@
         if (inserted) {
             [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count+(gapped?1:0)];
         }
-        [self.tableView.pullToRefreshView stopAnimating];
     }
+    [self.tableView.pullToRefreshView stopAnimating];
 }
 
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr
@@ -315,7 +323,8 @@
 
 - (T4CTableCellData *)createTableCellDataWithRawData:(NSDictionary *)rawData
 {
-    T4CTableCellData *celldata = [[self.cellDataTypes[[self dataTypeOfData:rawData]] alloc] init];
+    Class dataClass = self.cellDataTypes[[self dataTypeOfData:rawData]] ?: [T4CTableCellData class];
+    T4CTableCellData *celldata = [[dataClass alloc] init];
     celldata.dataType = [self dataTypeOfData:rawData];
     celldata.rawData = rawData;
     return celldata;
@@ -394,9 +403,14 @@
     }
 }
 
+- (NSString *)requestUrlWithAPIString:(NSString *)apiString
+{
+    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/%@.json", apiString];
+}
+
 - (NSString *)requestUrl
 {
-    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/%@.json", self.apiString];
+    return [self requestUrlWithAPIString:self.apiString];
 }
 
 - (void)addEventWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events

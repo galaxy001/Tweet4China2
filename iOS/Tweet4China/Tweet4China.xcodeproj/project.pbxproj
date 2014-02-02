@@ -190,6 +190,10 @@
 		9676D2F4189DCF5C00E3AF45 /* T4CGapCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F3189DCF5C00E3AF45 /* T4CGapCellData.m */; };
 		9676D2F7189E1CCD00E3AF45 /* T4CStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */; };
 		9676D2FA189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */; };
+		9676D2FD189E93BA00E3AF45 /* T4CConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2FC189E93BA00E3AF45 /* T4CConnectViewController.m */; };
+		9676D300189E9F4E00E3AF45 /* T4CNewFollowersCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2FF189E9F4E00E3AF45 /* T4CNewFollowersCell.m */; };
+		9676D307189EA37F00E3AF45 /* icn_new_followers@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9676D305189EA37F00E3AF45 /* icn_new_followers@2x.png */; };
+		9676D308189EA37F00E3AF45 /* icn_new_retweets@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9676D306189EA37F00E3AF45 /* icn_new_retweets@2x.png */; };
 		967A55EA16FCD3DA00581274 /* HSUUIEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55E916FCD3D900581274 /* HSUUIEvent.m */; };
 		967A55FB16FDB2AD00581274 /* HSULoadMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55FA16FDB2AD00581274 /* HSULoadMoreCell.m */; };
 		967F63481753048500CB8730 /* direct-message-text-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 967F63461753048500CB8730 /* direct-message-text-bubble@2x.png */; };
@@ -675,6 +679,12 @@
 		9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CStatusViewController.m; sourceTree = "<group>"; };
 		9676D2F8189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CLoadingRepliedStatusCell.h; sourceTree = "<group>"; };
 		9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CLoadingRepliedStatusCell.m; sourceTree = "<group>"; };
+		9676D2FB189E93BA00E3AF45 /* T4CConnectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CConnectViewController.h; sourceTree = "<group>"; };
+		9676D2FC189E93BA00E3AF45 /* T4CConnectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CConnectViewController.m; sourceTree = "<group>"; };
+		9676D2FE189E9F4E00E3AF45 /* T4CNewFollowersCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CNewFollowersCell.h; sourceTree = "<group>"; };
+		9676D2FF189E9F4E00E3AF45 /* T4CNewFollowersCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CNewFollowersCell.m; sourceTree = "<group>"; };
+		9676D305189EA37F00E3AF45 /* icn_new_followers@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_new_followers@2x.png"; sourceTree = "<group>"; };
+		9676D306189EA37F00E3AF45 /* icn_new_retweets@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_new_retweets@2x.png"; sourceTree = "<group>"; };
 		967A55E816FCD3D900581274 /* HSUUIEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUUIEvent.h; sourceTree = "<group>"; };
 		967A55E916FCD3D900581274 /* HSUUIEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUUIEvent.m; sourceTree = "<group>"; };
 		967A55F916FDB2AD00581274 /* HSULoadMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoadMoreCell.h; sourceTree = "<group>"; };
@@ -1035,6 +1045,8 @@
 				960E805418866F1500B1F165 /* T4CTableViewController.m */,
 				96B7B6F21893C7C700B75AE5 /* T4CHomeViewController.h */,
 				96B7B6F31893C7C700B75AE5 /* T4CHomeViewController.m */,
+				9676D2FB189E93BA00E3AF45 /* T4CConnectViewController.h */,
+				9676D2FC189E93BA00E3AF45 /* T4CConnectViewController.m */,
 				9676D2F5189E1CCD00E3AF45 /* T4CStatusViewController.h */,
 				9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */,
 				960E805C1886878300B1F165 /* T4CTableCellData.h */,
@@ -1053,6 +1065,8 @@
 				9676D2F3189DCF5C00E3AF45 /* T4CGapCellData.m */,
 				9676D2F8189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.h */,
 				9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */,
+				9676D2FE189E9F4E00E3AF45 /* T4CNewFollowersCell.h */,
+				9676D2FF189E9F4E00E3AF45 /* T4CNewFollowersCell.m */,
 			);
 			name = T4C;
 			sourceTree = "<group>";
@@ -1157,6 +1171,8 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9676D305189EA37F00E3AF45 /* icn_new_followers@2x.png */,
+				9676D306189EA37F00E3AF45 /* icn_new_retweets@2x.png */,
 				9676D2F0189DCA5900E3AF45 /* bg_gap@2x.png */,
 				96992D49188D0D3B00AADDC2 /* icn_activity_weixin_moments@2x.png */,
 				96992D4A188D0D3B00AADDC2 /* icn_activity_weixin@2x.png */,
@@ -1921,6 +1937,7 @@
 				60390728B803BF6E4D1D8A8B /* icn_tweet_action_retweet_disabled@2x.png in Resources */,
 				603900871EFDC81092F0212D /* icn_tweet_action_delete@2x.png in Resources */,
 				603904470C12935E567B2DE9 /* icn_tweet_action_favorite_on@2x.png in Resources */,
+				9676D307189EA37F00E3AF45 /* icn_new_followers@2x.png in Resources */,
 				603903F128A43CB5FF6C6E9F /* bg_swipe_tile@2x.png in Resources */,
 				60390FEB56AEDF0D26BFB0AA /* ic_dogear_fave@2x.png in Resources */,
 				603906FC37B949AA97CD9ABA /* ic_dogear_rt@2x.png in Resources */,
@@ -1979,6 +1996,7 @@
 				9628A6F917F81F7B005374F1 /* icn_tab_home_default@2x~iphone.png in Resources */,
 				96924688172E6E93007720D4 /* icn_nav_bar_light_close@2x.png in Resources */,
 				9628E6D11730F231005A9EC9 /* bg_profile_empty@2x~iphone.png in Resources */,
+				9676D308189EA37F00E3AF45 /* icn_new_retweets@2x.png in Resources */,
 				967272581732B66200B6E30A /* icn_profile_messages@2x~iphone.png in Resources */,
 				96DECEC8187FD6A300E46809 /* btn_bookmark_selected@2x.png in Resources */,
 				9672725A1732B66200B6E30A /* icn_profile_settings@2x~iphone.png in Resources */,
@@ -2146,6 +2164,7 @@
 				966E18E4184C6CC000B5482C /* HSUNavigationController.m in Sources */,
 				966E1909184CAB5600B5482C /* HSUListMembersDataSource.m in Sources */,
 				960E805518866F1500B1F165 /* T4CTableViewController.m in Sources */,
+				9676D300189E9F4E00E3AF45 /* T4CNewFollowersCell.m in Sources */,
 				9664997016F30BBF00BC901A /* NSDate+Additions.m in Sources */,
 				966E191B184CB06300B5482C /* HSUListCell.m in Sources */,
 				96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */,
@@ -2189,6 +2208,7 @@
 				9676D2FA189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m in Sources */,
 				9628E6DC17312B8E005A9EC9 /* HSUProfileDataSource.m in Sources */,
 				9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */,
+				9676D2FD189E93BA00E3AF45 /* T4CConnectViewController.m in Sources */,
 				96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */,
 				96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */,
 				967272681732C59800B6E30A /* HSUPersonListViewController.m in Sources */,

@@ -153,6 +153,8 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define kDataType_Conversation @"Conversation"
 #define kDataType_List @"List"
 #define kDataType_Photo @"Photo"
+#define kDataType_NewFollowers @"NewFollowers"
+#define kDataType_NewRetweets @"NewRetweets"
 
 #define kTwitterReplyID_ParameterKey @"in_reply_to_status_id"
 #define HSUUserSettings @"HSUUserSettings"

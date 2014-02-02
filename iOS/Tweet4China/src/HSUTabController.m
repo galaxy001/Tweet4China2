@@ -15,6 +15,7 @@
 #import "HSUNavigationBar.h"
 #import "HSUGalleryView.h"
 #import "T4CHomeViewController.h"
+#import "T4CConnectViewController.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -47,7 +48,7 @@
         // Connect
         UINavigationController *connectNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                             toolbarClass:nil];
-        UIViewController *connectVC = [[HSUConnectViewController alloc] init];
+        UIViewController *connectVC = [[T4CConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
         connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Connect")
                                                               image:[UIImage imageNamed:@"icn_tab_connect_default"]

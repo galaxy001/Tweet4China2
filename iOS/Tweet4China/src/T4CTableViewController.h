@@ -25,6 +25,8 @@
 - (void)loadGap:(T4CGapCellData *)gapCellData;
 - (void)loadMore;
 
+- (NSString *)requestUrlWithAPIString:(NSString *)apiString;
+
 - (BOOL)filterData:(NSDictionary *)data;
 - (NSString *)dataTypeOfData:(NSDictionary *)data;
 
