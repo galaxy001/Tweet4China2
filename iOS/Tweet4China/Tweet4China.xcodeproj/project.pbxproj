@@ -188,6 +188,8 @@
 		9676D2ED189DC7EA00E3AF45 /* T4CGapCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2EC189DC7EA00E3AF45 /* T4CGapCell.m */; };
 		9676D2F1189DCA5900E3AF45 /* bg_gap@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9676D2F0189DCA5900E3AF45 /* bg_gap@2x.png */; };
 		9676D2F4189DCF5C00E3AF45 /* T4CGapCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F3189DCF5C00E3AF45 /* T4CGapCellData.m */; };
+		9676D2F7189E1CCD00E3AF45 /* T4CStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */; };
+		9676D2FA189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */; };
 		967A55EA16FCD3DA00581274 /* HSUUIEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55E916FCD3D900581274 /* HSUUIEvent.m */; };
 		967A55FB16FDB2AD00581274 /* HSULoadMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55FA16FDB2AD00581274 /* HSULoadMoreCell.m */; };
 		967F63481753048500CB8730 /* direct-message-text-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 967F63461753048500CB8730 /* direct-message-text-bubble@2x.png */; };
@@ -669,6 +671,10 @@
 		9676D2F0189DCA5900E3AF45 /* bg_gap@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_gap@2x.png"; sourceTree = "<group>"; };
 		9676D2F2189DCF5C00E3AF45 /* T4CGapCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CGapCellData.h; sourceTree = "<group>"; };
 		9676D2F3189DCF5C00E3AF45 /* T4CGapCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CGapCellData.m; sourceTree = "<group>"; };
+		9676D2F5189E1CCD00E3AF45 /* T4CStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CStatusViewController.h; sourceTree = "<group>"; };
+		9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CStatusViewController.m; sourceTree = "<group>"; };
+		9676D2F8189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CLoadingRepliedStatusCell.h; sourceTree = "<group>"; };
+		9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CLoadingRepliedStatusCell.m; sourceTree = "<group>"; };
 		967A55E816FCD3D900581274 /* HSUUIEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUUIEvent.h; sourceTree = "<group>"; };
 		967A55E916FCD3D900581274 /* HSUUIEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUUIEvent.m; sourceTree = "<group>"; };
 		967A55F916FDB2AD00581274 /* HSULoadMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoadMoreCell.h; sourceTree = "<group>"; };
@@ -1029,6 +1035,8 @@
 				960E805418866F1500B1F165 /* T4CTableViewController.m */,
 				96B7B6F21893C7C700B75AE5 /* T4CHomeViewController.h */,
 				96B7B6F31893C7C700B75AE5 /* T4CHomeViewController.m */,
+				9676D2F5189E1CCD00E3AF45 /* T4CStatusViewController.h */,
+				9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */,
 				960E805C1886878300B1F165 /* T4CTableCellData.h */,
 				960E805D1886878300B1F165 /* T4CTableCellData.m */,
 				96B7B6DD1893B3AE00B75AE5 /* T4CStatusCellData.h */,
@@ -1043,6 +1051,8 @@
 				9676D2EC189DC7EA00E3AF45 /* T4CGapCell.m */,
 				9676D2F2189DCF5C00E3AF45 /* T4CGapCellData.h */,
 				9676D2F3189DCF5C00E3AF45 /* T4CGapCellData.m */,
+				9676D2F8189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.h */,
+				9676D2F9189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m */,
 			);
 			name = T4C;
 			sourceTree = "<group>";
@@ -1764,7 +1774,7 @@
 		9628174416DE5EDC00ABF0AD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = HSU;
+				CLASSPREFIX = T4C;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Jason Hsu <support@tuoxie.me>";
 				TargetAttributes = {
@@ -2163,6 +2173,7 @@
 				966E1903184CAACC00B5482C /* HSUListsViewController.m in Sources */,
 				96992D3B188BC85F00AADDC2 /* HSUSelectListsViewController.m in Sources */,
 				969B6FB11720489400420F01 /* HSUMainStatusCell.m in Sources */,
+				9676D2F7189E1CCD00E3AF45 /* T4CStatusViewController.m in Sources */,
 				969B6FB417204BC800420F01 /* HSUStatusDataSource.m in Sources */,
 				96A2127117204F3200BC1D09 /* HSUContextStatusCell.m in Sources */,
 				96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */,
@@ -2175,6 +2186,7 @@
 				9692467C172E6A8E007720D4 /* HSUNavigationBarLight.m in Sources */,
 				9628E6D61730F45E005A9EC9 /* HSUProfileView.m in Sources */,
 				9628E6D917312240005A9EC9 /* NSString+Additions.m in Sources */,
+				9676D2FA189E278B00E3AF45 /* T4CLoadingRepliedStatusCell.m in Sources */,
 				9628E6DC17312B8E005A9EC9 /* HSUProfileDataSource.m in Sources */,
 				9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */,
 				96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */,

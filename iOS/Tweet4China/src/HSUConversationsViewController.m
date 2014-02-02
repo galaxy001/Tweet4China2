@@ -52,7 +52,7 @@
 - (void)checkUnread
 {
     if (self.dataSource) {
-        [self.dataSource refresh];
+//        [self.dataSource refresh];
     } else {
 //        [HSUConversationsDataSource checkUnreadForViewController:self];
     }

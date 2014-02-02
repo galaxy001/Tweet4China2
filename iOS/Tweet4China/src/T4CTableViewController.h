@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class T4CGapCellData;
-@interface T4CTableViewController : UITableViewController
+@interface T4CTableViewController : UITableViewController <UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *data;
 @property (nonatomic, assign) long long topID, bottomID;
@@ -27,6 +27,8 @@
 
 - (BOOL)filterData:(NSDictionary *)data;
 - (NSString *)dataTypeOfData:(NSDictionary *)data;
+
+- (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count;
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr;

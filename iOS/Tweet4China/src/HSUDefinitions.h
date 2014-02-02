@@ -139,6 +139,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUStatusDidDelete @"HSUStatusDidDelete"
 
 #define kDataType_MainStatus @"MainStatus"
+#define kDataType_LoadingReply @"LoadingReply"
 #define kDataType_Status @"Status"
 #define kDataType_DefaultStatus @"DefaultStatus"
 #define kDataType_ChatStatus @"ChatStatus"

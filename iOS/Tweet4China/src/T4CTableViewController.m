@@ -13,6 +13,10 @@
 #import <Reachability/Reachability.h>
 #import "T4CGapCellData.h"
 #import "T4CGapCell.h"
+#import "T4CStatusViewController.h"
+#import "HSUChatStatusCell.h"
+#import "HSUMainStatusCell.h"
+#import "T4CLoadingRepliedStatusCell.h"
 
 @interface T4CTableViewController ()
 
@@ -29,10 +33,20 @@
     if (self) {
         self.pullToRefresh = YES;
         self.infiniteScrolling = YES;
+        
         self.cellTypes = @{kDataType_Status: [HSUStatusCell class],
-                           kDataType_Gap: [T4CGapCell class]};
+                           kDataType_Gap: [T4CGapCell class],
+                           kDataType_ChatStatus: [HSUChatStatusCell class],
+                           kDataType_MainStatus: [HSUMainStatusCell class],
+                           kDataType_LoadingReply: [T4CLoadingRepliedStatusCell class]};
+        
         self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class],
-                               kDataType_Gap: [T4CGapCellData class]};
+                               kDataType_Gap: [T4CGapCellData class],
+                               kDataType_ChatStatus: [T4CStatusCellData class],
+                               kDataType_MainStatus: [T4CStatusCellData class],
+                               kDataType_LoadingReply: [T4CTableCellData class]};
+        
+        self.data = @[].mutableCopy;
     }
     return self;
 }
@@ -40,6 +54,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.tableView.delegate = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -81,7 +97,6 @@
 
 - (void)refresh
 {
-//    [self addEventWithName:@"loadGap" target:self action:@selector(loadGap:) events:UIControlEventTouchUpInside];
     self.refreshState = T4CLoadingState_Loading;
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     if (self.topID) {
@@ -352,8 +367,11 @@
     if ([cellData.dataType isEqualToString:kDataType_Gap]) {
         T4CGapCellData *gapCellData = (T4CGapCellData *)cellData;
         [self loadGap:gapCellData];
-    } else if ([cellData.dataType isEqualToString:kDataType_Status]) {
-        
+    } else if ([cellData.dataType isEqualToString:kDataType_Status] ||
+               [cellData.dataType isEqualToString:kDataType_ChatStatus]) {
+        T4CStatusViewController *statusVC = [[T4CStatusViewController alloc] init];
+        statusVC.status = cellData.rawData;
+        [self.navigationController pushViewController:statusVC animated:YES];
     }
 }
 
