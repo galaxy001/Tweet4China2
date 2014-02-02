@@ -14,7 +14,7 @@
 @property (nonatomic, strong) NSDictionary *rawData;
 @property (nonatomic) CGFloat cellHeight;
 @property (nonatomic, weak) id target;
-@property (nonatomic, strong) NSArray *events;
+@property (nonatomic, strong) NSMutableDictionary *events;
 @property (nonatomic, assign) BOOL unread;
 
 - (id)initWithRawData:(NSDictionary *)rawData dataType:(NSString *)dataType;

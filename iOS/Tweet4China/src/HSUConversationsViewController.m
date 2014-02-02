@@ -54,7 +54,7 @@
     if (self.dataSource) {
         [self.dataSource refresh];
     } else {
-        [HSUConversationsDataSource checkUnreadForViewController:self];
+//        [HSUConversationsDataSource checkUnreadForViewController:self];
     }
 }
 

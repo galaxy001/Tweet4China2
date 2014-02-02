@@ -21,7 +21,7 @@
 #define HSUShadowsocksSettings_Selected @"selected"
 #define HSUShadowsocksSettings_Buildin @"buildin"
 #define HSUShadowsocksSettings @"HSUShadowsocksSettings"
-#define ShadowSocksPort 71080
+#define ShadowSocksPort 71081
 #define Flurry_API_Key @"DFQP9KW7XKRBDVS27YDJ"
 
 static HSUShadowsocksProxy *proxy;

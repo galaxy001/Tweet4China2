@@ -14,7 +14,7 @@
 
 @implementation T4CHomeViewController
 
-- (NSString *)requestUrl
+- (NSString *)apiString
 {
     return @"statuses/home_timeline";
 }

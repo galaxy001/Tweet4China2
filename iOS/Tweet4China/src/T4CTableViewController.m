@@ -11,6 +11,8 @@
 #import "HSUBaseTableCell.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import <Reachability/Reachability.h>
+#import "T4CGapCellData.h"
+#import "T4CGapCell.h"
 
 @interface T4CTableViewController ()
 
@@ -27,8 +29,10 @@
     if (self) {
         self.pullToRefresh = YES;
         self.infiniteScrolling = YES;
-        self.cellTypes = @{kDataType_Status: [HSUStatusCell class]};
-        self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class]};
+        self.cellTypes = @{kDataType_Status: [HSUStatusCell class],
+                           kDataType_Gap: [T4CGapCell class]};
+        self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class],
+                               kDataType_Gap: [T4CGapCellData class]};
     }
     return self;
 }
@@ -36,24 +40,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    // register table view cell
-    for (NSString *dataType in self.cellTypes) {
-        [self.tableView registerClass:self.cellTypes[dataType] forCellReuseIdentifier:dataType];
-    }
-    
-    if (self.pullToRefresh) {
-        [self.tableView addPullToRefreshWithActionHandler:^{
-            
-        }];
-        self.tableView.pullToRefreshView.soundEffectEnabled = YES;
-        self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
-    }
-    if (self.infiniteScrolling) {
-        [self.tableView addInfiniteScrollingWithActionHandler:^{
-            
-        }];
-    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -62,6 +48,25 @@
     
     if (!self.data.count) {
         [self refresh];
+    }
+    
+    // register table view cell
+    for (NSString *dataType in self.cellTypes) {
+        [self.tableView registerClass:self.cellTypes[dataType] forCellReuseIdentifier:dataType];
+    }
+    
+    __weak typeof(self)weakSelf = self;
+    if (self.pullToRefresh) {
+        [self.tableView addPullToRefreshWithActionHandler:^{
+            [weakSelf refresh];
+        }];
+        self.tableView.pullToRefreshView.soundEffectEnabled = YES;
+        self.tableView.pullToRefreshView.arrow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"icn_arrow_notif_dark"]];
+    }
+    if (self.infiniteScrolling) {
+        [self.tableView addInfiniteScrollingWithActionHandler:^{
+            [weakSelf loadMore];
+        }];
     }
 }
 
@@ -74,24 +79,19 @@
     return _data;
 }
 
-// 发送请求的函数
-- (void)loadWithMinID:(NSUInteger)minID maxID:(NSUInteger)maxID count:(NSUInteger)count finish:(void(^)(T4CLoadingState state))finish
+- (void)refresh
 {
+//    [self addEventWithName:@"loadGap" target:self action:@selector(loadGap:) events:UIControlEventTouchUpInside];
+    self.refreshState = T4CLoadingState_Loading;
     NSMutableDictionary *params = self.requestParams.mutableCopy;
-    if (minID) {
-        params[@"since_id"] = @(minID);
+    if (self.topID) {
+        params[@"since_id"] = @(self.topID);
     }
-    if (maxID) {
-        params[@"max_id"] = @(maxID - 1);
-        params[@"cursor"] = @(maxID);
+    if (self.requestCount) {
+        params[@"count"] = @(self.requestCount);
     }
-    if (count) {
-        params[@"count"] = @(count);
-    }
-    NSString *url = [NSString stringWithFormat:@"https://api.twitter.com/1.1/%@.json", self.requestUrl];
     __weak typeof(self)weakSelf = self;
-    [twitter sendGETWithUrl:url parameters:params success:^(id responseObj) {
-        T4CLoadingState state;
+    [twitter sendGETWithUrl:self.requestUrl parameters:params success:^(id responseObj) {
         if ([responseObj isKindOfClass:[NSDictionary class]]) {
             NSDictionary *responseDict = responseObj;
             NSString *nextCursor = responseDict[@"next_cursor"];
@@ -100,80 +100,202 @@
             }
             NSArray *arrayData = responseDict[self.dataKey];
             arrayData = arrayData.count ? arrayData : nil;
-            [weakSelf requestDidFinishLoadingWithData:arrayData];
-            state = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
+            [weakSelf requestDidFinishRefreshWithData:arrayData];
+            weakSelf.refreshState = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
+        } else if ([responseObj count]) {
+            [weakSelf requestDidFinishRefreshWithData:responseObj];
+            weakSelf.refreshState = T4CLoadingState_Done;
         } else {
-            NSArray *arrayData = [responseObj count] ? responseObj : nil;
-            [weakSelf requestDidFinishLoadingWithData:arrayData];
-            state = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
-        }
-        if (finish) {
-            finish(state);
+            [weakSelf requestDidFinishRefreshWithData:nil];
+            weakSelf.refreshState = T4CLoadingState_NoMore;
         }
     } failure:^(NSError *error) {
-        T4CLoadingState state;
         if (error.code == 204) {
-            [weakSelf requestDidFinishLoadingWithData:nil];
-            state = T4CLoadingState_NoMore;
+            [weakSelf requestDidFinishRefreshWithData:nil];
+            weakSelf.refreshState = T4CLoadingState_NoMore;
         } else {
             [weakSelf requestDidFinishLoadingWithError:error];
-            state = T4CLoadingState_Error;
-        }
-        if (finish) {
-            finish(state);
+            weakSelf.refreshState = T4CLoadingState_Error;
         }
     }];
 }
 
-- (void)refresh
+- (void)loadGap:(T4CGapCellData *)gapCellData
 {
+    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
+    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+        return;
+    }
+    
+    T4CTableCellData *gapTopData = self.data[gapIndex - 1];
+    T4CTableCellData *gapBottomData = self.data[gapIndex + 1];
+    long long gapTopID = [gapTopData.rawData[@"id"] longLongValue];
+    long long gapBotID = [gapBottomData.rawData[@"id"] longLongValue];
+    
+    self.gapCellData = gapCellData;
+    self.gapCellData.state = T4CLoadingState_Loading;
+    NSMutableDictionary *params = self.requestParams.mutableCopy;
+    params[@"max_id"] = @(gapTopID - 1);
+    params[@"since_id"] = @(gapBotID);
+    if (self.requestCount) {
+        params[@"count"] = @(self.requestCount);
+    }
     __weak typeof(self)weakSelf = self;
-    self.refreshState = T4CLoadingState_Loading;
-    [self loadWithMinID:self.topID maxID:0 count:self.requestCount finish:^(T4CLoadingState state) {
-        weakSelf.refreshState = state;
+    [twitter sendGETWithUrl:self.requestUrl parameters:params success:^(id responseObj) {
+        if ([responseObj isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *responseDict = responseObj;
+            NSString *nextCursor = responseDict[@"next_cursor"];
+            if (nextCursor) { // page api
+                self.bottomID = [nextCursor longLongValue];
+            }
+            NSArray *arrayData = responseDict[self.dataKey];
+            arrayData = arrayData.count ? arrayData : nil;
+            [weakSelf requestDidFinishLoadGapWithData:arrayData];
+            weakSelf.gapCellData.state = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
+        } else if ([responseObj count]) {
+            [weakSelf requestDidFinishLoadGapWithData:responseObj];
+            weakSelf.gapCellData.state = T4CLoadingState_Done;
+        } else {
+            [weakSelf requestDidFinishLoadMoreWithData:nil];
+            weakSelf.gapCellData.state = T4CLoadingState_NoMore;
+        }
+    } failure:^(NSError *error) {
+        if (error.code == 204) {
+            [weakSelf requestDidFinishLoadGapWithData:nil];
+            weakSelf.gapCellData.state = T4CLoadingState_NoMore;
+        } else {
+            [weakSelf requestDidFinishLoadingWithError:error];
+            weakSelf.gapCellData.state = T4CLoadingState_Error;
+        }
     }];
 }
 
 - (void)loadMore
 {
-    __weak typeof(self)weakSelf = self;
     self.loadMoreState = T4CLoadingState_Loading;
-    [self loadWithMinID:0 maxID:self.bottomID count:self.requestCount finish:^(T4CLoadingState state) {
-        weakSelf.loadMoreState = state;
+    NSMutableDictionary *params = self.requestParams.mutableCopy;
+    if (self.bottomID) {
+        params[@"max_id"] = @(self.bottomID - 1);
+    }
+    if (self.requestCount) {
+        params[@"count"] = @(self.requestCount);
+    }
+    __weak typeof(self)weakSelf = self;
+    [twitter sendGETWithUrl:self.requestUrl parameters:params success:^(id responseObj) {
+        if ([responseObj isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *responseDict = responseObj;
+            NSString *nextCursor = responseDict[@"next_cursor"];
+            if (nextCursor) { // page api
+                self.bottomID = [nextCursor longLongValue];
+            }
+            NSArray *arrayData = responseDict[self.dataKey];
+            arrayData = arrayData.count ? arrayData : nil;
+            [weakSelf requestDidFinishLoadMoreWithData:arrayData];
+            weakSelf.refreshState = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
+        } else if ([responseObj count]) {
+            [weakSelf requestDidFinishLoadMoreWithData:responseObj];
+            weakSelf.loadMoreState = T4CLoadingState_Done;
+        } else {
+            [weakSelf requestDidFinishLoadMoreWithData:nil];
+            weakSelf.loadMoreState = T4CLoadingState_NoMore;
+        }
+    } failure:^(NSError *error) {
+        if (error.code == 204) {
+            [weakSelf requestDidFinishLoadMoreWithData:nil];
+            weakSelf.loadMoreState = T4CLoadingState_NoMore;
+        } else {
+            [weakSelf requestDidFinishLoadingWithError:error];
+            weakSelf.loadMoreState = T4CLoadingState_Error;
+        }
     }];
 }
 
 // 数据经过解析之后，拿到数组才送到这里
-- (void)requestDidFinishLoadingWithData:(NSArray *)dataArr
+- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
     if (dataArr.count) {
         NSDictionary *topData = dataArr.firstObject;
-        long topID = [topData[@"id"] longValue];
-        NSDictionary *bottomData = dataArr.lastObject;
-        long bottomID = [bottomData[@"id"] longValue];
+        long long topID = [topData[@"id"] longLongValue];
+        self.topID = topID;
         
-        if (bottomID > self.topID) { // refresh
-            self.topID = topID;
-            NSMutableArray *newDataArr = [NSMutableArray array];
-            for (NSDictionary *rawData in dataArr) {
-                [newDataArr addObject:[self createTableCellDataWithRawData:rawData]];
-            }
-            [newDataArr addObjectsFromArray:self.data];
-            self.data = newDataArr;
-        } else { // load more
-            self.bottomID = bottomID;
-            for (NSDictionary *rawData in dataArr) {
-                [self.data addObject:[self createTableCellDataWithRawData:rawData]];
-            }
+        NSDictionary *newBotData = dataArr.lastObject;
+        long long newBotID = [newBotData[@"id"] longLongValue];
+        
+        NSDictionary *curTopData = [self.data.firstObject rawData];
+        long long curTopID = [curTopData[@"id"] longLongValue];
+        BOOL gapped = curTopID > 0 && newBotID > curTopID;
+        BOOL inserted = self.data.count > 0;
+        
+        NSMutableArray *newDataArr = [NSMutableArray array];
+        for (NSDictionary *rawData in dataArr) {
+            [newDataArr addObject:[self createTableCellDataWithRawData:rawData]];
         }
+        if (gapped) {
+            [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
+        }
+        [newDataArr addObjectsFromArray:self.data];
+        self.data = newDataArr;
+        
+        NSDictionary *botData = [self.data.lastObject rawData];
+        self.bottomID = [botData[@"id"] longLongValue];
+        
+        [self.tableView reloadData];
+        if (inserted) {
+            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count+(gapped?1:0)];
+        }
+        [self.tableView.pullToRefreshView stopAnimating];
+    }
+}
+
+- (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr
+{
+    if (dataArr.count) {
+        NSUInteger gapIndex = [self.data indexOfObject:self.gapCellData];
+        NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(gapIndex, dataArr.count)];
+        NSMutableArray *newData = [NSMutableArray arrayWithCapacity:dataArr.count];
+        for (NSDictionary *rawData in dataArr) {
+            [newData addObject:[self createTableCellDataWithRawData:rawData]];
+        }
+        [self.data insertObjects:newData atIndexes:set];
+        
+        [self.tableView reloadData];
+        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
+    }
+}
+
+- (void)requestDidFinishLoadMoreWithData:(NSArray *)dataArr
+{
+    if (dataArr.count) {
+        NSDictionary *bottomData = dataArr.lastObject;
+        long long bottomID = [bottomData[@"id"] longLongValue];
+        
+        self.bottomID = bottomID;
+        for (NSDictionary *rawData in dataArr) {
+            [self.data addObject:[self createTableCellDataWithRawData:rawData]];
+        }
+        
         [self.tableView reloadData];
     }
+    [self.tableView.infiniteScrollingView stopAnimating];
 }
 
 // 真有错误才到这里，204不算的，一般是网络错误
 - (void)requestDidFinishLoadingWithError:(NSError *)error
 {
     NSLog(@"Error: %@", error);
+}
+
+- (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count
+{
+    if (self.data.count) {
+        CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+self.tableView.contentInset.top,
+                                 self.tableView.width, self.tableView.height);
+        NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];
+        NSIndexPath *firstIndexPath = indexPathsVisibleRows[0];
+        NSInteger firstRow = firstIndexPath.row + count;
+        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:firstRow inSection:0]
+                              atScrollPosition:UITableViewScrollPositionMiddle animated:NO];
+    }
 }
 
 - (T4CTableCellData *)createTableCellDataWithRawData:(NSDictionary *)rawData
@@ -224,6 +346,17 @@
     return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    T4CTableCellData *cellData = self.data[indexPath.row];
+    if ([cellData.dataType isEqualToString:kDataType_Gap]) {
+        T4CGapCellData *gapCellData = (T4CGapCellData *)cellData;
+        [self loadGap:gapCellData];
+    } else if ([cellData.dataType isEqualToString:kDataType_Status]) {
+        
+    }
+}
+
 - (BOOL)filterData:(NSDictionary *)data
 {
     return YES;
@@ -240,6 +373,20 @@
         return [setting(HSUSettingPageCount) integerValue] ?: kRequestDataCountViaWifi;
     } else {
         return [setting(HSUSettingPageCountWWAN) integerValue] ?: kRequestDataCountViaWWAN;
+    }
+}
+
+- (NSString *)requestUrl
+{
+    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/%@.json", self.apiString];
+}
+
+- (void)addEventWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events
+{
+    for (uint i=0; i<self.data.count; i++) {
+        HSUUIEvent *cellEvent = [[HSUUIEvent alloc] initWithName:name target:target action:action events:events];
+        cellEvent.cellData = self.data[i];
+        cellEvent.cellData.events[name] = cellEvent;
     }
 }
 

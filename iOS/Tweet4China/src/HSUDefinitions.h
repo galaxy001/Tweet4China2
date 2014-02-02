@@ -79,6 +79,15 @@ _Pragma("clang diagnostic pop") \
 } while (0)
 
 
+
+typedef NS_ENUM(NSInteger, T4CLoadingState) {
+    T4CLoadingState_Done,
+    T4CLoadingState_Loading,
+    T4CLoadingState_Error,
+    T4CLoadingState_NoMore,
+};
+
+
 #define _(s) NSLocalizedString(@s, nil)
 #define __(s) NSLocalizedString(@"s", nil)
 #define GCDBackgroundThread dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
@@ -133,6 +142,7 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_Status @"Status"
 #define kDataType_DefaultStatus @"DefaultStatus"
 #define kDataType_ChatStatus @"ChatStatus"
+#define kDataType_Gap @"Gap"
 #define kDataType_Person @"Person"
 #define kDataType_LoadMore @"LoadMore"
 #define kDataType_NormalTitle @"NormalTitle"

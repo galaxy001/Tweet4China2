@@ -7,6 +7,7 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "HSUUIEvent.h"
 
 @implementation HSUBaseTableCell
 
@@ -66,15 +67,13 @@
 
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean
 {
-    // TODO
-//    if (!control) {
-//        return;
-//    }
-//    HSUUIEvent *event = self.data.renderData[key];
-//    if (clean) {
-//        [control removeTarget:nil action:NULL forControlEvents:event.events];
-//    }
-//    [control addTarget:event action:@selector(fire:) forControlEvents:event.events];
+    HSUUIEvent *event = self.data.events[key];
+    if (event) {
+        if (clean) {
+            [control removeTarget:nil action:NULL forControlEvents:event.events];
+        }
+        [control addTarget:event action:@selector(fire:) forControlEvents:event.events];
+    }
 }
 
 - (void)setupWithData:(T4CTableCellData *)data

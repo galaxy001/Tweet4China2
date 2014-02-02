@@ -71,9 +71,7 @@
         !([((HSUTabController *)self.tabBarController) hasUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem] ||
           [((HSUiPadTabController *)self.tabController) hasUnreadIndicatorOnViewController:self.navigationController]))) {
             
-//#ifndef DEBUG
-            [HSUConnectDataSource checkUnreadForViewController:self];
-//#endif
+//            [HSUConnectDataSource checkUnreadForViewController:self];
     }
 }
 
