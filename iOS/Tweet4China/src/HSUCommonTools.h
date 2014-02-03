@@ -24,6 +24,8 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 + (void)switchToDesktopUserAgent;
 + (void)resetUserAgent;
 + (BOOL)isDesktopUserAgent;
++ (id)readJSONObjectFromFile:(NSString *)filename;
++ (void)writeJSONObject:(id)object toFile:(NSString *)filename;
 
 + (void)sendMailWithSubject:(NSString *)subject body:(NSString *)body presentFromViewController:(UIViewController *)viewController;
 

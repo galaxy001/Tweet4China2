@@ -18,6 +18,7 @@
 #import "HSUMainStatusCell.h"
 #import "T4CLoadingRepliedStatusCell.h"
 #import "T4CNewFollowersCell.h"
+#import "T4CNewRetweetsCell.h"
 
 @interface T4CTableViewController ()
 
@@ -40,7 +41,8 @@
                            kDataType_ChatStatus: [HSUChatStatusCell class],
                            kDataType_MainStatus: [HSUMainStatusCell class],
                            kDataType_LoadingReply: [T4CLoadingRepliedStatusCell class],
-                           kDataType_NewFollowers: [T4CNewFollowersCell class]};
+                           kDataType_NewFollowers: [T4CNewFollowersCell class],
+                           kDataType_NewRetweets: [T4CNewRetweetsCell class]};
         
         self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class],
                                kDataType_Gap: [T4CGapCellData class],
@@ -151,9 +153,9 @@
     }
     
     T4CTableCellData *gapTopData = self.data[gapIndex - 1];
-    T4CTableCellData *gapBottomData = self.data[gapIndex + 1];
+    T4CTableCellData *gapBotData = self.data[gapIndex + 1];
     long long gapTopID = [gapTopData.rawData[@"id"] longLongValue];
-    long long gapBotID = [gapBottomData.rawData[@"id"] longLongValue];
+    long long gapBotID = [gapBotData.rawData[@"id"] longLongValue];
     
     self.gapCellData = gapCellData;
     self.gapCellData.state = T4CLoadingState_Loading;
@@ -401,6 +403,11 @@
     } else {
         return [setting(HSUSettingPageCountWWAN) integerValue] ?: kRequestDataCountViaWWAN;
     }
+}
+
+- (NSString *)requestUrlWithAPIFormat:(NSString *)apiFormat idString:(NSString *)idString
+{
+    return [NSString stringWithFormat:@"https://api.twitter.com/1.1/%@.json", [NSString stringWithFormat:apiFormat, idString]];
 }
 
 - (NSString *)requestUrlWithAPIString:(NSString *)apiString

@@ -26,6 +26,7 @@
 - (void)loadMore;
 
 - (NSString *)requestUrlWithAPIString:(NSString *)apiString;
+- (NSString *)requestUrlWithAPIFormat:(NSString *)apiFormat idString:(NSString *)idString;
 
 - (BOOL)filterData:(NSDictionary *)data;
 - (NSString *)dataTypeOfData:(NSDictionary *)data;

@@ -156,4 +156,27 @@ static NSString *defaultUserAgent;
     return NO;
 }
 
++ (id)readJSONObjectFromFile:(NSString *)filename
+{
+    if (![filename hasSuffix:@"json"]) {
+        filename = [NSString stringWithFormat:@"%@.json", filename];
+    }
+    NSData *data = [NSData dataWithContentsOfFile:dp(filename)];
+    if (data) {
+        return [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    }
+    return nil;
+}
+
++ (void)writeJSONObject:(id)object toFile:(NSString *)filename
+{
+    if (![filename hasSuffix:@"json"]) {
+        filename = [NSString stringWithFormat:@"%@.json", filename];
+    }
+    if (object) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
+        [data writeToFile:dp(filename) atomically:NO];
+    }
+}
+
 @end
