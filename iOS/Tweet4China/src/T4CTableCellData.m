@@ -35,7 +35,10 @@
 
 - (NSDictionary *)cacheData
 {
-    return @{@"data_type": self.dataType, @"raw_data": self.rawData};
+    if (self.rawData) {
+        return @{@"data_type": self.dataType, @"raw_data": self.rawData, @"class_name": self.class.description};
+    }
+    return nil;
 }
 
 @end

@@ -176,6 +176,8 @@ static NSString *defaultUserAgent;
     if (object) {
         NSData *data = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
         [data writeToFile:dp(filename) atomically:NO];
+    } else {
+        [[NSFileManager defaultManager] removeItemAtPath:dp(filename) error:nil];
     }
 }
 

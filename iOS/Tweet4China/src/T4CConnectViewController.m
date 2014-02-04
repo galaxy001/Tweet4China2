@@ -52,7 +52,7 @@
                 [retweetedStatuses addObject:t];
             }
         }
-        [HSUCommonTools writeJSONObject:@[] toFile:@"connect_retweets_of_me"];
+//        [HSUCommonTools writeJSONObject:@[] toFile:@"connect_retweets_of_me"];
         NSArray *oldRetweetedStatuses = [HSUCommonTools readJSONObjectFromFile:@"connect_retweets_of_me"];
         NSMutableArray *diffTweets = [NSMutableArray arrayWithArray:retweetedStatuses];
         for (int i=0; i<retweetedStatuses.count; i++) {
@@ -70,7 +70,7 @@
                 }
             }
         }
-        [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
+//        [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
         if (diffTweets.count) {
             NSDictionary *retweetedStatus = diffTweets.firstObject;
             NSString *tid = retweetedStatus[@"id"];
@@ -98,15 +98,19 @@
                         }
                     }
                 }
-                retweetedStatus[@"retweets"] = diffRetweets;
-                retweetedStatuses[idx] = retweetedStatus;
-                [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
-                NSMutableArray *retweeters = [NSMutableArray arrayWithCapacity:diffRetweets.count];
-                for (NSDictionary *retweet in diffRetweets) {
-                    [retweeters addObject:retweet[@"user"]];
+                if (diffRetweets.count) {
+                    retweetedStatus[@"retweets"] = diffRetweets;
+                    retweetedStatuses[idx] = retweetedStatus;
+                    [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
+                    NSMutableArray *retweeters = [NSMutableArray arrayWithCapacity:diffRetweets.count];
+                    for (NSDictionary *retweet in diffRetweets) {
+                        [retweeters addObject:retweet[@"user"]];
+                    }
+                    retweetedStatus[@"retweeters"] = retweeters;
+                    [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:@[retweetedStatus]];
+                } else {
+                    [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:nil];
                 }
-                retweetedStatus[@"retweeters"] = retweeters;
-                [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:@[retweetedStatus]];
             } failure:^(NSError *error)
             {
                 [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:nil];
@@ -177,6 +181,42 @@
      {
         [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:nil];
      }];
+}
+
+- (long long)gapTopIDWithGapCellData:(T4CGapCellData *)gapCellData
+{
+    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
+    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+        return 0;
+    }
+    
+    for (int i=gapIndex-1; i>0; i--) {
+        T4CTableCellData *cellData = self.data[i];
+        if ([cellData.dataType isEqualToString:kDataType_Status]) {
+            long long gapTopID = [cellData.rawData[@"id"] longLongValue];
+            return gapTopID;
+        }
+    }
+    
+    return 0;
+}
+
+- (long long)gapBotIDWithGapCellData:(T4CGapCellData *)gapCellData
+{
+    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
+    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+        return 0;
+    }
+    
+    for (int i=gapIndex+1; i<self.data.count; i++) {
+        T4CTableCellData *cellData = self.data[i];
+        if ([cellData.dataType isEqualToString:kDataType_Status]) {
+            long long gapBotID = [cellData.rawData[@"id"] longLongValue];
+            return gapBotID;
+        }
+    }
+    
+    return 0;
 }
 
 @end

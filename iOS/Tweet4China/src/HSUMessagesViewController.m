@@ -248,6 +248,9 @@
 
 - (void)_sendButtonTouched
 {
+    if (!self.textView.hasText) {
+        return;
+    }
     if (!self.relactionshipLoaded) {
         __weak typeof(self)weakSelf = self;
         [twitter lookupFriendshipsWithScreenNames:@[self.herProfile[@"screen_name"]] success:^(id responseObj) {

@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class T4CGapCellData;
-@interface T4CTableViewController : UITableViewController <UIScrollViewDelegate>
+@interface T4CTableViewController : UIViewController <UIScrollViewDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *data;
 @property (nonatomic, assign) long long topID, bottomID;
@@ -20,10 +20,15 @@
 @property (nonatomic, readonly) NSString *dataKey;
 @property (nonatomic) T4CLoadingState refreshState, loadMoreState;
 @property (nonatomic, assign) BOOL pullToRefresh, infiniteScrolling;
+@property (nonatomic, weak) UITableView *tableView;
+@property (nonatomic, assign) BOOL useCache;
 
 - (void)refresh;
 - (void)loadGap:(T4CGapCellData *)gapCellData;
 - (void)loadMore;
+
+- (void)saveCache;
+- (void)loadCache;
 
 - (NSString *)requestUrlWithAPIString:(NSString *)apiString;
 - (NSString *)requestUrlWithAPIFormat:(NSString *)apiFormat idString:(NSString *)idString;

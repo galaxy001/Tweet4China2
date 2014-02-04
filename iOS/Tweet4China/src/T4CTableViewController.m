@@ -19,6 +19,10 @@
 #import "T4CLoadingRepliedStatusCell.h"
 #import "T4CNewFollowersCell.h"
 #import "T4CNewRetweetsCell.h"
+#import "HSUConversationCell.h"
+#import "T4CConversationCellData.h"
+#import "HSUMessageCell.h"
+#import "T4CMessagesViewController.h"
 
 @interface T4CTableViewController ()
 
@@ -28,6 +32,12 @@
 @end
 
 @implementation T4CTableViewController
+
+- (void)dealloc
+{
+    self.tableView.delegate = nil;
+    self.tableView.dataSource = nil;
+}
 
 - (id)init
 {
@@ -42,22 +52,43 @@
                            kDataType_MainStatus: [HSUMainStatusCell class],
                            kDataType_LoadingReply: [T4CLoadingRepliedStatusCell class],
                            kDataType_NewFollowers: [T4CNewFollowersCell class],
-                           kDataType_NewRetweets: [T4CNewRetweetsCell class]};
+                           kDataType_NewRetweets: [T4CNewRetweetsCell class],
+                           kDataType_Conversation: [HSUConversationCell class],
+                           kDataType_Message: [HSUMessageCell class]};
         
         self.cellDataTypes = @{kDataType_Status: [T4CStatusCellData class],
                                kDataType_Gap: [T4CGapCellData class],
                                kDataType_ChatStatus: [T4CStatusCellData class],
-                               kDataType_MainStatus: [T4CStatusCellData class]};
+                               kDataType_MainStatus: [T4CStatusCellData class],
+                               kDataType_Conversation: [T4CConversationCellData class]};
         
         self.data = @[].mutableCopy;
+        self.useCache = YES;
     }
     return self;
+}
+
+- (void)loadView
+{
+    [super loadView];
+    
+    UITableView *tableView = [[UITableView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    [self.view addSubview:tableView];
+    self.tableView = tableView;
+    if (IPAD) {
+        self.tableView.separatorColor = rgb(225, 232, 237);
+    }
+    tableView.dataSource = self;
+    tableView.delegate = self;
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
+    if (self.useCache) {
+        [self loadCache];
+    }
     self.tableView.delegate = self;
 }
 
@@ -65,9 +96,14 @@
 {
     [super viewWillAppear:animated];
     
+    for (NSString *dataType in self.cellTypes) {
+        [self.tableView registerClass:self.cellTypes[dataType] forCellReuseIdentifier:dataType];
+    }
+    
     if (!self.data.count) {
         [self refresh];
     }
+    self.navigationController.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -75,10 +111,6 @@
     [super viewDidAppear:animated];
     
     // register table view cell
-    for (NSString *dataType in self.cellTypes) {
-        [self.tableView registerClass:self.cellTypes[dataType] forCellReuseIdentifier:dataType];
-    }
-    
     __weak typeof(self)weakSelf = self;
     if (self.pullToRefresh) {
         [self.tableView addPullToRefreshWithActionHandler:^{
@@ -147,15 +179,11 @@
 
 - (void)loadGap:(T4CGapCellData *)gapCellData
 {
-    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
-    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+    long long gapTopID = [self gapTopIDWithGapCellData:gapCellData];
+    long long gapBotID = [self gapBotIDWithGapCellData:gapCellData];
+    if (gapTopID == 0 || gapBotID == 0) {
         return;
     }
-    
-    T4CTableCellData *gapTopData = self.data[gapIndex - 1];
-    T4CTableCellData *gapBotData = self.data[gapIndex + 1];
-    long long gapTopID = [gapTopData.rawData[@"id"] longLongValue];
-    long long gapBotID = [gapBotData.rawData[@"id"] longLongValue];
     
     self.gapCellData = gapCellData;
     self.gapCellData.state = T4CLoadingState_Loading;
@@ -268,6 +296,7 @@
         if (inserted) {
             [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count+(gapped?1:0)];
         }
+        [self saveCache];
     }
     [self.tableView.pullToRefreshView stopAnimating];
 }
@@ -285,6 +314,7 @@
         
         [self.tableView reloadData];
         [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
+        [self saveCache];
     }
 }
 
@@ -300,6 +330,7 @@
         }
         
         [self.tableView reloadData];
+        [self saveCache];
     }
     [self.tableView.infiniteScrollingView stopAnimating];
 }
@@ -383,7 +414,48 @@
         T4CStatusViewController *statusVC = [[T4CStatusViewController alloc] init];
         statusVC.status = cellData.rawData;
         [self.navigationController pushViewController:statusVC animated:YES];
+    } else if ([cellData.dataType isEqualToString:kDataType_Conversation]) {
+        T4CMessagesViewController *messagesVC = [[T4CMessagesViewController alloc] init];
+        NSDictionary *conversation = cellData.rawData;
+        messagesVC.conversation = conversation;
+        NSArray *messages = conversation[@"messages"];
+        for (NSDictionary *message in messages) {
+            if ([message[@"sender_screen_name"] isEqualToString:MyScreenName]) {
+                messagesVC.myProfile = message[@"sender"];
+                messagesVC.herProfile = message[@"recipient"];
+            } else {
+                messagesVC.myProfile = message[@"recipient"];
+                messagesVC.herProfile = message[@"sender"];
+            }
+            break;
+        }
+        [self.navigationController pushViewController:messagesVC animated:YES];
     }
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (long long)gapTopIDWithGapCellData:(T4CGapCellData *)gapCellData
+{
+    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
+    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+        return 0;
+    }
+    
+    T4CTableCellData *gapTopData = self.data[gapIndex - 1];
+    long long gapTopID = [gapTopData.rawData[@"id"] longLongValue];
+    return gapTopID;
+}
+
+- (long long)gapBotIDWithGapCellData:(T4CGapCellData *)gapCellData
+{
+    NSInteger gapIndex = [self.data indexOfObject:gapCellData];
+    if (gapIndex <= 0 || gapIndex >= self.data.count-1) {
+        return 0;
+    }
+    
+    T4CTableCellData *gapBotData = self.data[gapIndex + 1];
+    long long gapBotID = [gapBotData.rawData[@"id"] longLongValue];
+    return gapBotID;
 }
 
 - (BOOL)filterData:(NSDictionary *)data
@@ -426,6 +498,41 @@
         HSUUIEvent *cellEvent = [[HSUUIEvent alloc] initWithName:name target:target action:action events:events];
         cellEvent.cellData = self.data[i];
         cellEvent.cellData.events[name] = cellEvent;
+    }
+}
+
+- (void)saveCache
+{
+    if (!self.useCache) {
+        return;
+    }
+    __weak typeof(self)weakSelf = self;
+    dispatch_async(GCDBackgroundThread, ^{
+        uint cacheSize = kRequestDataCountViaWifi;
+        NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
+        for (T4CTableCellData *cellData in weakSelf.data) {
+            if (cacheDataArr.count < cacheSize) {
+                id cacheData = cellData.cacheData;
+                if (!cacheData) {
+                    break;
+                }
+                [cacheDataArr addObject:cellData.cacheData];
+            } else {
+                break;
+            }
+        }
+        [HSUCommonTools writeJSONObject:cacheDataArr toFile:weakSelf.class.description];
+    });
+}
+
+- (void)loadCache
+{
+    NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
+    for (NSDictionary *cache in cacheArr) {
+        T4CTableCellData *cellData = [[NSClassFromString(cache[@"class_name"]) alloc] init];
+        cellData.rawData = cache[@"raw_data"];
+        cellData.dataType = cache[@"data_type"];
+        [self.data addObject:cellData];
     }
 }
 

@@ -16,6 +16,7 @@
 #import "HSUGalleryView.h"
 #import "T4CHomeViewController.h"
 #import "T4CConnectViewController.h"
+#import "T4CConversationsViewController.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -58,7 +59,7 @@
         // Message
         UINavigationController *messageNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                             toolbarClass:nil];
-        UIViewController *messageVC = [[HSUConversationsViewController alloc] init];
+        UIViewController *messageVC = [[T4CConversationsViewController alloc] init];
         messageNav.viewControllers = @[messageVC];
         messageNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Message")
                                                               image:[UIImage imageNamed:@"icn_tab_message_default"]
