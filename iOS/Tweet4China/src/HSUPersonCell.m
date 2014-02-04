@@ -90,7 +90,8 @@
     NSString *avatarUrl = data.rawData[@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
-    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+//    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];
     [self.nameLabel sizeToFit];
@@ -150,7 +151,8 @@
     
     self.verifyFlag.hidden = ![data.rawData[@"verified"] boolValue];
     
-    [self setupControl:self.followButton forKey:@"follow"];
+//    [self setupControl:self.followButton forKey:@"follow"];
+    [self setupTapEventOnButton:self.followButton name:@"follow"];
 }
 
 + (CGFloat)heightForData:(T4CTableCellData *)data

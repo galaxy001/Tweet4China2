@@ -117,7 +117,8 @@
 {
     [super setupWithData:data];
     
-    [self setupControl:self.retryButton forKey:@"retry"];
+//    [self setupControl:self.retryButton forKey:@"retry"];
+    [self setupTapEventOnButton:self.retryButton name:@"retry"];
     
     self.retryButton.hidden = YES;
     if ([data.rawData[@"sending"] boolValue]) {
@@ -149,7 +150,8 @@
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     CGSize size = [self.contentLabel sizeThatFits:ccs(225, 0)];
     self.contentLabel.size = ccs(MAX(size.width, 30), size.height);
-    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+//    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
 }
 
 @end

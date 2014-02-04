@@ -33,7 +33,11 @@
 #import "HSUPhotosViewController.h"
 #import "HSURecentPhotosDataSource.h"
 #import "HSUSelectListsViewController.h"
-
+#import "T4CUserTimelineViewController.h"
+#import "T4CFollowersViewController.h"
+#import "T4CFollowingViewController.h"
+#import "T4CPhotosViewController.h"
+#import "T4CListsViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -257,25 +261,23 @@
 
 - (void)tweetsButtonTouched
 {
-    HSUUserHomeDataSource *dataSource = [[HSUUserHomeDataSource alloc] init];
-    dataSource.screenName = self.screenName;
-    HSUTweetsViewController *detailVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
-    [dataSource refresh];
+    T4CUserTimelineViewController *tweetsVC = [[T4CUserTimelineViewController alloc] init];
+    tweetsVC.screenName = self.screenName;
+    [self.navigationController pushViewController:tweetsVC animated:YES];
 }
 
 - (void)followingsButtonTouched
 {
-    HSUPersonListDataSource *dataSource = [[HSUFollowingDataSource alloc] initWithScreenName:self.screenName];
-    HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
+    T4CFollowingViewController *followersVC = [[T4CFollowingViewController alloc] init];
+    followersVC.screenName = self.screenName;
+    [self.navigationController pushViewController:followersVC animated:YES];
 }
 
 - (void)followersButtonTouched
 {
-    HSUPersonListDataSource *dataSource = [[HSUFollowersDataSource alloc] initWithScreenName:self.screenName];
-    HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
+    T4CFollowersViewController *followersVC = [[T4CFollowersViewController alloc] init];
+    followersVC.screenName = self.screenName;
+    [self.navigationController pushViewController:followersVC animated:YES];
 }
 
 - (void)favoritesButtonTouched
@@ -288,8 +290,9 @@
 
 - (void)listsButtonTouched
 {
-    HSUListsViewController *listVC = [[HSUListsViewController alloc] initWithScreenName:self.screenName];
-    [self.navigationController pushViewController:listVC animated:YES];
+    T4CListsViewController *listsVC = [[T4CListsViewController alloc] init];
+    listsVC.screenName = self.screenName;
+    [self.navigationController pushViewController:listsVC animated:YES];
 }
 
 - (void)draftsButtonTouched
@@ -299,12 +302,9 @@
 
 - (void)photosButtonTouched
 {
-    HSURecentPhotosDataSource *dataSource = [[HSURecentPhotosDataSource alloc] init];
-    dataSource.screenName = self.screenName;
-    HSUTweetsViewController *tweetsVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    tweetsVC.useRefreshControl = NO;
-    [self.navigationController pushViewController:tweetsVC animated:YES];
-    [dataSource refresh];
+    T4CPhotosViewController *photosVC = [[T4CPhotosViewController alloc] init];
+    photosVC.screenName = self.screenName;
+    [self.navigationController pushViewController:photosVC animated:YES];
 }
 
 - (void)followButtonTouched:(UIButton *)followButton

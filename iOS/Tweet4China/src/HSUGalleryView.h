@@ -7,11 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HSUBaseViewController.h"
 
+@class T4CTableViewController;
 @interface HSUGalleryView : UIView
 
-@property (nonatomic, weak) HSUBaseViewController *viewController;
+@property (nonatomic, weak) T4CTableViewController *viewController;
 
 - (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image;
 - (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL;

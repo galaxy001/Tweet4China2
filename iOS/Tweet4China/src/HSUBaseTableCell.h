@@ -20,7 +20,8 @@
 
 - (void)setupWithData:(T4CTableCellData *)data;
 + (CGFloat)heightForData:(T4CTableCellData *)data;
-- (void)setupControl:(UIControl *)control forKey:(NSString *)key;
-- (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean;
+//- (void)setupControl:(UIControl *)control forKey:(NSString *)key;
+//- (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean;
+- (void)setupTapEventOnButton:(UIButton *)button name:(NSString *)name;
 
 @end

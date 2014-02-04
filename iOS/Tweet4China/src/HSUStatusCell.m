@@ -78,7 +78,8 @@
     [self.flagIV sizeToFit];
     
     [self.statusView setupWithData:data];
-    [self setupControl:self.statusView.avatarB forKey:@"touchAvatar"];
+//    [self setupControl:self.statusView.avatarB forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:self.statusView.avatarB name:@"touchAvatar"];
     
     self.contentView.backgroundColor = kClearColor;
     self.statusView.alpha = 1;
@@ -124,11 +125,16 @@
         UIColor *actionBGC = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_swipe_tile"]];
         actionV.backgroundColor = actionBGC;
         
-        [self setupControl:actionV.replayB forKey:@"reply"];
-        [self setupControl:actionV.retweetB forKey:@"retweet"];
-        [self setupControl:actionV.favoriteB forKey:@"favorite"];
-        [self setupControl:actionV.moreB forKey:@"more"];
-        [self setupControl:actionV.deleteB forKey:@"delete"];
+        [self setupTapEventOnButton:actionV.replayB name:@"reply"];
+        [self setupTapEventOnButton:actionV.retweetB name:@"retweet"];
+        [self setupTapEventOnButton:actionV.favoriteB name:@"favorite"];
+        [self setupTapEventOnButton:actionV.moreB name:@"more"];
+        [self setupTapEventOnButton:actionV.deleteB name:@"delete"];
+//        [self setupControl:actionV.replayB forKey:@"reply"];
+//        [self setupControl:actionV.retweetB forKey:@"retweet"];
+//        [self setupControl:actionV.favoriteB forKey:@"favorite"];
+//        [self setupControl:actionV.moreB forKey:@"more"];
+//        [self setupControl:actionV.deleteB forKey:@"delete"];
         
         actionV.frame = self.contentView.bounds;
         actionV.alpha = 0;

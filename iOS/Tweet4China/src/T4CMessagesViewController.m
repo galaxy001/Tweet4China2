@@ -8,6 +8,7 @@
 
 #import "T4CMessagesViewController.h"
 #import "HPGrowingTextView.h"
+#import "T4CMessageCellData.h"
 
 @interface T4CMessagesViewController () <UITextViewDelegate, HPGrowingTextViewDelegate>
 
@@ -51,6 +52,8 @@
     
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.backgroundColor = kWhiteColor;
+    UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTableView)];
+    [self.tableView addGestureRecognizer:tapGesture];
     
     UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 40, self.view.width, 40)];
     self.containerView = containerView;
@@ -132,12 +135,12 @@
     
     NSArray *messages = self.conversation[@"messages"];
     for (NSDictionary *message in messages) {
-        T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:message
-                                                                      dataType:kDataType_Message];
+        T4CMessageCellData *cellData =
+        [[T4CMessageCellData alloc] initWithRawData:message
+                                           dataType:kDataType_Message];
+        cellData.target = self;
         [self.data addObject:cellData];
     }
-    
-//    [self preprocessDataSourceForRender:self.dataSource];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -167,14 +170,6 @@
     self.tabBarController.tabBar.hidden = NO;
     [super viewWillDisappear:animated];
 }
-
-//- (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource
-//{
-//    [super preprocessDataSourceForRender:dataSource];
-//    
-//    [dataSource addEventWithName:@"touchAvatar" target:self action:@selector(touchAvatar:) events:UIControlEventTouchUpInside];
-//    [dataSource addEventWithName:@"retry" target:self action:@selector(retry:) events:UIControlEventTouchUpInside];
-//}
 
 - (void)_scrollToBottomWithAnimation:(BOOL)animation
 {
@@ -238,12 +233,13 @@
     message[@"recipient_screen_name"] = self.herProfile[@"screen_name"];
     message[@"text"] = self.textView.text;
     message[@"sending"] = @(YES);
-    T4CTableCellData *appendingCellData = [[T4CTableCellData alloc] initWithRawData:message dataType:kDataType_Message];
+    T4CMessageCellData *appendingCellData =
+    [[T4CMessageCellData alloc] initWithRawData:message
+                                       dataType:kDataType_Message];
+    appendingCellData.target = self;
     [self.data addObject:appendingCellData];
-//    [self preprocessDataSourceForRender:self.dataSource];
     [self _retrySendMessage:message];
     self.textView.text = nil;
-//    [self textViewDidChange:self.textView];
     [self _scrollToBottomWithAnimation:NO];
 }
 
@@ -282,24 +278,16 @@
     
     NSArray *messages = self.conversation[@"messages"];
     for (NSDictionary *message in messages) {
-        T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:message
-                                                                      dataType:kDataType_Message];
+        T4CMessageCellData *cellData =
+        [[T4CMessageCellData alloc] initWithRawData:message
+                                           dataType:kDataType_Message];
+        cellData.target = self;
         [self.data addObject:cellData];
     }
     [self.tableView reloadData];
     
     [self _scrollToBottomWithAnimation:YES];
-//    [self preprocessDataSourceForRender:self.dataSource];
 }
-
-- (void)touchAvatar:(T4CTableCellData *)cellData
-{
-//    NSString *screenName = cellData.rawData[@"sender"][@"screen_name"];
-//    HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
-//    profileVC.profile = cellData.rawData[@"sender"];
-//    [self.navigationController pushViewController:profileVC animated:YES];
-}
-
 
 -(void)keyboardWillShow:(NSNotification *)note{
     // get keyboard size and loctaion
@@ -369,14 +357,11 @@
 	self.containerView.frame = r;
 }
 
--(void)resignTextView
-{
-	[self.textView resignFirstResponder];
-}
-
 - (void)tapTableView
 {
-    [self resignTextView];
+    if (self.textView.isFirstResponder) {
+        [self.textView resignFirstResponder];
+    }
 }
 
 @end

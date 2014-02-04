@@ -518,14 +518,22 @@
     }
     
     // set action events
-    [self setupControl:actionV.replayB forKey:@"reply"];
-    [self setupControl:actionV.retweetB forKey:@"retweet"];
-    [self setupControl:actionV.favoriteB forKey:@"favorite"];
-    [self setupControl:actionV.moreB forKey:@"more"];
-    [self setupControl:actionV.deleteB forKey:@"delete"];
-    [self setupControl:retweetsButton forKey:@"retweets"];
-    [self setupControl:favoritesButton forKey:@"favorites"];
-    [self setupControl:avatarB forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:actionV.replayB name:@"reply"];
+    [self setupTapEventOnButton:actionV.retweetB name:@"retweet"];
+    [self setupTapEventOnButton:actionV.favoriteB name:@"favorite"];
+    [self setupTapEventOnButton:actionV.moreB name:@"more"];
+    [self setupTapEventOnButton:actionV.deleteB name:@"delete"];
+    [self setupTapEventOnButton:retweetsButton name:@"retweets"];
+    [self setupTapEventOnButton:favoritesButton name:@"favorites"];
+    [self setupTapEventOnButton:avatarB name:@"touchAvatar"];
+//    [self setupControl:actionV.replayB forKey:@"reply"];
+//    [self setupControl:actionV.retweetB forKey:@"retweet"];
+//    [self setupControl:actionV.favoriteB forKey:@"favorite"];
+//    [self setupControl:actionV.moreB forKey:@"more"];
+//    [self setupControl:actionV.deleteB forKey:@"delete"];
+//    [self setupControl:retweetsButton forKey:@"retweets"];
+//    [self setupControl:favoritesButton forKey:@"favorites"];
+//    [self setupControl:avatarB forKey:@"touchAvatar"];
 }
 
 + (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data

@@ -19,4 +19,12 @@
     return @"statuses/home_timeline";
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.leftBarButtonItem = self.actionBarButton;
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+}
+
 @end

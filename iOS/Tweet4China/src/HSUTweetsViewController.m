@@ -684,7 +684,7 @@
 - (void)openPhoto:(UIImage *)photo withCellData:(T4CTableCellData *)cellData
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData image:photo];
-    galleryView.viewController = self;
+//    galleryView.viewController = self;
     [self.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
 }
@@ -692,7 +692,7 @@
 - (void)openPhotoURL:(NSURL *)photoURL withCellData:(T4CStatusCellData *)cellData
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:cellData imageURL:photoURL];
-    galleryView.viewController = self;
+//    galleryView.viewController = self;
     [self.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
 }

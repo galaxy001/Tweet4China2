@@ -19,6 +19,14 @@
     return @"statuses/mentions_timeline";
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.leftBarButtonItem = self.actionBarButton;
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+}
+
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr newFollowers:(NSArray *)newFollowers newRetweets:(NSArray *)newRetweets
 {
     [super requestDidFinishRefreshWithData:dataArr];

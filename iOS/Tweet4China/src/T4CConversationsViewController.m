@@ -17,6 +17,14 @@
 
 @implementation T4CConversationsViewController
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    
+    self.navigationItem.leftBarButtonItem = self.actionBarButton;
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+}
+
 - (void)refresh
 {
     NSString *sinceId;

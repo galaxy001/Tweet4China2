@@ -11,7 +11,7 @@
 
 @interface T4CGapCell ()
 
-//@property (nonatomic, weak) UIButton *backgroundButton;
+@property (nonatomic, weak) UILabel *errorLabel;
 @property (nonatomic, weak) UIActivityIndicatorView *loadingSpinner;
 
 @end
@@ -22,16 +22,17 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-//        UIButton *backgroundButton = [[UIButton alloc] init];
-//        [backgroundButton setImage:[UIImage imageNamed:@"bg_gap"] forState:UIControlStateNormal];
-//        [backgroundButton setImage:[UIImage imageNamed:@"bg_gap"] forState:UIControlStateHighlighted];
-//        self.backgroundButton = backgroundButton;
-//        [self.contentView addSubview:backgroundButton];
         self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_gap"]];
         
         UIActivityIndicatorView *loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.contentView addSubview:loadingSpinner];
         self.loadingSpinner = loadingSpinner;
+        
+        UILabel *errorLabel = [[UILabel alloc] init];
+        [self.contentView addSubview:errorLabel];
+        self.errorLabel = errorLabel;
+        errorLabel.font = [UIFont systemFontOfSize:14];
+        errorLabel.backgroundColor = kClearColor;
     }
     return self;
 }
@@ -40,11 +41,17 @@
 {
     [super setupWithData:data];
     
-//    [self setupControl:self.backgroundButton forKey:@"loadGap"];
     if (data.state == T4CLoadingState_Loading) {
         [self.loadingSpinner startAnimating];
     } else {
         [self.loadingSpinner stopAnimating];
+    }
+    if (data.state == T4CLoadingState_Error) {
+        self.errorLabel.text = _("Load Failed");
+        [self.errorLabel sizeToFit];
+        self.errorLabel.hidden = NO;
+    } else {
+        self.errorLabel.hidden = YES;
     }
 }
 
@@ -52,7 +59,7 @@
 {
     [super layoutSubviews];
     
-//    self.backgroundButton.frame = self.contentView.bounds;
+    self.errorLabel.center = self.boundsCenter;
     self.loadingSpinner.center = self.boundsCenter;
 }
 

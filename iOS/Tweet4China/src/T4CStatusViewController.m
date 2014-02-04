@@ -33,16 +33,19 @@
 {
     [super viewDidLoad];
     
+    self.navigationItem.rightBarButtonItem = self.composeBarButton;
+    
     self.mainStatus = self.status[@"retweeted_status"] ?: self.status;
     
     if ([self.mainStatus[@"in_reply_to_status_id"] longLongValue]) {
-        self.loadingReplyCellData = [[T4CTableCellData alloc] initWithRawData:self.mainStatus
-                                                                     dataType:kDataType_LoadingReply];
+        self.loadingReplyCellData =
+        [[T4CTableCellData alloc] initWithRawData:self.mainStatus
+                                         dataType:kDataType_LoadingReply];
         [self.data addObject:self.loadingReplyCellData];
-        self.tableView.contentOffset = ccp(0, 30);
     }
     T4CStatusCellData *cellData = [[T4CStatusCellData alloc] initWithRawData:self.mainStatus
                                                                     dataType:kDataType_MainStatus];
+    cellData.target = self;
     [self.data addObject:cellData];
     
     [self loadInReplyStatus];
@@ -78,9 +81,10 @@
             
             T4CStatusCellData *statusCellData = [[T4CStatusCellData alloc] initWithRawData:responseObj
                                                                                   dataType:kDataType_ChatStatus];
+            statusCellData.target = self;
             [weakSelf.data insertObject:statusCellData atIndex:0];
             [weakSelf.tableView reloadData];
-            [weakSelf scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
+            [weakSelf scrollTableViewToCurrentOffsetAfterInsertNewCellCount:1];
             weakSelf.refreshState = T4CLoadingState_Done;
         }
     } failure:^(NSError *error)
@@ -119,6 +123,7 @@
                 if ([tweet[@"in_reply_to_status_id"] isEqual:weakSelf.mainStatus[@"id"]]) {
                     T4CStatusCellData *cellData = [[T4CStatusCellData alloc] initWithRawData:tweet
                                                                                     dataType:kDataType_ChatStatus];
+                    cellData.target = self;
                     [weakSelf.data addObject:cellData];
                     newTweetsCount += 1;
                 }

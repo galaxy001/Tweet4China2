@@ -60,6 +60,11 @@
     }
 }
 
+- (void)setupTapEventOnButton:(UIButton *)button name:(NSString *)name
+{
+    [button setTapTarget:self.data action:NSSelectorFromString(name)];
+}
+
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key
 {
     [self setupControl:control forKey:key cleanOldEvents:YES];

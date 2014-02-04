@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @class T4CGapCellData;
+@class T4CStatusCellData;
 @interface T4CTableViewController : UIViewController <UIScrollViewDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *data;
@@ -22,6 +23,10 @@
 @property (nonatomic, assign) BOOL pullToRefresh, infiniteScrolling;
 @property (nonatomic, weak) UITableView *tableView;
 @property (nonatomic, assign) BOOL useCache;
+@property (nonatomic, weak) T4CStatusCellData *cellDataInNextPage;
+@property (nonatomic, strong) UIBarButtonItem *actionBarButton;
+@property (nonatomic, strong) UIBarButtonItem *composeBarButton;
+@property (nonatomic, strong) UIBarButtonItem *searchBarButton;
 
 - (void)refresh;
 - (void)loadGap:(T4CGapCellData *)gapCellData;
@@ -35,13 +40,15 @@
 
 - (BOOL)filterData:(NSDictionary *)data;
 - (NSString *)dataTypeOfData:(NSDictionary *)data;
+- (T4CTableCellData *)createTableCellDataWithRawData:(NSDictionary *)rawData;
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count;
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadMoreWithData:(NSArray *)dataArr;
-//- (void)requestDidFinishRefreshWithError:(NSError *)error;
-- (void)requestDidFinishLoadingWithError:(NSError *)error;
+- (void)requestDidFinishRefreshWithError:(NSError *)error;
+- (void)requestDidFinishLoadGapWithError:(NSError *)error;
+- (void)requestDidFinishLoadMoreWithError:(NSError *)error;
 
 @end

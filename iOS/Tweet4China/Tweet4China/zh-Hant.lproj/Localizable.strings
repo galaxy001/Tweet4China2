@@ -180,7 +180,7 @@
 "Subscribe" = "訂閱";
 "Unsubscribe failed" = "取消訂閱失敗了";
 "Subscribe failed" = "訂閱失敗了";
-"Subscribed" = "請閱";
+"Subscribed" = "訂閱";
 "Loading" = "正在加載";
 "Delete List failed" = "刪除列表失敗了";
 "Delete retweet failed" = "刪除轉推失敗了";
@@ -242,3 +242,4 @@
 "User" = "用戶";
 "Page Size (WiFi)" = "每頁推文數 (WiFi)";
 "Page Size (3G/2G)" = "每頁推文數 (3G/2G)";
+"Type List Name" = "請輸入列表名";
