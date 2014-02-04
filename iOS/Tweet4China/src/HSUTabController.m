@@ -60,6 +60,7 @@
         UINavigationController *messageNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                             toolbarClass:nil];
         UIViewController *messageVC = [[T4CConversationsViewController alloc] init];
+        [messageNav view];
         messageNav.viewControllers = @[messageVC];
         messageNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Message")
                                                               image:[UIImage imageNamed:@"icn_tab_message_default"]
@@ -109,6 +110,15 @@
         self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     }
 #endif
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    for (UINavigationController *nav in self.viewControllers) {
+        [nav.viewControllers.firstObject view];
+    }
 }
 
 - (void)viewDidLayoutSubviews

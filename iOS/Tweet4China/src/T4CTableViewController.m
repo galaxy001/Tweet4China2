@@ -39,6 +39,7 @@
 #import "HSUSettingsViewController.h"
 #import "T4CSearchViewController.h"
 #import "T4CTagTimelineViewController.h"
+#import "HSUTabController.h"
 
 @interface T4CTableViewController ()
 
@@ -161,6 +162,9 @@
 
 - (void)refresh
 {
+    if (self.refreshState != T4CLoadingState_Done) {
+        return;
+    }
     self.refreshState = T4CLoadingState_Loading;
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     if (self.topID) {
@@ -242,6 +246,10 @@
 
 - (void)loadMore
 {
+    if (self.loadMoreState != T4CLoadingState_Done) {
+        [self.tableView.pullToRefreshView stopAnimating];
+        return;
+    }
     self.loadMoreState = T4CLoadingState_Loading;
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     if (self.bottomID) {
@@ -301,7 +309,8 @@
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
         }
         [newDataArr addObjectsFromArray:self.data];
-        self.data = newDataArr;
+        [self.data removeAllObjects];
+        [self.data addObjectsFromArray:newDataArr];
         
         NSDictionary *botData = [self.data.lastObject rawData];
         self.bottomID = [botData[@"id"] longLongValue];
@@ -356,6 +365,7 @@
         [self saveCache];
     } else {
         self.loadMoreState = T4CLoadingState_NoMore;
+        self.tableView.infiniteScrollingView.enabled = NO;
     }
     [self.tableView.infiniteScrollingView stopAnimating];
 }
@@ -376,7 +386,7 @@
 {
     NSLog(@"%@", error);
     self.loadMoreState = T4CLoadingState_Error;
-    [self.tableView.infiniteScrollingView removeFromSuperview];
+    self.tableView.infiniteScrollingView.enabled = NO;
 }
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count
@@ -830,6 +840,11 @@
     if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
         notification_post(HSUActionBarTouchedNotification);
     }
+}
+
+- (void)showUnreadIndicator
+{
+    [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
 }
 
 @end

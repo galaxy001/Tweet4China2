@@ -216,6 +216,7 @@
 		9676D33D18A0D95300E3AF45 /* T4CListTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D33C18A0D95300E3AF45 /* T4CListTimelineViewController.m */; };
 		9676D34018A1223A00E3AF45 /* T4CSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D33F18A1223A00E3AF45 /* T4CSearchViewController.m */; };
 		9676D34318A12CCA00E3AF45 /* T4CTagTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34218A12CCA00E3AF45 /* T4CTagTimelineViewController.m */; };
+		9676D34618A1350200E3AF45 /* T4CFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34518A1350200E3AF45 /* T4CFavoritesViewController.m */; };
 		967A55EA16FCD3DA00581274 /* HSUUIEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55E916FCD3D900581274 /* HSUUIEvent.m */; };
 		967A55FB16FDB2AD00581274 /* HSULoadMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55FA16FDB2AD00581274 /* HSULoadMoreCell.m */; };
 		967F63481753048500CB8730 /* direct-message-text-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 967F63461753048500CB8730 /* direct-message-text-bubble@2x.png */; };
@@ -743,6 +744,8 @@
 		9676D33F18A1223A00E3AF45 /* T4CSearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CSearchViewController.m; sourceTree = "<group>"; };
 		9676D34118A12CCA00E3AF45 /* T4CTagTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CTagTimelineViewController.h; sourceTree = "<group>"; };
 		9676D34218A12CCA00E3AF45 /* T4CTagTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CTagTimelineViewController.m; sourceTree = "<group>"; };
+		9676D34418A1350200E3AF45 /* T4CFavoritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CFavoritesViewController.h; sourceTree = "<group>"; };
+		9676D34518A1350200E3AF45 /* T4CFavoritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CFavoritesViewController.m; sourceTree = "<group>"; };
 		967A55E816FCD3D900581274 /* HSUUIEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUUIEvent.h; sourceTree = "<group>"; };
 		967A55E916FCD3D900581274 /* HSUUIEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUUIEvent.m; sourceTree = "<group>"; };
 		967A55F916FDB2AD00581274 /* HSULoadMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoadMoreCell.h; sourceTree = "<group>"; };
@@ -1119,6 +1122,8 @@
 				9676D33018A0C88000E3AF45 /* T4CFollowersViewController.m */,
 				9676D33218A0CA1000E3AF45 /* T4CFollowingViewController.h */,
 				9676D33318A0CA1000E3AF45 /* T4CFollowingViewController.m */,
+				9676D34418A1350200E3AF45 /* T4CFavoritesViewController.h */,
+				9676D34518A1350200E3AF45 /* T4CFavoritesViewController.m */,
 				9676D33818A0D8AD00E3AF45 /* T4CListsViewController.h */,
 				9676D33918A0D8AD00E3AF45 /* T4CListsViewController.m */,
 				9676D33B18A0D95300E3AF45 /* T4CListTimelineViewController.h */,
@@ -2340,6 +2345,7 @@
 				967272B31733CC2100B6E30A /* HSUTweetsViewController.m in Sources */,
 				967272B61733CCB500B6E30A /* HSUTweetsDataSource.m in Sources */,
 				96A11F2117D0BFB600F98ABD /* HSUProxySettingsViewController.m in Sources */,
+				9676D34618A1350200E3AF45 /* T4CFavoritesViewController.m in Sources */,
 				960E805E1886878300B1F165 /* T4CTableCellData.m in Sources */,
 				9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */,
 				967272B91733E3E500B6E30A /* HSUUserHomeDataSource.m in Sources */,

@@ -17,16 +17,30 @@
 
 @implementation T4CConversationsViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(refresh));
+    }
+    return self;
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+    [self refresh];
 }
 
 - (void)refresh
 {
+    if (self.refreshState != T4CLoadingState_Done) {
+        return;
+    }
+    
     NSString *sinceId;
     T4CTableCellData *firstData = self.data.firstObject;
     if (firstData) {
@@ -46,13 +60,6 @@
                 NSNumber *id2 = msg2[@"id"];
                 return [id1 compare:id2];
             }];
-            
-            if (messages.count) {
-                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
-                if (!weakSelf.view.window) { // not appear
-//                    [weakSelf dataSourceDidFindUnread:nil];
-                }
-            }
             
             // reorgnize messages as dict, friend_screen_name as key, refered messages as value
             NSMutableDictionary *conversations = [[NSMutableDictionary alloc] init];
@@ -128,6 +135,12 @@
             [weakSelf.tableView reloadData];
             [weakSelf.tableView.pullToRefreshView stopAnimating];
             weakSelf.refreshState = T4CLoadingState_Done;
+            if ([rMsgs count]) {
+                AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+                if (!weakSelf.view.window) { // not appear
+                    [weakSelf showUnreadIndicator];
+                }
+            }
             if (messages.count) {
                 [weakSelf saveCache];
             }

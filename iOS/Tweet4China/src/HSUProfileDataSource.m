@@ -38,16 +38,6 @@
     self.sectionsData = [NSMutableArray arrayWithCapacity:2];
     NSMutableArray *referencesData = [NSMutableArray arrayWithCapacity:4];
     NSDictionary *rawData;
-//    rawData = @{@"title": _("Following"),
-//                              @"action": kAction_Following,
-//                              @"user_screen_name": self.screenName};
-//    T4CTableCellData *followingCellData = [[T4CTableCellData alloc] initWithRawData:rawData
-//                                                                           dataType:kDataType_NormalTitle];
-//    rawData = @{@"title": _("Followers"),
-//                @"action": kAction_Followers,
-//                @"user_screen_name": self.screenName};
-//    T4CTableCellData *followersCellData = [[T4CTableCellData alloc] initWithRawData:rawData
-//                                                                           dataType:kDataType_NormalTitle];
     rawData = @{@"title": _("Favorites"),
                 @"action": kAction_Favorites,
                 @"user_screen_name": self.screenName};
@@ -64,8 +54,6 @@
     T4CTableCellData *photosCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                         dataType:kDataType_NormalTitle];
     
-//    [referencesData addObject:followingCellData];
-//    [referencesData addObject:followersCellData];
     [referencesData addObject:photosCellData];
     [referencesData addObject:favoritesCellData];
     [referencesData addObject:listsCellData];

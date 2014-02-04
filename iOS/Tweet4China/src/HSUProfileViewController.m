@@ -38,6 +38,7 @@
 #import "T4CFollowingViewController.h"
 #import "T4CPhotosViewController.h"
 #import "T4CListsViewController.h"
+#import "T4CFavoritesViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -104,6 +105,7 @@
 {
     [super viewWillAppear:animated];
     
+    self.navigationController.delegate = self;
     self.addFriendButtonIndicator.hidden = NO;
 }
 
@@ -282,10 +284,9 @@
 
 - (void)favoritesButtonTouched
 {
-    HSUTweetsDataSource *dataSource = [[HSUFavoritesDataSource alloc] initWithScreenName:self.screenName];
-    HSUTweetsViewController *detailVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
-    [dataSource refresh];
+    T4CFavoritesViewController *favoritesVC = [[T4CFavoritesViewController alloc] init];
+    favoritesVC.screenName = self.screenName;
+    [self.navigationController pushViewController:favoritesVC animated:YES];
 }
 
 - (void)listsButtonTouched

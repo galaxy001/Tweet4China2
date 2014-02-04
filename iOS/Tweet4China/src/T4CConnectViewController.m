@@ -14,6 +14,15 @@
 
 @implementation T4CConnectViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(refresh));
+    }
+    return self;
+}
+
 - (NSString *)apiString
 {
     return @"statuses/mentions_timeline";
@@ -25,26 +34,37 @@
     
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+    
+    [self refresh];
 }
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr newFollowers:(NSArray *)newFollowers newRetweets:(NSArray *)newRetweets
 {
     [super requestDidFinishRefreshWithData:dataArr];
     
+    NSInteger count = 0;
     if (newRetweets.count) {
         T4CTableCellData *rtCellData = [[T4CTableCellData alloc]
                                         initWithRawData:newRetweets.firstObject
                                         dataType:kDataType_NewRetweets];
         [self.data insertObject:rtCellData atIndex:0];
+        count ++;
     }
     if (newFollowers.count) {
         T4CTableCellData *nfCellData = [[T4CTableCellData alloc]
                                         initWithRawData:@{@"followers": newFollowers}
                                         dataType:kDataType_NewFollowers];
         [self.data insertObject:nfCellData atIndex:0];
+        count ++;
     }
     [self.tableView reloadData];
-    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:2];
+    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
+    
+    if (dataArr.count || newFollowers.count || newRetweets.count) {
+        if (!self.view.window) {
+            [self showUnreadIndicator];
+        }
+    }
 }
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr newFollowers:(NSArray *)newFollowers
@@ -123,6 +143,8 @@
             {
                 [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:nil];
             }];
+        } else {
+            [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:nil];
         }
     } failure:^(NSError *error) {
         [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:newFollowers newRetweets:nil];

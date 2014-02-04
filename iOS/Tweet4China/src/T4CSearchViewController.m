@@ -114,8 +114,10 @@
 {
     if (segmentControl.selectedSegmentIndex == 0) {
         self.data = self.tweetsData;
+        self.tableView.infiniteScrollingView.enabled = YES;
     } else if (segmentControl.selectedSegmentIndex == 1) {
         self.data = self.personsData;
+        self.tableView.infiniteScrollingView.enabled = NO;
     }
     [self.tableView reloadData];
     [self.searchTF becomeFirstResponder];
@@ -136,6 +138,7 @@
 - (void)refresh
 {
     if (self.searchTF.hasText) {
+        [self.data removeAllObjects];
         [super refresh];
     }
 }

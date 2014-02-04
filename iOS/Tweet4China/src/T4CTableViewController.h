@@ -41,6 +41,7 @@
 - (BOOL)filterData:(NSDictionary *)data;
 - (NSString *)dataTypeOfData:(NSDictionary *)data;
 - (T4CTableCellData *)createTableCellDataWithRawData:(NSDictionary *)rawData;
+- (void)showUnreadIndicator;
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count;
 
