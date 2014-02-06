@@ -142,6 +142,23 @@
 {
     [super viewWillAppear:animated];
     
+    if (Sys_Ver < 7) {
+        if (self.navigationController.viewControllers.count > 1) {
+            UIButton *backButton = [[UIButton alloc] init];
+            [backButton addTarget:self action:@selector(backButtonTouched) forControlEvents:UIControlEventTouchUpInside];
+            if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBar class]]) {
+                [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_back"] forState:UIControlStateNormal];
+            } else if ([self.navigationController.navigationBar isKindOfClass:[HSUNavigationBarLight class]]) {
+                [backButton setImage:[UIImage imageNamed:@"icn_nav_bar_light_back"] forState:UIControlStateNormal];
+            } else {
+                @throw [[NSException alloc] init];
+            }
+            [backButton sizeToFit];
+            backButton.width *= 2;
+            self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backButton];
+        }
+    }
+    
     for (NSString *dataType in self.cellTypes) {
         [self.tableView registerClass:self.cellTypes[dataType] forCellReuseIdentifier:dataType];
     }
@@ -188,6 +205,11 @@
         self.tableView.height = [UIScreen mainScreen].bounds.size.height - [[UIApplication sharedApplication] statusBarFrame].size.height + 20;
     }
     self.unreadCountLabel.rightTop = ccp(kWinWidth-kIPADMainViewPadding*2-10, -3 + self.tableView.contentInset.top);
+}
+
+- (void)backButtonTouched
+{
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)unreadCountChanged
