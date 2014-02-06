@@ -338,7 +338,8 @@ static HSUShadowsocksProxy *proxy;
 {
 #ifdef FreeApp // free app is restrict for using time
     NSUInteger timelineLoadCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"timeline_load_count"] unsignedIntegerValue];
-    if (timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) {
+    if ((timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) ||
+        timelineLoadCount > 15) {
         [self buyProApp];
     }
     timelineLoadCount ++;
@@ -414,9 +415,9 @@ static HSUShadowsocksProxy *proxy;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, GCDBackgroundThread, ^(void){
 #ifdef DEBUG
-        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json.test"]];
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://tuoxie.me/tweet4china/config.json.test"]];
 #else
-        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json"]];
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://tuoxie.me/tweet4china/config.json"]];
 #endif
         if (configJSON) {
             NSDictionary *config = [NSJSONSerialization JSONObjectWithData:configJSON options:0 error:nil];
@@ -522,6 +523,36 @@ static HSUShadowsocksProxy *proxy;
 - (void)registerWeixinApp
 {
     [WXApi registerApp:WXAppID];
+}
+
+- (void)askFollowAuthor
+{
+    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"asked_follow_author"] boolValue]) {
+        NSString *authorScreenName = @"tuoxie007";
+        if (![twitter.myScreenName isEqualToString:authorScreenName]) {
+            [twitter showUser:authorScreenName success:^(id responseObj) {
+                NSDictionary *profile = responseObj;
+                if (![profile[@"following"] boolValue]) {
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+                    RIButtonItem *followItem = [RIButtonItem itemWithLabel:_("OK")];
+                    followItem.action = ^{
+                        [twitter followUser:authorScreenName success:^(id responseObj) {
+                        } failure:^(NSError *error) {
+                        }];
+                    };
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Follow Author @tuoxie007")
+                                                                    message:_("Get the latest activities about Tweet4China")
+                                                           cancelButtonItem:cancelItem
+                                                           otherButtonItems:followItem, nil];
+                    [alert show];
+                    [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"asked_follow_author"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+            } failure:^(NSError *error) {
+                
+            }];
+        }
+    }
 }
 
 @end

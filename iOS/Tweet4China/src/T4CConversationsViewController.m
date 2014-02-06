@@ -35,6 +35,13 @@
     [self refresh];
 }
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [self.tableView reloadData];
+}
+
 - (void)refresh
 {
     if (self.refreshState != T4CLoadingState_Done) {
@@ -146,7 +153,7 @@
             }
         } failure:^(NSError *error) {
             [weakSelf.tableView.pullToRefreshView stopAnimating];
-            if (error.code == 204) {
+            if (!error || error.code == 204) {
                 weakSelf.refreshState = T4CLoadingState_Done;
             } else {
                 weakSelf.refreshState = T4CLoadingState_Error;
@@ -154,7 +161,7 @@
         }];
     } failure:^(NSError *error) {
         [weakSelf.tableView.pullToRefreshView stopAnimating];
-        if (error.code == 204) {
+        if (!error || error.code == 204) {
             weakSelf.refreshState = T4CLoadingState_Done;
         } else {
             weakSelf.refreshState = T4CLoadingState_Error;

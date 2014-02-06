@@ -139,6 +139,7 @@
 {
     if (self.searchTF.hasText) {
         [self.data removeAllObjects];
+        [self.tableView reloadData];
         [super refresh];
     }
 }
@@ -160,6 +161,11 @@
         return @"users/search";
     }
     return nil;
+}
+
+- (NSUInteger)requestCount
+{
+    return 100;
 }
 
 - (NSString *)dataKey

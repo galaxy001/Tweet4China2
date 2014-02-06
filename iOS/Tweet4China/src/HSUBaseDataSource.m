@@ -61,8 +61,8 @@
             CGFloat padding = cell.width/2-cell.contentView.width/2;
             cell.separatorInset = edi(0, padding, 0, padding);
         }
-#endif
     }
+#endif
     return cell;
 }
 

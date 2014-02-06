@@ -23,6 +23,7 @@ typedef NS_ENUM(NSUInteger, HSUStatusViewStyle) {
 @property (nonatomic, assign) HSUStatusViewStyle style;
 @property (nonatomic, strong) UIButton *avatarB;
 @property (nonatomic, weak) UIButton *imagePreviewButton;
+@property (nonatomic, weak) TTTAttributedLabel *textAL;
 
 - (id)initWithFrame:(CGRect)frame style:(HSUStatusViewStyle)style;
 

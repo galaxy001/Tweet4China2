@@ -30,6 +30,11 @@
     return @"search/tweets";
 }
 
+- (NSUInteger)requestCount
+{
+    return 100;
+}
+
 - (NSDictionary *)requestParams
 {
     return @{@"q": S(@"#%@", self.tag).URLEncodedString};

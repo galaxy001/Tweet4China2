@@ -106,7 +106,7 @@
     });
     statusLabel.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) floatValue]];
     statusLabel.text = data.rawData[@"text"];
-    statusLabel.size = [statusLabel sizeThatFits:ccs(kWinWidth-20, 0)];
+    statusLabel.size = [statusLabel sizeThatFits:ccs(kWinWidth-20-48-10, 0)];
     return statusLabel.height + 80;
 }
 

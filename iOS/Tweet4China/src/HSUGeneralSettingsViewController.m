@@ -76,7 +76,7 @@
             return ;
         }
         
-        NSArray *options = @[@"12", @"14", @"16", @"18"];
+        NSArray *options = @[@"12", @"14", @"16", @"18", @"20", @"25", @"30", @"50", @"100"];
         
         RETableViewOptionsController *optionsController = [[RETableViewOptionsController alloc] initWithItem:item options:options multipleChoice:NO completionHandler:^{
             [weakSelf.navigationController popViewControllerAnimated:YES];

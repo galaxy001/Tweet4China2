@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+@class T4CTableViewController;
 @interface T4CTableCellData : NSObject
 
 @property (nonatomic, copy) NSString *dataType;
@@ -16,6 +17,7 @@
 @property (nonatomic, weak) id target;
 @property (nonatomic, strong) NSMutableDictionary *events;
 @property (nonatomic, assign) BOOL unread;
+@property (nonatomic, readonly) T4CTableViewController *tableVC;
 
 - (id)initWithRawData:(NSDictionary *)rawData dataType:(NSString *)dataType;
 - (id)initWithCacheData:(NSDictionary *)cacheData;

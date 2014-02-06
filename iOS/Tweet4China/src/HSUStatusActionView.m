@@ -11,16 +11,14 @@
 @implementation HSUStatusActionView
 {
     BOOL isMyTweet;
+    HSUStatusActionViewStyle _style;
 }
 
 - (id)initWithStatus:(NSDictionary *)status style:(HSUStatusActionViewStyle)style
 {
     self = [super init];
     if (self) {
-        if (status[@"retweeted_status"]) {
-            status = status[@"retweeted_status"];
-        }
-        
+        _style = style;
         isMyTweet = [status[@"user"][@"screen_name"] isEqualToString:twitter.myScreenName];
         
         self.backgroundColor = kClearColor;
@@ -37,10 +35,7 @@
         UIButton *retweetB = [[UIButton alloc] init];
         [self addSubview:retweetB];
         self.retweetB = retweetB;
-        if (isMyTweet) {
-            [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
-            retweetB.enabled = NO;
-        } else if (retweeted) {
+        if (retweeted) {
             [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_on"] forState:UIControlStateNormal];
             [retweetB setImage:[UIImage imageNamed:@"icn_tweet_action_retweet_disabled"] forState:UIControlStateDisabled];
         } else {
@@ -61,9 +56,22 @@
         }
         [favoriteB sizeToFit];
         
+        // RT
+        UIButton *rtB = [[UIButton alloc] init];
+        [self addSubview:rtB];
+        self.rtB = rtB;
+        [rtB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
+        [rtB sizeToFit];
+        [rtB setImage:nil forState:UIControlStateNormal];
+        [rtB setTitle:@"RT" forState:UIControlStateNormal];
+        rtB.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        [rtB setTitleColor:rgb(137, 153, 165) forState:UIControlStateNormal];
+        
         // More
         UIButton *moreB = [[UIButton alloc] init];
-        [self addSubview:moreB];
+        if (_style != HSUStatusActionViewStyle_Inline) {
+            [self addSubview:moreB];
+        }
         self.moreB = moreB;
         [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more"] forState:UIControlStateNormal];
         [moreB sizeToFit];
@@ -84,9 +92,17 @@
     
     NSMutableArray *actionButtons = [NSMutableArray array];
     [actionButtons addObject:self.replayB];
-    [actionButtons addObject:self.retweetB];
+    if (!isMyTweet) {
+        [actionButtons addObject:self.retweetB];
+        self.retweetB.hidden = NO;
+    } else {
+        self.retweetB.hidden = YES;
+    }
     [actionButtons addObject:self.favoriteB];
-    [actionButtons addObject:self.moreB];
+    [actionButtons addObject:self.rtB];
+    if (_style != HSUStatusActionViewStyle_Inline) {
+        [actionButtons addObject:self.moreB];
+    }
     if (isMyTweet) {
         [actionButtons addObject:self.deleteB];
         self.deleteB.hidden = NO;
@@ -95,7 +111,13 @@
     }
     
     for (uint i=0; i<actionButtons.count; i++) {
-        [actionButtons[i] setCenter:ccp(self.width / 2 / actionButtons.count * (2 * i + 1), self.height / 2)];
+        if (_style == HSUStatusActionViewStyle_Inline) {
+            CGFloat padding = IPHONE ? 0 : 100;
+            CGFloat distance = (self.width - padding * 2 - [actionButtons[i] width]) / (actionButtons.count - 1);
+            [actionButtons[i] setLeftCenter:ccp(padding + i*distance, self.height/2)];
+        } else {
+            [actionButtons[i] setCenter:ccp(self.width / 2 / actionButtons.count * (2 * i + 1), self.height / 2)];
+        }
     }
 }
 

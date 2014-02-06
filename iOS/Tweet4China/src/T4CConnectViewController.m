@@ -7,6 +7,8 @@
 //
 
 #import "T4CConnectViewController.h"
+#import "T4CNewFollowersViewController.h"
+#import "T4CNewRetweetsViewController.h"
 
 @interface T4CConnectViewController ()
 
@@ -60,7 +62,7 @@
     [self.tableView reloadData];
     [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
     
-    if (dataArr.count || newFollowers.count || newRetweets.count) {
+    if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
         if (!self.view.window) {
             [self showUnreadIndicator];
         }
@@ -71,7 +73,7 @@
 {
     __weak typeof(self)weakSelf = self;
     [twitter sendGETWithUrl:[self requestUrlWithAPIString:@"statuses/retweets_of_me"]
-                 parameters:@{@"trim_user": @"true"}
+                 parameters:nil
                     success:^(id responseObj)
     {
         NSMutableArray *retweetedStatuses = @[].mutableCopy;
@@ -98,7 +100,7 @@
                 }
             }
         }
-//        [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
+        [HSUCommonTools writeJSONObject:retweetedStatuses toFile:@"connect_retweets_of_me"];
         if (diffTweets.count) {
             NSDictionary *retweetedStatus = diffTweets.firstObject;
             NSString *tid = retweetedStatus[@"id"];
@@ -153,6 +155,9 @@
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
+    if (!MyScreenName) {
+        return;
+    }
     NSMutableDictionary *params = [@{} mutableCopy];
     params[@"screen_name"] = MyScreenName;
     params[@"count"] = @"1000"; // max 5000
@@ -247,6 +252,34 @@
     }
     
     return 0;
+}
+
+- (T4CTableCellData *)firstTimelineData
+{
+    for (T4CTableCellData *cellData in self.data) {
+        if ([cellData.dataType isEqualToString:kDataType_Status]) {
+            return cellData;
+        }
+    }
+    return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    T4CTableCellData *cellData = self.data[indexPath.row];
+    if ([cellData.dataType isEqualToString:kDataType_NewFollowers]) {
+        T4CNewFollowersViewController *newFollowersVC = [[T4CNewFollowersViewController alloc] init];
+        newFollowersVC.followers = cellData.rawData[@"followers"];
+        [self.navigationController pushViewController:newFollowersVC animated:YES];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else if ([cellData.dataType isEqualToString:kDataType_NewRetweets]) {
+        T4CNewRetweetsViewController *newRetweetsVC = [[T4CNewRetweetsViewController alloc] init];
+        newRetweetsVC.retweetedStatus = cellData.rawData;
+        [self.navigationController pushViewController:newRetweetsVC animated:YES];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    } else {
+        [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    }
 }
 
 @end

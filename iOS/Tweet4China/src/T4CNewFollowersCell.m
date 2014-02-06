@@ -39,6 +39,9 @@
 {
     [super setupWithData:data];
     
+    for (UIView *avatar in self.avatars) {
+        [avatar removeFromSuperview];
+    }
     NSArray *followers = data.rawData[@"followers"];
     NSMutableArray *avatars = [NSMutableArray arrayWithCapacity:followers.count];
     for (NSDictionary *follower in [followers subarrayWithRange:NSMakeRange(0, MIN(6, followers.count))]) {

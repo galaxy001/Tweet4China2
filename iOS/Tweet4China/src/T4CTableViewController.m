@@ -45,6 +45,7 @@
 
 @property (nonatomic, strong) NSDictionary *cellTypes;
 @property (nonatomic, strong) NSDictionary *cellDataTypes;
+@property (nonatomic, weak) UILabel *unreadCountLabel;
 
 @end
 
@@ -85,6 +86,12 @@
         
         self.data = @[].mutableCopy;
         self.useCache = YES;
+        
+        notification_add_observer(HSUStatusDidDelete, self, @selector(statusDeleted:));
+        notification_add_observer(HSUStatusUpdatedNotification, self, @selector(statusUpdated:));
+        notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
+        notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
+        notification_add_observer(HSUTwiterLogout, self, @selector(twitterLogout));
     }
     return self;
 }
@@ -113,6 +120,22 @@
         [self loadCache];
     }
     self.tableView.delegate = self;
+    if (self.showUnreadCount) {
+        UILabel *unreadCountLabel = [[UILabel alloc] init];
+        self.unreadCountLabel = unreadCountLabel;
+        [self.view addSubview:unreadCountLabel];
+        unreadCountLabel.backgroundColor = kBlackColor;
+        unreadCountLabel.textColor = kWhiteColor;
+        unreadCountLabel.font = [UIFont boldSystemFontOfSize:10];
+        unreadCountLabel.textAlignment = NSTextAlignmentCenter;
+        unreadCountLabel.layer.cornerRadius = 3;
+        unreadCountLabel.alpha = 0.8;
+        unreadCountLabel.text = @"999";
+        [unreadCountLabel sizeToFit];
+        unreadCountLabel.height += 2 * unreadCountLabel.layer.cornerRadius;
+        unreadCountLabel.text = nil;
+        unreadCountLabel.hidden = YES;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -124,6 +147,7 @@
     }
     
     if (!self.data.count) {
+        [self.tableView.pullToRefreshView startAnimating];
         [self refresh];
     }
     self.navigationController.delegate = self;
@@ -151,6 +175,32 @@
     }
 }
 
+- (void)viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    
+    if (IPAD) {
+        self.view.backgroundColor = rgb(244, 248, 251);
+        self.tableView.frame = ccr(0, 15, self.view.width, self.view.height-30);
+        self.tableView.backgroundColor = self.view.backgroundColor;
+        [self.tableView reloadData];
+    } else {
+        self.tableView.height = [UIScreen mainScreen].bounds.size.height - [[UIApplication sharedApplication] statusBarFrame].size.height + 20;
+    }
+    self.unreadCountLabel.rightTop = ccp(kWinWidth-kIPADMainViewPadding*2-10, -3 + self.tableView.contentInset.top);
+}
+
+- (void)unreadCountChanged
+{
+    self.unreadCountLabel.text = S(@"%ld", (long)self.unreadCount);
+    if (self.unreadCount > 99) {
+        self.unreadCountLabel.width = 30;
+    } else {
+        self.unreadCountLabel.width = 20;
+    }
+    self.unreadCountLabel.hidden = self.unreadCount <= 0;
+}
+
 // 里面装的是cell data array
 - (NSMutableArray *)data
 {
@@ -160,15 +210,27 @@
     return _data;
 }
 
+- (void)tabItemTapped
+{
+    if (self.tableView.contentOffset.y > 10 - self.tableView.contentInset.top) {
+        [self.tableView setContentOffset:ccp(0, - self.tableView.contentInset.top) animated:YES];
+    } else if (self.refreshState == T4CLoadingState_Done) {
+        [self.tableView setContentOffset:ccp(0, - self.tableView.pullToRefreshView.height - self.tableView.contentInset.top) animated:YES];
+        [self refresh];
+        [self.tableView.pullToRefreshView startAnimating];
+    }
+}
+
 - (void)refresh
 {
     if (self.refreshState != T4CLoadingState_Done) {
+        [self.tableView.infiniteScrollingView stopAnimating];
         return;
     }
     self.refreshState = T4CLoadingState_Loading;
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     if (self.topID) {
-        params[@"since_id"] = @(self.topID);
+        params[@"since_id"] = @(self.topID - 1);
     }
     if (self.requestCount) {
         params[@"count"] = @(self.requestCount);
@@ -184,21 +246,16 @@
             NSArray *arrayData = responseDict[self.dataKey];
             arrayData = arrayData.count ? arrayData : nil;
             [weakSelf requestDidFinishRefreshWithData:arrayData];
-            weakSelf.refreshState = arrayData ? T4CLoadingState_Done : T4CLoadingState_NoMore;
         } else if ([responseObj count]) {
             [weakSelf requestDidFinishRefreshWithData:responseObj];
-            weakSelf.refreshState = T4CLoadingState_Done;
         } else {
             [weakSelf requestDidFinishRefreshWithData:nil];
-            weakSelf.refreshState = T4CLoadingState_NoMore;
         }
     } failure:^(NSError *error) {
-        if (error.code == 204) {
+        if (!error || error.code == 204) {
             [weakSelf requestDidFinishRefreshWithData:nil];
-            weakSelf.refreshState = T4CLoadingState_NoMore;
         } else {
             [weakSelf requestDidFinishRefreshWithError:error];
-            weakSelf.refreshState = T4CLoadingState_Error;
         }
     }];
 }
@@ -213,9 +270,10 @@
     
     self.gapCellData = gapCellData;
     self.gapCellData.state = T4CLoadingState_Loading;
+    [self.tableView reloadData];
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     params[@"max_id"] = @(gapTopID - 1);
-    params[@"since_id"] = @(gapBotID);
+    params[@"since_id"] = @(gapBotID - 1);
     if (self.requestCount) {
         params[@"count"] = @(self.requestCount);
     }
@@ -236,7 +294,7 @@
             [weakSelf requestDidFinishLoadMoreWithData:nil];
         }
     } failure:^(NSError *error) {
-        if (error.code == 204) {
+        if (!error || error.code == 204) {
             [weakSelf requestDidFinishLoadGapWithData:nil];
         } else {
             [weakSelf requestDidFinishLoadGapWithError:error];
@@ -246,6 +304,10 @@
 
 - (void)loadMore
 {
+    if (!self.data.count) {
+        [self.tableView.infiniteScrollingView stopAnimating];
+        return;
+    }
     if (self.loadMoreState != T4CLoadingState_Done) {
         [self.tableView.pullToRefreshView stopAnimating];
         return;
@@ -275,7 +337,7 @@
             [weakSelf requestDidFinishLoadMoreWithData:nil];
         }
     } failure:^(NSError *error) {
-        if (error.code == 204) {
+        if (!error || error.code == 204) {
             [weakSelf requestDidFinishLoadMoreWithData:nil];
         } else {
             [weakSelf requestDidFinishLoadMoreWithError:error];
@@ -294,15 +356,20 @@
         NSDictionary *newBotData = dataArr.lastObject;
         long long newBotID = [newBotData[@"id"] longLongValue];
         
-        NSDictionary *curTopData = [self.data.firstObject rawData];
+        NSDictionary *curTopData = [self.firstTimelineData rawData];
         long long curTopID = [curTopData[@"id"] longLongValue];
         BOOL gapped = curTopID > 0 && newBotID > curTopID;
         BOOL inserted = self.data.count > 0;
-        
+        if (!gapped) {
+            dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
+        }
         NSMutableArray *newDataArr = [NSMutableArray array];
         for (NSDictionary *rawData in dataArr) {
             if ([self filterData:rawData]) {
-                [newDataArr addObject:[self createTableCellDataWithRawData:rawData]];
+                T4CTableCellData *cellData = [self createTableCellDataWithRawData:rawData];
+                [newDataArr addObject:cellData];
+                cellData.unread = YES;
+                self.unreadCount ++;
             }
         }
         if (gapped) {
@@ -321,12 +388,22 @@
         }
         [self saveCache];
     }
+    self.refreshState = T4CLoadingState_Done;
     [self.tableView.pullToRefreshView stopAnimating];
 }
 
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr
 {
     if (dataArr.count) {
+        BOOL gapped;
+        NSDictionary *newBotData = dataArr.lastObject;
+        long long newBotID = [newBotData[@"id"] longLongValue];
+        long long gapTopID = [self gapBotIDWithGapCellData:self.gapCellData];
+        gapped = gapTopID > 0 && newBotID > gapTopID;
+        if (!gapped) {
+            dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
+        }
+        
         NSUInteger gapIndex = [self.data indexOfObject:self.gapCellData];
         NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(gapIndex, dataArr.count)];
         NSMutableArray *newData = [NSMutableArray arrayWithCapacity:dataArr.count];
@@ -336,6 +413,9 @@
             }
         }
         [self.data insertObjects:newData atIndexes:set];
+        if (!gapped) {
+            [self.data removeObject:self.gapCellData];
+        }
         self.gapCellData.state = T4CLoadingState_Done;
         
         [self.tableView reloadData];
@@ -373,20 +453,28 @@
 // 真有错误才到这里，204不算的，一般是网络错误
 - (void)requestDidFinishRefreshWithError:(NSError *)error
 {
-    NSLog(@"%@", error);
+    self.refreshState = T4CLoadingState_Error;
+    [self.tableView.pullToRefreshView stopAnimating];
+    [twitter dealWithError:error errTitle:_("Request failed")];
 }
 
 - (void)requestDidFinishLoadGapWithError:(NSError *)error
 {
     self.gapCellData.state = T4CLoadingState_Error;
-    NSLog(@"%@", error);
+    [self.tableView reloadData];
+    [twitter dealWithError:error errTitle:_("Request failed")];
 }
 
 - (void)requestDidFinishLoadMoreWithError:(NSError *)error
 {
-    NSLog(@"%@", error);
     self.loadMoreState = T4CLoadingState_Error;
     self.tableView.infiniteScrollingView.enabled = NO;
+    [twitter dealWithError:error errTitle:_("Request failed")];
+}
+
+- (T4CTableCellData *)firstTimelineData
+{
+    return self.data.firstObject;
 }
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count
@@ -451,6 +539,14 @@
     T4CTableCellData *cellData = self.data[indexPath.row];
     HSUBaseTableCell *cell = (HSUBaseTableCell *)[tableView dequeueReusableCellWithIdentifier:cellData.dataType];
     [cell setupWithData:cellData];
+    if (IPAD) {
+        if (indexPath.section == 0 && indexPath.row == self.data.count - 1) {
+            cell.separatorInset = edi(0, tableView.width, 0, 0);
+        } else {
+            CGFloat padding = cell.width/2-cell.contentView.width/2;
+            cell.separatorInset = edi(0, padding, 0, padding);
+        }
+    }
     return cell;
 }
 
@@ -464,9 +560,11 @@
                [cellData.dataType isEqualToString:kDataType_ChatStatus]) {
         T4CStatusViewController *statusVC = [[T4CStatusViewController alloc] init];
         statusVC.status = cellData.rawData;
+        self.cellDataInNextPage = (T4CStatusCellData *)cellData;
         [self.navigationController pushViewController:statusVC animated:YES];
     } else if ([cellData.dataType isEqualToString:kDataType_Conversation]) {
         T4CMessagesViewController *messagesVC = [[T4CMessagesViewController alloc] init];
+        ((T4CConversationCellData *)cellData).unreadDM = NO;
         NSDictionary *conversation = cellData.rawData;
         messagesVC.conversation = conversation;
         NSArray *messages = conversation[@"messages"];
@@ -485,8 +583,51 @@
         T4CListTimelineViewController *listVC = [[T4CListTimelineViewController alloc] init];
         listVC.list = cellData.rawData;
         [self.navigationController pushViewController:listVC animated:YES];
+    } else if ([cellData.dataType isEqualToString:kDataType_Person]) {
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:cellData.rawData[@"screen_name"]];
+        profileVC.profile = cellData.rawData;
+        [self.navigationController pushViewController:profileVC animated:YES];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    T4CTableCellData *data = self.data[indexPath.row];
+    if ([data.dataType isEqualToString:kDataType_Status]) {
+        if ([((T4CStatusCellData *)data).mode isEqualToString:@"action"]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+- (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (IPAD) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.contentView.backgroundColor = rgb(235, 238, 240);
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didUnhighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (IPAD) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        cell.contentView.backgroundColor = kWhiteColor;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    T4CTableCellData *cellData = self.data[indexPath.row];
+    if (cellData.unread) {
+        cellData.unread = NO;
+        if (indexPath.row < self.unreadCount) {
+            self.unreadCount = indexPath.row;
+            [self unreadCountChanged];
+        }
+    }
 }
 
 - (long long)gapTopIDWithGapCellData:(T4CGapCellData *)gapCellData
@@ -562,7 +703,7 @@
         return;
     }
     __weak typeof(self)weakSelf = self;
-    dispatch_async(GCDBackgroundThread, ^{
+    dispatch_async(GCDMainThread, ^{
         uint cacheSize = kRequestDataCountViaWifi;
         NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
         for (T4CTableCellData *cellData in weakSelf.data) {
@@ -593,11 +734,36 @@
 {
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
+//#ifdef DEBUG
+//        if ([cacheArr indexOfObject:cache] < 3) {
+//            continue;
+//        }
+//#endif
+        if (self.data.count >= 200) {
+            break;
+        }
         T4CTableCellData *cellData = [[NSClassFromString(cache[@"class_name"]) alloc] init];
         cellData.rawData = cache[@"raw_data"];
         cellData.dataType = cache[@"data_type"];
         cellData.target = self;
         [self.data addObject:cellData];
+        if ([cellData.dataType isEqualToString:kDataType_Status]) {
+            if ([cellData.rawData[@"id"] longLongValue] > self.topID) {
+                self.topID = [cellData.rawData[@"id"] longLongValue];
+            }
+            if (self.bottomID == 0 || [cellData.rawData[@"id"] longLongValue] < self.bottomID) {
+                self.bottomID = [cellData.rawData[@"id"] longLongValue];
+            }
+        } else if ([cellData.dataType isEqualToString:kDataType_Conversation]) {
+            for (NSDictionary *message in cellData.rawData[@"messages"]) {
+                if ([message[@"id"] longLongValue] > self.topID) {
+                    self.topID = [message[@"id"] longLongValue];
+                }
+                if (self.bottomID == 0 || [message[@"id"] longLongValue] < self.bottomID) {
+                    self.bottomID = [message[@"id"] longLongValue];
+                }
+            }
+        }
     }
 }
 
@@ -742,10 +908,13 @@
 - (void)statusUpdated:(NSNotification *)notification
 {
     if (notification.object == self.cellDataInNextPage.rawData ||
-        [[notification.object objectForKey:@"id_str"] isEqualToString:[self.cellDataInNextPage.rawData objectForKey:@"id_str"]]) {
+        [[notification.object objectForKey:@"id"] isEqual:[self.cellDataInNextPage.rawData objectForKey:@"id"]]) {
         
         self.cellDataInNextPage.rawData = [notification.object copy];
         [self.tableView reloadData];
+        if (self.useCache) {
+            [self saveCache];
+        }
     }
 }
 
@@ -842,9 +1011,95 @@
     }
 }
 
+- (void)tappedPhoto:(NSString *)imageUrl withCellData:(T4CStatusCellData *)cellData
+{
+    [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
+}
+
+- (void)statusDeleted:(NSNotification *)notification
+{
+    BOOL resetTopID = NO;
+    if ([self.cellDataInNextPage.rawData[@"id"] isEqual:notification.object]) {
+        if (self.topID == [self.cellDataInNextPage.rawData[@"id"] longLongValue]) {
+            resetTopID = YES;
+        }
+        [self.data removeObject:self.cellDataInNextPage];
+        [self.tableView reloadData];
+        if (self.useCache) {
+            [self saveCache];
+        }
+    } else {
+        for (int i=0; i<self.data.count; i++) {
+            T4CTableCellData *cellData = self.data[i];
+            if ([cellData isKindOfClass:[T4CStatusCellData class]]) {
+                if ([cellData.rawData[@"id"] isEqual:notification.object]) {
+                    if (self.topID == [cellData.rawData[@"id"] longLongValue]) {
+                        resetTopID = YES;
+                    }
+                    [self.data removeObjectAtIndex:i];
+                    [self.tableView reloadData];
+                    if (self.useCache) {
+                        [self saveCache];
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    if (resetTopID) {
+        for (T4CTableCellData *cellData in self.data) {
+            if ([cellData isKindOfClass:[T4CStatusCellData class]]) {
+                if ([cellData.dataType isEqualToString:kDataType_Status]) {
+                    self.topID = [cellData.rawData[@"id"] longLongValue];
+                    break;
+                }
+            }
+        }
+    }
+}
+
+- (void)settingsUpdated:(NSNotification *)notification
+{
+    statusViewTestLabelInited = NO;
+    mainStatusViewTestLabelInited = NO;
+    for (T4CTableCellData *data in self.data) {
+        if ([data isKindOfClass:[T4CStatusCellData class]]) {
+            ((T4CStatusCellData *)data).cellHeight = 0;
+            ((T4CStatusCellData *)data).textHeight = 0;
+        }
+    }
+    [self.tableView reloadData];
+}
+
+- (void)clearCache
+{
+    self.unreadCount = 0;
+    self.topID = 0;
+    self.bottomID = 0;
+    
+    [self.data removeAllObjects];
+    [self saveCache];
+    [self.tableView reloadData];
+}
+
+- (void)twitterLoginSuccess:(NSNotification *)notification
+{
+    [self clearCache];
+}
+
+- (void)twitterLogout
+{
+    [self clearCache];
+}
+
 - (void)showUnreadIndicator
 {
     [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+}
+
+- (BOOL)shouldAutorotate
+{
+    return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
 }
 
 @end

@@ -9,11 +9,14 @@
 #import "T4CStatusViewController.h"
 #import "T4CStatusCellData.h"
 #import "T4CLoadingRepliedStatusCell.h"
+#import <TTTAttributedLabel/TTTAttributedLabel.h>
+#import "HSUComposeViewController.h"
 
 @interface T4CStatusViewController ()
 
 @property (nonatomic, strong) T4CTableCellData *loadingReplyCellData;
 @property (nonatomic, strong) NSDictionary *mainStatus; // self.status or self.status.retweeted_status
+@property (nonatomic, weak) T4CTableCellData *mainCellData;
 
 @end
 
@@ -23,6 +26,7 @@
 {
     self = [super init];
     if (self) {
+        self.useCache = NO;
         self.pullToRefresh = NO;
         self.infiniteScrolling = NO;
     }
@@ -43,13 +47,36 @@
                                          dataType:kDataType_LoadingReply];
         [self.data addObject:self.loadingReplyCellData];
     }
-    T4CStatusCellData *cellData = [[T4CStatusCellData alloc] initWithRawData:self.mainStatus
+    T4CStatusCellData *cellData = [[T4CStatusCellData alloc] initWithRawData:self.status
                                                                     dataType:kDataType_MainStatus];
     cellData.target = self;
     [self.data addObject:cellData];
+    self.mainCellData = cellData;
     
+    [self updateStatus];
     [self loadInReplyStatus];
     [self loadReplies];
+}
+
+- (void)updateStatus
+{
+    __weak typeof(self)weakSelf = self;
+    [twitter getDetailsForStatus:self.status[@"id_str"]
+                         success:^(id responseObj)
+     {
+         if ([responseObj isKindOfClass:[NSDictionary class]]) {
+             
+             T4CStatusCellData *statusCellData = [[T4CStatusCellData alloc] initWithRawData:responseObj
+                                                                                   dataType:kDataType_MainStatus];
+             statusCellData.target = weakSelf;
+             [weakSelf.data replaceObjectAtIndex:[weakSelf.data indexOfObject:weakSelf.mainCellData] withObject:statusCellData];
+             weakSelf.mainCellData = statusCellData;
+             notification_post_with_object(HSUStatusUpdatedNotification, responseObj);
+             [weakSelf.tableView reloadData];
+         }
+     } failure:^(NSError *error)
+     {
+     }];
 }
 
 - (void)loadInReplyStatus
@@ -141,6 +168,57 @@
             weakSelf.loadMoreState = T4CLoadingState_Error;
         }
     }];
+}
+
+- (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
+{
+    label.backgroundColor = rgb(215, 230, 242);
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    cancelItem.action = ^{
+        label.backgroundColor = kClearColor;
+    };
+    RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy Content")];
+    copyItem.action = ^{
+        label.backgroundColor = kClearColor;
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = self.mainStatus[@"text"];
+    };
+    UIActionSheet *linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:copyItem, nil];
+    [linkActionSheet showInView:self.view.window];
+}
+
+- (void)_composeButtonTouched
+{
+    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
+    NSMutableString *defaultText = [[NSMutableString alloc] init];
+    NSString *authorScreenName = self.mainStatus[@"user"][@"screen_name"];
+    composeVC.defaultTitle = S(@"Reply @%@", authorScreenName);
+    NSString *statusId = self.mainStatus[@"id_str"];
+    composeVC.inReplyToStatusId = statusId;
+    NSArray *userMentions = self.mainStatus[@"entities"][@"user_mentions"];
+#ifdef DEBUG
+    [defaultText appendString:@"客服推: "];
+#endif
+    if (userMentions && userMentions.count) {
+        [defaultText appendFormat:@"@%@ ", authorScreenName];
+        for (NSDictionary *userMention in userMentions) {
+            NSString *screenName = userMention[@"screen_name"];
+            [defaultText appendFormat:@"@%@ ", screenName];
+        }
+        uint start = authorScreenName.length + 2;
+#ifdef DEBUG
+        start += 5;
+#endif
+        uint length = defaultText.length - authorScreenName.length - 2;
+        composeVC.defaultSelectedRange = NSMakeRange(start, length);
+    } else {
+        [defaultText appendFormat:@"@%@ ", authorScreenName];
+        composeVC.defaultSelectedRange = NSMakeRange(defaultText.length, 0);
+    }
+    composeVC.defaultText = defaultText;
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.viewControllers = @[composeVC];
+    [self presentViewController:nav animated:YES completion:nil];
 }
 
 @end

@@ -25,5 +25,6 @@
 - (BOOL)isJailBreak;
 - (BOOL)buyProApp;
 - (void)buyProAppIfOverCount;
+- (void)askFollowAuthor;
 
 @end

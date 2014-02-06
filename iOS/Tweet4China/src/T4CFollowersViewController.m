@@ -25,7 +25,7 @@
 
 - (NSString *)apiString
 {
-    return @"friends/list";
+    return @"followers/list";
 }
 
 - (NSDictionary *)requestParams

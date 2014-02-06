@@ -7,6 +7,7 @@
 //
 
 #import "T4CTableCellData.h"
+#import "T4CTableViewController.h"
 
 @implementation T4CTableCellData
 
@@ -39,6 +40,11 @@
         return @{@"data_type": self.dataType, @"raw_data": self.rawData, @"class_name": self.class.description};
     }
     return nil;
+}
+
+- (T4CTableViewController *)tableVC
+{
+    return self.target;
 }
 
 @end

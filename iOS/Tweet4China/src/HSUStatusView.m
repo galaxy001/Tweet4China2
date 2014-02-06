@@ -35,7 +35,6 @@
     UILabel *screenNameL;
     UIImageView *attrI; // photo/video/geo/summary/audio/convo
     UILabel *timeL;
-    TTTAttributedLabel *textAL;
 }
 
 @synthesize avatarB;
@@ -51,7 +50,7 @@
     if (self) {
         notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
         
-        self.style = style;
+        _style = style;
         
         ambientArea = [[UIView alloc] init];
         [self addSubview:ambientArea];
@@ -80,8 +79,9 @@
         timeL = [[UILabel alloc] init];
         [infoArea addSubview:timeL];
         
-        textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
+        HSUAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [self addSubview:textAL];
+        self.textAL = textAL;
         
         UIButton *imagePreviewButton = [[UIButton alloc] init];
         [self addSubview:imagePreviewButton];
@@ -126,20 +126,20 @@
     }
     timeL.backgroundColor = kClearColor;
     
-    textAL.textColor = rgb(38, 38, 38);
-    textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
-    textAL.backgroundColor = kClearColor;
+    self.textAL.textColor = rgb(38, 38, 38);
+    self.textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
+    self.textAL.backgroundColor = kClearColor;
     if (Sys_Ver < 7) {
-        textAL.highlightedTextColor = kWhiteColor;
+        self.textAL.highlightedTextColor = kWhiteColor;
     }
-    textAL.lineBreakMode = NSLineBreakByWordWrapping;
-    textAL.numberOfLines = 0;
-    textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
+    self.textAL.lineBreakMode = NSLineBreakByWordWrapping;
+    self.textAL.numberOfLines = 0;
+    self.textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
                               (NSString *)kCTForegroundColorAttributeName: (id)cgrgb(30, 98, 164)};
-    textAL.activeLinkAttributes = @{(NSString *)kTTTBackgroundFillColorAttributeName: (id)cgrgb(215, 230, 242),
+    self.textAL.activeLinkAttributes = @{(NSString *)kTTTBackgroundFillColorAttributeName: (id)cgrgb(215, 230, 242),
                                     (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(2)};
-    textAL.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    textAL.lineHeightMultiple = textAL_LHM;
+    self.textAL.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    self.textAL.lineHeightMultiple = textAL_LHM;
     
     if (self.style == HSUStatusViewStyle_Default) {
         avatarB.frame = ccr(0, 0, avatar_S, avatar_S);
@@ -149,7 +149,7 @@
         nameL.textColor = kWhiteColor;
         screenNameL.textColor = kWhiteColor;
         timeL.textColor = kWhiteColor;
-        textAL.textColor = kWhiteColor;
+        self.textAL.textColor = kWhiteColor;
         avatarB.frame = ccr(0, 0, avatar_S, avatar_S);
     } else if (self.style == HSUStatusViewStyle_Light) {
         attrI.hidden = YES;
@@ -182,7 +182,7 @@
     [avatarB makeCornerRadius];
     
     infoArea.frame = ccr(ambientL.left, avatarB.top, cw-ambientL.left, info_H);
-    textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, self.data.textHeight + 3);
+    self.textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, self.data.textHeight + 3);
     
     [timeL sizeToFit];
     timeL.frame = ccr(infoArea.width-timeL.width, -1, timeL.width, timeL.height);
@@ -191,26 +191,24 @@
     attrI.frame = ccr(timeL.left-attrI.width-3, -1, attrI.width, attrI.height);
     
     [nameL sizeToFit];
-    nameL.frame = ccr(0, -3, MIN(attrI.left-3, nameL.width), nameL.height);
+    nameL.frame = ccr(0, -3, MIN(attrI.left-12, nameL.width), nameL.height);
     
     [screenNameL sizeToFit];
-    screenNameL.frame = ccr(nameL.right+3, -1, attrI.left-nameL.right, screenNameL.height);
+    screenNameL.frame = ccr(nameL.right+3, -1, attrI.left-nameL.right-2, screenNameL.height);
     
-    self.imagePreviewButton.frame = ccr(textAL.left, textAL.bottom+5, MIN(textAL.width, PhotoPreviewMaxWidth), MIN(textAL.width, PhotoPreviewMaxWidth)/2);
+    self.imagePreviewButton.frame = ccr(self.textAL.left, self.textAL.bottom+5, MIN(self.textAL.width, PhotoPreviewMaxWidth), MIN(self.textAL.width, PhotoPreviewMaxWidth)/2);
 }
 
 - (void)setupWithData:(T4CStatusCellData *)cellData
 {
     self.data = cellData;
     
-    NSDictionary *rawData = cellData.rawData;
-    
     // ambient
-    NSDictionary *retweetedStatus = rawData[@"retweeted_status"];
+    NSDictionary *retweetedStatus = cellData.rawData[@"retweeted_status"];
     ambientI.hidden = NO;
     if (retweetedStatus) {
         ambientI.imageName = retweeted_R;
-        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", rawData[@"user"][@"name"]];
+        NSString *ambientText = S(@"%@ retweeted", cellData.rawData[@"user"][@"name"]);
         ambientL.text = ambientText;
         ambientArea.hidden = NO;
     } else {
@@ -220,31 +218,25 @@
         ambientArea.bounds = CGRectZero;
     }
     
-    NSDictionary *entities = rawData[@"entities"];
+    NSDictionary *entities = cellData.mainStatus[@"entities"];
     
     // info
     NSString *avatarUrl = nil;
-    if (retweetedStatus) {
-        avatarUrl = rawData[@"retweeted_status"][@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"retweeted_status"][@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"retweeted_status"][@"user"][@"screen_name"]];
-    } else {
-        avatarUrl = rawData[@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
-    }
+    avatarUrl = cellData.mainStatus[@"user"][@"profile_image_url_https"];
+    nameL.text = cellData.mainStatus[@"user"][@"name"];
+    screenNameL.text = S(@"@%@", cellData.mainStatus[@"user"][@"screen_name"]);
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [avatarB setImageWithUrlStr:avatarUrl
                        forState:UIControlStateNormal
                     placeHolder:nil];
     
-    NSDictionary *geo = rawData[@"geo"];
-    NSDictionary *place = rawData[@"place"];
+    NSDictionary *geo = cellData.mainStatus[@"geo"];
+    NSDictionary *place = cellData.mainStatus[@"place"];
     
     // attr
     attrI.imageName = nil;
     if (!self.data.attr || (self.data.hasPhoto && !self.data.photoUrl)) {
-        if ([rawData[@"in_reply_to_status_id_str"] length]) {
+        if ([cellData.mainStatus[@"in_reply_to_status_id_str"] length]) {
             self.data.attr = @"convo";
         }
         if (entities) {
@@ -310,12 +302,12 @@
     }
     
     // time
-    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:cellData.mainStatus[@"created_at"]];
     timeL.text = createdDate.twitterDisplay;
     
     // text
-    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
-    textAL.text = text;
+    NSString *text = [cellData.mainStatus[@"text"] gtm_stringByUnescapingFromHTML];
+    self.textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
         NSArray *urls = entities[@"urls"];
@@ -339,7 +331,7 @@
                     }
                 }
             }
-            textAL.text = text;
+            self.textAL.text = text;
             if (self.style == HSUStatusViewStyle_Default) {
                 for (NSDictionary *urlDict in urlDicts) {
                     NSString *url = urlDict[@"url"];
@@ -347,13 +339,13 @@
                     NSString *expanedUrl = urlDict[@"expanded_url"];
                     if (url && url.length && displayUrl && displayUrl.length && expanedUrl && expanedUrl.length) {
                         NSRange range = [text rangeOfString:displayUrl];
-                        [textAL addLinkToURL:[NSURL URLWithString:expanedUrl] withRange:range];
+                        [self.textAL addLinkToURL:[NSURL URLWithString:expanedUrl] withRange:range];
                     }
                 }
             }
         }
     }
-    textAL.delegate = self;
+    self.textAL.delegate = self;
 }
 
 - (NSString *)_attrForUrl:(NSString *)url
@@ -455,8 +447,6 @@
         statusViewTestLabelInited = YES;
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
-        textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
         textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -470,6 +460,7 @@
     }
     testSizeLabel.text = text;
     
+    constraintWidth = IPHONE ? 232 : 538;
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(constraintWidth, 0)].height;
     data.textHeight = textHeight;
     return textHeight;
@@ -477,17 +468,16 @@
 
 + (CGFloat)heightForData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth
 {
-    NSDictionary *rawData = data.rawData;
-    
     CGFloat height = 0;
     CGFloat leftHeight = 0;
     
-    if (rawData[@"retweeted_status"]) {
+    if (data.rawData[@"retweeted_status"]) {
         height += ambient_H; // add ambient
         leftHeight += ambient_H;
     }
     height += info_H; // add info
     
+    NSDictionary *rawData = data.mainStatus;
     NSDictionary *entities = rawData[@"entities"];
     NSString *attrName = nil;
     if (entities) {
@@ -511,9 +501,9 @@
     }
     if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
         if (IPHONE) {
-            height += 120 + 10;
+            height += 120 + 20;
         } else {
-            height += PhotoPreviewMaxWidth/2 + 10;
+            height += PhotoPreviewMaxWidth/2 + 20;
         }
     }
     
@@ -561,6 +551,12 @@
 
 - (void)settingsUpdated:(NSNotification *)notification
 {
+    [self _setupStyle];
+}
+
+- (void)setStyle:(HSUStatusViewStyle)style
+{
+    _style = style;
     [self _setupStyle];
 }
 

@@ -14,9 +14,42 @@
 
 @implementation T4CHomeViewController
 
+- (id)init
+{
+    self = [super init];
+    if (self) {
+        self.showUnreadCount = YES;
+    }
+    return self;
+}
+
 - (NSString *)apiString
 {
     return @"statuses/home_timeline";
+}
+
+//#ifdef DEBUG
+//- (NSUInteger)requestCount
+//{
+//    return 3;
+//}
+//#endif
+
+- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+{
+    [super requestDidFinishRefreshWithData:dataArr];
+    
+    [[HSUAppDelegate shared] askFollowAuthor];
+    [[HSUAppDelegate shared] buyProAppIfOverCount];
+}
+
+- (void)requestDidFinishRefreshWithError:(NSError *)error
+{
+    [super requestDidFinishRefreshWithError:error];
+    
+    if (!error || error.code == 204) { // no err, no data
+        [[HSUAppDelegate shared] buyProAppIfOverCount];
+    }
 }
 
 - (void)viewDidLoad

@@ -22,6 +22,7 @@
 
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
 @property (nonatomic, strong) NSArray *unreadIndicators;
+@property (nonatomic, weak) UIProgressView *progressBar;
 
 @end
 
@@ -94,6 +95,7 @@
         
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(hideUnreadIndicators));
         notification_add_observer(HSUTwiterLogout, self, @selector(hideUnreadIndicators));
+        notification_add_observer(HSUPostTweetProgressChangedNotification, self, @selector(updateProgress:));
     }
     return self;
 }
@@ -140,12 +142,13 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     if (self.lastSelectedTabBarItem == item) {
-        HSUBaseViewController *currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
-        if ([currentVC respondsToSelector:@selector(tableView)]) {
-            [currentVC.tableView setContentOffset:ccp(0, 0) animated:YES];
+        id currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
+        if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
+            [((T4CTableViewController *)currentVC) tabItemTapped];
         }
     }
     self.lastSelectedTabBarItem = item;
+    [self hideUnreadIndicatorOnTabBarItem:item];
 }
 
 - (void)showUnreadIndicatorOnTabBarItem:(UITabBarItem *)tabBarItem
@@ -195,6 +198,29 @@
 {
     for (UITabBarItem *item in self.tabBar.items) {
         [self hideUnreadIndicatorOnTabBarItem:item];
+    }
+}
+
+- (void)updateProgress:(NSNotification *)notification
+{
+    double progress = [notification.object doubleValue];
+    if (!self.progressBar) {
+        UIProgressView *progressBar = [[UIProgressView alloc] init];
+        [self.tabBar addSubview:progressBar];
+        progressBar.trackTintColor = kWhiteColor;
+        progressBar.width = self.tabBar.width;
+        self.progressBar = progressBar;
+    }
+    __weak typeof(self)weakSelf = self;
+    [self.progressBar setProgress:progress animated:NO];
+    if (progress == 0) {
+        [UIView animateWithDuration:0.5 animations:^{
+            weakSelf.progressBar.alpha = 1.0;
+        }];
+    } else if (progress == 1) {
+        [UIView animateWithDuration:0.5 delay:progress - self.progressBar.progress options:0 animations:^{
+            weakSelf.progressBar.alpha = 0.0;
+        } completion:nil];
     }
 }
 

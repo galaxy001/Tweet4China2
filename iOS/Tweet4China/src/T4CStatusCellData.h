@@ -22,5 +22,6 @@
 @property (nonatomic, copy) NSString *instagramMediaID;
 @property (nonatomic, copy) NSString *attr;
 @property (nonatomic, copy) NSString *videoUrl;
+@property (nonatomic, readonly) NSDictionary *mainStatus;
 
 @end

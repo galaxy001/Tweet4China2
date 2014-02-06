@@ -63,8 +63,7 @@
              for (int i=0; i<sss.count; i++) {
                  NSDictionary *ss = sss[i];
                  NSMutableDictionary *mss = ss.mutableCopy;
-                 BOOL selected = [ss[HSUShadowsocksSettings_Server] isEqualToString:ssserver] &&
-                 [ss[HSUShadowsocksSettings_RemotePort] isEqualToString:ssport];
+                 BOOL selected = [ss[HSUShadowsocksSettings_Server] isEqualToString:ssserver] && ((!ssport && !ss[HSUShadowsocksSettings_RemotePort]) || [ss[HSUShadowsocksSettings_RemotePort] isEqualToString:ssport]);
                  mss[HSUShadowsocksSettings_Selected] = @(selected);
                  sss[i] = mss;
              }

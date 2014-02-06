@@ -11,11 +11,12 @@
 typedef NS_ENUM(NSUInteger, HSUStatusActionViewStyle) {
     HSUStatusActionViewStyle_Default = 0,
     HSUStatusActionViewStyle_Gallery = 1,
+    HSUStatusActionViewStyle_Inline = 2,
 };
 
 @interface HSUStatusActionView : UIView
 
-@property (nonatomic, strong) UIButton *replayB, *retweetB, *favoriteB, *moreB, *deleteB;
+@property (nonatomic, strong) UIButton *replayB, *retweetB, *favoriteB, *rtB, *moreB, *deleteB;
 
 - (id)initWithStatus:(NSDictionary *)status style:(HSUStatusActionViewStyle)style;
 

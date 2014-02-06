@@ -180,6 +180,7 @@
                     }
                 }
             }
+            self.followedMe = followedMe;
             if (followedMe) {
                 [weakSelf.profileView showFollowed];
             }
@@ -392,6 +393,7 @@
                         }
                     }
                 }
+                self.followedMe = followedMe;
                 if (followedMe) {
                     [weakSelf startDirectMessage];
                 } else {

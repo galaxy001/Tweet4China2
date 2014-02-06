@@ -91,7 +91,7 @@
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
 //    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
-    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
+//    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];
     [self.nameLabel sizeToFit];

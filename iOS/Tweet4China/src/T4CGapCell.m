@@ -11,7 +11,7 @@
 
 @interface T4CGapCell ()
 
-@property (nonatomic, weak) UILabel *errorLabel;
+@property (nonatomic, weak) UILabel *titleLabel;
 @property (nonatomic, weak) UIActivityIndicatorView *loadingSpinner;
 
 @end
@@ -28,11 +28,12 @@
         [self.contentView addSubview:loadingSpinner];
         self.loadingSpinner = loadingSpinner;
         
-        UILabel *errorLabel = [[UILabel alloc] init];
-        [self.contentView addSubview:errorLabel];
-        self.errorLabel = errorLabel;
-        errorLabel.font = [UIFont systemFontOfSize:14];
-        errorLabel.backgroundColor = kClearColor;
+        UILabel *titleLabel = [[UILabel alloc] init];
+        [self.contentView addSubview:titleLabel];
+        self.titleLabel = titleLabel;
+        titleLabel.font = [UIFont boldSystemFontOfSize:14];
+        titleLabel.backgroundColor = kClearColor;
+        titleLabel.textColor = bw(45);
     }
     return self;
 }
@@ -47,11 +48,15 @@
         [self.loadingSpinner stopAnimating];
     }
     if (data.state == T4CLoadingState_Error) {
-        self.errorLabel.text = _("Load Failed");
-        [self.errorLabel sizeToFit];
-        self.errorLabel.hidden = NO;
+        self.titleLabel.text = _("Load Failed");
+        [self.titleLabel sizeToFit];
+        self.titleLabel.hidden = NO;
+    } else if (data.state == T4CLoadingState_Done) {
+        self.titleLabel.text = _("Load More");
+        [self.titleLabel sizeToFit];
+        self.titleLabel.hidden = NO;
     } else {
-        self.errorLabel.hidden = YES;
+        self.titleLabel.hidden = YES;
     }
 }
 
@@ -59,7 +64,7 @@
 {
     [super layoutSubviews];
     
-    self.errorLabel.center = self.boundsCenter;
+    self.titleLabel.center = self.boundsCenter;
     self.loadingSpinner.center = self.boundsCenter;
 }
 

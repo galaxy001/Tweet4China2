@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong) T4CStatusCellData *data;
 @property (nonatomic, strong) HSUStatusView *statusView;
+@property (nonatomic, weak) UIButton *showActionsButton;
 
 + (HSUStatusViewStyle)statusStyle;
 

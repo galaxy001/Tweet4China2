@@ -117,7 +117,7 @@
         
         textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [contentArea addSubview:textAL];
-        textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
+        textAL.font = [UIFont fontWithName:@"Georgia" size:MAX(textAL_font_S, [GlobalSettings[HSUSettingTextSize] integerValue])];
         textAL.backgroundColor = kClearColor;
         textAL.textColor = rgb(38, 38, 38);
         textAL.highlightedTextColor = kWhiteColor;
@@ -256,17 +256,16 @@
 {
     [super setupWithData:data];
     
-    actionV = [[HSUStatusActionView alloc] initWithStatus:data.rawData style:HSUStatusActionViewStyle_Default];
+    actionV = [[HSUStatusActionView alloc] initWithStatus:data.mainStatus
+                                                    style:HSUStatusActionViewStyle_Default];
     [self.contentView addSubview:actionV];
-    
-    NSDictionary *rawData = data.rawData;
     
     // ambient
     ambientI.hidden = NO;
-    NSDictionary *retweetedStatus = rawData[@"retweeted_status"];
+    NSDictionary *retweetedStatus = self.data.rawData[@"retweeted_status"];
     if (retweetedStatus) {
         ambientI.imageName = retweeted_R;
-        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", rawData[@"user"][@"name"]];
+        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", self.data.rawData[@"user"][@"name"]];
         ambientL.text = ambientText;
         ambientArea.hidden = NO;
     } else {
@@ -276,28 +275,22 @@
         ambientArea.bounds = CGRectZero;
     }
     
-    NSDictionary *entities = rawData[@"entities"];
+    NSDictionary *entities = self.data.mainStatus[@"entities"];
     
     // info
     NSString *avatarUrl = nil;
-    if (retweetedStatus) {
-        avatarUrl = rawData[@"retweeted_status"][@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"retweeted_status"][@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"retweeted_status"][@"user"][@"screen_name"]];
-    } else {
-        avatarUrl = rawData[@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
-    }
+    avatarUrl = self.data.mainStatus[@"user"][@"profile_image_url_https"];
+    nameL.text = self.data.mainStatus[@"user"][@"name"];
+    screenNameL.text = S(@"@%@", self.data.mainStatus[@"user"][@"screen_name"]);
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     
     // time
-    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]];
     timePlaceL.text = createdDate.standardTwitterDisplay;
     
-    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
-    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
+    NSInteger retweetCount = [self.data.mainStatus[@"retweet_count"] integerValue];
+    NSInteger favoriteCount = [self.data.mainStatus[@"favorite_count"] integerValue];
     if ((retweetCount && favoriteCount) || (!retweetCount && !favoriteCount)) {
         [contentArea addSubview:viaLabel];
         [contentArea addSubview:sourceButton];
@@ -307,12 +300,12 @@
     sourceButton.hidden = NO;
     
     // place
-    NSDictionary *placeInfo = rawData[@"place"];
-    NSDictionary *geoInfo = rawData[@"geo"];
+    NSDictionary *placeInfo = self.data.mainStatus[@"place"];
+    NSDictionary *geoInfo = self.data.mainStatus[@"geo"];
     
     if ([placeInfo isKindOfClass:[NSDictionary class]]) {
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
-        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
         [timePlaceL sizeToFit];
         viaLabel.hidden = YES;
@@ -324,14 +317,15 @@
                 CLLocationDirection latitude = [coordinates[0] doubleValue];
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
                 NSString *place = S(@"%@, %@", geoInfo[@"coordinates"][0], geoInfo[@"coordinates"][1]);
-                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
                 timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
                 
                 CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                 CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+                __weak typeof(self)weakSelf = self;
                 [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
                     for (CLPlacemark * placemark in placemarks) {
-                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:weakSelf.data.mainStatus[@"created_at"]] standardTwitterDisplay];
                         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, placemark.name];
                         [timePlaceL sizeToFit];
                         viaLabel.hidden = YES;
@@ -366,7 +360,7 @@
     }
     
     // source
-    NSString *sourceHTML = rawData[@"source"];
+    NSString *sourceHTML = self.data.mainStatus[@"source"];
     if (sourceHTML) {
         if ([sourceHTML rangeOfString:@"<a"].location != NSNotFound) {
             NSRange r1 = [sourceHTML rangeOfString:@"\">"];
@@ -387,7 +381,7 @@
     }
     
     // text
-    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
+    NSString *text = [self.data.mainStatus[@"text"] gtm_stringByUnescapingFromHTML];
     textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
@@ -519,6 +513,7 @@
     
     // set action events
     [self setupTapEventOnButton:actionV.replayB name:@"reply"];
+    [self setupTapEventOnButton:actionV.rtB name:@"rt"];
     [self setupTapEventOnButton:actionV.retweetB name:@"retweet"];
     [self setupTapEventOnButton:actionV.favoriteB name:@"favorite"];
     [self setupTapEventOnButton:actionV.moreB name:@"more"];
@@ -526,19 +521,11 @@
     [self setupTapEventOnButton:retweetsButton name:@"retweets"];
     [self setupTapEventOnButton:favoritesButton name:@"favorites"];
     [self setupTapEventOnButton:avatarB name:@"touchAvatar"];
-//    [self setupControl:actionV.replayB forKey:@"reply"];
-//    [self setupControl:actionV.retweetB forKey:@"retweet"];
-//    [self setupControl:actionV.favoriteB forKey:@"favorite"];
-//    [self setupControl:actionV.moreB forKey:@"more"];
-//    [self setupControl:actionV.deleteB forKey:@"delete"];
-//    [self setupControl:retweetsButton forKey:@"retweets"];
-//    [self setupControl:favoritesButton forKey:@"favorites"];
-//    [self setupControl:avatarB forKey:@"touchAvatar"];
 }
 
 + (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data
 {
-    NSDictionary *status = data.rawData;
+    NSDictionary *status = data.mainStatus;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
     NSDictionary *entities = status[@"entities"];
     NSString *attrName = nil;
@@ -584,13 +571,10 @@
     }
     
     static TTTAttributedLabel *testSizeLabel = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    if (!mainStatusViewTestLabelInited || testSizeLabel) {
+        mainStatusViewTestLabelInited = YES;
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
-        textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
-        textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
-        textAL.highlightedTextColor = kWhiteColor;
+        textAL.font = [UIFont fontWithName:@"Georgia" size:MAX(textAL_font_S, [GlobalSettings[HSUSettingTextSize] integerValue])];
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
         textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -601,10 +585,10 @@
         textAL.lineHeightMultiple = textAL_LHM;
         
         testSizeLabel = textAL;
-    });
+    }
     testSizeLabel.text = text;
     
-    CGFloat cellWidth = [HSUCommonTools winWidth] - padding_S * 2 - kIPADMainViewPadding * 2;
+    CGFloat cellWidth = IPHONE ? 280 : 586;
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(cellWidth, 0)].height + 3;
     data.textHeight = textHeight;
     return textHeight;
@@ -612,7 +596,6 @@
 
 + (CGFloat)heightForData:(T4CStatusCellData *)data
 {
-    NSDictionary *rawData = data.rawData;
     if (data.cellHeight) {
         return data.cellHeight;
     }
@@ -621,7 +604,7 @@
     
     height += padding_S; // add padding top
     
-    if (rawData[@"retweeted_status"]) {
+    if (data.rawData[@"retweeted_status"]) {
         height += ambient_H; // add ambient
     }
     
@@ -656,8 +639,8 @@
         data.photoFitHeight = summaryHeight;
     }
     
-    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
-    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
+    NSInteger retweetCount = [data.mainStatus[@"retweet_count"] integerValue];
+    NSInteger favoriteCount = [data.mainStatus[@"favorite_count"] integerValue];
     if (retweetCount + favoriteCount) {
         height += retweet_favorite_pannel_H;
     }
@@ -716,7 +699,7 @@
 
 + (void)_parseSummary:(T4CStatusCellData *)data
 {
-    NSDictionary *entities = data.rawData[@"entities"];
+    NSDictionary *entities = data.mainStatus[@"entities"];
     NSArray *urls = entities[@"urls"];
     NSArray *medias = entities[@"media"];
     NSString *attrName = nil;
@@ -767,7 +750,7 @@
 
 - (void)_sourceButtonTouched
 {
-    NSString *sourceHTML = self.data.rawData[@"source"];
+    NSString *sourceHTML = self.data.mainStatus[@"source"];
     if (sourceHTML) {
         NSRange r1 = [sourceHTML rangeOfString:@"href=\"http"];
         NSRange r2 = [sourceHTML rangeOfString:@"\" rel="];

@@ -10,6 +10,7 @@
 
 @class T4CGapCellData;
 @class T4CStatusCellData;
+@class HSUiPadTabController;
 @interface T4CTableViewController : UIViewController <UIScrollViewDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *data;
@@ -27,10 +28,16 @@
 @property (nonatomic, strong) UIBarButtonItem *actionBarButton;
 @property (nonatomic, strong) UIBarButtonItem *composeBarButton;
 @property (nonatomic, strong) UIBarButtonItem *searchBarButton;
+@property (nonatomic, weak) HSUiPadTabController *tabController;
+@property (nonatomic, readonly) T4CTableCellData *firstTimelineData;
+@property (nonatomic, assign) NSUInteger unreadCount;
+@property (nonatomic, assign) BOOL showUnreadCount;
 
 - (void)refresh;
 - (void)loadGap:(T4CGapCellData *)gapCellData;
 - (void)loadMore;
+
+- (void)tabItemTapped;
 
 - (void)saveCache;
 - (void)loadCache;

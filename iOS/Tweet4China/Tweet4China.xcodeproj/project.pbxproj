@@ -217,6 +217,9 @@
 		9676D34018A1223A00E3AF45 /* T4CSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D33F18A1223A00E3AF45 /* T4CSearchViewController.m */; };
 		9676D34318A12CCA00E3AF45 /* T4CTagTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34218A12CCA00E3AF45 /* T4CTagTimelineViewController.m */; };
 		9676D34618A1350200E3AF45 /* T4CFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34518A1350200E3AF45 /* T4CFavoritesViewController.m */; };
+		9676D34918A1EEA000E3AF45 /* T4CNewFollowersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34818A1EEA000E3AF45 /* T4CNewFollowersViewController.m */; };
+		9676D34C18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9676D34B18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m */; };
+		9676D34E18A2005900E3AF45 /* icn_actions_more_small@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9676D34D18A2005900E3AF45 /* icn_actions_more_small@2x.png */; };
 		967A55EA16FCD3DA00581274 /* HSUUIEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55E916FCD3D900581274 /* HSUUIEvent.m */; };
 		967A55FB16FDB2AD00581274 /* HSULoadMoreCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 967A55FA16FDB2AD00581274 /* HSULoadMoreCell.m */; };
 		967F63481753048500CB8730 /* direct-message-text-bubble@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 967F63461753048500CB8730 /* direct-message-text-bubble@2x.png */; };
@@ -344,6 +347,7 @@
 		96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E1318856A240024698D /* HSURETableViewController.m */; };
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
+		96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */; };
 		96B7B6DF1893B3AE00B75AE5 /* T4CStatusCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */; };
 		96B7B6E21893B3E400B75AE5 /* T4CPersonCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E11893B3E400B75AE5 /* T4CPersonCellData.m */; };
 		96B7B6E51893B49E00B75AE5 /* T4CListCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E41893B49E00B75AE5 /* T4CListCellData.m */; };
@@ -746,6 +750,11 @@
 		9676D34218A12CCA00E3AF45 /* T4CTagTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CTagTimelineViewController.m; sourceTree = "<group>"; };
 		9676D34418A1350200E3AF45 /* T4CFavoritesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CFavoritesViewController.h; sourceTree = "<group>"; };
 		9676D34518A1350200E3AF45 /* T4CFavoritesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CFavoritesViewController.m; sourceTree = "<group>"; };
+		9676D34718A1EEA000E3AF45 /* T4CNewFollowersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CNewFollowersViewController.h; sourceTree = "<group>"; };
+		9676D34818A1EEA000E3AF45 /* T4CNewFollowersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CNewFollowersViewController.m; sourceTree = "<group>"; };
+		9676D34A18A1F0C800E3AF45 /* T4CNewRetweetsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CNewRetweetsViewController.h; sourceTree = "<group>"; };
+		9676D34B18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CNewRetweetsViewController.m; sourceTree = "<group>"; };
+		9676D34D18A2005900E3AF45 /* icn_actions_more_small@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_actions_more_small@2x.png"; sourceTree = "<group>"; };
 		967A55E816FCD3D900581274 /* HSUUIEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUUIEvent.h; sourceTree = "<group>"; };
 		967A55E916FCD3D900581274 /* HSUUIEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUUIEvent.m; sourceTree = "<group>"; };
 		967A55F916FDB2AD00581274 /* HSULoadMoreCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSULoadMoreCell.h; sourceTree = "<group>"; };
@@ -885,6 +894,8 @@
 		96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		96B55E9B16F9D5220084667B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		96B590C718A36A2A00DC3527 /* T4CRetweetersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CRetweetersViewController.h; sourceTree = "<group>"; };
+		96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CRetweetersViewController.m; sourceTree = "<group>"; };
 		96B7B6DD1893B3AE00B75AE5 /* T4CStatusCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CStatusCellData.h; sourceTree = "<group>"; };
 		96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CStatusCellData.m; sourceTree = "<group>"; };
 		96B7B6E01893B3E400B75AE5 /* T4CPersonCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CPersonCellData.h; sourceTree = "<group>"; };
@@ -1132,6 +1143,12 @@
 				9676D33F18A1223A00E3AF45 /* T4CSearchViewController.m */,
 				9676D34118A12CCA00E3AF45 /* T4CTagTimelineViewController.h */,
 				9676D34218A12CCA00E3AF45 /* T4CTagTimelineViewController.m */,
+				9676D34718A1EEA000E3AF45 /* T4CNewFollowersViewController.h */,
+				9676D34818A1EEA000E3AF45 /* T4CNewFollowersViewController.m */,
+				9676D34A18A1F0C800E3AF45 /* T4CNewRetweetsViewController.h */,
+				9676D34B18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m */,
+				96B590C718A36A2A00DC3527 /* T4CRetweetersViewController.h */,
+				96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */,
 				960E805C1886878300B1F165 /* T4CTableCellData.h */,
 				960E805D1886878300B1F165 /* T4CTableCellData.m */,
 				96B7B6DD1893B3AE00B75AE5 /* T4CStatusCellData.h */,
@@ -1259,6 +1276,7 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9676D34D18A2005900E3AF45 /* icn_actions_more_small@2x.png */,
 				9676D319189F8E0B00E3AF45 /* MessageEntryBackground.png */,
 				9676D31A189F8E0B00E3AF45 /* MessageEntryBackground@2x.png */,
 				9676D31B189F8E0B00E3AF45 /* MessageEntryInputField.png */,
@@ -2098,6 +2116,7 @@
 				96992D4B188D0D3B00AADDC2 /* icn_activity_weixin_moments@2x.png in Resources */,
 				969F2FAB182251E800015765 /* btn_following_pressed@2x~ipad.png in Resources */,
 				966E1929184CB31200B5482C /* icn_locked@2x.png in Resources */,
+				9676D34E18A2005900E3AF45 /* icn_actions_more_small@2x.png in Resources */,
 				96DABC63172A8473001AD70A /* icn_gallery_tweet_action_retweet_on_default@2x.png in Resources */,
 				96DABC65172A8473001AD70A /* icn_gallery_tweet_action_retweet_on_pressed@2x.png in Resources */,
 				96DABC67172A8473001AD70A /* icn_photo_detail_gripper@2x.png in Resources */,
@@ -2271,6 +2290,7 @@
 				968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */,
 				96BFCB091882CEBB00D13F4B /* HSUSearchViewController.m in Sources */,
 				9676D2ED189DC7EA00E3AF45 /* T4CGapCell.m in Sources */,
+				9676D34C18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m in Sources */,
 				96DEBF261890FCF900618AD2 /* HSUSearchPersonViewController.m in Sources */,
 				968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */,
 				9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */,
@@ -2289,6 +2309,7 @@
 				966E191B184CB06300B5482C /* HSUListCell.m in Sources */,
 				9676D32E18A0C78800E3AF45 /* T4CUserTimelineViewController.m in Sources */,
 				96BFCB00188298C800D13F4B /* HSURecentPhotosDataSource.m in Sources */,
+				9676D34918A1EEA000E3AF45 /* T4CNewFollowersViewController.m in Sources */,
 				96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */,
 				9687DF74186C5A9100431DA2 /* GCDAsyncSocket.m in Sources */,
 				96992D48188D094200AADDC2 /* HSUActivityWeixinMoments.m in Sources */,
@@ -2347,6 +2368,7 @@
 				96A11F2117D0BFB600F98ABD /* HSUProxySettingsViewController.m in Sources */,
 				9676D34618A1350200E3AF45 /* T4CFavoritesViewController.m in Sources */,
 				960E805E1886878300B1F165 /* T4CTableCellData.m in Sources */,
+				96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */,
 				9666CDE718719B180044DB0A /* HSUShadowsocksViewController.m in Sources */,
 				967272B91733E3E500B6E30A /* HSUUserHomeDataSource.m in Sources */,
 				969B7435173FA8370072EFC0 /* HSUChatStatusCell.m in Sources */,

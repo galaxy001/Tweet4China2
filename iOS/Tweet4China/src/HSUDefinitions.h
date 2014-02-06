@@ -17,7 +17,7 @@
 #define Free_Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 #define Pro_Flurry_API_Key @"MTYFGCVWN5PZ8JD8N9HW"
 
-//#define FreeApp
+#define FreeApp
 #ifdef FreeApp
 #define AppleID FreeAppleID
 #define Flurry_API_Key Free_Flurry_API_Key
@@ -64,6 +64,8 @@ BOOL shadowsocksStarted;
 #define kIPadTabBarWidth 84
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
 #define HSUiPadBgColor rgb(244, 248, 251)
+#define kLargeAvatarSize 48
+#define kMiddleAvatarSize 32
 
 #define kRequestDataCountViaWifi 50
 #define kRequestDataCountViaWWAN 20
@@ -137,6 +139,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
 #define HSUStatusDidDelete @"HSUStatusDidDelete"
+#define HSUStatusShowActionsNotification @"HSUStatusShowActionsNotification"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_LoadingReply @"LoadingReply"
@@ -210,3 +213,4 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define NetWorkStatus [twitter networkStatus]
 
 BOOL statusViewTestLabelInited;
+BOOL mainStatusViewTestLabelInited;

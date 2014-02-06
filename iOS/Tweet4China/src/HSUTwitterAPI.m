@@ -393,7 +393,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
               parameters:params
                  success:success
                  failure:^(NSError *error) {
-                     if (error.code != 204) {
+                     if (error && error.code != 204) {
                          failure(error);
                      } else {
                          success(@[]);
@@ -409,7 +409,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
               parameters:params
                  success:success
                  failure:^(NSError *error) {
-                     if (error.code != 204) {
+                     if (error && error.code != 204) {
                          failure(error);
                      } else {
                          success(@[]);
@@ -741,7 +741,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                   success:success
                   failure:failure];
 }
-- (void)destroyStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)destroyStatus:(id)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:S(url_statuses_destroy, statusID)
                parameters:nil
@@ -821,6 +821,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
 #ifdef DEBUG
+    if (!url) {
+        
+    }
     NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
     FHSTwitterEngine *engine = self.engine;
