@@ -59,7 +59,10 @@
     NSString *firstFollowerName = firstFollower[@"name"];
     NSString *title;
     if (followers.count > 1) {
-        title = S(@"%@ %@ %u %@", firstFollowerName, _("and"), followers.count - 1, _("others followed you"));
+        title = S(@"%@ %@ %u %@", firstFollowerName,
+                  _("and"),
+                  followers.count - 1,
+                  _("others followed you"));
     } else {
         title = S(@"%@ %@", firstFollowerName, _("followed you"));
     }

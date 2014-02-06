@@ -243,3 +243,10 @@
 "Page Size (WiFi)" = "每頁推文數 (WiFi)";
 "Page Size (3G/2G)" = "每頁推文數 (3G/2G)";
 "Type List Name" = "請輸入列表名";
+"Load Failed" = "載入失敗了";
+"Load More" = "載入更多";
+"and" = "和";
+"followed you" = "關注了你";
+"retweeted" = "轉推了";
+"Request failed" = "請求失敗了";
+"others followed you" = "其他人關注了你";
