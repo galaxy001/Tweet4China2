@@ -38,6 +38,9 @@
     if (self) {
         notification_add_observer(HSUStatusShowActionsNotification, self, @selector(showActions:));
         
+        UIGestureRecognizer *longTouchGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTouched:)];
+        [self addGestureRecognizer:longTouchGesture];
+        
         self.backgroundColor = kWhiteColor;
         
         self.statusView = [[HSUStatusView alloc] initWithFrame:ccr(padding_S, padding_S, self.contentView.width-padding_S*4, 0)
@@ -164,6 +167,13 @@
         
         self.data.mode = @"action";
         notification_post_with_object(HSUStatusShowActionsNotification, self);
+    }
+}
+
+- (void)longTouched:(UIGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateBegan) {
+        [self.data more];
     }
 }
 

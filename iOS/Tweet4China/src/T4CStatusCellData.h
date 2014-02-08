@@ -24,4 +24,6 @@
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, readonly) NSDictionary *mainStatus;
 
+- (void)more;
+
 @end

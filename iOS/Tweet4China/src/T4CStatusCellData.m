@@ -505,21 +505,6 @@
     [actionSheet addButtonItem:translateItem];
     count ++;
     
-    RIButtonItem *RTItem = [RIButtonItem itemWithLabel:_("RT")];
-    RTItem.action = ^{
-        [Flurry logEvent:S(@"RT in %@", [weakSelf.tableVC.class description])];
-        
-        HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-        NSString *authorScreenName = rawData[@"user"][@"screen_name"];
-        NSString *text = rawData[@"text"];
-        composeVC.defaultText = S(@" RT @%@: %@", authorScreenName, text);
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-        nav.viewControllers = @[composeVC];
-        [weakSelf.tableVC presentViewController:nav animated:YES completion:nil];
-    };
-    [actionSheet addButtonItem:RTItem];
-    count ++;
-    
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
     
