@@ -108,6 +108,7 @@
 	[UIView setAnimationBeginsFromCurrentState:YES];
     [UIView setAnimationDuration:[duration doubleValue]];
     [UIView setAnimationCurve:[curve intValue]];
+    [UIView setAnimationDelegate:self];
 	
 	// set views with new info
 	self.toolbar.frame = containerFrame;
@@ -119,6 +120,17 @@
 	
 	// commit animations
 	[UIView commitAnimations];
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    NSString *text = [self textViewDefaultText];
+    if (!self.textView.hasText) {
+        self.textView.text = text;
+        self.textView.selectedRange = NSMakeRange(text.length, 0);
+    } else if ([self.textView.text isEqualToString:text]) {
+        self.textView.text = nil;
+    }
 }
 
 -(void)keyboardWillHide:(NSNotification *)note
@@ -135,6 +147,7 @@
 	[UIView setAnimationBeginsFromCurrentState:YES];
     [UIView setAnimationDuration:[duration doubleValue]];
     [UIView setAnimationCurve:[curve intValue]];
+    [UIView setAnimationDelegate:self];
     
 	// set views with new info
 	self.toolbar.frame = containerFrame;
@@ -173,6 +186,11 @@
 - (NSString *)sendButtonTitle
 {
     return _("Send");
+}
+
+- (NSString *)textViewDefaultText
+{
+    return nil;
 }
 
 @end

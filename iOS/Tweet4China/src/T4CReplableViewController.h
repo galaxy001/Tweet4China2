@@ -17,6 +17,7 @@
 
 - (NSString *)textViewPlaceHolder;
 - (NSString *)sendButtonTitle;
+- (NSString *)textViewDefaultText;
 
 -(void)keyboardWillShow:(NSNotification *)note;
 -(void)keyboardWillHide:(NSNotification *)note;

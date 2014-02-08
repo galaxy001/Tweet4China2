@@ -15,7 +15,7 @@
 @interface T4CStatusViewController ()
 
 @property (nonatomic, strong) T4CTableCellData *loadingReplyCellData;
-@property (nonatomic, strong) NSDictionary *mainStatus; // self.status or self.status.retweeted_status
+@property (nonatomic, readonly) NSDictionary *mainStatus; // self.status or self.status.retweeted_status
 @property (nonatomic, weak) T4CTableCellData *mainCellData;
 
 @end
@@ -247,6 +247,22 @@
 - (NSDictionary *)mainStatus
 {
     return self.status[@"retweeted_status"] ?: self.status;
+}
+
+- (NSString *)textViewDefaultText
+{
+    NSMutableString *placeHolder = [NSMutableString string];
+    NSString *name = self.mainStatus[@"user"][@"screen_name"];
+    [placeHolder appendFormat:@"@%@ ", name];
+    if (self.status[@"retweeted_status"]) {
+        [placeHolder appendFormat:@"@%@ ", self.status[@"user"][@"screen_name"]];
+    }
+    NSArray *userMentions = self.status[@"entities"][@"user_mentions"];
+    for (NSDictionary *userMention in userMentions) {
+        NSString *name = userMention[@"screen_name"];
+        [placeHolder appendFormat:@"@%@ ", name];
+    }
+    return placeHolder;
 }
 
 @end

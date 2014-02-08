@@ -218,4 +218,9 @@
     [self _scrollToBottomWithAnimation:NO];
 }
 
+- (NSString *)textViewPlaceHolder
+{
+    return _("Start a new message");
+}
+
 @end
