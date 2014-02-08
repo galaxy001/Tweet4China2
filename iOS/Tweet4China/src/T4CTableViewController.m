@@ -581,6 +581,9 @@
         [self loadGap:gapCellData];
     } else if ([cellData.dataType isEqualToString:kDataType_Status] ||
                [cellData.dataType isEqualToString:kDataType_ChatStatus]) {
+        if ([((T4CStatusCellData *)cellData).mode isEqualToString:@"action"]) {
+            notification_post_with_object(HSUStatusShowActionsNotification, cellData);
+        }
         T4CStatusViewController *statusVC = [[T4CStatusViewController alloc] init];
         statusVC.status = cellData.rawData;
         self.cellDataInNextPage = (T4CStatusCellData *)cellData;
@@ -612,17 +615,6 @@
         [self.navigationController pushViewController:profileVC animated:YES];
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    T4CTableCellData *data = self.data[indexPath.row];
-    if ([data.dataType isEqualToString:kDataType_Status]) {
-        if ([((T4CStatusCellData *)data).mode isEqualToString:@"action"]) {
-            return NO;
-        }
-    }
-    return YES;
 }
 
 - (void)tableView:(UITableView *)tableView didHighlightRowAtIndexPath:(NSIndexPath *)indexPath

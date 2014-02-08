@@ -507,7 +507,7 @@
         }
     }
     
-    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName] + padding_S;
+    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName] + padding_S + 6;
     
     leftHeight += avatar_S; // add avatar
     

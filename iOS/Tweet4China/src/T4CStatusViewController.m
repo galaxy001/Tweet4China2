@@ -11,6 +11,7 @@
 #import "T4CLoadingRepliedStatusCell.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
 #import "HSUComposeViewController.h"
+#import "HPGrowingTextView.h"
 
 @interface T4CStatusViewController ()
 
@@ -263,6 +264,46 @@
         [placeHolder appendFormat:@"@%@ ", name];
     }
     return placeHolder;
+}
+
+- (void)_sendButtonTouched
+{
+    if (self.textView.hasText) {
+        NSDictionary *draft = [[HSUDraftManager shared]
+                               saveDraftWithDraftID:nil
+                               title:S(@"%@ %@", _("Reply to"), self.mainStatus[@"user"][@"name"])
+                               status:self.textView.text
+                               imageData:nil
+                               reply:self.mainStatus[@"id_str"]
+                               locationXY:CLLocationCoordinate2DMake(0, 0)
+                               placeId:nil];
+        [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
+            [[HSUDraftManager shared] removeDraft:draft];
+        } failure:^(NSError *error) {
+            if (error.code == 204) {
+                [[HSUDraftManager shared] removeDraft:draft];
+                [SVProgressHUD showErrorWithStatus:_("Duplicated status")];
+                return ;
+            }
+            if (!shadowsocksStarted) {
+                [[HSUAppDelegate shared] startShadowsocks];
+            }
+            [[HSUDraftManager shared] activeDraft:draft];
+            RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+            RIButtonItem *draftsItem = [RIButtonItem itemWithLabel:_("Drafts")];
+            draftsItem.action = ^{
+                [[HSUDraftManager shared] presentDraftsViewController];
+            };
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Tweet not sent")
+                                                            message:error.userInfo[@"message"]
+                                                   cancelButtonItem:cancelItem otherButtonItems:draftsItem, nil];
+            dispatch_async(GCDMainThread, ^{
+                [alert show];
+            });
+        }];
+        
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 @end

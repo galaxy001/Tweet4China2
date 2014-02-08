@@ -28,6 +28,7 @@
         [self addSubview:replayB];
         self.replayB = replayB;
         [replayB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
+        [replayB setImage:[UIImage imageNamed:@"icn_tweet_action_reply_disabled"] forState:UIControlStateDisabled];
         [replayB sizeToFit];
         
         // Retweet
@@ -60,8 +61,7 @@
         UIButton *rtB = [[UIButton alloc] init];
         [self addSubview:rtB];
         self.rtB = rtB;
-        [rtB setImage:[UIImage imageNamed:@"icn_tweet_action_reply"] forState:UIControlStateNormal];
-        [rtB sizeToFit];
+        rtB.size = replayB.size;
         [rtB setImage:nil forState:UIControlStateNormal];
         [rtB setTitle:@"RT" forState:UIControlStateNormal];
         rtB.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -74,6 +74,7 @@
         }
         self.moreB = moreB;
         [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more"] forState:UIControlStateNormal];
+        [moreB setImage:[UIImage imageNamed:@"icn_tweet_action_more_disabled"] forState:UIControlStateDisabled];
         [moreB sizeToFit];
         
         // Delete
@@ -81,6 +82,7 @@
         [self addSubview:deleteB];
         self.deleteB = deleteB;
         [deleteB setImage:[UIImage imageNamed:@"icn_tweet_action_delete"] forState:UIControlStateNormal];
+        [deleteB setImage:[UIImage imageNamed:@"icn_tweet_action_delete_disabled"] forState:UIControlStateDisabled];
         [deleteB sizeToFit];
     }
     return self;

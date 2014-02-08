@@ -71,7 +71,7 @@
     
     self.statusView.frame = ccr(self.statusView.left, self.statusView.top, self.contentView.width-padding_S*3, self.contentView.height-padding_S*2);
     self.flagIV.rightTop = ccp(self.contentView.width, 0);
-    self.showActionsButton.rightBottom = ccp(self.contentView.width-10, self.contentView.height-10);
+    self.showActionsButton.rightBottom = ccp(self.contentView.width-10, self.contentView.height-6);
 }
 
 - (void)setupWithData:(T4CStatusCellData *)data
@@ -130,10 +130,7 @@
 {
     if (self.actionV) {
         __weak typeof(self)weakSelf = self;
-        [UIView animateWithDuration:0.2 animations:^{
-            weakSelf.statusView.style = HSUStatusActionViewStyle_Default;
-            [weakSelf.statusView setupWithData:weakSelf.data];
-            [weakSelf.statusView setNeedsLayout];
+        [UIView animateWithDuration:0.3 animations:^{
             weakSelf.contentView.backgroundColor = IPAD ? kWhiteColor : kClearColor;
             weakSelf.actionV.alpha = 0;
         } completion:^(BOOL finish){
@@ -153,15 +150,12 @@
         [self setupTapEventOnButton:actionV.moreB name:@"more"];
         [self setupTapEventOnButton:actionV.deleteB name:@"delete"];
         
-        actionV.size = ccs(self.showActionsButton.left-20-kLargeAvatarSize-20, 36);
+        actionV.size = ccs(self.showActionsButton.left-20-kLargeAvatarSize-20, 28);
         actionV.leftBottom = ccp(kLargeAvatarSize+20, self.height);
         actionV.alpha = 0;
         __weak typeof(self)weakSelf = self;
-        [UIView animateWithDuration:0.2 animations:^{
-            weakSelf.statusView.style = HSUStatusActionViewStyle_Gallery;
-            [weakSelf.statusView setupWithData:weakSelf.data];
-            [weakSelf.statusView setNeedsLayout];
-            weakSelf.contentView.backgroundColor = bwa(1, .8);
+        [UIView animateWithDuration:0.3 animations:^{
+            weakSelf.contentView.backgroundColor = bwa(1, .1);
             actionV.alpha = 1;
         }];
         
@@ -172,8 +166,10 @@
 
 - (void)longTouched:(UIGestureRecognizer *)gesture
 {
-    if (gesture.state == UIGestureRecognizerStateBegan) {
-        [self.data more];
+    if ([self.data.mode isEqualToString:@"default"]) {
+        if (gesture.state == UIGestureRecognizerStateBegan) {
+            [self.data more];
+        }
     }
 }
 

@@ -349,6 +349,10 @@
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
 		96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */; };
 		96B590CC18A658DD00DC3527 /* T4CReplableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590CB18A658DD00DC3527 /* T4CReplableViewController.m */; };
+		96B590DB18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B590CE18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png */; };
+		96B590DE18A66D2600DC3527 /* icn_tweet_action_favorite_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B590D118A66D2600DC3527 /* icn_tweet_action_favorite_disabled@2x.png */; };
+		96B590E218A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B590D518A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png */; };
+		96B590E818A66E0C00DC3527 /* icn_tweet_action_more_disabled@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B590E718A66E0B00DC3527 /* icn_tweet_action_more_disabled@2x.png */; };
 		96B7B6DF1893B3AE00B75AE5 /* T4CStatusCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */; };
 		96B7B6E21893B3E400B75AE5 /* T4CPersonCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E11893B3E400B75AE5 /* T4CPersonCellData.m */; };
 		96B7B6E51893B49E00B75AE5 /* T4CListCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E41893B49E00B75AE5 /* T4CListCellData.m */; };
@@ -898,6 +902,10 @@
 		96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CRetweetersViewController.m; sourceTree = "<group>"; };
 		96B590CA18A658DD00DC3527 /* T4CReplableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CReplableViewController.h; sourceTree = "<group>"; };
 		96B590CB18A658DD00DC3527 /* T4CReplableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CReplableViewController.m; sourceTree = "<group>"; };
+		96B590CE18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tweet_action_delete_disabled@2x.png"; sourceTree = "<group>"; };
+		96B590D118A66D2600DC3527 /* icn_tweet_action_favorite_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tweet_action_favorite_disabled@2x.png"; sourceTree = "<group>"; };
+		96B590D518A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tweet_action_reply_disabled@2x.png"; sourceTree = "<group>"; };
+		96B590E718A66E0B00DC3527 /* icn_tweet_action_more_disabled@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_tweet_action_more_disabled@2x.png"; sourceTree = "<group>"; };
 		96B7B6DD1893B3AE00B75AE5 /* T4CStatusCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CStatusCellData.h; sourceTree = "<group>"; };
 		96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CStatusCellData.m; sourceTree = "<group>"; };
 		96B7B6E01893B3E400B75AE5 /* T4CPersonCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CPersonCellData.h; sourceTree = "<group>"; };
@@ -1277,6 +1285,10 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				96B590E718A66E0B00DC3527 /* icn_tweet_action_more_disabled@2x.png */,
+				96B590CE18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png */,
+				96B590D118A66D2600DC3527 /* icn_tweet_action_favorite_disabled@2x.png */,
+				96B590D518A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png */,
 				9676D34D18A2005900E3AF45 /* icn_actions_more_small@2x.png */,
 				9676D319189F8E0B00E3AF45 /* MessageEntryBackground.png */,
 				9676D31A189F8E0B00E3AF45 /* MessageEntryBackground@2x.png */,
@@ -2026,6 +2038,7 @@
 				969F2FD21823D69500015765 /* btn_floating_segment_default@2x~iphone.png in Resources */,
 				9676D327189F8E0B00E3AF45 /* MessageEntrySendButtonPressed.png in Resources */,
 				966498B716F22F7F00BC901A /* ic_ambient_list@2x.png in Resources */,
+				96B590E218A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png in Resources */,
 				966498B816F22F7F00BC901A /* ic_ambient_mention@2x.png in Resources */,
 				966498B916F22F7F00BC901A /* ic_ambient_retweet@2x.png in Resources */,
 				966498BA16F22F7F00BC901A /* ic_ambient_tweet@2x.png in Resources */,
@@ -2057,7 +2070,9 @@
 				969F2FA71822517B00015765 /* btn_following_default@2x~ipad.png in Resources */,
 				96E34B5A170167580066CD5E /* compose-nipple@2x.png in Resources */,
 				9666CDDE18705CD50044DB0A /* icn_nav_action@2x.png in Resources */,
+				96B590DB18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png in Resources */,
 				966E1927184CB31200B5482C /* icn_locked_pressed~ipad@2x.png in Resources */,
+				96B590DE18A66D2600DC3527 /* icn_tweet_action_favorite_disabled@2x.png in Resources */,
 				60390F37505B9E9A223EE155 /* icn_tweet_sheet_photo_remove_pressed@2x~ipad.png in Resources */,
 				969F2F3818209F0200015765 /* ic_search_white@2x.png in Resources */,
 				60390D9F7AB9A57DE245D58A /* icn_tweet_sheet_photo_remove_default@2x~ipad.png in Resources */,
@@ -2093,6 +2108,7 @@
 				969F2F971822497C00015765 /* icn_profile_settings@2x~ipad.png in Resources */,
 				966E1925184CB31200B5482C /* icn_locked_pressed@2x.png in Resources */,
 				969F2FBD1823D3B000015765 /* btn_standard_default@2x~ipad.png in Resources */,
+				96B590E818A66E0C00DC3527 /* icn_tweet_action_more_disabled@2x.png in Resources */,
 				96DECEC9187FD6A300E46809 /* btn_bookmark@2x.png in Resources */,
 				9605A862171C51150031BA74 /* nonretina.sh in Resources */,
 				96A2127517218BCE00BC1D09 /* icn_nav_bar_back@2x.png in Resources */,
