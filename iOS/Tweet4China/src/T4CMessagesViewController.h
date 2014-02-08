@@ -6,9 +6,9 @@
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "T4CTableViewController.h"
+#import "T4CReplableViewController.h"
 
-@interface T4CMessagesViewController : T4CTableViewController
+@interface T4CMessagesViewController : T4CReplableViewController
 
 @property (nonatomic, strong) NSDictionary *myProfile;
 @property (nonatomic, strong) NSDictionary *herProfile;

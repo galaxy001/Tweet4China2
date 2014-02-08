@@ -348,6 +348,7 @@
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
 		96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */; };
+		96B590CC18A658DD00DC3527 /* T4CReplableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590CB18A658DD00DC3527 /* T4CReplableViewController.m */; };
 		96B7B6DF1893B3AE00B75AE5 /* T4CStatusCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */; };
 		96B7B6E21893B3E400B75AE5 /* T4CPersonCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E11893B3E400B75AE5 /* T4CPersonCellData.m */; };
 		96B7B6E51893B49E00B75AE5 /* T4CListCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B7B6E41893B49E00B75AE5 /* T4CListCellData.m */; };
@@ -895,6 +896,8 @@
 		96B55E9B16F9D5220084667B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		96B590C718A36A2A00DC3527 /* T4CRetweetersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CRetweetersViewController.h; sourceTree = "<group>"; };
 		96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CRetweetersViewController.m; sourceTree = "<group>"; };
+		96B590CA18A658DD00DC3527 /* T4CReplableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CReplableViewController.h; sourceTree = "<group>"; };
+		96B590CB18A658DD00DC3527 /* T4CReplableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CReplableViewController.m; sourceTree = "<group>"; };
 		96B7B6DD1893B3AE00B75AE5 /* T4CStatusCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CStatusCellData.h; sourceTree = "<group>"; };
 		96B7B6DE1893B3AE00B75AE5 /* T4CStatusCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CStatusCellData.m; sourceTree = "<group>"; };
 		96B7B6E01893B3E400B75AE5 /* T4CPersonCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CPersonCellData.h; sourceTree = "<group>"; };
@@ -1112,6 +1115,8 @@
 			children = (
 				960E805318866F1500B1F165 /* T4CTableViewController.h */,
 				960E805418866F1500B1F165 /* T4CTableViewController.m */,
+				96B590CA18A658DD00DC3527 /* T4CReplableViewController.h */,
+				96B590CB18A658DD00DC3527 /* T4CReplableViewController.m */,
 				96B7B6F21893C7C700B75AE5 /* T4CHomeViewController.h */,
 				96B7B6F31893C7C700B75AE5 /* T4CHomeViewController.m */,
 				9676D2F5189E1CCD00E3AF45 /* T4CStatusViewController.h */,
@@ -2362,6 +2367,7 @@
 				967272781732CF0300B6E30A /* HSUFollowingDataSource.m in Sources */,
 				960DFEE817E426F700D6BEB1 /* HSUFavoritesDataSource.m in Sources */,
 				9672727B1732CF1200B6E30A /* HSUFollowersDataSource.m in Sources */,
+				96B590CC18A658DD00DC3527 /* T4CReplableViewController.m in Sources */,
 				967272B01733C29B00B6E30A /* HSUPersonListDataSource.m in Sources */,
 				9676D311189F78FC00E3AF45 /* T4CMessagesViewController.m in Sources */,
 				967272B31733CC2100B6E30A /* HSUTweetsViewController.m in Sources */,

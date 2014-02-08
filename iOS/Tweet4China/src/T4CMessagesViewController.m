@@ -10,15 +10,10 @@
 #import "HPGrowingTextView.h"
 #import "T4CMessageCellData.h"
 
-@interface T4CMessagesViewController () <UITextViewDelegate, HPGrowingTextViewDelegate>
+@interface T4CMessagesViewController () <UITextViewDelegate>
 
-@property (nonatomic, weak) UIView *toolbar;
-@property (nonatomic, weak) UIImageView *toolbarBackground;
-@property (nonatomic, weak) UIImageView *textViewBackground;
 @property (nonatomic, weak) UILabel *wordCountLabel;
 @property (nonatomic, assign) BOOL layoutForTextChanged;
-@property (nonatomic, weak) UIView *containerView;
-@property (nonatomic, weak) HPGrowingTextView *textView;
 
 @property (nonatomic, strong) UIBarButtonItem *actionsBarButtonItem;
 @property (nonatomic, strong) UIBarButtonItem *sendBarButtonItem;
@@ -27,23 +22,16 @@
 
 @implementation T4CMessagesViewController
 
-- (void)dealloc
-{
-    self.textView.delegate = nil;
-}
-
 - (id)init
 {
     self = [super init];
     if (self) {
         self.pullToRefresh = NO;
         self.infiniteScrolling = NO;
-        
-        notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
-        notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     }
     return self;
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -54,67 +42,6 @@
     self.tableView.backgroundColor = kWhiteColor;
     UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTableView)];
     [self.tableView addGestureRecognizer:tapGesture];
-    
-    UIView *containerView = [[UIView alloc] initWithFrame:CGRectMake(0, self.view.height - 40, self.view.width, 40)];
-    self.containerView = containerView;
-    
-    HPGrowingTextView *textView = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(6, 3, 240, 40)];
-    self.textView = textView;
-    
-    textView.isScrollable = NO;
-    textView.contentInset = UIEdgeInsetsMake(0, 5, 0, 5);
-    
-	textView.minNumberOfLines = 1;
-	textView.maxNumberOfLines = 6;
-    // you can also set the maximum height in points with maxHeight
-    // textView.maxHeight = 200.0f;
-	textView.returnKeyType = UIReturnKeyGo; //just as an example
-	textView.font = [UIFont systemFontOfSize:15.0f];
-	textView.delegate = self;
-    textView.internalTextView.scrollIndicatorInsets = UIEdgeInsetsMake(5, 0, 5, 0);
-    textView.backgroundColor = [UIColor whiteColor];
-    
-    [self.view addSubview:containerView];
-    
-    UIImage *rawEntryBackground = [UIImage imageNamed:@"MessageEntryInputField.png"];
-    UIImage *entryBackground = [rawEntryBackground stretchableImageWithLeftCapWidth:13 topCapHeight:22];
-    UIImageView *entryImageView = [[UIImageView alloc] initWithImage:entryBackground];
-    entryImageView.frame = CGRectMake(5, 0, 248, 40);
-    entryImageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    
-    UIImage *rawBackground = [UIImage imageNamed:@"MessageEntryBackground.png"];
-    UIImage *background = [rawBackground stretchableImageWithLeftCapWidth:13 topCapHeight:22];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:background];
-    imageView.frame = CGRectMake(0, 0, containerView.frame.size.width, containerView.frame.size.height);
-    imageView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    
-    textView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    
-    [containerView addSubview:imageView];
-    [containerView addSubview:textView];
-    [containerView addSubview:entryImageView];
-    
-    UIImage *sendBtnBackground = [[UIImage imageNamed:@"MessageEntrySendButton.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0];
-    UIImage *selectedSendBtnBackground = [[UIImage imageNamed:@"MessageEntrySendButton.png"] stretchableImageWithLeftCapWidth:13 topCapHeight:0];
-    
-	UIButton *doneBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-	doneBtn.frame = CGRectMake(containerView.frame.size.width - 69, 8, 63, 27);
-    doneBtn.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin;
-	[doneBtn setTitle:_("Send") forState:UIControlStateNormal];
-    
-    [doneBtn setTitleShadowColor:[UIColor colorWithWhite:0 alpha:0.4] forState:UIControlStateNormal];
-    doneBtn.titleLabel.shadowOffset = CGSizeMake (0.0, -1.0);
-    doneBtn.titleLabel.font = [UIFont boldSystemFontOfSize:16.0f];
-    
-    [doneBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-	[doneBtn addTarget:self action:@selector(_sendButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-    [doneBtn setBackgroundImage:sendBtnBackground forState:UIControlStateNormal];
-    [doneBtn setBackgroundImage:selectedSendBtnBackground forState:UIControlStateSelected];
-	[containerView addSubview:doneBtn];
-    containerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleTopMargin;
-    
-    self.containerView = containerView;
-    self.textView = textView;
     
     __weak typeof(self)weakSelf = self;
     [twitter lookupFriendshipsWithScreenNames:@[self.herProfile[@"screen_name"]] success:^(id responseObj) {
@@ -145,7 +72,6 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    self.tabBarController.tabBar.hidden = YES;
     [super viewWillAppear:animated];
     
     if (self.presentingViewController) {
@@ -161,19 +87,15 @@
 {
     [super viewDidAppear:animated];
     
-    self.toolbar.hidden = NO;
-    self.textViewBackground.hidden = NO;
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    self.tabBarController.tabBar.hidden = NO;
-    [super viewWillDisappear:animated];
+    UIEdgeInsets inset = self.tableView.contentInset;
+    inset.bottom = self.view.height - self.toolbar.top;
+    self.tableView.contentInset = inset;
+    [self _scrollToBottomWithAnimation:NO];
 }
 
 - (void)_scrollToBottomWithAnimation:(BOOL)animation
 {
-    [self.tableView setContentOffset:ccp(0, MAX(self.tableView.contentSize.height-self.tableView.height+self.tableView.contentInset.bottom, 0)) animated:animation];
+    [self.tableView setContentOffset:ccp(0, MAX(self.tableView.contentSize.height-self.tableView.height+self.tableView.contentInset.bottom, -self.tableView.contentInset.top)) animated:animation];
 }
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
@@ -290,78 +212,10 @@
 }
 
 -(void)keyboardWillShow:(NSNotification *)note{
-    // get keyboard size and loctaion
-	CGRect keyboardBounds;
-    [[note.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] getValue: &keyboardBounds];
-    NSNumber *duration = [note.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSNumber *curve = [note.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
     
-    // Need to translate the bounds to account for rotation.
-    keyboardBounds = [self.view convertRect:keyboardBounds toView:nil];
+    [super keyboardWillShow:note];
     
-	// get a rect for the textView frame
-	CGRect containerFrame = self.containerView.frame;
-    containerFrame.origin.y = self.view.bounds.size.height - (keyboardBounds.size.height + containerFrame.size.height);
-	// animations settings
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:[duration doubleValue]];
-    [UIView setAnimationCurve:[curve intValue]];
-	
-	// set views with new info
-	self.containerView.frame = containerFrame;
-    
-    // set table view
-    UIEdgeInsets inset = self.tableView.contentInset;
-    inset.bottom = self.view.height - containerFrame.origin.y;
-    self.tableView.contentInset = inset;
-    self.tableView.contentOffset = ccp(0, MAX(self.tableView.contentSize.height-self.tableView.height+self.tableView.contentInset.bottom, 0));
-	
-	// commit animations
-	[UIView commitAnimations];
-}
-
--(void)keyboardWillHide:(NSNotification *)note{
-    NSNumber *duration = [note.userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey];
-    NSNumber *curve = [note.userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey];
-	
-	// get a rect for the textView frame
-	CGRect containerFrame = self.containerView.frame;
-    containerFrame.origin.y = self.view.bounds.size.height - containerFrame.size.height;
-	
-	// animations settings
-	[UIView beginAnimations:nil context:NULL];
-	[UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:[duration doubleValue]];
-    [UIView setAnimationCurve:[curve intValue]];
-    
-	// set views with new info
-	self.containerView.frame = containerFrame;
-    
-    // set table view
-    UIEdgeInsets inset = self.tableView.contentInset;
-    inset.bottom = self.view.height - containerFrame.origin.y;
-    self.tableView.contentInset = inset;
-	
-	// commit animations
-	[UIView commitAnimations];
-}
-
-- (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height
-{
-    float diff = (growingTextView.frame.size.height - height);
-    
-	CGRect r = self.containerView.frame;
-    r.size.height -= diff;
-    r.origin.y += diff;
-	self.containerView.frame = r;
-}
-
-- (void)tapTableView
-{
-    if (self.textView.isFirstResponder) {
-        [self.textView resignFirstResponder];
-    }
+    [self _scrollToBottomWithAnimation:NO];
 }
 
 @end

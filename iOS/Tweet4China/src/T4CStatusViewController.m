@@ -39,8 +39,6 @@
     
     self.navigationItem.rightBarButtonItem = self.composeBarButton;
     
-    self.mainStatus = self.status[@"retweeted_status"] ?: self.status;
-    
     if ([self.mainStatus[@"in_reply_to_status_id"] longLongValue]) {
         self.loadingReplyCellData =
         [[T4CTableCellData alloc] initWithRawData:self.mainStatus
@@ -201,24 +199,54 @@
 #endif
     if (userMentions && userMentions.count) {
         [defaultText appendFormat:@"@%@ ", authorScreenName];
+        uint start = defaultText.length;
+        if (self.status[@"retweeted_status"]) {
+            [defaultText appendFormat:@"@%@ ", self.status[@"user"][@"screen_name"]];
+            start = defaultText.length;
+        }
         for (NSDictionary *userMention in userMentions) {
             NSString *screenName = userMention[@"screen_name"];
             [defaultText appendFormat:@"@%@ ", screenName];
         }
-        uint start = authorScreenName.length + 2;
-#ifdef DEBUG
-        start += 5;
-#endif
-        uint length = defaultText.length - authorScreenName.length - 2;
+        uint length = defaultText.length - start;
         composeVC.defaultSelectedRange = NSMakeRange(start, length);
     } else {
         [defaultText appendFormat:@"@%@ ", authorScreenName];
+        if (self.status[@"retweeted_status"]) {
+            [defaultText appendFormat:@"@%@ ", self.status[@"user"][@"screen_name"]];
+        }
         composeVC.defaultSelectedRange = NSMakeRange(defaultText.length, 0);
     }
     composeVC.defaultText = defaultText;
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
+}
+
+- (NSString *)textViewPlaceHolder
+{
+    NSMutableString *placeHolder = [NSMutableString stringWithString:_("Reply to ")];
+    NSString *name = self.mainStatus[@"user"][@"name"];
+    [placeHolder appendFormat:@"%@, ", name];
+    if (self.status[@"retweeted_status"]) {
+        [placeHolder appendFormat:@"%@, ", self.status[@"user"][@"name"]];
+    }
+    NSArray *userMentions = self.status[@"entities"][@"user_mentions"];
+    for (NSDictionary *userMention in userMentions) {
+        NSString *name = userMention[@"name"];
+        [placeHolder appendFormat:@"%@, ", name];
+    }
+    return [placeHolder substringToIndex:placeHolder.length-2];
+}
+
+- (NSString *)sendButtonTitle
+{
+    return _("Reply");
+}
+
+- (NSDictionary *)mainStatus
+{
+    return self.status[@"retweeted_status"] ?: self.status;
 }
 
 @end

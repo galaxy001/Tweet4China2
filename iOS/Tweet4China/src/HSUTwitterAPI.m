@@ -824,7 +824,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     if (!url) {
         
     }
-    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
+//    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
     FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];

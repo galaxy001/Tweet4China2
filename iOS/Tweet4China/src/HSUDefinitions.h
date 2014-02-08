@@ -209,7 +209,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define status_height 20
 //[[UIApplication sharedApplication] statusBarFrame].size.height
 #define navbar_height self.navigationController.navigationBar.height
-#define tabbar_height self.tabBarController.tabBar.height
+#define tabbar_height (self.tabBarController.tabBar.isHidden ? 0 : self.tabBarController.tabBar.height)
 #define toolbar_height 44
 
 #define NetWorkStatus [twitter networkStatus]

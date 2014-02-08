@@ -316,7 +316,7 @@
             if (coordinates.count == 2) {
                 CLLocationDirection latitude = [coordinates[0] doubleValue];
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
-                NSString *place = S(@"%@, %@", geoInfo[@"coordinates"][0], geoInfo[@"coordinates"][1]);
+                NSString *place = S(@"%.3f, %.3f", [geoInfo[@"coordinates"][0] doubleValue], [geoInfo[@"coordinates"][1] doubleValue]);
                 NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
                 timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
                 

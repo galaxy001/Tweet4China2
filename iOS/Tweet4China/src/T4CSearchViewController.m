@@ -9,6 +9,7 @@
 #import "T4CSearchViewController.h"
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "HSUSearchField.h"
 
 @interface T4CSearchViewController () <UITextFieldDelegate>
 
@@ -52,8 +53,14 @@
     [typeControl addTarget:self
                     action:@selector(typeControlValueChanged:)
           forControlEvents:UIControlEventValueChanged];
-    [typeControl setWidth:100 forSegmentAtIndex:0];
-    [typeControl setWidth:100 forSegmentAtIndex:1];
+    if (Sys_Ver >= 7) {
+        [typeControl setWidth:100 forSegmentAtIndex:0];
+        [typeControl setWidth:100 forSegmentAtIndex:1];
+    } else {
+        [typeControl setWidth:150 forSegmentAtIndex:0];
+        [typeControl setWidth:150 forSegmentAtIndex:1];
+        typeControl.transform = CGAffineTransformMakeScale(.7, .7);
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -62,12 +69,16 @@
     
     if (!self.searchTF) {
         UITextField *searchTF;
-        searchTF = [[UITextField alloc] init];
-        UIImageView *searchIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_search"]];
-        searchIcon.contentMode = UIViewContentModeCenter;
-        searchIcon.size = ccs(searchIcon.width + 10, searchIcon.height + 15);
-        searchTF.leftView = searchIcon;
-        searchTF.leftViewMode = UITextFieldViewModeAlways;
+        if (Sys_Ver >= 7) {
+            searchTF = [[UITextField alloc] init];
+            UIImageView *searchIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"ic_search"]];
+            searchIcon.contentMode = UIViewContentModeCenter;
+            searchIcon.size = ccs(searchIcon.width + 10, searchIcon.height + 15);
+            searchTF.leftView = searchIcon;
+            searchTF.leftViewMode = UITextFieldViewModeAlways;
+        } else {
+            searchTF = [[HSUSearchField alloc] init];
+        }
         self.searchTF = searchTF;
         searchTF.placeholder = _("Search Tweets");
         searchTF.returnKeyType = UIReturnKeySearch;
@@ -75,8 +86,22 @@
         searchTF.autocapitalizationType = UITextAutocapitalizationTypeNone;
         searchTF.clearButtonMode = UITextFieldViewModeWhileEditing;
         searchTF.delegate = self;
-        searchTF.size = ccs(self.width-100, 40);
-        searchTF.leftTop = ccp(70, 3);
+        if (Sys_Ver >= 7) {
+            searchTF.size = ccs(self.width-100, 40);
+            searchTF.leftTop = ccp(70, 3);
+        } else {
+            searchTF.font = [UIFont systemFontOfSize:14];
+            searchTF.size = ccs(self.width-75, 25);
+            searchTF.leftTop = ccp(40, 10);
+            searchTF.backgroundColor = bw(255);
+            searchTF.layer.cornerRadius = 3;
+            UIImageView *leftView = [[UIImageView alloc]
+                                     initWithImage:[UIImage imageNamed:@"ic_search"]
+                                     highlightedImage:[UIImage imageNamed:@"ic_search_white"]];
+            leftView.width *= 1.8;
+            leftView.contentMode = UIViewContentModeScaleAspectFit;
+            searchTF.leftView = leftView;
+        }
         [self.navigationController.navigationBar addSubview:searchTF];
     }
     self.searchTF.hidden = NO;
@@ -105,7 +130,9 @@
     [super viewDidLayoutSubviews];
     
     CGFloat originTableViewContentInsetTop = 0;
-    originTableViewContentInsetTop = status_height + navbar_height;
+    if (Sys_Ver >= 7) {
+        originTableViewContentInsetTop = status_height + navbar_height;
+    }
     self.tableView.contentInset = edi(originTableViewContentInsetTop + 10 + self.typeControl.height + 10, 0, tabbar_height, 0);
     self.typeControl.topCenter = ccp(self.view.width/2, originTableViewContentInsetTop + 10 - self.tableView.contentInset.top);
 }
