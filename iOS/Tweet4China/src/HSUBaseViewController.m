@@ -362,13 +362,6 @@
         }
         [actionButton sizeToFit];
         
-        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
-            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-            [actionButton addSubview:indicator];
-            indicator.leftTop = ccp(actionButton.width-10, 0);
-        }
-        
         _actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
     return _actionBarButton;

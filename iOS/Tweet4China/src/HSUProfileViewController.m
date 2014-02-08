@@ -624,14 +624,6 @@
             addFriendButton.width *= 1.4;
             _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
         }
-        
-        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
-            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-            [self.navigationController.navigationBar addSubview:indicator];
-            _addFriendButtonIndicator = indicator;
-            indicator.leftTop = ccp(self.navigationController.navigationBar.width-23, 0);
-        }
     }
     return _addFriendBarButton;
 }

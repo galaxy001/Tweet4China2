@@ -133,9 +133,9 @@
     if (self.typeControl.selectedSegmentIndex == 0) {
         return @"lists/statuses";
     } else if (self.typeControl.selectedSegmentIndex == 1) {
-        return @"lists/subscribers";
-    } else if (self.typeControl.selectedSegmentIndex == 2) {
         return @"lists/members";
+    } else if (self.typeControl.selectedSegmentIndex == 2) {
+        return @"lists/subscribers";
     }
     return nil;
 }

@@ -15,7 +15,7 @@ int main(int argc, char * argv[])
 {
     @autoreleasepool {
         [AppProxyCap activate];
-        [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:71080];
+        [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:71081];
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([FBCAppDelegate class]));
     }
 }

@@ -162,11 +162,11 @@
         descLabel.textAlignment = NSTextAlignmentCenter;
         descLabel.backgroundColor = kClearColor;
         descLabel.lineBreakMode = NSLineBreakByWordWrapping;
-        descLabel.numberOfLines = 2;
+        descLabel.numberOfLines = 5;
         descLabel.shadowOffset = ccs(0, 1);
         descLabel.shadowColor = kGrayColor;
         descLabel.size = ccs(kLabelWidth, 32);
-        descLabel.topCenter = ccp(infoView.width/2*3, 40);
+        descLabel.topCenter = ccp(infoView.width/2*3, 60);
         
         UILabel *locationLabel = [[UILabel alloc] init];
         [infoView addSubview:locationLabel];
@@ -398,7 +398,7 @@
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];
     [self.descLabel sizeToFit];
-    self.descLabel.topCenter = ccp(self.infoView.width/2*3, self.descLabel.top);
+    self.descLabel.bottomCenter = ccp(self.infoView.width/2*3, self.locationLabel.top - 5);
     self.locationLabel.text = profile[@"location"];
     self.locationLabel.topCenter = ccp(self.infoView.width/2*3, self.locationLabel.top);
     self.siteLabel.text = [self _websiteForProfile:profile];

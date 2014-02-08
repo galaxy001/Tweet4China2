@@ -378,7 +378,6 @@
 		96D292351743856200AB4F8C /* HSUDraftsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D292341743856100AB4F8C /* HSUDraftsDataSource.m */; };
 		96D292381743861F00AB4F8C /* HSUDraftCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D292371743861F00AB4F8C /* HSUDraftCell.m */; };
 		96D4BC8C172830F700E7BABA /* HSUConnectDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */; };
-		96D91DFD1813AEA7001A8188 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96D91DFC1813AEA7001A8188 /* StoreKit.framework */; };
 		96D91E061813BDA8001A8188 /* HSUSearchPersonDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */; };
 		96DABC45172A8473001AD70A /* icn_gallery_tweet_action_delete_default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */; };
 		96DABC47172A8473001AD70A /* icn_gallery_tweet_action_delete_pressed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96DABC23172A846E001AD70A /* icn_gallery_tweet_action_delete_pressed@2x.png */; };
@@ -952,7 +951,6 @@
 		96D292371743861F00AB4F8C /* HSUDraftCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUDraftCell.m; sourceTree = "<group>"; };
 		96D4BC8A172830F700E7BABA /* HSUConnectDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConnectDataSource.h; sourceTree = "<group>"; };
 		96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUConnectDataSource.m; sourceTree = "<group>"; };
-		96D91DFC1813AEA7001A8188 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		96D91E041813BDA8001A8188 /* HSUSearchPersonDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUSearchPersonDataSource.h; sourceTree = "<group>"; };
 		96D91E051813BDA8001A8188 /* HSUSearchPersonDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUSearchPersonDataSource.m; sourceTree = "<group>"; };
 		96DABC21172A846E001AD70A /* icn_gallery_tweet_action_delete_default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_gallery_tweet_action_delete_default@2x.png"; sourceTree = "<group>"; };
@@ -1023,7 +1021,6 @@
 				962AB00816FB330A00D44566 /* AVFoundation.framework in Frameworks */,
 				96A6360D186AE0F600BA9868 /* CoreImage.framework in Frameworks */,
 				964827B416E3839D0002345B /* QuartzCore.framework in Frameworks */,
-				96D91DFD1813AEA7001A8188 /* StoreKit.framework in Frameworks */,
 				960640F017D08EAC000B1032 /* libcrypto.a in Frameworks */,
 				960640EB17D08C41000B1032 /* libshadowsocks.a in Frameworks */,
 				960640EA17D0874B000B1032 /* Security.framework in Frameworks */,
@@ -1210,7 +1207,6 @@
 				9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */,
 				96A6360E186AE11300BA9868 /* AssetsLibrary.framework */,
 				96A6360C186AE0F600BA9868 /* CoreImage.framework */,
-				96D91DFC1813AEA7001A8188 /* StoreKit.framework */,
 				960640EE17D08E81000B1032 /* libcrypto.a */,
 				960640E917D0874B000B1032 /* Security.framework */,
 				966DEABE17992BA60032ED29 /* Accounts.framework */,
@@ -1921,6 +1917,11 @@
 				TargetAttributes = {
 					9628174B16DE5EDC00ABF0AD = {
 						DevelopmentTeam = Q58Y9Y87W8;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};
@@ -2738,7 +2739,6 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FB4China/FB4China-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2770,7 +2770,6 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "FB4China/FB4China-Prefix.pch";

@@ -52,45 +52,20 @@ static HSUShadowsocksProxy *proxy;
 - (void)startShadowsocks
 {
     NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
+    for (NSDictionary *s in sss) {
+        if ([s[HSUShadowsocksSettings_Server] isEqualToString:@"162.243.150.109"]) {
+            sss = nil;
+            break;
+        }
+    }
     if (!sss) {
         sss = @[].mutableCopy;
         
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"旧金山",
-                         HSUShadowsocksSettings_Server: @"192.241.197.97",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.187.99.175"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.186.113.201"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.186.19.228"}.mutableCopy];
         
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"阿姆斯特丹",
-                         HSUShadowsocksSettings_Server: @"95.85.33.168",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"旧金山",
-                         HSUShadowsocksSettings_Server: @"162.243.150.109",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"192.241.245.82",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"192.241.205.25",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"162.243.233.180",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"青岛",
-                         HSUShadowsocksSettings_Server: @"115.28.20.25",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
+        sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
         
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -103,21 +78,22 @@ static HSUShadowsocksProxy *proxy;
             NSString *passowrd = ss[HSUShadowsocksSettings_Password];
             NSString *method = ss[HSUShadowsocksSettings_Method];
             
-            if ([ss[HSUShadowsocksSettings_Buildin] boolValue]) {
-                if (!passowrd) {
-                    passowrd = @"ticqoxmp~rxr";
-                }
-                if (!method) {
-                    method = @"AES-128-CFB";
-                }
-                char chars3[13];
-                const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
-                for (int i=0; i<12; i++) {
-                    chars3[i] = str3[i] - i;
-                }
-                chars3[12] = 0;
-                passowrd = [NSString stringWithCString:chars3 encoding:NSASCIIStringEncoding];
+            if (!passowrd) {
+                passowrd = @"ticqoxmp~rxr";
             }
+            if (!method) {
+                method = @"AES-128-CFB";
+            }
+            if (!remotePort) {
+                remotePort = @"1026";
+            }
+            char chars3[13];
+            const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
+            for (int i=0; i<12; i++) {
+                chars3[i] = str3[i] - i;
+            }
+            chars3[12] = 0;
+            passowrd = [NSString stringWithCString:chars3 encoding:NSASCIIStringEncoding];
             
             if (server && remotePort && passowrd && method) {
                 if (proxy) {

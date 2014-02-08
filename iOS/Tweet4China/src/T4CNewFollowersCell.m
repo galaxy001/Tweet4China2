@@ -47,6 +47,7 @@
     for (NSDictionary *follower in [followers subarrayWithRange:NSMakeRange(0, MIN(6, followers.count))]) {
         NSString *avatarUrl = follower[@"profile_image_url_https"];
         UIImageView *avatar = [[UIImageView alloc] init];
+        avatar.backgroundColor = bw(229);
         [avatar setImageWithUrlStr:avatarUrl placeHolder:nil];
         [self.contentView addSubview:avatar];
         avatar.size = ccs(32, 32);

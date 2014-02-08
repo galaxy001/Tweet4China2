@@ -156,6 +156,7 @@
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
     if (!MyScreenName) {
+        [super requestDidFinishRefreshWithData:dataArr];
         return;
     }
     NSMutableDictionary *params = [@{} mutableCopy];
