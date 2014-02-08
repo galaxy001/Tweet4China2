@@ -503,7 +503,8 @@
     if (self.draft) {
         NSData *imageData = UIImageJPEGRepresentation(postImage, 0.92);
         [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:contentTV.text imageData:imageData reply:self.inReplyToStatusId locationXY:location placeId:geoCode];
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [[HSUDraftManager shared] activeDraft:self.draft];
+        [self dismiss];
         return;
     }
     if (contentChanged || postImage) {

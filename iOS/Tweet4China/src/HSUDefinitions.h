@@ -140,6 +140,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
 #define HSUStatusDidDelete @"HSUStatusDidDelete"
 #define HSUStatusShowActionsNotification @"HSUStatusShowActionsNotification"
+#define HSUUserUnfollowedNotification @"HSUUserUnfollowedNotification"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_LoadingReply @"LoadingReply"

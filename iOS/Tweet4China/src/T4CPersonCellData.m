@@ -26,6 +26,7 @@
             rawData[@"following"] = @(NO);
             weakSelf.rawData = rawData;
             [viewController.tableView reloadData];
+            notification_post_with_object(HSUUserUnfollowedNotification, screenName);
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Unfollow failed")];
         }];

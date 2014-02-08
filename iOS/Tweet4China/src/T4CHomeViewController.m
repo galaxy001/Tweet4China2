@@ -19,6 +19,7 @@
     self = [super init];
     if (self) {
         self.showUnreadCount = YES;
+        notification_add_observer(HSUUserUnfollowedNotification, self, @selector(unfowllowedUser:));
     }
     return self;
 }
@@ -58,6 +59,16 @@
     
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+}
+
+- (void)unfowllowedUser:(NSNotification *)notification
+{
+    NSString *sn = notification.object;
+    [self.data filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(id evaluatedObject, NSDictionary *bindings) {
+        T4CTableCellData *cellData = evaluatedObject;
+        return ![cellData.rawData[@"user"][@"screen_name"] isEqualToString:sn];
+    }]];
+    [self.tableView reloadData];
 }
 
 @end

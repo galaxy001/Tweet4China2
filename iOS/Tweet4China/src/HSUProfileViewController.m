@@ -336,6 +336,7 @@
             profile[@"following"] = @(NO);
             weakSelf.profile = profile;
             [weakSelf.profileView setupWithProfile:profile];
+            notification_post_with_object(HSUUserUnfollowedNotification, weakSelf.screenName);
             followButton.enabled = YES;
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Unfollow failed")];

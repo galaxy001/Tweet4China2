@@ -55,6 +55,7 @@
 {
     self.tableView.delegate = nil;
     self.tableView.dataSource = nil;
+    notification_remove_observer(self);
 }
 
 - (id)init
