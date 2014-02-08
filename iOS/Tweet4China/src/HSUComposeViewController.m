@@ -69,6 +69,8 @@
     UILabel *wordCountL;
     UIImageView *nippleIV;
     UIScrollView *extraPanelSV;
+    UIButton *takePhotoBnt;
+    UIButton *selectPhotoBnt;
     UIImageView *previewIV;
     UIButton *previewCloseBnt;
     MKMapView *mapView;
@@ -201,6 +203,8 @@
     [toolbar addSubview:photoBnt];
     [photoBnt addTarget:self action:@selector(photoButtonTouched) forControlEvents:UIControlEventTouchUpInside];
     [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera"] forState:UIControlStateNormal];
+    [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera-glow"] forState:UIControlStateSelected];
+    photoBnt.selected = self.defaultImage != nil;
     photoBnt.showsTouchWhenHighlighted = YES;
     [photoBnt sizeToFit];
     photoBnt.center = ccp(25, 20);
@@ -264,6 +268,31 @@
     extraPanelSV.showsVerticalScrollIndicator = NO;
     extraPanelSV.backgroundColor = bw(232);
     extraPanelSV.alwaysBounceVertical = NO;
+    
+    if ([setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
+        takePhotoBnt = [[UIButton alloc] init];
+        [extraPanelSV addSubview:takePhotoBnt];
+        [takePhotoBnt setTapTarget:self action:@selector(takePhotoButtonTouched)];
+        [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
+        [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
+        [takePhotoBnt setTitle:@"Take photo or video..." forState:UIControlStateNormal];
+        [takePhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
+        takePhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        [takePhotoBnt sizeToFit];
+        takePhotoBnt.width = extraPanelSV.width - 20;
+        takePhotoBnt.topCenter = ccp(extraPanelSV.center.x, 11);
+        
+        selectPhotoBnt = [[UIButton alloc] init];
+        [extraPanelSV addSubview:selectPhotoBnt];
+        [selectPhotoBnt setTapTarget:self action:@selector(selectPhotoButtonTouched)];
+        [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
+        [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
+        [selectPhotoBnt setTitle:@"Choose from library..." forState:UIControlStateNormal];
+        [selectPhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
+        selectPhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+        selectPhotoBnt.frame = takePhotoBnt.frame;
+        selectPhotoBnt.top = selectPhotoBnt.bottom + 10;
+    }
     
     previewIV = [[UIImageView alloc] init];
     [extraPanelSV addSubview:previewIV];
@@ -661,6 +690,14 @@
 
 #pragma mark - Actions
 - (void)photoButtonTouched {
+    if ([setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
+        if ([contentTV isFirstResponder]) {
+            [contentTV resignFirstResponder];
+        } else {
+            [contentTV becomeFirstResponder];
+        }
+        return;
+    }
     if (postImage && !previewIV.image) {
         [self photoSelected:postImage];
     }
@@ -684,13 +721,17 @@
     CGImageRelease(imageRef);
     previewIV.hidden = NO;
     previewCloseBnt.hidden = NO;
-    [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera-glow"] forState:UIControlStateNormal];
-//    UIImageWriteToSavedPhotosAlbum(photo, nil, nil, nil);
+    photoBnt.selected = YES;
     self.navigationItem.rightBarButtonItem.enabled = YES;
+    
+    takePhotoBnt.hidden = YES;
+    selectPhotoBnt.hidden = YES;
 }
 
 - (void)previewCloseButtonTouched {
     previewCloseBnt.hidden = YES;
+    takePhotoBnt.hidden = NO;
+    selectPhotoBnt.hidden = NO;
     [UIView animateWithDuration:0.2 animations:^{
         previewIV.transform = CGAffineTransformMakeScale(0, 0);
         previewIV.alpha = 0;
@@ -704,8 +745,11 @@
         previewIV.center = extraPanelSV.boundsCenter;
     }];
     
-    [photoBnt setImage:[UIImage imageNamed:@"button-bar-camera"] forState:UIControlStateNormal];
-    [self selectPhoto];
+    photoBnt.selected = NO;
+    
+    if (![setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
+        [self selectPhoto];
+    }
 }
 
 - (void)geoButtonTouched {
@@ -899,6 +943,21 @@
 }
 
 - (void)selectPhoto
+{
+    [self takePhotoButtonTouched];
+}
+
+- (void)selectPhotoButtonTouched
+{
+    OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
+    cameraVC.enterCameraRollAtStart = YES;
+    cameraVC.maxWidth = 1136;
+    cameraVC.delegate = self;
+    [self presentViewController:cameraVC animated:YES completion:nil];
+    [Flurry logEvent:@"start_opencam"];
+}
+
+- (void)takePhotoButtonTouched
 {
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
     cameraVC.maxWidth = 1136;

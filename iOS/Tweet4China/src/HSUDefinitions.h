@@ -192,6 +192,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUSettingPageCountWWAN @"page_count_wwan"
 #define HSUSettingDesktopUserAgent @"desktop_useragent"
 #define HSUSettingExcludeReplies @"exclude_replies"
+#define HSUSettingSelectBeforeStartCamera @"select_before_start_camera"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"

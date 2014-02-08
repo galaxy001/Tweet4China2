@@ -19,6 +19,7 @@
 @property (nonatomic, weak) REBoolItem *roundAvatarItem;
 @property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
 @property (nonatomic, weak) REBoolItem *excludeRepliesItem;
+@property (nonatomic, weak) REBoolItem *selectBeforeStartCameraItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -199,6 +200,20 @@
     self.pageCountWWANItem = pageCountWWANItem;
     [section addItem:pageCountWWANItem];
     
+    REBoolItem *selectBeforeStartCameraItem = [REBoolItem itemWithTitle:_("Select before start camera")
+                                                                  value:[GlobalSettings[HSUSettingSelectBeforeStartCamera] boolValue]];
+    self.selectBeforeStartCameraItem = selectBeforeStartCameraItem;
+    [section addItem:selectBeforeStartCameraItem];
+    selectBeforeStartCameraItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+        
+    };
+    
     RERadioItem *cacheSizeItem =
     [RERadioItem itemWithTitle:_("Cache Size")
                          value:GlobalSettings[HSUSettingCacheSize]
@@ -273,6 +288,7 @@
     BOOL roundAvatar = self.roundAvatarItem.value;
     BOOL desktopUserAgent = self.desktopUserAgentItem.value;
     BOOL excludeReplies = self.excludeRepliesItem.value;
+    BOOL selectBeforeStartCamera = self.selectBeforeStartCameraItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -286,7 +302,8 @@
                        HSUSettingPageCount: pageCount,
                        HSUSettingPageCountWWAN: pageCountWWAN,
                        HSUSettingDesktopUserAgent: @(desktopUserAgent),
-                       HSUSettingExcludeReplies: @(excludeReplies)};
+                       HSUSettingExcludeReplies: @(excludeReplies),
+                       HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {
