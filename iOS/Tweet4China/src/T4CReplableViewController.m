@@ -99,7 +99,6 @@
     }
     
     self.toolbar.width = self.view.width;
-    self.toolbar.bottom = self.view.height - tabbar_height;
     self.sendButton.rightCenter = ccp(self.toolbar.width, self.toolbar.height/2);
     self.textView.frame = CGRectInset(self.toolbar.bounds, 8, 8);
     self.textView.width -= self.sendButton.width - 8;

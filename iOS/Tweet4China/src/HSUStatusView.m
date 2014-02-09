@@ -296,7 +296,7 @@
     self.imagePreviewButton.hidden = YES;
     if (self.data.hasPhoto && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
         self.imagePreviewButton.hidden = NO;
-        [self.imagePreviewButton setImageWithUrlStr:self.data.photoUrl
+        [self.imagePreviewButton setImageWithUrlStr:[HSUCommonTools smallTwitterImageUrlStr:self.data.photoUrl]
                                            forState:UIControlStateNormal
                                         placeHolder:nil];
     }
@@ -541,11 +541,14 @@
 #pragma actions
 - (void)imageButtonTouched
 {
-    if ([self.imagePreviewButton imageForState:UIControlStateNormal]) {
-        id delegate = self.data.target;
-        [delegate performSelector:@selector(openPhoto:withCellData:)
-                       withObject:[self.imagePreviewButton imageForState:UIControlStateNormal]
-                       withObject:self.data];
+    UIImage *prevImage = [self.imagePreviewButton imageForState:UIControlStateNormal];
+    if (prevImage) {
+        if ([setting(HSUSettingShowOriginalImage) boolValue]) {
+            [self.data openPhoto:prevImage
+                originalImageURL:[NSURL URLWithString:self.data.photoUrl]];
+        } else {
+            [self.data openPhoto:prevImage];
+        }
     }
 }
 

@@ -40,17 +40,17 @@
 - (void)galleryViewDidAppear
 {
     self.statusBarHidden = YES;
-#ifdef __IPHONE_7_0
-    [self setNeedsStatusBarAppearanceUpdate];
-#endif
+    if (Sys_Ver >= 7) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)galleryViewDidDisappear
 {
     self.statusBarHidden = NO;
-#ifdef __IPHONE_7_0
-    [self setNeedsStatusBarAppearanceUpdate];
-#endif
+    if (Sys_Ver >= 7) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)preprocessDataSourceForRender:(HSUBaseDataSource *)dataSource

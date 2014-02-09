@@ -446,7 +446,11 @@
         self.imgLoadSpinner.center = imageView.boundsCenter;
         NSString *photoUrl = data.photoUrl;
         if (photoUrl) {
-            [self _downloadPhotoWithURL:[NSURL URLWithString:data.photoUrl]];
+            if ([setting(HSUSettingShowOriginalImage) boolValue]) {
+                [self _downloadPhotoWithURL:[NSURL URLWithString:data.photoUrl]];
+            } else {
+                [self _downloadPhotoWithURL:[NSURL URLWithString:[HSUCommonTools smallTwitterImageUrlStr:data.photoUrl]]];
+            }
         } else {
             NSString *instagramUrl = data.instagramUrl;
             if (instagramUrl) {

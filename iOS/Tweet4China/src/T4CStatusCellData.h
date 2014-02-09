@@ -25,5 +25,7 @@
 @property (nonatomic, readonly) NSDictionary *mainStatus;
 
 - (void)more;
+- (void)openPhoto:(UIImage *)photo;
+- (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL;
 
 @end

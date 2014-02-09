@@ -15,6 +15,7 @@
 #import <FHSTwitterEngine/NSString+URLEncoding.h>
 #import <AFNetworking/AFNetworking.h>
 #import "T4CRetweetersViewController.h"
+#import "HSUGalleryView.h"
 
 @implementation T4CStatusCellData
 
@@ -521,6 +522,23 @@
     SVModalWebViewController *webVC = [[SVModalWebViewController alloc] initWithAddress:S(@"http://favstar.fm/t/%@", statusID)];
     webVC.modalPresentationStyle = UIModalPresentationPageSheet;
     [self.tableVC presentViewController:webVC animated:YES completion:nil];
+}
+
+- (void)openPhoto:(UIImage *)photo
+{
+    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self
+                                                          image:photo];
+    [self.tableVC.view.window addSubview:galleryView];
+    [galleryView showWithAnimation:YES];
+}
+
+- (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL
+{
+    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self
+                                                          previewImage:photo
+                                                      originalImageURL:originalImageURL];
+    [self.tableVC.view.window addSubview:galleryView];
+    [galleryView showWithAnimation:YES];
 }
 
 - (NSDictionary *)mainStatus

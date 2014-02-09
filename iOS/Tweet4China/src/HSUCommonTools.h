@@ -34,4 +34,6 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 
 + (void)sendMailWithSubject:(NSString *)subject body:(NSString *)body presentFromViewController:(UIViewController *)viewController;
 
++ (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr;
+
 @end

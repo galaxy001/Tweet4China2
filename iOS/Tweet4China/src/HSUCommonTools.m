@@ -224,4 +224,9 @@ static NSString *defaultUserAgent;
     return YES;
 }
 
++ (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr
+{
+    return S(@"%@:small", originalImageUrlStr);
+}
+
 @end

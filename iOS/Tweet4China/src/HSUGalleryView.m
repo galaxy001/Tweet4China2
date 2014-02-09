@@ -106,6 +106,31 @@
     return self;
 }
 
+- (id)initWithData:(T4CTableCellData *)data previewImage:(UIImage *)previewImage originalImageURL:(NSURL *)originalImageURL
+{
+    self = [self _initWithData:data];
+    if (self) {
+        [self.spinner startAnimating];
+        __weak typeof(&*self)weakSelf = self;
+        [self.imageView setImageWithUrlStr:originalImageURL.absoluteString placeHolder:previewImage success:^{
+            [weakSelf.spinner stopAnimating];
+        } failure:^{
+            [weakSelf.spinner stopAnimating];
+        }];
+        
+        float zoomScale = 0;
+        if (self.imageView.width / self.imageView.height > self.width / self.height) {
+            zoomScale = self.width / self.imageView.width;
+        } else {
+            zoomScale = self.height / self.imageView.height;
+        }
+        imagePanel.maximumZoomScale = 2 * zoomScale;
+        imagePanel.minimumZoomScale = zoomScale;
+        imagePanel.zoomScale = zoomScale;
+    }
+    return self;
+}
+
 - (void)showWithAnimation:(BOOL)animation
 {
     if (Sys_Ver < 7) {

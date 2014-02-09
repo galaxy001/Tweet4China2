@@ -38,24 +38,40 @@ static HSUShadowsocksProxy *proxy;
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
-    if (!self.globalSettings) {
-        NSMutableDictionary *settings = @{}.mutableCopy;
+    NSMutableDictionary *settings = (self.globalSettings ?: @{}).mutableCopy;
+    if (!settings[HSUSettingSoundEffect]) {
         settings[HSUSettingSoundEffect] = @YES;
-        settings[HSUSettingPhotoPreview] = @YES;
-        settings[HSUSettingTextSize] = @"14";
-        settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
-        settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
-        settings[HSUSettingCacheSize] = @"16MB";
-#ifdef FreeApp
-        settings[HSUSettingPhotoPreview] = @NO;
-#endif
-        if (IPAD) {
-            settings[HSUSettingTextSize] = @"16";
-        }
-        self.globalSettings = settings;
-        [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    if (!settings[HSUSettingPhotoPreview]) {
+        settings[HSUSettingPhotoPreview] = @YES;
+    }
+    if (!settings[HSUSettingTextSize]) {
+        settings[HSUSettingTextSize] = IPAD ? @"16" : @"14";
+    }
+    if (!settings[HSUSettingPageCount]) {
+        settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
+    }
+    if (!settings[HSUSettingPageCountWWAN]) {
+        settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
+    }
+    if (!settings[HSUSettingCacheSize]) {
+        settings[HSUSettingCacheSize] = @"16MB";
+    }
+    if (!settings[HSUSettingShowOriginalImage]) {
+        settings[HSUSettingShowOriginalImage] = @YES;
+    }
+#ifdef FreeApp
+    settings[HSUSettingSoundEffect] = @YES;
+    settings[HSUSettingTextSize] = IPAD ? @"16" : @"14";
+    settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
+    settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
+    settings[HSUSettingCacheSize] = @"16MB";
+    settings[HSUSettingPhotoPreview] = @NO;
+    settings[HSUSettingShowOriginalImage] = @NO;
+#endif
+    self.globalSettings = settings;
+    [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     self.hasPro = [[NSUserDefaults standardUserDefaults] boolForKey:@"has_pro"];
     

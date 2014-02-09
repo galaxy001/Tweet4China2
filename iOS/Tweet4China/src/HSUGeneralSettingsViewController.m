@@ -20,6 +20,7 @@
 @property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
 @property (nonatomic, weak) REBoolItem *excludeRepliesItem;
 @property (nonatomic, weak) REBoolItem *selectBeforeStartCameraItem;
+@property (nonatomic, weak) REBoolItem *showOriginalImageItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -214,6 +215,20 @@
         
     };
     
+    REBoolItem *showOriginalImageItem = [REBoolItem itemWithTitle:_("Original image quality")
+                                                            value:[GlobalSettings[HSUSettingSelectBeforeStartCamera] boolValue]];
+    self.showOriginalImageItem = showOriginalImageItem;
+    [section addItem:showOriginalImageItem];
+    showOriginalImageItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+        
+    };
+    
     RERadioItem *cacheSizeItem =
     [RERadioItem itemWithTitle:_("Cache Size")
                          value:GlobalSettings[HSUSettingCacheSize]
@@ -289,6 +304,7 @@
     BOOL desktopUserAgent = self.desktopUserAgentItem.value;
     BOOL excludeReplies = self.excludeRepliesItem.value;
     BOOL selectBeforeStartCamera = self.selectBeforeStartCameraItem.value;
+    BOOL showOriginalImage = self.showOriginalImageItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -303,7 +319,8 @@
                        HSUSettingPageCountWWAN: pageCountWWAN,
                        HSUSettingDesktopUserAgent: @(desktopUserAgent),
                        HSUSettingExcludeReplies: @(excludeReplies),
-                       HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera)};
+                       HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera),
+                       HSUSettingShowOriginalImage: @(showOriginalImage)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {

@@ -46,6 +46,7 @@
 @property (nonatomic, strong) NSDictionary *cellTypes;
 @property (nonatomic, strong) NSDictionary *cellDataTypes;
 @property (nonatomic, weak) UILabel *unreadCountLabel;
+@property (nonatomic, assign) BOOL statusBarHidden;
 
 @end
 
@@ -93,6 +94,8 @@
         notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
         notification_add_observer(HSUTwiterLogout, self, @selector(twitterLogout));
+        notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
+        notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     }
     return self;
 }
@@ -206,6 +209,22 @@
         self.tableView.height = [UIScreen mainScreen].bounds.size.height - [[UIApplication sharedApplication] statusBarFrame].size.height + 20;
     }
     self.unreadCountLabel.rightTop = ccp(kWinWidth-kIPADMainViewPadding*2-10, -3 + self.tableView.contentInset.top);
+}
+
+- (void)galleryViewDidAppear
+{
+    self.statusBarHidden = YES;
+    if (Sys_Ver >= 7) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
+}
+
+- (void)galleryViewDidDisappear
+{
+    self.statusBarHidden = NO;
+    if (Sys_Ver >= 7) {
+        [self setNeedsStatusBarAppearanceUpdate];
+    }
 }
 
 - (void)backButtonTouched
@@ -1095,4 +1114,8 @@
     return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
 }
 
+- (BOOL)prefersStatusBarHidden
+{
+    return self.statusBarHidden;
+}
 @end
