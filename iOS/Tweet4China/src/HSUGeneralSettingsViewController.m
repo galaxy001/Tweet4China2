@@ -252,7 +252,7 @@
             item.value = !item.value;
             [weakSelf.tableView reloadData];
         };
-        restartItem.action = Type List Name^{
+        restartItem.action = ^{
             [weakSelf _doneButtonTouched];
             exit(0);
         };
