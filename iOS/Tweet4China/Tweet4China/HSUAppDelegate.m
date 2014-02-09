@@ -37,7 +37,7 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
+    self.globalSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:HSUSettings];
     NSMutableDictionary *settings = (self.globalSettings ?: @{}).mutableCopy;
     if (!settings[HSUSettingSoundEffect]) {
         settings[HSUSettingSoundEffect] = @YES;
@@ -60,6 +60,11 @@ static HSUShadowsocksProxy *proxy;
     if (!settings[HSUSettingShowOriginalImage]) {
         settings[HSUSettingShowOriginalImage] = @YES;
     }
+#ifdef Overseas
+    if (!setting(HSUSettingOverseas)) {
+        settings[HSUSettingOverseas] = @YES;
+    }
+#endif
 #ifdef FreeApp
     settings[HSUSettingSoundEffect] = @YES;
     settings[HSUSettingTextSize] = IPAD ? @"16" : @"14";

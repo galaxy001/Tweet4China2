@@ -21,6 +21,7 @@
 @property (nonatomic, weak) REBoolItem *excludeRepliesItem;
 @property (nonatomic, weak) REBoolItem *selectBeforeStartCameraItem;
 @property (nonatomic, weak) REBoolItem *showOriginalImageItem;
+@property (nonatomic, weak) REBoolItem *overseasItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -44,7 +45,7 @@
     [self.manager addSection:section];
     
     REBoolItem *soundEffectItem = [REBoolItem itemWithTitle:_("Sound Effect")
-                                                      value:[GlobalSettings[HSUSettingSoundEffect] boolValue]];
+                                                      value:boolSetting(HSUSettingSoundEffect)];
     self.soundEffectItem = soundEffectItem;
     [section addItem:soundEffectItem];
     __weak typeof(self) weakSelf = self;
@@ -58,7 +59,7 @@
     };
     
     REBoolItem *photoPreviewItem = [REBoolItem itemWithTitle:_("Photo Preview")
-                                                       value:[GlobalSettings[HSUSettingPhotoPreview] boolValue]];
+                                                       value:boolSetting(HSUSettingPhotoPreview)];
     self.photoPreviewItem = photoPreviewItem;
     [section addItem:photoPreviewItem];
     photoPreviewItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -71,7 +72,7 @@
     };
     
     RERadioItem *textSizeItem = [RERadioItem itemWithTitle:_("Text Size")
-                                                     value:GlobalSettings[HSUSettingTextSize] selectionHandler:^(RERadioItem *item) {
+                                                     value:setting(HSUSettingTextSize) selectionHandler:^(RERadioItem *item) {
         [item deselectRowAnimated:YES];
         
         if (![[HSUAppDelegate shared] buyProApp]) {
@@ -99,7 +100,7 @@
     [section addItem:textSizeItem];
     
     REBoolItem *roundAvatarItem = [REBoolItem itemWithTitle:_("Round Avatar")
-                                                      value:[GlobalSettings[HSUSettingRoundAvatar] boolValue]];
+                                                      value:boolSetting(HSUSettingRoundAvatar)];
     self.roundAvatarItem = roundAvatarItem;
     [section addItem:roundAvatarItem];
     roundAvatarItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -112,7 +113,7 @@
     };
     
     REBoolItem *desktopUserAgentItem = [REBoolItem itemWithTitle:_("Desktop Web Browser")
-                                                           value:[GlobalSettings[HSUSettingDesktopUserAgent] boolValue]];
+                                                           value:boolSetting(HSUSettingDesktopUserAgent)];
     self.desktopUserAgentItem = desktopUserAgentItem;
     [section addItem:desktopUserAgentItem];
     desktopUserAgentItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -126,7 +127,7 @@
     };
     
     REBoolItem *excludeRepliesItem = [REBoolItem itemWithTitle:_("Exclude Replies")
-                                                         value:[GlobalSettings[HSUSettingExcludeReplies] boolValue]];
+                                                         value:boolSetting(HSUSettingExcludeReplies)];
     self.excludeRepliesItem = excludeRepliesItem;
     [section addItem:excludeRepliesItem];
     excludeRepliesItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -141,7 +142,7 @@
     
     RERadioItem *pageCountItem =
     [RERadioItem itemWithTitle:_("Page Size (WiFi)")
-                         value:GlobalSettings[HSUSettingPageCount] ?: S(@"%d", kRequestDataCountViaWifi)
+                         value:setting(HSUSettingPageCount) ?: S(@"%d", kRequestDataCountViaWifi)
               selectionHandler:^(RERadioItem *item)
      {
          [item deselectRowAnimated:YES];
@@ -171,8 +172,8 @@
     [section addItem:pageCountItem];
     
     RERadioItem *pageCountWWANItem =
-    [RERadioItem itemWithTitle:_("Page Size (3G/2G)")
-                         value:GlobalSettings[HSUSettingPageCountWWAN] ?: S(@"%d", kRequestDataCountViaWWAN)
+    [RERadioItem itemWithTitle:_("Page Size (Cellular)")
+                         value:setting(HSUSettingPageCountWWAN) ?: S(@"%d", kRequestDataCountViaWWAN)
               selectionHandler:^(RERadioItem *item)
      {
          [item deselectRowAnimated:YES];
@@ -201,8 +202,9 @@
     self.pageCountWWANItem = pageCountWWANItem;
     [section addItem:pageCountWWANItem];
     
-    REBoolItem *selectBeforeStartCameraItem = [REBoolItem itemWithTitle:_("Select before start camera")
-                                                                  value:[GlobalSettings[HSUSettingSelectBeforeStartCamera] boolValue]];
+    REBoolItem *selectBeforeStartCameraItem =
+    [REBoolItem itemWithTitle:_("Select before start camera")
+                        value:boolSetting(HSUSettingSelectBeforeStartCamera)];
     self.selectBeforeStartCameraItem = selectBeforeStartCameraItem;
     [section addItem:selectBeforeStartCameraItem];
     selectBeforeStartCameraItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -215,8 +217,9 @@
         
     };
     
-    REBoolItem *showOriginalImageItem = [REBoolItem itemWithTitle:_("Original image quality")
-                                                            value:[GlobalSettings[HSUSettingSelectBeforeStartCamera] boolValue]];
+    REBoolItem *showOriginalImageItem =
+    [REBoolItem itemWithTitle:_("Original image quality")
+                        value:boolSetting(HSUSettingShowOriginalImage)];
     self.showOriginalImageItem = showOriginalImageItem;
     [section addItem:showOriginalImageItem];
     showOriginalImageItem.switchValueChangeHandler = ^(REBoolItem *item) {
@@ -229,9 +232,35 @@
         
     };
     
+    REBoolItem *overseasItem = [REBoolItem itemWithTitle:_("Connect directly")
+                                                   value:boolSetting(HSUSettingOverseas)];
+    self.overseasItem = overseasItem;
+    [section addItem:overseasItem];
+    overseasItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+        
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *restartItem = [RIButtonItem itemWithLabel:_("Restart Now")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:_("App need restart to apply this optional") cancelButtonItem:cancelItem otherButtonItems:restartItem, nil];
+        [alert show];
+        cancelItem.action = ^{
+            item.value = !item.value;
+            [weakSelf.tableView reloadData];
+        };
+        restartItem.action = Type List Name^{
+            [weakSelf _doneButtonTouched];
+            exit(0);
+        };
+    };
+    
     RERadioItem *cacheSizeItem =
     [RERadioItem itemWithTitle:_("Cache Size")
-                         value:GlobalSettings[HSUSettingCacheSize]
+                         value:setting(HSUSettingCacheSize)
               selectionHandler:^(RERadioItem *item)
     {
         [item deselectRowAnimated:YES];
@@ -305,6 +334,7 @@
     BOOL excludeReplies = self.excludeRepliesItem.value;
     BOOL selectBeforeStartCamera = self.selectBeforeStartCameraItem.value;
     BOOL showOriginalImage = self.showOriginalImageItem.value;
+    BOOL connectDirectly = self.overseasItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -320,7 +350,8 @@
                        HSUSettingDesktopUserAgent: @(desktopUserAgent),
                        HSUSettingExcludeReplies: @(excludeReplies),
                        HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera),
-                       HSUSettingShowOriginalImage: @(showOriginalImage)};
+                       HSUSettingShowOriginalImage: @(showOriginalImage),
+                       HSUSettingOverseas: @(connectDirectly)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {

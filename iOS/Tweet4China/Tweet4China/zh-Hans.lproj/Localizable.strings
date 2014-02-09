@@ -241,7 +241,7 @@
 "Exclude Replies" = "过滤评论推文";
 "User" = "用户";
 "Page Size (WiFi)" = "每页推文数 (WiFi)";
-"Page Size (3G/2G)" = "每页推文数 (3G/2G)";
+"Page Size (Cellular)" = "每页推文数 (移动网络)";
 "Type List Name" = "请输入列表名";
 "Load Failed" = "加载失败了";
 "Load More" = "加载更多";
@@ -251,3 +251,7 @@
 "Request failed" = "请求失败了";
 "others followed you" = "其他人关注了你";
 "Select before start camera" = "选择进入相机还是相册";
+"Connect directly" = "我在墙外";
+"Original image quality" = "原始图片质量";
+"Restart Now" = "立即重启";
+"App need restart to apply this optional" = "需要重启才能生效";

@@ -26,6 +26,8 @@
 #define Flurry_API_Key Pro_Flurry_API_Key
 #endif
 
+#define Overseas
+
 #define WXAppID @"wxf12b4ac0a3c0c4d8"
 #define WXAppKey @"8adda3d2bca193381a5fae61812bb37d"
 
@@ -165,7 +167,8 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUUserProfiles @"HSUUserProfiles"
 #define kDiscoverHomePage @"HSUDiscoverHomePage"
 
-#define setting(key) [[[NSUserDefaults standardUserDefaults] objectForKey:HSUSettings] objectForKey:key]
+#define setting(key) GlobalSettings[key]
+#define boolSetting(key) [GlobalSettings[key] boolValue]
 #define HSUShadowsocksSettings_Desc @"desc"
 #define HSUShadowsocksSettings_Server @"server"
 #define HSUShadowsocksSettings_RemotePort @"remote_port"
@@ -193,6 +196,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUSettingExcludeReplies @"exclude_replies"
 #define HSUSettingSelectBeforeStartCamera @"select_before_start_camera"
 #define HSUSettingShowOriginalImage @"show_original_image"
+#define HSUSettingOverseas @"overseas"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"

@@ -241,7 +241,7 @@
 "Exclude Replies" = "過濾評論推文";
 "User" = "用戶";
 "Page Size (WiFi)" = "每頁推文數 (WiFi)";
-"Page Size (3G/2G)" = "每頁推文數 (3G/2G)";
+"Page Size (Cellular)" = "每頁推文數 (行動網路)";
 "Type List Name" = "請輸入列表名";
 "Load Failed" = "載入失敗了";
 "Load More" = "載入更多";
@@ -251,3 +251,7 @@
 "Request failed" = "請求失敗了";
 "others followed you" = "其他人關注了你";
 "Select before start camera" = "選擇進入相機還是相冊";
+"Connect directly" = "我在墻外";
+"Original image quality" = "原始圖片質量";
+"Restart Now" = "立即重啟";
+"App need restart to apply this optional" = "需要重啟才能生效";

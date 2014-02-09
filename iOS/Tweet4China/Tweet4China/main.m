@@ -26,8 +26,10 @@ int main(int argc, char *argv[])
     @autoreleasepool {
 //#if TARGET_IPHONE_SIMULATOR
 //#else
-        [AppProxyCap activate];
-        [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:ShadowSocksPort];
+        if (![[[[NSUserDefaults standardUserDefaults] dictionaryForKey:HSUSettings] objectForKey:HSUSettingOverseas] boolValue]) {
+            [AppProxyCap activate];
+            [AppProxyCap setProxy:AppProxy_SOCKS Host:@"127.0.0.1" Port:ShadowSocksPort];
+        }
 //#endif
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([HSUAppDelegate class]));
     }
