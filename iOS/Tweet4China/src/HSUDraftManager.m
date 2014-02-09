@@ -135,7 +135,7 @@
 
 - (void)presentDraftsViewController
 {
-    UINavigationController *nav = DEF_NavitationController_Light;
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[[[HSUDraftsViewController alloc] init]];
     [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
 }

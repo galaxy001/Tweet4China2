@@ -551,14 +551,13 @@
 
 - (void)_composeButtonTouched
 {
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     if (![self.screenName isEqualToString:[twitter myScreenName]]) {
-        composeVC.defaultText = [NSString stringWithFormat:@"@%@ ", self.screenName];
-        composeVC.defaultSelectedRange = NSMakeRange(0, composeVC.defaultText.length);
+        NSString *text = [NSString stringWithFormat:@"@%@ ", self.screenName];
+        NSRange range = NSMakeRange(0, text.length);
+        [HSUCommonTools postTweetWithMessage:text image:nil selectedRange:range];
+    } else {
+        [HSUCommonTools postTweet];
     }
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController

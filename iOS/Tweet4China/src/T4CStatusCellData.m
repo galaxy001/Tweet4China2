@@ -31,36 +31,28 @@
 {
     [Flurry logEvent:S(@"reply in %@", [self.tableVC.class description])];
     
-    NSDictionary *status = self.mainStatus;
-    NSString *screen_name = status[@"user"][@"screen_name"];
-    NSString *id_str = status[@"id_str"];
-    
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    composeVC.defaultText = S(@"@%@ ", screen_name);
-    composeVC.defaultSelectedRange = NSMakeRange(composeVC.defaultText.length, 0);
-    composeVC.inReplyToStatusId = id_str;
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self.target presentViewController:nav animated:YES completion:nil];
+    NSString *text = S(@"@%@ ", self.mainStatus[@"user"][@"screen_name"]);
+    NSRange range = NSMakeRange(text.length, 0);
+    NSString *idStr = self.mainStatus[@"id_str"];
+    [HSUCommonTools postTweetWithMessage:text image:nil selectedRange:range inReplyToStatusId:idStr];
     notification_post(HSUStatusShowActionsNotification);
 }
 
 - (void)rt
 {
     [Flurry logEvent:S(@"RT in %@", [self.tableVC.class description])];
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
+    
     NSString *authorScreenName = self.rawData[@"user"][@"screen_name"];
     NSString *text = self.rawData[@"text"];
-    composeVC.defaultText = S(@" RT @%@: %@", authorScreenName, text);
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self.tableVC presentViewController:nav animated:YES completion:nil];
+    NSString *rtText = S(@" RT @%@: %@", authorScreenName, text);
+    [HSUCommonTools postTweetWithMessage:rtText];
     notification_post(HSUStatusShowActionsNotification);
 }
 
 - (void)retweet
 {
     [Flurry logEvent:S(@"retweet in %@", [self.tableVC.class description])];
+    
     NSDictionary *status = self.rawData;
     BOOL isRetweetedStatus = NO;
     if (status[@"retweeted_status"]) {
@@ -279,7 +271,7 @@
             
             if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
                 NSString *link = [urls objectAtIndex:0][@"expanded_url"];
-                [self _composeWithText:S(@" %@", link)];
+                [HSUCommonTools postTweetWithMessage:S(@" %@", link)];
             } else {
                 UIActionSheet *selectLinkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:nil destructiveButtonItem:nil otherButtonItems:nil, nil];
                 for (NSDictionary *urlDict in urls) {
@@ -287,7 +279,7 @@
                     NSString *expendedUrl = urlDict[@"expanded_url"];
                     RIButtonItem *buttonItem = [RIButtonItem itemWithLabel:displayUrl];
                     buttonItem.action = ^{
-                        [self _composeWithText:S(@" %@", expendedUrl)];
+                        [HSUCommonTools postTweetWithMessage:S(@" %@", expendedUrl)];
                     };
                     [selectLinkActionSheet addButtonItem:buttonItem];
                 }
@@ -529,16 +521,6 @@
     SVModalWebViewController *webVC = [[SVModalWebViewController alloc] initWithAddress:S(@"http://favstar.fm/t/%@", statusID)];
     webVC.modalPresentationStyle = UIModalPresentationPageSheet;
     [self.tableVC presentViewController:webVC animated:YES completion:nil];
-}
-
-
-- (void)_composeWithText:(NSString *)text
-{
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    composeVC.defaultText = text;
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self.tableVC.presentedViewController ?: self.tableVC presentViewController:nav animated:YES completion:nil];
 }
 
 - (NSDictionary *)mainStatus

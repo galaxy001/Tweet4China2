@@ -151,10 +151,11 @@
 {
     T4CTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
     if ([cellData.dataType isEqualToString:kDataType_Draft]) {
-        UINavigationController *nav = DEF_NavitationController_Light;
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
         composeVC.draft = cellData.rawData;
         nav.viewControllers = @[composeVC];
+        nav.modalPresentationStyle = UIModalPresentationPageSheet;
         [self dismissViewControllerAnimated:YES completion:^{
             [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
         }];

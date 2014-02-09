@@ -453,7 +453,7 @@
 
 - (void)presentModelClass:(Class)modelClass
 {
-    UINavigationController *nav = DEF_NavitationController_Light;
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     UIViewController *vc = [[modelClass alloc] init];
     nav.viewControllers = @[vc];
     [self presentViewController:nav animated:YES completion:nil];

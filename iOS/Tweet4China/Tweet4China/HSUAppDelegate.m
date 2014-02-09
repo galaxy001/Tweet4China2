@@ -157,7 +157,7 @@ static HSUShadowsocksProxy *proxy;
     }
     if ([action isEqualToString:@"post"] && queriesDict[@"message"]) {
         NSString *msg = queriesDict[@"message"];
-        [self postWithMessage:msg image:nil selectedRange:NSMakeRange(0, msg.length)];
+        [HSUCommonTools postTweetWithMessage:msg image:nil selectedRange:NSMakeRange(0, msg.length)];
         return YES;
     }
     
@@ -179,28 +179,7 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)postWithMessage:(NSString *)message image:(UIImage *)image
 {
-    return [self postWithMessage:message image:image selectedRange:NSMakeRange(0, 0)];
-}
-
-- (BOOL)postWithMessage:(NSString *)message image:(UIImage *)image selectedRange:(NSRange)selectedRange
-{
-    UIViewController *baseVC = self.window.rootViewController;
-    if ([self.window.rootViewController.presentedViewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)self.window.rootViewController.presentedViewController;
-        if ([nav.viewControllers.lastObject isKindOfClass:[HSUComposeViewController class]]) {
-            [SVProgressHUD showErrorWithStatus:@"A status is being edit"];
-            return NO;
-        }
-        baseVC = nav;
-    }
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    composeVC.defaultText = message;
-    composeVC.defaultImage = image;
-    composeVC.defaultSelectedRange = selectedRange;
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [baseVC presentViewController:nav animated:YES completion:nil];
-    return YES;
+    return [HSUCommonTools postTweetWithMessage:message image:image selectedRange:NSMakeRange(0, 0)];
 }
 
 - (void)configureAppirater

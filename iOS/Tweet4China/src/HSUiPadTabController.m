@@ -170,9 +170,15 @@
         if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) { // portrait
             childVC.width = 768 - childVC.left;
             childVC.height = 1024;
+            if (Sys_Ver < 7) {
+                childVC.height -= 20;
+            }
         } else { // landscap
             childVC.width = 1024 - childVC.left;
             childVC.height = 768;
+            if (Sys_Ver < 7) {
+                childVC.height -= 20;
+            }
         }
         [self addChildViewController:childVC];
     }

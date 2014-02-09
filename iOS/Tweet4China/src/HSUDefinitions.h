@@ -126,7 +126,6 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
 #define MyScreenName [twitter myScreenName]
-#define DEF_NavitationController_Light [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
@@ -209,7 +208,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define status_height 20
 //[[UIApplication sharedApplication] statusBarFrame].size.height
 #define navbar_height self.navigationController.navigationBar.height
-#define tabbar_height (self.tabBarController.tabBar.isHidden ? 0 : self.tabBarController.tabBar.height)
+#define tabbar_height ((self.tabBarController.tabBar.isHidden || Sys_Ver < 7) ? 0 : self.tabBarController.tabBar.height)
 #define toolbar_height 44
 
 #define NetWorkStatus [twitter networkStatus]

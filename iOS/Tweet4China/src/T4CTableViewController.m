@@ -563,11 +563,13 @@
     HSUBaseTableCell *cell = (HSUBaseTableCell *)[tableView dequeueReusableCellWithIdentifier:cellData.dataType];
     [cell setupWithData:cellData];
     if (IPAD) {
-        if (indexPath.section == 0 && indexPath.row == self.data.count - 1) {
-            cell.separatorInset = edi(0, tableView.width, 0, 0);
-        } else {
-            CGFloat padding = cell.width/2-cell.contentView.width/2;
-            cell.separatorInset = edi(0, padding, 0, padding);
+        if (Sys_Ver >= 7) {
+            if (indexPath.section == 0 && indexPath.row == self.data.count - 1) {
+                cell.separatorInset = edi(0, tableView.width, 0, 0);
+            } else {
+                CGFloat padding = cell.width/2-cell.contentView.width/2;
+                cell.separatorInset = edi(0, padding, 0, padding);
+            }
         }
     }
     return cell;
@@ -736,15 +738,6 @@
     });
 }
 
-- (void)_composeWithText:(NSString *)text
-{
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    composeVC.defaultText = text;
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self.presentedViewController ?: self presentViewController:nav animated:YES completion:nil];
-}
-
 - (void)loadCache
 {
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
@@ -804,7 +797,7 @@
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
     tweetLinkItem.action = ^{
-        [self _composeWithText:S(@" %@", url.absoluteString)];
+        [HSUCommonTools postTweetWithMessage:S(@" %@", url.absoluteString)];
     };
     RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
     copyLinkItem.action = ^{
@@ -993,10 +986,7 @@
     if (![twitter isAuthorized] || [SVProgressHUD isVisible]) {
         return;
     }
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self presentViewController:nav animated:YES completion:nil];
+    [HSUCommonTools postTweet];
 }
 
 - (void)_searchButtonTouched

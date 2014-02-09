@@ -24,6 +24,10 @@
 {
     self = [super init];
     if (self) {
+        if (Sys_Ver < 7) {
+            return self;
+        }
+        
         notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
         notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     }
@@ -33,6 +37,10 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (Sys_Ver < 7) {
+        return;
+    }
     
     UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTableView)];
     [self.tableView addGestureRecognizer:tapGesture];
@@ -60,6 +68,9 @@
     textView.placeholder = [self textViewPlaceHolder];
     
 	UIButton *sendButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    if (Sys_Ver < 7) {
+        sendButton = [[UIButton alloc] init];
+    }
 	[toolbar addSubview:sendButton];
 	self.sendButton = sendButton;
     [sendButton setTitle:[self sendButtonTitle] forState:UIControlStateNormal];
@@ -72,6 +83,10 @@
 {
     [super viewWillAppear:animated];
     
+    if (Sys_Ver < 7) {
+        return;
+    }
+    
     self.toolbar.bottom = self.view.height - tabbar_height;
 }
 
@@ -79,7 +94,12 @@
 {
     [super viewDidLayoutSubviews];
     
+    if (Sys_Ver < 7) {
+        return;
+    }
+    
     self.toolbar.width = self.view.width;
+    self.toolbar.bottom = self.view.height - tabbar_height;
     self.sendButton.rightCenter = ccp(self.toolbar.width, self.toolbar.height/2);
     self.textView.frame = CGRectInset(self.toolbar.bounds, 8, 8);
     self.textView.width -= self.sendButton.width - 8;
@@ -102,7 +122,7 @@
     
 	// get a rect for the textView frame
 	CGRect containerFrame = self.toolbar.frame;
-    containerFrame.origin.y = self.view.bounds.size.height - (keyboardBounds.size.height + containerFrame.size.height);
+    containerFrame.origin.y = self.view.height - (keyboardBounds.size.height + containerFrame.size.height);
 	// animations settings
 	[UIView beginAnimations:nil context:NULL];
 	[UIView setAnimationBeginsFromCurrentState:YES];

@@ -220,6 +220,7 @@
     }
     composeVC.defaultText = defaultText;
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.modalPresentationStyle = UIModalPresentationPageSheet;
     nav.viewControllers = @[composeVC];
     [self presentViewController:nav animated:YES completion:nil];
 }
