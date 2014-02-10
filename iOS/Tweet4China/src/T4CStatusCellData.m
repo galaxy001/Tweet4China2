@@ -234,12 +234,22 @@
         [SVProgressHUD showWithStatus:nil];
         [twitter destroyStatus:sid success:^(id responseObj) {
             [SVProgressHUD dismiss];
-            [weakSelf.tableVC.navigationController popViewControllerAnimated:YES];
+            if ([weakSelf.dataType isEqualToString:kDataType_MainStatus]) {
+                [weakSelf.tableVC.navigationController popViewControllerAnimated:YES];
+            } else {
+                [weakSelf.tableVC.data removeObject:weakSelf];
+                [weakSelf.tableVC.tableView reloadData];
+            }
             notification_post_with_object(HSUStatusDidDelete, sid);
         } failure:^(NSError *error) {
             if (error.code == 204) {
                 [SVProgressHUD dismiss];
-                [weakSelf.tableVC.navigationController popViewControllerAnimated:YES];
+                if ([weakSelf.dataType isEqualToString:kDataType_MainStatus]) {
+                    [weakSelf.tableVC.navigationController popViewControllerAnimated:YES];
+                } else {
+                    [weakSelf.tableVC.data removeObject:weakSelf];
+                    [weakSelf.tableVC.tableView reloadData];
+                }
                 notification_post_with_object(HSUStatusDidDelete, sid);
             } else {
                 [SVProgressHUD showErrorWithStatus:_("Delete Tweet failed")];
