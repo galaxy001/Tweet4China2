@@ -14,7 +14,7 @@
 @interface T4CTableViewController : UIViewController <UIScrollViewDelegate, UINavigationControllerDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) NSMutableArray *data;
-@property (nonatomic, assign) long long topID, bottomID;
+@property (nonatomic, assign) long long topID, bottomID, nextCursor;
 @property (nonatomic, weak) T4CGapCellData *gapCellData;
 @property (nonatomic, readonly) NSString *requestUrl, *apiString;
 @property (nonatomic, readonly) NSUInteger requestCount;

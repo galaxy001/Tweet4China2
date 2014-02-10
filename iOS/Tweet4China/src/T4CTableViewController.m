@@ -283,7 +283,7 @@
             NSDictionary *responseDict = responseObj;
             NSString *nextCursor = responseDict[@"next_cursor"];
             if (nextCursor) { // page api
-                self.bottomID = [nextCursor longLongValue];
+                self.nextCursor = [nextCursor longLongValue];
             }
             NSArray *arrayData = responseDict[self.dataKey];
             arrayData = arrayData.count ? arrayData : nil;
@@ -325,7 +325,7 @@
             NSDictionary *responseDict = responseObj;
             NSString *nextCursor = responseDict[@"next_cursor"];
             if (nextCursor) { // page api
-                self.bottomID = [nextCursor longLongValue];
+                self.nextCursor = [nextCursor longLongValue];
             }
             NSArray *arrayData = responseDict[self.dataKey];
             arrayData = arrayData.count ? arrayData : nil;
@@ -358,6 +358,7 @@
     NSMutableDictionary *params = self.requestParams.mutableCopy;
     if (self.bottomID) {
         params[@"max_id"] = @(self.bottomID - 1);
+        params[@"cursor"] = @(self.nextCursor);
     }
     if (self.requestCount) {
         params[@"count"] = @(self.requestCount);
@@ -368,7 +369,7 @@
             NSDictionary *responseDict = responseObj;
             NSString *nextCursor = responseDict[@"next_cursor"];
             if (nextCursor) { // page api
-                self.bottomID = [nextCursor longLongValue];
+                self.nextCursor = [nextCursor longLongValue];
             }
             NSArray *arrayData = responseDict[self.dataKey];
             arrayData = arrayData.count ? arrayData : nil;
@@ -692,6 +693,11 @@
 
 - (BOOL)filterData:(NSDictionary *)data
 {
+    for (T4CTableCellData *cellData in self.data) {
+        if ([data[@"id"] isEqual:cellData.rawData[@"id"]]) {
+            return NO;
+        }
+    }
     return YES;
 }
 
