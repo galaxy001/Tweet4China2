@@ -32,7 +32,7 @@
         avatarButton.frame = ccr(14, 10, 48, 48);
         avatarButton.layer.masksToBounds = YES;
         avatarButton.backgroundColor = bw(229);
-        avatarButton.enabled = NO;
+        avatarButton.userInteractionEnabled = NO;
         
         UILabel *nameLabel = [[UILabel alloc] init];
         [self.contentView addSubview:nameLabel];
