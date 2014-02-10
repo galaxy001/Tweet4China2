@@ -11,6 +11,8 @@
 
 @interface T4CReplableViewController () <HPGrowingTextViewDelegate>
 
+@property (nonatomic, strong) UIGestureRecognizer *tapGesture;
+
 @end
 
 @implementation T4CReplableViewController
@@ -28,6 +30,7 @@
             return self;
         }
         
+        notification_add_observer(UIKeyboardWillChangeFrameNotification, self, @selector(keyboardFrameChanged:));
         notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
         notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     }
@@ -41,9 +44,6 @@
     if (Sys_Ver < 7) {
         return;
     }
-    
-    UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTableView)];
-    [self.tableView addGestureRecognizer:tapGesture];
     
     UIToolbar *toolbar = [[UIToolbar alloc] init];
     [self.view addSubview:toolbar];
@@ -139,6 +139,12 @@
 	
 	// commit animations
 	[UIView commitAnimations];
+    
+    if (!self.tapGesture) {
+        UIGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapTableView)];
+        self.tapGesture = tapGesture;
+    }
+    [self.tableView addGestureRecognizer:self.tapGesture];
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
@@ -150,6 +156,21 @@
     } else if ([self.textView.text isEqualToString:text]) {
         self.textView.text = nil;
     }
+}
+
+-(void)keyboardFrameChanged:(NSNotification *)note
+{
+    // get a rect for the textView frame
+	CGRect containerFrame = self.toolbar.frame;
+    containerFrame.origin.y = self.view.height - containerFrame.size.height - tabbar_height;
+    
+	// set views with new info
+	self.toolbar.frame = containerFrame;
+    
+    // set table view
+    UIEdgeInsets inset = self.tableView.contentInset;
+    inset.bottom = self.view.height - containerFrame.origin.y;
+    self.tableView.contentInset = inset;
 }
 
 -(void)keyboardWillHide:(NSNotification *)note
@@ -178,6 +199,7 @@
 	
 	// commit animations
 	[UIView commitAnimations];
+    [self.tableView removeGestureRecognizer:self.tapGesture];
 }
 
 - (void)growingTextView:(HPGrowingTextView *)growingTextView willChangeHeight:(float)height

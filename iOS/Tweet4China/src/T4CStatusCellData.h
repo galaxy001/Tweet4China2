@@ -8,6 +8,7 @@
 
 #import "T4CTableCellData.h"
 
+@class TTTAttributedLabel;
 @interface T4CStatusCellData : T4CTableCellData
 
 @property (nonatomic, copy) NSString *mode;
@@ -27,5 +28,7 @@
 - (void)more;
 - (void)openPhoto:(UIImage *)photo;
 - (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL;
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithArguments:(NSDictionary *)arguments;
+- (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithArguments:(NSDictionary *)arguments;
 
 @end

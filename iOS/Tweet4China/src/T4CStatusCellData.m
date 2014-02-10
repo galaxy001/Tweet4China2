@@ -16,6 +16,11 @@
 #import <AFNetworking/AFNetworking.h>
 #import "T4CRetweetersViewController.h"
 #import "HSUGalleryView.h"
+#import "HSUAttributedLabel.h"
+#import "HSUActivityWeixin.h"
+#import "HSUActivityWeixinMoments.h"
+#import "T4CTagTimelineViewController.h"
+#import "HSUInstagramHandler.h"
 
 @implementation T4CStatusCellData
 
@@ -534,6 +539,13 @@
     [self.tableVC presentViewController:webVC animated:YES completion:nil];
 }
 
+- (void)openPhotoURL:(NSURL *)photoURL
+{
+    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self imageURL:photoURL];
+    [self.tableVC.view.window addSubview:galleryView];
+    [galleryView showWithAnimation:YES];
+}
+
 - (void)openPhoto:(UIImage *)photo
 {
     HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self
@@ -549,6 +561,130 @@
                                                       originalImageURL:originalImageURL];
     [self.tableVC.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
+}
+
+- (void)openWebURL:(NSURL *)webURL withCellData:(T4CStatusCellData *)cellData
+{
+    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.instagramMediaID]) {
+        return;
+    }
+    SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithURL:webURL];
+    webViewController.modalPresentationStyle = UIModalPresentationPageSheet;
+    [self.tableVC presentViewController:webViewController animated:YES completion:NULL];
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithArguments:(NSDictionary *)arguments
+{
+    // User Link
+    NSURL *url = [arguments objectForKey:@"url"];
+    //    T4CTableCellData *cellData = [arguments objectForKey:@"cell_data"];
+    if ([url.absoluteString hasPrefix:@"user://"] ||
+        [url.absoluteString hasPrefix:@"tag://"]) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *copyItem = [RIButtonItem itemWithLabel:_("Copy Content")];
+        copyItem.action = ^{
+            UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+            pasteboard.string = label.text;
+        };
+        UIActionSheet *linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:copyItem, nil];
+        [linkActionSheet showInView:[UIApplication sharedApplication].keyWindow];
+        return;
+    }
+    
+    // Commen Link
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
+    tweetLinkItem.action = ^{
+        [HSUCommonTools postTweetWithMessage:S(@" %@", url.absoluteString)];
+    };
+    RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
+    copyLinkItem.action = ^{
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        pasteboard.string = url.absoluteString;
+    };
+    RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
+    __weak typeof(self)weakSelf = self;
+    mailLinkItem.action = ^{
+        [weakSelf.tableVC.presentedViewController dismiss];
+        NSString *body = S(@"<a href=\"%@\">%@</a><br><br>", url.absoluteString, url.absoluteString);
+        NSString *subject = _("Link from Twitter");
+        [HSUCommonTools sendMailWithSubject:subject body:body presentFromViewController:weakSelf.tableVC];
+    };
+    
+    RIButtonItem *weixinItem;
+    RIButtonItem *momentsItem;
+    if ([WXApi isWXAppInstalled]) {
+        weixinItem = [RIButtonItem itemWithLabel:_("Weixin")];
+        weixinItem.action = ^{
+            [HSUActivityWeixin shareLink:url.absoluteString
+                                   title:_("Share a link from Twitter")
+                             description:label.text];
+        };
+        momentsItem = [RIButtonItem itemWithLabel:_("Weixin Moments")];
+        momentsItem.action = ^{
+            [HSUActivityWeixinMoments shareLink:url.absoluteString
+                                          title:_("Share a link from Twitter")
+                                    description:label.text];
+        };
+    }
+    RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:@"Safari"];
+    openInSafariItem.action = ^{
+        [[UIApplication sharedApplication] openURL:url];
+    };
+    UIActionSheet *linkActionSheet;
+    if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
+        RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:@"Chrome"];
+        openInChromeItem.action = ^{
+            [[OpenInChromeController sharedInstance] openInChrome:url withCallbackURL:nil createNewTab:YES];
+        };
+        if ([WXApi isWXAppInstalled]) {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, weixinItem, momentsItem, openInSafariItem, openInChromeItem, nil];
+        } else {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, openInChromeItem, nil];
+        }
+    } else {
+        if ([WXApi isWXAppInstalled]) {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, weixinItem, momentsItem, openInSafariItem, nil];
+        } else {
+            linkActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:nil otherButtonItems:tweetLinkItem, copyLinkItem, mailLinkItem, openInSafariItem, nil];
+        }
+    }
+    
+    [linkActionSheet showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+- (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithArguments:(NSDictionary *)arguments
+{
+    NSURL *url = [arguments objectForKey:@"url"];
+    T4CStatusCellData *cellData = [arguments objectForKey:@"cell_data"];
+    __weak typeof(self)weakSelf = self;
+    if ([url.absoluteString hasPrefix:@"user://"]) {
+        NSString *screenName = [url.absoluteString substringFromIndex:7];
+        HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
+        [self.tableVC.navigationController pushViewController:profileVC animated:YES];
+    } else if ([url.absoluteString hasPrefix:@"tag://"]) {
+        NSString *hashTag = [url.absoluteString substringFromIndex:6];
+        T4CTagTimelineViewController *tagVC = [[T4CTagTimelineViewController alloc] init];
+        tagVC.tag = hashTag;
+        [weakSelf.tableVC.navigationController pushViewController:tagVC animated:YES];
+    } else {
+        NSString *attr = cellData.attr;
+        if ([attr isEqualToString:@"photo"]) {
+            NSString *mediaURLHttps;
+            NSArray *medias = cellData.rawData[@"entities"][@"media"];
+            for (NSDictionary *media in medias) {
+                NSString *expandedUrl = media[@"expanded_url"];
+                if ([expandedUrl isEqualToString:url.absoluteString]) {
+                    mediaURLHttps = media[@"media_url_https"];
+                }
+            }
+            if (mediaURLHttps) {
+                [self openPhotoURL:[NSURL URLWithString:mediaURLHttps]];
+                return;
+            }
+        }
+        [self openWebURL:url withCellData:cellData];
+    }
 }
 
 - (NSDictionary *)mainStatus

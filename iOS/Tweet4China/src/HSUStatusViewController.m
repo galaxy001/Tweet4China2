@@ -65,26 +65,9 @@
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
     
-//    UIView *replyBar = [[UIView alloc] init];
-//    self.replyBar = replyBar;
-//    [self.view addSubview:replyBar];
-//    
-//    UITextField *replyTextField = [[UITextField alloc] init];
-//    self.replyTextField = replyTextField;
-//    [replyBar addSubview:replyTextField];
-//    
-//    UILabel *replayCountLabel = [[UILabel alloc] init];
-//    self.replyCountLabel = replayCountLabel;
-//    [replyBar addSubview:replayCountLabel];
-//    
-//    UIButton *replyButton = [[UIButton alloc] init];
-//    self.replyButton = replyButton;
-//    [replyBar addSubview:replyButton];
-    
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     
-//    [self.dataSource refresh];
     [self.dataSource loadMore];
 }
 

@@ -677,8 +677,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.target;
-    [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    [self.data attributedLabel:label didSelectLinkWithArguments:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithURL:(NSURL *)url
@@ -686,8 +685,7 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.target;
-    [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    [self.data attributedLabel:label didReleaseLinkWithArguments:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)_downloadPhotoWithURL:(NSURL *)photoURL
