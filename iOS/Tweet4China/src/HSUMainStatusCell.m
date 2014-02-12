@@ -743,10 +743,7 @@
 - (void)_firePhotoTap:(UITapGestureRecognizer *)tap
 {
     if (tap.state == UIGestureRecognizerStateEnded && imageView.image) {
-        id delegate = self.data.target;
-        if ([delegate respondsToSelector:@selector(tappedPhoto:withCellData:)]) {
-            [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:self.data.photoUrl withObject:self.data];
-        }
+        [self.data openPhoto:imageView.image];
     }
 }
 
