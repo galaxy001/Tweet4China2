@@ -143,6 +143,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUStatusShowActionsNotification @"HSUStatusShowActionsNotification"
 #define HSUUserUnfollowedNotification @"HSUUserUnfollowedNotification"
 #define HSUNewDirectMessagesReceivedNotification @"HSUNewDirectMessagesReceivedNotification"
+#define HSUDirectMessageSentNotification @"HSUDirectMessageSentNotification"
 
 #define kDataType_MainStatus @"MainStatus"
 #define kDataType_LoadingReply @"LoadingReply"

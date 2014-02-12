@@ -188,6 +188,7 @@
         [message setValuesForKeysWithDictionary:responseObj];
         [message removeObjectForKey:@"sending"];
         [weakSelf.tableView reloadData];
+        notification_post_with_object(HSUDirectMessageSentNotification, message);
     } failure:^(NSError *error) {
         [twitter dealWithError:error errTitle:_("Failed to send message")];
         message[@"failed"] = @(YES);

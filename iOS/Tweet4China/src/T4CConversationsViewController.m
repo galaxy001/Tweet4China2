@@ -23,6 +23,7 @@
     self = [super init];
     if (self) {
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
+        notification_add_observer(HSUDirectMessageSentNotification, self, @selector(directMessageSent:));
     }
     return self;
 }
@@ -181,6 +182,21 @@
 {
     [self.tableView.pullToRefreshView startAnimating];
     [self refresh];
+}
+
+- (void)directMessageSent:(NSNotification *)notification
+{
+    NSDictionary *message = notification.object;
+    for (T4CTableCellData *cellData in self.data) {
+        if ([cellData.rawData[@"user"][@"screen_name"] isEqualToString:message[@"sender"][@"screen_name"]] ||
+             [cellData.rawData[@"user"][@"screen_name"] isEqualToString:message[@"recipient"][@"screen_name"]]) {
+            NSArray *messages = [cellData.rawData[@"messages"] arrayByAddingObject:message];
+            NSMutableDictionary *newRD = [cellData.rawData mutableCopy];
+            newRD[@"messages"] = messages;
+            cellData.rawData = newRD;
+            [self.tableView reloadData];
+        }
+    }
 }
 
 @end
