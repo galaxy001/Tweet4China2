@@ -461,7 +461,10 @@
         NSMutableArray *newData = [NSMutableArray arrayWithCapacity:dataArr.count];
         for (NSDictionary *rawData in dataArr) {
             if ([self filterData:rawData]) {
-                [newData addObject:[self createTableCellDataWithRawData:rawData]];
+                T4CTableCellData *cellData = [self createTableCellDataWithRawData:rawData];
+                [newData addObject:cellData];
+                cellData.unread = YES;
+                self.unreadCount ++;
             }
         }
         [self.data insertObjects:newData atIndexes:set];
@@ -498,7 +501,7 @@
     } else {
         self.loadMoreState = T4CLoadingState_NoMore;
         [self.tableView.infiniteScrollingView stopAnimating];
-        self.tableView.infiniteScrollingView.enabled = NO;
+//        self.tableView.infiniteScrollingView.enabled = NO;
     }
     [self.tableView.infiniteScrollingView stopAnimating];
 }
@@ -522,7 +525,7 @@
 {
     self.loadMoreState = T4CLoadingState_Error;
     [self.tableView.infiniteScrollingView stopAnimating];
-    self.tableView.infiniteScrollingView.enabled = NO;
+//    self.tableView.infiniteScrollingView.enabled = NO;
     [twitter dealWithError:error errTitle:_("Request failed")];
 }
 
@@ -778,11 +781,11 @@
 {
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
-//#ifdef DEBUG
-//        if ([cacheArr indexOfObject:cache] < 3) {
+#ifdef DEBUG
+//        if ([cacheArr indexOfObject:cache] < 50) {
 //            continue;
 //        }
-//#endif
+#endif
         if (self.data.count >= 200) {
             break;
         }
