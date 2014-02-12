@@ -108,7 +108,7 @@ static HSUShadowsocksProxy *proxy;
     [Flurry logEvent:@"Launch" timed:YES];
 #endif
     
-    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:60
+    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:90
                                                              target:self
                                                            selector:@selector(checkUnread)
                                                            userInfo:nil
