@@ -21,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(refresh));
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }
     return self;
 }
@@ -167,6 +167,12 @@
             weakSelf.refreshState = T4CLoadingState_Error;
         }
     }];
+}
+
+- (void)checkUnread
+{
+    [self.tableView.pullToRefreshView startAnimating];
+    [self refresh];
 }
 
 @end

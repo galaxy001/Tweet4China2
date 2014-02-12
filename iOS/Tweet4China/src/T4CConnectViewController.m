@@ -9,6 +9,7 @@
 #import "T4CConnectViewController.h"
 #import "T4CNewFollowersViewController.h"
 #import "T4CNewRetweetsViewController.h"
+#import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface T4CConnectViewController ()
 
@@ -20,7 +21,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(refresh));
+        notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }
     return self;
 }
@@ -281,6 +282,12 @@
     } else {
         [super tableView:tableView didSelectRowAtIndexPath:indexPath];
     }
+}
+
+- (void)checkUnread
+{
+    [self.tableView.pullToRefreshView startAnimating];
+    [self refresh];
 }
 
 @end
