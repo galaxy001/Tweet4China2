@@ -194,6 +194,8 @@
             [weakSelf loadMore];
         }];
     }
+    
+    self.viewDidApearCount ++;
 }
 
 - (void)viewDidLayoutSubviews
@@ -252,21 +254,27 @@
     return _data;
 }
 
+- (void)scrollToShowPullToRefreshViewWithAnimation:(BOOL)animation
+{
+    [self.tableView setContentOffset:ccp(0, - self.tableView.pullToRefreshView.height - self.tableView.contentInset.top) animated:animation];
+}
+
 - (void)tabItemTapped
 {
     if (self.tableView.contentOffset.y > 10 - self.tableView.contentInset.top) {
         [self.tableView setContentOffset:ccp(0, - self.tableView.contentInset.top) animated:YES];
     } else if (self.refreshState == T4CLoadingState_Done) {
-        [self.tableView setContentOffset:ccp(0, - self.tableView.pullToRefreshView.height - self.tableView.contentInset.top) animated:YES];
         [self refresh];
         [self.tableView.pullToRefreshView startAnimating];
+        [self scrollToShowPullToRefreshViewWithAnimation:YES];
     }
 }
 
 - (void)refresh
 {
-    if (self.refreshState != T4CLoadingState_Done) {
-        [self.tableView.infiniteScrollingView stopAnimating];
+    if (self.refreshState != T4CLoadingState_Done &&
+        self.refreshState != T4CLoadingState_Error) {
+        [self.tableView.pullToRefreshView stopAnimating];
         return;
     }
     self.refreshState = T4CLoadingState_Loading;
@@ -350,8 +358,9 @@
         [self.tableView.infiniteScrollingView stopAnimating];
         return;
     }
-    if (self.loadMoreState != T4CLoadingState_Done) {
-        [self.tableView.pullToRefreshView stopAnimating];
+    if (self.loadMoreState != T4CLoadingState_Done &&
+        self.loadMoreState != T4CLoadingState_Error) {
+        [self.tableView.infiniteScrollingView stopAnimating];
         return;
     }
     self.loadMoreState = T4CLoadingState_Loading;
@@ -488,6 +497,7 @@
         [self saveCache];
     } else {
         self.loadMoreState = T4CLoadingState_NoMore;
+        [self.tableView.infiniteScrollingView stopAnimating];
         self.tableView.infiniteScrollingView.enabled = NO;
     }
     [self.tableView.infiniteScrollingView stopAnimating];
@@ -511,6 +521,7 @@
 - (void)requestDidFinishLoadMoreWithError:(NSError *)error
 {
     self.loadMoreState = T4CLoadingState_Error;
+    [self.tableView.infiniteScrollingView stopAnimating];
     self.tableView.infiniteScrollingView.enabled = NO;
     [twitter dealWithError:error errTitle:_("Request failed")];
 }

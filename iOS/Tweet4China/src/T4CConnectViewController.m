@@ -37,8 +37,18 @@
     
     self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
-    
     [self refresh];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (self.viewDidApearCount == 1) {
+        if (self.refreshState == T4CLoadingState_Loading) {
+            [self.tableView.pullToRefreshView startAnimating];
+        }
+    }
 }
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr newFollowers:(NSArray *)newFollowers newRetweets:(NSArray *)newRetweets

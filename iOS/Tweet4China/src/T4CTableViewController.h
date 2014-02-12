@@ -32,11 +32,13 @@
 @property (nonatomic, readonly) T4CTableCellData *firstTimelineData;
 @property (nonatomic, assign) NSUInteger unreadCount;
 @property (nonatomic, assign) BOOL showUnreadCount;
+@property (nonatomic, assign) NSUInteger viewDidApearCount;
 
 - (void)refresh;
 - (void)loadGap:(T4CGapCellData *)gapCellData;
 - (void)loadMore;
 
+- (void)scrollToShowPullToRefreshViewWithAnimation:(BOOL)animation;
 - (void)tabItemTapped;
 
 - (void)saveCache;

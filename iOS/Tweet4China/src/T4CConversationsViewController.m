@@ -41,6 +41,12 @@
     [super viewDidAppear:animated];
     
     [self.tableView reloadData];
+    
+    if (self.viewDidApearCount == 1) {
+        if (self.refreshState == T4CLoadingState_Loading) {
+            [self.tableView.pullToRefreshView startAnimating];
+        }
+    }
 }
 
 - (void)refresh

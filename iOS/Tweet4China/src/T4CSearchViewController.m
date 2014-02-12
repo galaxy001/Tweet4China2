@@ -144,6 +144,7 @@
         self.tableView.infiniteScrollingView.enabled = YES;
     } else if (segmentControl.selectedSegmentIndex == 1) {
         self.data = self.personsData;
+        [self.tableView.infiniteScrollingView stopAnimating];
         self.tableView.infiniteScrollingView.enabled = NO;
     }
     [self.tableView reloadData];
