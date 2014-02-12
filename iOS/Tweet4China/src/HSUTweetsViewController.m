@@ -279,7 +279,7 @@
             [weakSelf.dataSource removeCellData:cellData];
             [weakSelf.dataSource saveCache];
             [weakSelf.tableView reloadData];
-            notification_post_with_object(HSUStatusDidDelete, id_str);
+            notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Delete Tweet failed")];
         }];

@@ -15,7 +15,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(HSUStatusDidDelete, self, @selector(statusDidDelete:));
+        notification_add_observer(HSUStatusDidDeleteNotification, self, @selector(statusDidDelete:));
         notification_add_observer(HSUSettingExcludeRepliesChangedNotification, self, @selector(clearCache));
     }
     return self;

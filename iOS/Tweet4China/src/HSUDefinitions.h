@@ -139,7 +139,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUTwiterLogout @"HSUTwiterLogout"
 #define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
-#define HSUStatusDidDelete @"HSUStatusDidDelete"
+#define HSUStatusDidDeleteNotification @"HSUStatusDidDeleteNotification"
 #define HSUStatusShowActionsNotification @"HSUStatusShowActionsNotification"
 #define HSUUserUnfollowedNotification @"HSUUserUnfollowedNotification"
 

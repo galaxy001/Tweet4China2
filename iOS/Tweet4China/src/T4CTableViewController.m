@@ -89,7 +89,7 @@
         self.data = @[].mutableCopy;
         self.useCache = YES;
         
-        notification_add_observer(HSUStatusDidDelete, self, @selector(statusDeleted:));
+        notification_add_observer(HSUStatusDidDeleteNotification, self, @selector(statusDeleted:));
         notification_add_observer(HSUStatusUpdatedNotification, self, @selector(statusUpdated:));
         notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(twitterLoginSuccess:));
@@ -947,6 +947,18 @@
         [self.tableView reloadData];
         if (self.useCache) {
             [self saveCache];
+        }
+    } else {
+        for (T4CTableCellData *cellData in self.data) {
+            if ([cellData.dataType isEqualToString:kDataType_Status]) {
+                if ([cellData.rawData[@"id"] isEqual:[notification.object objectForKey:@"id"]]) {
+                    cellData.rawData = notification.object;
+                    [self.tableView reloadData];
+                    if (self.useCache) {
+                        [self saveCache];
+                    }
+                }
+            }
         }
     }
 }

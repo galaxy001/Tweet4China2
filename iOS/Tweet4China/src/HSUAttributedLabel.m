@@ -15,7 +15,6 @@
 - (void)touchesBegan:(NSSet *)touches
            withEvent:(UIEvent *)event
 {
-    NSLog(@"begin");
     [super touchesBegan:touches withEvent:event];
     return;
     UITouch *touch = [touches anyObject];
@@ -56,7 +55,6 @@
 - (void)touchesEnded:(NSSet *)touches
            withEvent:(UIEvent *)event
 {
-    NSLog(@"end");
     if (self.activeLink) {
         NSTextCheckingResult *result = self.activeLink;
         self.activeLink = nil;

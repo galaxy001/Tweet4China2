@@ -76,14 +76,8 @@
             [twitter destroyStatus:id_str success:^(id responseObj) {
                 NSMutableDictionary *newStatus = [status mutableCopy];
                 newStatus[@"retweeted"] = @(!retweeted);
-                if (isRetweetedStatus) {
-                    NSMutableDictionary *newRawData = [weakSelf.rawData mutableCopy];
-                    newRawData[@"retweeted_status"] = newStatus;
-                    weakSelf.rawData = newRawData;
-                } else {
-                    weakSelf.rawData = newStatus;
-                }
-                notification_post_with_object(HSUStatusUpdatedNotification, weakSelf.rawData);
+                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
+                notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
                 notification_post(HSUStatusShowActionsNotification);
                 [weakSelf.tableVC.tableView reloadData];
             } failure:^(NSError *error) {
@@ -102,14 +96,7 @@
                             [twitter destroyStatus:id_str success:^(id responseObj) {
                                 NSMutableDictionary *newStatus = [status mutableCopy];
                                 newStatus[@"retweeted"] = @(!retweeted);
-                                if (isRetweetedStatus) {
-                                    NSMutableDictionary *newRawData = [weakSelf.rawData mutableCopy];
-                                    newRawData[@"retweeted_status"] = newStatus;
-                                    weakSelf.rawData = newRawData;
-                                } else {
-                                    weakSelf.rawData = newStatus;
-                                }
-                                notification_post_with_object(HSUStatusUpdatedNotification, weakSelf.rawData);
+                                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
                                 notification_post(HSUStatusShowActionsNotification);
                                 [weakSelf.tableVC.tableView reloadData];
                             } failure:^(NSError *error) {
@@ -138,14 +125,7 @@
                             [twitter destroyStatus:id_str success:^(id responseObj) {
                                 NSMutableDictionary *newStatus = [status mutableCopy];
                                 newStatus[@"retweeted"] = @(!retweeted);
-                                if (isRetweetedStatus) {
-                                    NSMutableDictionary *newRawData = [weakSelf.rawData mutableCopy];
-                                    newRawData[@"retweeted_status"] = newStatus;
-                                    weakSelf.rawData = newRawData;
-                                } else {
-                                    weakSelf.rawData = newStatus;
-                                }
-                                notification_post_with_object(HSUStatusUpdatedNotification, weakSelf.rawData);
+                                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
                                 notification_post(HSUStatusShowActionsNotification);
                                 [weakSelf.tableVC.tableView reloadData];
                             } failure:^(NSError *error) {
@@ -174,11 +154,10 @@
             if (isRetweetedStatus) {
                 NSMutableDictionary *newRawData = [weakSelf.rawData mutableCopy];
                 newRawData[@"retweeted_status"] = newStatus;
-                weakSelf.rawData = newRawData;
+                notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
             } else {
-                weakSelf.rawData = newStatus;
+                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
             }
-            notification_post_with_object(HSUStatusUpdatedNotification, weakSelf.rawData);
             notification_post(HSUStatusShowActionsNotification);
             [weakSelf.tableVC.tableView reloadData];
         } failure:^(NSError *error) {
@@ -202,7 +181,6 @@
         [twitter unMarkStatus:id_str success:^(id responseObj) {
             NSMutableDictionary *newRawData = [rawData mutableCopy];
             newRawData[@"favorited"] = @(!favorited);
-            weakSelf.rawData = newRawData;
             notification_post_with_object(HSUStatusUpdatedNotification, newRawData);
             [weakSelf.tableVC.tableView reloadData];
         } failure:^(NSError *error) {
@@ -245,7 +223,7 @@
                 [weakSelf.tableVC.data removeObject:weakSelf];
                 [weakSelf.tableVC.tableView reloadData];
             }
-            notification_post_with_object(HSUStatusDidDelete, sid);
+            notification_post_with_object(HSUStatusDidDeleteNotification, sid);
         } failure:^(NSError *error) {
             if (error.code == 204) {
                 [SVProgressHUD dismiss];
@@ -255,7 +233,7 @@
                     [weakSelf.tableVC.data removeObject:weakSelf];
                     [weakSelf.tableVC.tableView reloadData];
                 }
-                notification_post_with_object(HSUStatusDidDelete, sid);
+                notification_post_with_object(HSUStatusDidDeleteNotification, sid);
             } else {
                 [SVProgressHUD showErrorWithStatus:_("Delete Tweet failed")];
             }

@@ -241,7 +241,7 @@
         __weak typeof(self)weakSelf = self;
         [twitter destroyStatus:id_str success:^(id responseObj) {
             [weakSelf.navigationController popViewControllerAnimated:YES];
-            notification_post_with_object(HSUStatusDidDelete, id_str);
+            notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Delete Tweet failed")];
         }];
