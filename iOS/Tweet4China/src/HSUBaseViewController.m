@@ -31,7 +31,7 @@
 #import "HSUSearchPersonDataSource.h"
 #import "HSUPhotoCell.h"
 #import "HSUSearchTweetsDataSource.h"
-#import "HSUSearchViewController.h"
+#import "T4CSearchViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface HSUBaseViewController ()
@@ -426,7 +426,7 @@
 
 - (void)_searchButtonTouched
 {
-    HSUSearchViewController *searchVC = [[HSUSearchViewController alloc] init];
+    T4CSearchViewController *searchVC = [[T4CSearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:YES];
 }
 
