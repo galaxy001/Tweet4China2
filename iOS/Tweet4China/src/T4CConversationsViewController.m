@@ -10,6 +10,7 @@
 #import "T4CConversationCellData.h"
 #import <AudioToolbox/AudioToolbox.h>
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "T4CMessagesViewController.h"
 
 @interface T4CConversationsViewController ()
 
@@ -142,6 +143,7 @@
             [weakSelf.tableView reloadData];
             [weakSelf.tableView.pullToRefreshView stopAnimating];
             weakSelf.refreshState = T4CLoadingState_Done;
+            notification_post_with_object(HSUNewDirectMessagesReceivedNotification, messages);
             if ([rMsgs count]) {
                 AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                 if (!weakSelf.view.window) { // not appear

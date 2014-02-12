@@ -28,6 +28,7 @@
     if (self) {
         self.pullToRefresh = NO;
         self.infiniteScrolling = NO;
+        notification_add_observer(HSUNewDirectMessagesReceivedNotification, self, @selector(receivedNewMessages:));
     }
     return self;
 }
@@ -221,6 +222,28 @@
 - (NSString *)textViewPlaceHolder
 {
     return _("Start a new message");
+}
+
+- (void)receivedNewMessages:(NSNotification *)notification
+{
+    NSArray *newMessages = notification.object;
+    BOOL hasNew = NO;
+    for (NSDictionary *newMessage in newMessages) {
+        if ([newMessage[@"recipient"][@"screen_name"] isEqualToString:self.herProfile[@"screen_name"]] ||
+            [newMessage[@"sender"][@"screen_name"] isEqualToString:self.herProfile[@"screen_name"]]) {
+            
+            T4CMessageCellData *cellData =
+            [[T4CMessageCellData alloc] initWithRawData:newMessage
+                                               dataType:kDataType_Message];
+            cellData.target = self;
+            [self.data addObject:cellData];
+            hasNew = YES;
+        }
+    }
+    if (hasNew) {
+        [self.tableView reloadData];
+        [self _scrollToBottomWithAnimation:YES];
+    }
 }
 
 @end
