@@ -39,6 +39,8 @@
 #import "T4CPhotosViewController.h"
 #import "T4CListsViewController.h"
 #import "T4CFavoritesViewController.h"
+#import "T4CMessagesViewController.h"
+#import "T4CConversationsViewController.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -410,20 +412,33 @@
     }
 }
 
+
+- (NSDictionary *)_findConversationWithScreeName:(NSString *)screeName
+{
+    NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:[[T4CConversationsViewController class] description]];
+    for (NSDictionary *cache in cacheArr) {
+        NSDictionary *rawData = cache[@"raw_data"];
+        if ([rawData[@"user"][@"screen_name"] isEqualToString:screeName]) {
+            return rawData;
+        }
+    }
+    return nil;
+}
+
+
 - (void)startDirectMessage
 {
-    __weak typeof(self)weakSelf = self;
-    HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:nil];
-    __block HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
-    HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
+    T4CMessagesViewController *messagesVC = [[T4CMessagesViewController alloc] init];
+    messagesVC.conversation = [self _findConversationWithScreeName:self.profile[@"screen_name"]];
     messagesVC.herProfile = self.profile;
-    messagesVC.myProfile = nil;
+    HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
     NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
     if (userProfiles[MyScreenName]) {
         messagesVC.myProfile = userProfiles[MyScreenName];
         [SVProgressHUD dismiss];
         [self presentViewController:nav animated:YES completion:nil];
     } else {
+        __weak typeof(self)weakSelf = self;
         [twitter showUser:MyScreenName success:^(id responseObj) {
             [SVProgressHUD dismiss];
             messagesVC.myProfile = responseObj;
