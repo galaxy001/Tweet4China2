@@ -218,9 +218,13 @@
             weakSelf.progressBar.alpha = 1.0;
         }];
     } else if (progress == 1) {
-        [UIView animateWithDuration:0.5 delay:progress - self.progressBar.progress options:0 animations:^{
-            weakSelf.progressBar.alpha = 0.0;
-        } completion:nil];
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [UIView animateWithDuration:0.5 delay:progress - self.progressBar.progress options:0 animations:^{
+                weakSelf.progressBar.alpha = 0.0;
+            } completion:nil];
+        });
     }
 }
 

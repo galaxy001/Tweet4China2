@@ -68,17 +68,7 @@
 
 - (void)updateProgress:(double)progress
 {
-    __weak typeof(self)weakSelf = self;
     [self.progressBar setProgress:progress animated:NO];
-    if (progress == 0) {
-        [UIView animateWithDuration:0.5 animations:^{
-            weakSelf.progressBar.alpha = 1.0;
-        }];
-    } else if (progress == 1) {
-        [UIView animateWithDuration:0.5 delay:progress - self.progressBar.progress options:0 animations:^{
-            weakSelf.progressBar.alpha = 0.0;
-        } completion:nil];
-    }
 }
 
 - (BOOL)prefersStatusBarHidden
