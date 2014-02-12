@@ -548,9 +548,10 @@
 
 - (void)keyboardFrameChanged:(NSNotification *)notification
 {
-    NSValue* keyboardFrame = [notification.userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
-    CGRect keyboardRect = [self.view convertRect:keyboardFrame.CGRectValue toView:nil];
-    self.keyboardHeight = keyboardRect.size.height;
+	CGRect keyboardBounds;
+    [[notification.userInfo valueForKey:UIKeyboardFrameEndUserInfoKey] getValue: &keyboardBounds];
+    keyboardBounds = [self.view convertRect:keyboardBounds toView:nil];
+    self.keyboardHeight = keyboardBounds.size.height;
     [self.view setNeedsLayout];
 }
 

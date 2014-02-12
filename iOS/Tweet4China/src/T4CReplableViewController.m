@@ -30,7 +30,7 @@
             return self;
         }
         
-        notification_add_observer(UIKeyboardWillChangeFrameNotification, self, @selector(keyboardFrameChanged:));
+//        notification_add_observer(UIKeyboardWillChangeFrameNotification, self, @selector(keyboardFrameChanged:));
         notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
         notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     }
