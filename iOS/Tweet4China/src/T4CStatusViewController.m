@@ -207,6 +207,9 @@
         }
         for (NSDictionary *userMention in userMentions) {
             NSString *screenName = userMention[@"screen_name"];
+            if ([screenName isEqualToString:MyScreenName]) {
+                continue;
+            }
             [defaultText appendFormat:@"@%@ ", screenName];
         }
         uint length = defaultText.length - start;
@@ -236,6 +239,9 @@
     NSArray *userMentions = self.status[@"entities"][@"user_mentions"];
     for (NSDictionary *userMention in userMentions) {
         NSString *name = userMention[@"name"];
+        if ([userMention[@"screen_name"] isEqualToString:MyScreenName]) {
+            continue;
+        }
         [placeHolder appendFormat:@"%@, ", name];
     }
     return [placeHolder substringToIndex:placeHolder.length-2];
@@ -262,6 +268,9 @@
     NSArray *userMentions = self.status[@"entities"][@"user_mentions"];
     for (NSDictionary *userMention in userMentions) {
         NSString *name = userMention[@"screen_name"];
+        if ([name isEqualToString:MyScreenName]) {
+            continue;
+        }
         [placeHolder appendFormat:@"@%@ ", name];
     }
     return placeHolder;
