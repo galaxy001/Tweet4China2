@@ -17,6 +17,7 @@
 @property (nonatomic, weak) UILabel *screenNameLabel;
 @property (nonatomic, weak) UIImageView *verifyFlag;
 @property (nonatomic, weak) UILabel *ffInfoLabel;
+@property (nonatomic, weak) UILabel *descLabel;
 
 @end
 
@@ -71,6 +72,16 @@
         ffInfoLabel.highlightedTextColor = kWhiteColor;
         ffInfoLabel.backgroundColor = kClearColor;
         ffInfoLabel.frame = ccr(screenNameLabel.left, screenNameLabel.bottom+2, 180, 18);
+        
+        UILabel *descLabel = [[UILabel alloc] init];
+        [self.contentView addSubview:descLabel];
+        self.descLabel = descLabel;
+        descLabel.textColor = kBlackColor;
+        descLabel.font = [UIFont systemFontOfSize:14];
+        descLabel.highlightedTextColor = kGrayColor;
+        descLabel.backgroundColor = kClearColor;
+        descLabel.numberOfLines = 0;
+        descLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
     return self;
 }
@@ -152,13 +163,30 @@
     
     self.verifyFlag.hidden = ![data.rawData[@"verified"] boolValue];
     
+    self.descLabel.text = data.rawData[@"description"];
+    CGFloat cellWidth = IPHONE ? 280 : 586;
+    self.descLabel.size = [self.descLabel sizeThatFits:ccs(cellWidth, 0)];
+    self.descLabel.top = self.ffInfoLabel.bottom + 5;
+    self.descLabel.left = self.avatarButton.left;
+    
 //    [self setupControl:self.followButton forKey:@"follow"];
     [self setupTapEventOnButton:self.followButton name:@"follow"];
 }
 
 + (CGFloat)heightForData:(T4CTableCellData *)data
 {
-    return 75;
+    static UILabel *testHeightLabel;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        testHeightLabel = [[UILabel alloc] init];
+        testHeightLabel.font = [UIFont systemFontOfSize:14];
+        testHeightLabel.numberOfLines = 0;
+        testHeightLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    });
+    testHeightLabel.text = data.rawData[@"description"];
+    CGFloat cellWidth = IPHONE ? 280 : 586;
+    testHeightLabel.size = [testHeightLabel sizeThatFits:ccs(cellWidth, 0)];
+    return 75 + testHeightLabel.height;
 }
 
 
