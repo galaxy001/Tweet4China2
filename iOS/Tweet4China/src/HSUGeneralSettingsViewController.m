@@ -363,6 +363,8 @@
     BOOL selectBeforeStartCamera = self.selectBeforeStartCameraItem.value;
     BOOL showOriginalImage = self.showOriginalImageItem.value;
     BOOL connectDirectly = self.overseasItem.value;
+    BOOL autoUpdateConnect = self.autoUpdateConnectItem.value;
+    BOOL autoUpdateConversation = self.autoUpdateConversationItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -379,7 +381,9 @@
                        HSUSettingExcludeReplies: @(excludeReplies),
                        HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera),
                        HSUSettingShowOriginalImage: @(showOriginalImage),
-                       HSUSettingOverseas: @(connectDirectly)};
+                       HSUSettingOverseas: @(connectDirectly),
+                       HSUSettingAutoUpdateConnect: @(autoUpdateConnect),
+                       HSUSettingAutoUpdateConversation: @(autoUpdateConversation)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {

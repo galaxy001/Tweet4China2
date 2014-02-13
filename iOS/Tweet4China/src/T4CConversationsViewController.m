@@ -180,7 +180,7 @@
 
 - (void)checkUnread
 {
-    if (boolSetting(HSUSettingAutoUpdateConnect)) {
+    if (boolSetting(HSUSettingAutoUpdateConversation)) {
         [self.tableView.pullToRefreshView startAnimating];
         [self refresh];
     }
