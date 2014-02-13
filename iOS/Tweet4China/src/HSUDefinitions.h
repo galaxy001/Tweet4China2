@@ -198,6 +198,8 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUSettingExcludeReplies @"exclude_replies"
 #define HSUSettingSelectBeforeStartCamera @"select_before_start_camera"
 #define HSUSettingShowOriginalImage @"show_original_image"
+#define HSUSettingAutoUpdateConnect @"HSUSettingAutoUpdateConnect"
+#define HSUSettingAutoUpdateConversation @"HSUSettingAutoUpdateConversation"
 #define HSUSettingOverseas @"overseas"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"

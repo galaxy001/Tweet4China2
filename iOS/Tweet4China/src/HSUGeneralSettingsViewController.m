@@ -22,6 +22,8 @@
 @property (nonatomic, weak) REBoolItem *selectBeforeStartCameraItem;
 @property (nonatomic, weak) REBoolItem *showOriginalImageItem;
 @property (nonatomic, weak) REBoolItem *overseasItem;
+@property (nonatomic, weak) REBoolItem *autoUpdateConnectItem;
+@property (nonatomic, weak) REBoolItem *autoUpdateConversationItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -256,6 +258,32 @@
             [weakSelf _doneButtonTouched];
             exit(0);
         };
+    };
+    
+    REBoolItem *autoUpdateConnectItem = [REBoolItem itemWithTitle:_("Auto Update Connect")
+                                                            value:boolSetting(HSUSettingAutoUpdateConnect)];
+    self.autoUpdateConnectItem = autoUpdateConnectItem;
+    [section addItem:autoUpdateConnectItem];
+    autoUpdateConnectItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
+    
+    REBoolItem *autoUpdateConversationItem = [REBoolItem itemWithTitle:_("Auto Update Messages")
+                                                                 value:boolSetting(HSUSettingAutoUpdateConversation)];
+    self.autoUpdateConversationItem = autoUpdateConversationItem;
+    [section addItem:autoUpdateConversationItem];
+    autoUpdateConversationItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
     };
     
     RERadioItem *cacheSizeItem =

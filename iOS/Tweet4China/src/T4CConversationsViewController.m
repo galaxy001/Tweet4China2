@@ -180,8 +180,10 @@
 
 - (void)checkUnread
 {
-    [self.tableView.pullToRefreshView startAnimating];
-    [self refresh];
+    if (boolSetting(HSUSettingAutoUpdateConnect)) {
+        [self.tableView.pullToRefreshView startAnimating];
+        [self refresh];
+    }
 }
 
 - (void)directMessageSent:(NSNotification *)notification

@@ -60,6 +60,12 @@ static HSUShadowsocksProxy *proxy;
     if (!settings[HSUSettingShowOriginalImage]) {
         settings[HSUSettingShowOriginalImage] = @YES;
     }
+    if (!settings[HSUSettingAutoUpdateConnect]) {
+        settings[HSUSettingAutoUpdateConnect] = @YES;
+    }
+    if (!settings[HSUSettingAutoUpdateConversation]) {
+        settings[HSUSettingAutoUpdateConversation] = @YES;
+    }
 #ifdef Overseas
     if (!setting(HSUSettingOverseas)) {
         settings[HSUSettingOverseas] = @YES;
@@ -73,6 +79,8 @@ static HSUShadowsocksProxy *proxy;
     settings[HSUSettingCacheSize] = @"16MB";
     settings[HSUSettingPhotoPreview] = @NO;
     settings[HSUSettingShowOriginalImage] = @NO;
+    settings[HSUSettingAutoUpdateConnect] = @NO;
+    settings[HSUSettingAutoUpdateConversation] = @NO;
 #endif
     self.globalSettings = settings;
     [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];

@@ -296,8 +296,10 @@
 
 - (void)checkUnread
 {
-    [self.tableView.pullToRefreshView startAnimating];
-    [self refresh];
+    if (boolSetting(HSUSettingAutoUpdateConnect)) {
+        [self.tableView.pullToRefreshView startAnimating];
+        [self refresh];
+    }
 }
 
 @end
