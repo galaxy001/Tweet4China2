@@ -96,6 +96,7 @@
         notification_add_observer(HSUTwiterLogout, self, @selector(twitterLogout));
         notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
         notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
+        notification_add_observer(UIApplicationWillEnterForegroundNotification, self, @selector(tableViewRerenderCells));
     }
     return self;
 }
@@ -424,6 +425,7 @@
                 self.unreadCount ++;
             }
         }
+        [self unreadCountChanged];
         if (gapped) {
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
         }
@@ -467,6 +469,7 @@
                 self.unreadCount ++;
             }
         }
+        [self unreadCountChanged];
         [self.data insertObjects:newData atIndexes:set];
         if (!gapped) {
             [self.data removeObject:self.gapCellData];
@@ -1136,6 +1139,11 @@
     [self clearCache];
 }
 
+- (void)tableViewRerenderCells
+{
+    [self.tableView reloadData];
+}
+
 - (void)showUnreadIndicator
 {
     [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
@@ -1150,4 +1158,5 @@
 {
     return self.statusBarHidden;
 }
+
 @end
