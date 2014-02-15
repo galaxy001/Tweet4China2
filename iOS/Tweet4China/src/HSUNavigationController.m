@@ -10,8 +10,6 @@
 
 @interface HSUNavigationController ()
 
-@property (nonatomic, weak) UIProgressView *progressBar;
-
 @end
 
 @implementation HSUNavigationController
@@ -25,15 +23,6 @@
         self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
     }
 #endif
-    
-    if (Sys_Ver >= 7) {
-        UIProgressView *progressBar = [[UIProgressView alloc] init];
-        [self.navigationBar addSubview:progressBar];
-        progressBar.trackTintColor = kWhiteColor;
-        progressBar.top = self.navigationBar.height - progressBar.height;
-        progressBar.width = self.navigationBar.width;
-        self.progressBar = progressBar;
-    }
     
     self.view.backgroundColor = kWhiteColor;
 }
@@ -64,11 +53,6 @@
 - (BOOL)shouldAutorotate
 {
     return [self.viewControllers.lastObject shouldAutorotate];
-}
-
-- (void)updateProgress:(double)progress
-{
-    [self.progressBar setProgress:progress animated:NO];
 }
 
 - (BOOL)prefersStatusBarHidden
