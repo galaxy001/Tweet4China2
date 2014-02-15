@@ -424,14 +424,16 @@
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
         NSMutableArray *newDataArr = [NSMutableArray array];
+        NSUInteger newCount = 0;
         for (NSDictionary *rawData in dataArr) {
             if ([self filterData:rawData]) {
                 T4CTableCellData *cellData = [self createTableCellDataWithRawData:rawData];
                 [newDataArr addObject:cellData];
                 cellData.unread = YES;
-                self.unreadCount ++;
+                newCount ++;
             }
         }
+        self.unreadCount += newCount;
         [self unreadCountChanged];
         if (gapped) {
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
@@ -445,7 +447,7 @@
         
         [self.tableView reloadData];
         if (inserted) {
-            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count+(gapped?1:0)];
+            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:newCount+(gapped?1:0)];
         }
         [self saveCache];
     }

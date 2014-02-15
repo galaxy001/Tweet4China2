@@ -318,7 +318,7 @@
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
                 NSString *place = S(@"%.3f, %.3f", [geoInfo[@"coordinates"][0] doubleValue], [geoInfo[@"coordinates"][1] doubleValue]);
                 NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
-                timePlaceL.text = [NSString stringWithFormat:@"%@ %@ %@", timeText, _("Coordinate"), place];
+                timePlaceL.text = [NSString stringWithFormat:@"%@ %@: %@", timeText, _("Coordinate"), place];
                 
                 CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                 CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
