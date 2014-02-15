@@ -275,7 +275,14 @@
 {
     if (self.refreshState != T4CLoadingState_Done &&
         self.refreshState != T4CLoadingState_Error) {
-        [self.tableView.pullToRefreshView stopAnimating];
+        
+        if (self.refreshState == T4CLoadingState_Loading) {
+            if (self.tableView.pullToRefreshView.state != SVPullToRefreshStateLoading) {
+                [self.tableView.pullToRefreshView startAnimating];
+            }
+        } else {
+            [self.tableView.pullToRefreshView stopAnimating];
+        }
         return;
     }
     self.refreshState = T4CLoadingState_Loading;
@@ -578,9 +585,11 @@
     return nil;
 }
 
-- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.tabBarItem];
+    if (scrollView.contentOffset.y <= -scrollView.contentInset.top) {
+        [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView

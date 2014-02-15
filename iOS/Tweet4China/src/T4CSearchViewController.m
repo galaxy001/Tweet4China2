@@ -160,6 +160,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    [super scrollViewDidScroll:scrollView];
     [self.navigationController.navigationBar endEditing:YES];
 }
 

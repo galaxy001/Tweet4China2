@@ -40,6 +40,15 @@
     [self refresh];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (!self.view.window && self.tableView.contentOffset.y < - self.tableView.contentInset.top) {
+        self.tableView.contentOffset = ccp(0, - self.tableView.contentInset.top);
+    }
+}
+
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
@@ -297,7 +306,7 @@
 - (void)checkUnread
 {
     if (boolSetting(HSUSettingAutoUpdateConnect)) {
-        [self.tableView.pullToRefreshView startAnimating];
+//        [self.tableView.pullToRefreshView startAnimating];
         [self refresh];
     }
 }

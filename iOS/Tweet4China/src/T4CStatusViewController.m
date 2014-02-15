@@ -125,6 +125,7 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    [super scrollViewDidScroll:scrollView];
     if (scrollView.contentOffset.y < 10 - scrollView.contentInset.top) {
         [self loadInReplyStatus];
     }
