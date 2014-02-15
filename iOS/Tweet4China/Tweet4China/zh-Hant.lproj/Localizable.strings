@@ -250,10 +250,12 @@
 "retweeted" = "轉推了";
 "Request failed" = "請求失敗了";
 "others followed you" = "其他人關注了你";
-"Select before start camera" = "選擇進入相機還是相冊";
-"Connect directly" = "我在墻外";
+"Select before start camera" = "選擇進入相機或者相冊";
+"Connect directly" = "我在海外";
 "Original image quality" = "原始圖片質量";
 "Restart Now" = "立即重啟";
 "App need restart to apply this optional" = "需要重啟才能生效";
 "Auto Update Connect" = "自動更新互動";
 "Auto Update Messages" = "自動更新消息";
+"Start a new message" = "開始私信";
+"Reply to " = "回復 ";

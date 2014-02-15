@@ -17,6 +17,7 @@
 #import "T4CHomeViewController.h"
 #import "T4CConnectViewController.h"
 #import "T4CConversationsViewController.h"
+#import "T4CDiscoverViewController.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
@@ -57,6 +58,16 @@
                                                                 tag:2];
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
+        // Discover
+        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                                                             toolbarClass:nil];
+        UIViewController *discoverVC = [[T4CDiscoverViewController alloc] init];
+        discoverNav.viewControllers = @[discoverVC];
+        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
+                                                               image:[UIImage imageNamed:@"icn_tab_discover_default"]
+                                                                 tag:3];
+        [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
+        
         // Message
         UINavigationController *messageNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                             toolbarClass:nil];
@@ -69,14 +80,16 @@
         [messageNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
         // Discover
-        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+        /*
+        UINavigationController *webDav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
                                                                                              toolbarClass:nil];
-        UIViewController *discoverVC = [[HSUWebBrowserViewController alloc] init];
-        discoverNav.viewControllers = @[discoverVC];
-        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
+        UIViewController *webVC = [[HSUWebBrowserViewController alloc] init];
+        webDav.viewControllers = @[webVC];
+        webDav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
                                                                image:[UIImage imageNamed:@"icn_tab_discover_default"]
                                                                  tag:3];
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
+         */
         
         // Me
         UINavigationController *meNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
@@ -88,7 +101,7 @@
                                                            tag:4];
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        self.viewControllers = @[homeNav, connectNav, messageNav, discoverNav, meNav];
+        self.viewControllers = @[homeNav, connectNav, discoverNav, messageNav, meNav];
         
         self.delegate = self;
         self.lastSelectedTabBarItem = homeNav.tabBarItem;

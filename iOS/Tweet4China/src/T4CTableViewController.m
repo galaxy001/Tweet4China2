@@ -578,6 +578,11 @@
     return nil;
 }
 
+- (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView
+{
+    [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.tabBarItem];
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;

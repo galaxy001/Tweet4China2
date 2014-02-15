@@ -307,6 +307,7 @@
 		96AD8E0E1885656A0024698D /* HSUWebBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E0D1885656A0024698D /* HSUWebBrowserViewController.m */; };
 		96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */; };
 		96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E1318856A240024698D /* HSURETableViewController.m */; };
+		96B10F5518AD9E8D0016CEDA /* T4CDiscoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */; };
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
 		96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */; };
@@ -796,6 +797,8 @@
 		96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUAddBookmarkViewController.m; sourceTree = "<group>"; };
 		96AD8E1218856A240024698D /* HSURETableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSURETableViewController.h; sourceTree = "<group>"; };
 		96AD8E1318856A240024698D /* HSURETableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURETableViewController.m; sourceTree = "<group>"; };
+		96B10F5318AD9E8D0016CEDA /* T4CDiscoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CDiscoverViewController.h; sourceTree = "<group>"; };
+		96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CDiscoverViewController.m; sourceTree = "<group>"; };
 		96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		96B55E9B16F9D5220084667B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -1008,6 +1011,8 @@
 				9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */,
 				9676D2FB189E93BA00E3AF45 /* T4CConnectViewController.h */,
 				9676D2FC189E93BA00E3AF45 /* T4CConnectViewController.m */,
+				96B10F5318AD9E8D0016CEDA /* T4CDiscoverViewController.h */,
+				96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */,
 				9676D30C189F743A00E3AF45 /* T4CConversationsViewController.h */,
 				9676D30D189F743A00E3AF45 /* T4CConversationsViewController.m */,
 				9676D30F189F78FC00E3AF45 /* T4CMessagesViewController.h */,
@@ -2132,6 +2137,7 @@
 				9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */,
 				9676D2FD189E93BA00E3AF45 /* T4CConnectViewController.m in Sources */,
 				96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */,
+				96B10F5518AD9E8D0016CEDA /* T4CDiscoverViewController.m in Sources */,
 				96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */,
 				967272681732C59800B6E30A /* HSUPersonListViewController.m in Sources */,
 				967272781732CF0300B6E30A /* HSUFollowingDataSource.m in Sources */,
@@ -2365,7 +2371,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: 可 徐 (2M45QU6PH2)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Xu Ke (Q58Y9Y87W8)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2373,7 +2379,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "E517C361-E82C-4C24-BFB3-BDB7520A4D37";
+				PROVISIONING_PROFILE = "74046EA2-CF91-4BAA-9BC7-87898FF02DE9";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
