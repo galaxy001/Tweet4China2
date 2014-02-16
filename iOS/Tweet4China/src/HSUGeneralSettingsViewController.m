@@ -24,6 +24,7 @@
 @property (nonatomic, weak) REBoolItem *overseasItem;
 @property (nonatomic, weak) REBoolItem *autoUpdateConnectItem;
 @property (nonatomic, weak) REBoolItem *autoUpdateConversationItem;
+@property (nonatomic, weak) REBoolItem *refreshThenScrollToTopItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -286,6 +287,19 @@
         }
     };
     
+    REBoolItem *refreshThenScrollToTopItem = [REBoolItem itemWithTitle:_("Refresh then Scroll to Top")
+                                                                 value:boolSetting(HSUSettingRefreshThenScrollToTop)];
+    self.refreshThenScrollToTopItem = refreshThenScrollToTopItem;
+    [section addItem:refreshThenScrollToTopItem];
+    refreshThenScrollToTopItem.switchValueChangeHandler = ^(REBoolItem *item) {
+        
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
+    
     RERadioItem *cacheSizeItem =
     [RERadioItem itemWithTitle:_("Cache Size")
                          value:setting(HSUSettingCacheSize)
@@ -365,6 +379,7 @@
     BOOL connectDirectly = self.overseasItem.value;
     BOOL autoUpdateConnect = self.autoUpdateConnectItem.value;
     BOOL autoUpdateConversation = self.autoUpdateConversationItem.value;
+    BOOL refreshThenScrollToTop = self.refreshThenScrollToTopItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -383,7 +398,8 @@
                        HSUSettingShowOriginalImage: @(showOriginalImage),
                        HSUSettingOverseas: @(connectDirectly),
                        HSUSettingAutoUpdateConnect: @(autoUpdateConnect),
-                       HSUSettingAutoUpdateConversation: @(autoUpdateConversation)};
+                       HSUSettingAutoUpdateConversation: @(autoUpdateConversation),
+                       HSUSettingRefreshThenScrollToTop: @(refreshThenScrollToTop)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {

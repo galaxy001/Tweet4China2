@@ -81,6 +81,7 @@ static HSUShadowsocksProxy *proxy;
     settings[HSUSettingShowOriginalImage] = @NO;
     settings[HSUSettingAutoUpdateConnect] = @NO;
     settings[HSUSettingAutoUpdateConversation] = @NO;
+    settings[HSUSettingRefreshThenScrollToTop] = @NO;
 #endif
     self.globalSettings = settings;
     [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];

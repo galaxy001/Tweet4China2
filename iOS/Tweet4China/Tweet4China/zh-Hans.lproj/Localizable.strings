@@ -264,3 +264,7 @@
 "web_browser_moved_notification_message" = "内置浏览器功能已经被迁移，点击左上角按钮就能找到.";
 "Notification" = "提醒";
 "Got it" = "知道了";
+"Refresh then Scroll to Top" = "刷新后滚到顶部";
+"Confirm Delete" = "确认删除";
+"Warning" = "警告";
+"warn_delete_conversation_message" = "删除后的私信无法找回";

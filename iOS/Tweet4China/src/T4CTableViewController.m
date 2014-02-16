@@ -409,6 +409,8 @@
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
     if (dataArr.count) {
+        BOOL scrollToTop = boolSetting(HSUSettingRefreshThenScrollToTop);
+        
         NSDictionary *topData = dataArr.firstObject;
         long long topID = [topData[@"id"] longLongValue];
         self.topID = topID;
@@ -435,10 +437,12 @@
         }
         self.unreadCount += newCount;
         [self unreadCountChanged];
-        if (gapped) {
+        if (gapped && !scrollToTop) {
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
         }
-        [newDataArr addObjectsFromArray:self.data];
+        if (!scrollToTop) {
+            [newDataArr addObjectsFromArray:self.data];
+        }
         [self.data removeAllObjects];
         [self.data addObjectsFromArray:newDataArr];
         
@@ -446,7 +450,7 @@
         self.bottomID = [botData[@"id"] longLongValue];
         
         [self.tableView reloadData];
-        if (inserted) {
+        if (inserted && !scrollToTop) {
             [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:newCount+(gapped?1:0)];
         }
         [self saveCache];
@@ -779,7 +783,7 @@
     }
     __weak typeof(self)weakSelf = self;
     dispatch_async(GCDMainThread, ^{
-        uint cacheSize = kRequestDataCountViaWifi;
+        uint cacheSize = 200;
         NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
         for (T4CTableCellData *cellData in weakSelf.data) {
             if (cacheDataArr.count < cacheSize) {
@@ -801,7 +805,7 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([cacheArr indexOfObject:cache] < 50) {
+//        if ([cacheArr indexOfObject:cache] < 180) {
 //            continue;
 //        }
 #endif

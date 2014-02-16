@@ -81,6 +81,10 @@
                                                  target:self
                                                  action:@selector(dismiss)];
     }
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+                                              initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+                                              target:self
+                                              action:@selector(actionButtonTouched)];
     self.view.backgroundColor = kWhiteColor;
 }
 
@@ -139,7 +143,11 @@
     }
     
     if (!self.followedMe) {
-        NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@", _("You can not send direct message to"), self.herProfile[@"screen_name"], self.herProfile[@"screen_name"], _("is not following you.")];
+        NSString *message = [NSString stringWithFormat:@"%@ @%@, @%@ %@",
+                             _("You can not send direct message to"),
+                             self.herProfile[@"screen_name"],
+                             self.herProfile[@"screen_name"],
+                             _("is not following you.")];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:nil message:message delegate:nil cancelButtonTitle:_("OK") otherButtonTitles:nil, nil];
         [alert show];
         return;
@@ -246,5 +254,54 @@
         [self _scrollToBottomWithAnimation:YES];
     }
 }
+
+- (void)actionButtonTouched
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *deleteItem = [RIButtonItem itemWithLabel:_("Delete Conversation")];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:deleteItem otherButtonItems:nil, nil];
+    [actionSheet showFromTabBar:self.tabBarController.tabBar];
+    
+    deleteItem.action = ^{
+        RIButtonItem *confirmDeleteItem = [RIButtonItem itemWithLabel:_("Confirm Delete")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Warning")
+                                                        message:_("warn_delete_conversation_message")
+                                               cancelButtonItem:cancelItem
+                                               otherButtonItems:confirmDeleteItem, nil];
+        [alert show];
+        
+        __weak typeof(self)weakSelf = self;
+        confirmDeleteItem.action = ^{
+            [weakSelf deleteConversation];
+        };
+    };
+}
+
+- (void)deleteConversation
+{
+    [SVProgressHUD showWithStatus:nil];
+    NSArray *messages = self.conversation[@"messages"];
+    NSUInteger count = messages.count;
+    for (NSDictionary *message in messages) {
+        NSUInteger i = [messages indexOfObject:message];
+        __weak typeof(self)weakSelf = self;
+        [twitter deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
+            if (i == count - 1) {
+                [SVProgressHUD dismiss];
+                notification_post_with_object(HSUDeleteConversationNotification, weakSelf.conversation);
+                [weakSelf.navigationController popViewControllerAnimated:YES];
+            }
+        } failure:^(NSError *error) {
+            if (error.code == 204) {
+                if (i == count - 1) {
+                    [SVProgressHUD dismiss];
+                    notification_post_with_object(HSUDeleteConversationNotification, weakSelf.conversation);
+                    [weakSelf.navigationController popViewControllerAnimated:YES];
+                }
+            }
+        }];
+    }
+}
+
 
 @end

@@ -24,6 +24,7 @@
     if (self) {
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
         notification_add_observer(HSUDirectMessageSentNotification, self, @selector(directMessageSent:));
+        notification_add_observer(HSUDeleteConversationNotification, self, @selector(conversationDeleted:));
     }
     return self;
 }
@@ -197,6 +198,61 @@
             newRD[@"messages"] = messages;
             cellData.rawData = newRD;
             [self.tableView reloadData];
+        }
+    }
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *confirmDeleteItem = [RIButtonItem itemWithLabel:_("Confirm Delete")];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Warning")
+                                                        message:_("warn_delete_conversation_message")
+                                               cancelButtonItem:cancelItem
+                                               otherButtonItems:confirmDeleteItem, nil];
+        [alert show];
+        
+        __weak typeof(self)weakSelf = self;
+        confirmDeleteItem.action = ^{
+            T4CTableCellData *cellData = weakSelf.data[indexPath.row];
+            NSArray *messages = cellData.rawData[@"messages"];
+            [SVProgressHUD showWithStatus:nil];
+            NSUInteger count = messages.count;
+            for (NSDictionary *message in messages) {
+                NSUInteger i = [messages indexOfObject:message];
+                [twitter deleteDirectMessage:message[@"id_str"] success:^(id responseObj) {
+                    if (i == count - 1) {
+                        [SVProgressHUD dismiss];
+                        [weakSelf.data removeObjectAtIndex:indexPath.row];
+                        [weakSelf saveCache];
+                        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                    }
+                } failure:^(NSError *error) {
+                    if (error.code == 204) {
+                        if (i == count - 1) {
+                            [SVProgressHUD dismiss];
+                            [weakSelf.data removeObjectAtIndex:indexPath.row];
+                            [weakSelf saveCache];
+                            [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+                        }
+                    }
+                }];
+            }
+        };
+        
+    }
+}
+
+- (void)conversationDeleted:(NSNotification *)notification
+{
+    for (uint i=0; i<self.data.count; i++) {
+        T4CTableCellData *cd = self.data[i];
+        if (cd.rawData == notification.object) {
+            [self.data removeObjectAtIndex:i];
+            [self saveCache];
+            [self.tableView reloadData];
+            break;
         }
     }
 }
