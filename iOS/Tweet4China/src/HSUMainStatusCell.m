@@ -351,7 +351,8 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if (([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"])
+                     && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;
                 }
@@ -446,7 +447,7 @@
         self.imgLoadSpinner.center = imageView.boundsCenter;
         NSString *photoUrl = data.photoUrl;
         if (photoUrl) {
-            if ([setting(HSUSettingShowOriginalImage) boolValue]) {
+            if (boolSetting(HSUSettingShowOriginalImage)) {
                 [self _downloadPhotoWithURL:[NSURL URLWithString:data.photoUrl]];
             } else {
                 [self _downloadPhotoWithURL:[NSURL URLWithString:[HSUCommonTools smallTwitterImageUrlStr:data.photoUrl]]];

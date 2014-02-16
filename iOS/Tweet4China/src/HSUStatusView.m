@@ -360,8 +360,12 @@
         
         return @"video";
         
-    } else if ([GlobalSettings[HSUSettingPhotoPreview] boolValue] &&
+    } else if (boolSetting(HSUSettingPhotoPreview) &&
                ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
+        
+        if ([url hasSuffix:@"_v/"]) {
+            return @"video";
+        }
         
         NSString *mediaUrl = self.data.photoUrl;
         if (mediaUrl) {
@@ -432,7 +436,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -492,14 +496,15 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if (([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"])
+                    && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;
                 }
             }
         }
     }
-    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview)) {
         if (IPHONE) {
             height += 120 + 20;
         } else {
