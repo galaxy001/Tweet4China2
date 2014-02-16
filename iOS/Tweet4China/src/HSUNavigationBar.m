@@ -30,14 +30,33 @@
         set = YES;
     }
     [super layoutSubviews];
+    
+    for (UIView *subview in self.subviews) {
+        if ([subview isKindOfClass:[UIButton class]]) {
+            if (self.highter) {
+                subview.top = 6;
+            }
+        }
+    }
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
     if (Sys_Ver >= 7) {
-        return [super sizeThatFits:size];
+        return CGSizeMake(self.frame.size.width, self.highter ? 88 : 44);
     } else {
         return CGSizeMake(self.frame.size.width, 44);
     }
+}
+
+- (void)setHighter:(BOOL)highter
+{
+    _highter = highter;
+    if (highter) {
+        self.height = 88;
+    } else {
+        self.height = 44;
+    }
+    [self setNeedsLayout];
 }
 
 @end

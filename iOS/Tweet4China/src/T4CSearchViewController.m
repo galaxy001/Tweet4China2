@@ -48,7 +48,11 @@
     UISegmentedControl *typeControl =
     [[UISegmentedControl alloc] initWithItems:@[_("Tweets"), _("User")]];
     self.typeControl = typeControl;
-    [self.tableView addSubview:typeControl];
+    if (Sys_Ver >= 7) {
+        [self.navigationController.navigationBar addSubview:typeControl];
+    } else {
+        [self.tableView addSubview:typeControl];
+    }
     typeControl.selectedSegmentIndex = 0;
     [typeControl addTarget:self
                     action:@selector(typeControlValueChanged:)
@@ -66,6 +70,11 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                             initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                             target:self
+                                             action:@selector(backButtonTouched)];
     
     if (!self.searchTF) {
         UITextField *searchTF;
@@ -104,7 +113,9 @@
         }
         [self.navigationController.navigationBar addSubview:searchTF];
     }
+    ((HSUNavigationBar *)self.navigationController.navigationBar).highter = YES;
     self.searchTF.hidden = NO;
+    self.typeControl.hidden = NO;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -123,6 +134,26 @@
     
     [self.searchTF resignFirstResponder];
     self.searchTF.hidden = YES;
+    self.typeControl.hidden = YES;
+}
+
+- (void)backButtonTouched
+{
+    if (Sys_Ver >= 7) {
+        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
+        [self.typeControl removeFromSuperview];
+    }
+    [self.searchTF removeFromSuperview];
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
+    
+    if (Sys_Ver >= 7) {
+        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
+    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -133,8 +164,12 @@
     if (Sys_Ver >= 7) {
         originTableViewContentInsetTop = status_height + navbar_height;
     }
-    self.tableView.contentInset = edi(originTableViewContentInsetTop + 10 + self.typeControl.height + 10, 0, tabbar_height, 0);
-    self.typeControl.topCenter = ccp(self.view.width/2, originTableViewContentInsetTop + 10 - self.tableView.contentInset.top);
+    if (Sys_Ver >= 7) {
+        self.typeControl.topCenter = ccp(self.typeControl.superview.width/2, 3+44);
+    } else {
+        self.tableView.contentInset = edi(originTableViewContentInsetTop + 10 + self.typeControl.height + 10, 0, tabbar_height, 0);
+        self.typeControl.topCenter = ccp(self.view.width/2, originTableViewContentInsetTop + 10 - self.tableView.contentInset.top);
+    }
 }
 
 - (void)typeControlValueChanged:(UISegmentedControl *)segmentControl
