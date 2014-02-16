@@ -308,6 +308,7 @@
 		96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */; };
 		96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E1318856A240024698D /* HSURETableViewController.m */; };
 		96B10F5518AD9E8D0016CEDA /* T4CDiscoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */; };
+		96B10F5918AFA8560016CEDA /* icn_web_browser@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B10F5818AFA8560016CEDA /* icn_web_browser@2x.png */; };
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
 		96B590C918A36A2A00DC3527 /* T4CRetweetersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B590C818A36A2A00DC3527 /* T4CRetweetersViewController.m */; };
@@ -799,6 +800,7 @@
 		96AD8E1318856A240024698D /* HSURETableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURETableViewController.m; sourceTree = "<group>"; };
 		96B10F5318AD9E8D0016CEDA /* T4CDiscoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CDiscoverViewController.h; sourceTree = "<group>"; };
 		96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CDiscoverViewController.m; sourceTree = "<group>"; };
+		96B10F5818AFA8560016CEDA /* icn_web_browser@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_web_browser@2x.png"; sourceTree = "<group>"; };
 		96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
 		96B55E9B16F9D5220084667B /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -1167,6 +1169,7 @@
 		962817A216DE5FDF00ABF0AD /* images */ = {
 			isa = PBXGroup;
 			children = (
+				96B10F5818AFA8560016CEDA /* icn_web_browser@2x.png */,
 				96B590E718A66E0B00DC3527 /* icn_tweet_action_more_disabled@2x.png */,
 				96B590CE18A66D2600DC3527 /* icn_tweet_action_delete_disabled@2x.png */,
 				96B590D518A66D2600DC3527 /* icn_tweet_action_reply_disabled@2x.png */,
@@ -1899,6 +1902,7 @@
 				969F2FD11823D69500015765 /* btn_floating_segment_default@2x~ipad.png in Resources */,
 				9628A6F617F81F7B005374F1 /* icn_tab_discover_selected@2x~iphone.png in Resources */,
 				96992D4C188D0D3B00AADDC2 /* icn_activity_weixin@2x.png in Resources */,
+				96B10F5918AFA8560016CEDA /* icn_web_browser@2x.png in Resources */,
 				969F2F971822497C00015765 /* icn_profile_settings@2x~ipad.png in Resources */,
 				969F2FBD1823D3B000015765 /* btn_standard_default@2x~ipad.png in Resources */,
 				96B590E818A66E0C00DC3527 /* icn_tweet_action_more_disabled@2x.png in Resources */,
@@ -2412,8 +2416,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/WeChatSDK",
+					"3th-party/Flurry",
+					"3th-party/WeChatSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2442,8 +2446,8 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/WeChatSDK",
+					"3th-party/Flurry",
+					"3th-party/WeChatSDK",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -2476,7 +2480,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+					"3th-party/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -2505,7 +2509,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+					"3th-party/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
@@ -2535,7 +2539,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+					"3th-party/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -2563,7 +2567,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"/Users/jason/mywork/tweet4china2/iOS/Tweet4China/3th-party/Flurry",
+					"3th-party/Flurry",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;

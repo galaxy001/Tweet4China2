@@ -37,7 +37,7 @@
         UILabel *statusLabel = [[UILabel alloc] init];
         [self.contentView addSubview:statusLabel];
         self.statusLabel = statusLabel;
-        statusLabel.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) floatValue]];
+        statusLabel.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) floatValue] - 2];
         statusLabel.textColor = [UIColor lightGrayColor];
         statusLabel.numberOfLines = 0;
         statusLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -105,7 +105,7 @@
         statusLabel.numberOfLines = 0;
         statusLabel.lineBreakMode = NSLineBreakByWordWrapping;
     });
-    statusLabel.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) floatValue]];
+    statusLabel.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) floatValue] - 2];
     statusLabel.text = data.rawData[@"text"];
     statusLabel.size = [statusLabel sizeThatFits:ccs(kWinWidth-20-48-10, 0)];
     return statusLabel.height + 80;

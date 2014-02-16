@@ -548,7 +548,7 @@
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count
 {
-    if (self.data.count) {
+    if (self.data.count && count) {
         CGRect visibleRect = ccr(0, self.tableView.contentOffset.y+self.tableView.contentInset.top,
                                  self.tableView.width, self.tableView.height);
         NSArray *indexPathsVisibleRows = [self.tableView indexPathsForRowsInRect:visibleRect];

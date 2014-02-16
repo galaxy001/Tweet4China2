@@ -16,6 +16,7 @@
 #import "HSUAppDelegate.h"
 #import "HSUGeneralSettingsViewController.h"
 #import "HSUAboutViewController.h"
+#import "HSUWebBrowserViewController.h"
 
 @interface HSUSettingsViewController () <RETableViewManagerDelegate>
 
@@ -74,7 +75,6 @@
           [weakSelf.navigationController pushViewController:accountsVC animated:YES];
       }]];
     
-//#ifndef FreeApp
     [section addItem:
      [RETableViewItem itemWithTitle:_("Proxy Server")
                       accessoryType:UITableViewCellAccessoryDisclosureIndicator
@@ -89,7 +89,23 @@
           HSUShadowsocksViewController *shadowsocksVC = [[HSUShadowsocksViewController alloc] init];
           [weakSelf.navigationController pushViewController:shadowsocksVC animated:YES];
       }]];
-//#endif
+    
+    section = [RETableViewSection section];
+    [self.manager addSection:section];
+    RETableViewItem *wbItem =
+    [RETableViewItem itemWithTitle:_("Web Browser")
+                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
+                  selectionHandler:^(RETableViewItem *item)
+     {
+         static HSUWebBrowserViewController *webVC;
+         static dispatch_once_t onceToken;
+         dispatch_once(&onceToken, ^{
+             webVC = [[HSUWebBrowserViewController alloc] init];
+         });
+         [self.navigationController pushViewController:webVC animated:YES];
+     }];
+    wbItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    [section addItem:wbItem];
     
     section = [RETableViewSection section];
     [self.manager addSection:section];

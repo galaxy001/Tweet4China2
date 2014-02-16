@@ -30,6 +30,16 @@
     return @"statuses/home_timeline";
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    [super scrollViewDidScroll:scrollView];
+    
+    if (scrollView.contentOffset.y <= scrollView.contentInset.top) {
+        self.unreadCount = 0;
+        [self unreadCountChanged];
+    }
+}
+
 //#ifdef DEBUG
 //- (NSUInteger)requestCount
 //{

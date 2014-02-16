@@ -51,6 +51,7 @@
 - (NSString *)dataTypeOfData:(NSDictionary *)data;
 - (T4CTableCellData *)createTableCellDataWithRawData:(NSDictionary *)rawData;
 - (void)showUnreadIndicator;
+- (void)unreadCountChanged;
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count;
 
