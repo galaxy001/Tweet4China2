@@ -8,6 +8,7 @@
 
 #import "HSUConversationCell.h"
 #import "NSDate+Additions.h"
+#import "GTMNSString+HTML.h"
 
 @interface HSUConversationCell ()
 
@@ -121,7 +122,7 @@
     self.nameLabel.text = name;
     self.snLabel.text = sn;
     self.timeLabel.text = time;
-    self.contentLabel.text = content;
+    self.contentLabel.text = [content gtm_stringByUnescapingFromHTML];
     self.unreadIndicator.hidden = !data.unreadDM;
     
     [self.nameLabel sizeToFit];

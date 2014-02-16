@@ -8,6 +8,7 @@
 
 #import "HSUMessageCell.h"
 #import "HSUAttributedLabel.h"
+#import "GTMNSString+HTML.h"
 
 @interface HSUMessageCell ()
 
@@ -144,7 +145,7 @@
         self.contentBackground.image = [[UIImage imageNamed:@"sms-left"] stretchableImageFromCenter];
         self.contentLabel.textAlignment = NSTextAlignmentLeft;
     }
-    self.contentLabel.text = data.rawData[@"text"];
+    self.contentLabel.text = [data.rawData[@"text"] gtm_stringByUnescapingFromHTML];
     NSString *avatarUrl = data.rawData[@"sender"][@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
