@@ -12,7 +12,9 @@
 @interface HSUGalleryView : UIView
 
 @property (nonatomic, weak) T4CTableViewController *viewController;
+@property (nonatomic, weak) UIImageView *imageView;
 
+- (id)initStartPhotoView:(UIView *)startPhotoView originalImageURL:(NSURL *)originalImageURL;
 - (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image;
 - (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL;
 - (id)initWithData:(T4CTableCellData *)data previewImage:(UIImage *)previewImage originalImageURL:(NSURL *)originalImageURL;

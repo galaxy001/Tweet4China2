@@ -26,8 +26,10 @@
 @property (nonatomic, readonly) NSDictionary *mainStatus;
 
 - (void)more;
-- (void)openPhoto:(UIImage *)photo;
-- (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL;
+- (void)photoButtonTouched:(UIView *)photoButton;
+- (void)photoButtonTouched:(UIView *)photoButton originalImageURL:(NSURL *)originalImageURL;
+//- (void)openPhoto:(UIImage *)photo;
+//- (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL;
 - (void)attributedLabel:(TTTAttributedLabel *)label didSelectLinkWithArguments:(NSDictionary *)arguments;
 - (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithArguments:(NSDictionary *)arguments;
 

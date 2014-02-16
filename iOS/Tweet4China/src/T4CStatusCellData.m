@@ -524,19 +524,15 @@
     [galleryView showWithAnimation:YES];
 }
 
-- (void)openPhoto:(UIImage *)photo
+- (void)photoButtonTouched:(UIView *)photoView
 {
-    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self
-                                                          image:photo];
-    [self.tableVC.view.window addSubview:galleryView];
-    [galleryView showWithAnimation:YES];
+    [self photoButtonTouched:photoView originalImageURL:nil];
 }
 
-- (void)openPhoto:(UIImage *)photo originalImageURL:(NSURL *)originalImageURL
+- (void)photoButtonTouched:(UIView *)photoView originalImageURL:(NSURL *)originalImageURL
 {
-    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initWithData:self
-                                                          previewImage:photo
-                                                      originalImageURL:originalImageURL];
+    HSUGalleryView *galleryView = [[HSUGalleryView alloc] initStartPhotoView:photoView
+                                                            originalImageURL:originalImageURL];
     [self.tableVC.view.window addSubview:galleryView];
     [galleryView showWithAnimation:YES];
 }

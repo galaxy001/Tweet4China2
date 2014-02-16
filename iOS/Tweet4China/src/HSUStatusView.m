@@ -544,10 +544,10 @@
     UIImage *prevImage = [self.imagePreviewButton imageForState:UIControlStateNormal];
     if (prevImage) {
         if ([setting(HSUSettingShowOriginalImage) boolValue]) {
-            [self.data openPhoto:prevImage
-                originalImageURL:[NSURL URLWithString:self.data.photoUrl]];
+            [self.data photoButtonTouched:self.imagePreviewButton
+                         originalImageURL:[NSURL URLWithString:self.data.photoUrl]];
         } else {
-            [self.data openPhoto:prevImage];
+            [self.data photoButtonTouched:self.imagePreviewButton];
         }
     }
 }

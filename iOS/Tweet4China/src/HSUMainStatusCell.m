@@ -743,7 +743,7 @@
 - (void)_firePhotoTap:(UITapGestureRecognizer *)tap
 {
     if (tap.state == UIGestureRecognizerStateEnded && imageView.image) {
-        [self.data openPhoto:imageView.image];
+        [self.data photoButtonTouched:imageView];
     }
 }
 
