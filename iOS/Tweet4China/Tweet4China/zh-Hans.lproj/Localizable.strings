@@ -261,3 +261,6 @@
 "Reply to " = "回复 ";
 "Coordinate" = "坐标";
 "Web Browser" = "浏览器";
+"web_browser_moved_notification_message" = "内置浏览器功能已经被迁移，点击左上角按钮就能找到.";
+"Notification" = "提醒";
+"Got it" = "知道了";

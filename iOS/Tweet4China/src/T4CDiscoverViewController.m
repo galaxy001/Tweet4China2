@@ -14,6 +14,23 @@
 
 @implementation T4CDiscoverViewController
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"web_browser_moved_notification"]) {
+        [[[UIAlertView alloc]
+          initWithTitle:_("Notification")
+          message:_("web_browser_moved_notification_message")
+          delegate:self
+          cancelButtonTitle:_("Got it")
+          otherButtonTitles:nil, nil]
+         show];
+        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"web_browser_moved_notification"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+}
+
 - (BOOL)filterData:(NSDictionary *)data
 {
     if (![super filterData:data]) {
