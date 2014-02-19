@@ -31,9 +31,9 @@
     }
     [super layoutSubviews];
     
-    for (UIView *subview in self.subviews) {
-        if ([subview isKindOfClass:[UIButton class]]) {
-            if (self.highter) {
+    if (self.highter) {
+        for (UIView *subview in self.subviews) {
+            if ([subview isKindOfClass:[UIButton class]]) {
                 subview.top = 6;
             }
         }
