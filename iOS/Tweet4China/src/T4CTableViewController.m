@@ -210,6 +210,9 @@
         [self.tableView reloadData];
     } else {
         self.tableView.height = [UIScreen mainScreen].bounds.size.height - [[UIApplication sharedApplication] statusBarFrame].size.height + 20;
+        if (Sys_Ver < 7) {
+            self.tableView.height -= 20 + navbar_height + (self.tabBarController.tabBar.isHidden ? 0 : self.tabBarController.tabBar.height);
+        }
     }
     self.unreadCountLabel.rightTop = ccp(kWinWidth-kIPADMainViewPadding*2-10, -3 + self.tableView.contentInset.top);
 }
@@ -490,7 +493,7 @@
         self.gapCellData.state = T4CLoadingState_Done;
         
         [self.tableView reloadData];
-        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
+//        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
         [self saveCache];
     } else {
         self.gapCellData.state = T4CLoadingState_NoMore;
@@ -805,7 +808,7 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([cacheArr indexOfObject:cache] < 180) {
+//        if ([cacheArr indexOfObject:cache] < 100) {
 //            continue;
 //        }
 #endif
