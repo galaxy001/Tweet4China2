@@ -18,7 +18,6 @@
 @property (nonatomic, strong) UIScrollView *infoView;
 @property (nonatomic, strong) UIPageControl *pager;
 @property (nonatomic, strong) UIView *avatarBGView;
-@property (nonatomic, strong) UIButton *avatarButton;
 @property (nonatomic, strong) UILabel *nameLabel;
 @property (nonatomic, strong) UIImageView *verifyFlag;
 @property (nonatomic, strong) UILabel *screenNameLabel;

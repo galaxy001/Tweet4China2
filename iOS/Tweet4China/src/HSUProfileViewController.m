@@ -41,6 +41,7 @@
 #import "T4CFavoritesViewController.h"
 #import "T4CMessagesViewController.h"
 #import "T4CConversationsViewController.h"
+#import "HSUGalleryView.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -546,7 +547,10 @@
         NSString *url = self.profile[@"profile_image_url_https"];
         if (url) {
             url = [url stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
-            [self openPhotoURL:[NSURL URLWithString:url] withCellData:nil];
+            HSUGalleryView *galleryView = [[HSUGalleryView alloc] initStartPhotoView:self.profileView.avatarButton
+                                                                    originalImageURL:[NSURL URLWithString:url]];
+            [self.view.window addSubview:galleryView];
+            [galleryView showWithAnimation:YES];
         }
     }
 }

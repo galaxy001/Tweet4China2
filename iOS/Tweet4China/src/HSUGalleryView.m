@@ -193,10 +193,12 @@
                 [UIView animateWithDuration:.3 animations:^{
                     CGRect frame;
                     CGSize size = weakSelf.size;
-                    if (IPHONE) {
-                        size.height = size.width * weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width;
-                    } else {
-                        size.width = size.height * weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height;
+                    if (weakSelf.imageView.image) {
+                        if (IPHONE) {
+                            size.height = size.width * weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width;
+                        } else {
+                            size.width = size.height * weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height;
+                        }
                     }
                     frame.size = size;
                     frame.origin = ccp(0, weakSelf.height/2-size.height/2);
