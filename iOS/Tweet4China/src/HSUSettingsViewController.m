@@ -97,6 +97,7 @@
                      accessoryType:UITableViewCellAccessoryDisclosureIndicator
                   selectionHandler:^(RETableViewItem *item)
      {
+         [item deselectRowAnimated:YES];
          static HSUWebBrowserViewController *webVC;
          static dispatch_once_t onceToken;
          dispatch_once(&onceToken, ^{

@@ -15,6 +15,7 @@
 
 @property (nonatomic, weak) UIActivityIndicatorView *spinner;
 @property (nonatomic, weak) UIView *startPhotoView;
+@property (nonatomic, assign) UIDeviceOrientation imageOrientation;
 
 @end
 
@@ -167,7 +168,7 @@
     }
     [self resetImageOrientation];
     if (animation) {
-        if (IPAD || UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+        if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation)) {
             self.alpha = 0;
             [UIView animateWithDuration:.3 animations:^{
                 self.alpha = 1;
@@ -232,7 +233,7 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
     
-    if (IPAD || UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+    if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation)) {
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 0;
         } completion:^(BOOL finished) {
@@ -303,6 +304,7 @@
 - (void)resetImageOrientation
 {
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    self.imageOrientation = orientation;
     if (orientation == UIDeviceOrientationLandscapeLeft) {
         imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
         imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);

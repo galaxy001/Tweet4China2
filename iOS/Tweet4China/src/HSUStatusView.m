@@ -294,7 +294,7 @@
         attrI.imageName = nil;
     }
     self.imagePreviewButton.hidden = YES;
-    if (self.data.hasPhoto && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if (self.data.hasPhoto && boolSetting(HSUSettingPhotoPreview)) {
         self.imagePreviewButton.hidden = NO;
         [self.imagePreviewButton setImageWithUrlStr:[HSUCommonTools smallTwitterImageUrlStr:self.data.photoUrl]
                                            forState:UIControlStateNormal
@@ -324,7 +324,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([self.data.attr isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([self.data.attr isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
