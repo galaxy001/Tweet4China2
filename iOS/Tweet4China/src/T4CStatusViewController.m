@@ -211,6 +211,9 @@
             if ([screenName isEqualToString:MyScreenName]) {
                 continue;
             }
+            if ([defaultText rangeOfString:authorScreenName].location == NSNotFound) { // remove duplicated mention
+                continue;
+            }
             [defaultText appendFormat:@"@%@ ", screenName];
         }
         uint length = defaultText.length - start;
@@ -243,6 +246,9 @@
         if ([userMention[@"screen_name"] isEqualToString:MyScreenName]) {
             continue;
         }
+        if ([placeHolder rangeOfString:name].location == NSNotFound) { // remove duplicated mention
+            continue;
+        }
         [placeHolder appendFormat:@"%@, ", name];
     }
     return [placeHolder substringToIndex:placeHolder.length-2];
@@ -268,11 +274,14 @@
     }
     NSArray *userMentions = self.status[@"entities"][@"user_mentions"];
     for (NSDictionary *userMention in userMentions) {
-        NSString *name = userMention[@"screen_name"];
-        if ([name isEqualToString:MyScreenName]) {
+        NSString *screenName = userMention[@"screen_name"];
+        if ([screenName isEqualToString:MyScreenName]) {
             continue;
         }
-        [placeHolder appendFormat:@"@%@ ", name];
+        if ([placeHolder rangeOfString:screenName].location == NSNotFound) { // remove duplicated mention
+            continue;
+        }
+        [placeHolder appendFormat:@"@%@ ", screenName];
     }
     return placeHolder;
 }
