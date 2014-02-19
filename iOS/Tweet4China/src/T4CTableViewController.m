@@ -422,7 +422,7 @@
         long long curTopID = [curTopData[@"id"] longLongValue];
         BOOL gapped = curTopID > 0 && newBotID > curTopID;
         BOOL inserted = self.data.count > 0;
-        if (!gapped) {
+        if (!gapped && curTopID) {
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
         NSMutableArray *newDataArr = [NSMutableArray array];
@@ -440,7 +440,7 @@
         if (gapped && !scrollToTop) {
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
         }
-        if (!scrollToTop) {
+        if (!gapped || !scrollToTop) {
             [newDataArr addObjectsFromArray:self.data];
         }
         [self.data removeAllObjects];

@@ -42,6 +42,7 @@
 		960E805518866F1500B1F165 /* T4CTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805418866F1500B1F165 /* T4CTableViewController.m */; };
 		960E805B188683C600B1F165 /* NSArray+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805A188683C600B1F165 /* NSArray+Additions.m */; };
 		960E805E1886878300B1F165 /* T4CTableCellData.m in Sources */ = {isa = PBXBuildFile; fileRef = 960E805D1886878300B1F165 /* T4CTableCellData.m */; };
+		9611E6E418B3BA73005CBEA4 /* HSUServerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 9611E6E318B3BA73005CBEA4 /* HSUServerList.m */; };
 		9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF6617086E320038935C /* CFNetwork.framework */; };
 		9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF69170899E00038935C /* AudioToolbox.framework */; };
 		9628175016DE5EDC00ABF0AD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
@@ -446,6 +447,8 @@
 		960E805A188683C600B1F165 /* NSArray+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Additions.m"; sourceTree = "<group>"; };
 		960E805C1886878300B1F165 /* T4CTableCellData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CTableCellData.h; sourceTree = "<group>"; };
 		960E805D1886878300B1F165 /* T4CTableCellData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CTableCellData.m; sourceTree = "<group>"; };
+		9611E6E218B3BA73005CBEA4 /* HSUServerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUServerList.h; sourceTree = "<group>"; };
+		9611E6E318B3BA73005CBEA4 /* HSUServerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUServerList.m; sourceTree = "<group>"; };
 		9612AF6617086E320038935C /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9612AF69170899E00038935C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		9628174C16DE5EDC00ABF0AD /* Tweet4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweet4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -985,6 +988,8 @@
 			children = (
 				9632A24F17DB1EBD0046F930 /* HSUShadowsocksProxy.h */,
 				9632A25017DB1EBD0046F930 /* HSUShadowsocksProxy.m */,
+				9611E6E218B3BA73005CBEA4 /* HSUServerList.h */,
+				9611E6E318B3BA73005CBEA4 /* HSUServerList.m */,
 				96A5076217D31C44002AABEE /* AppProxyCap.h */,
 				96A5076317D31C44002AABEE /* AppProxyCap.m */,
 				960640C317D08590000B1032 /* Supporting Files */,
@@ -2040,6 +2045,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				960640E217D085D8000B1032 /* interpose.c in Sources */,
+				9611E6E418B3BA73005CBEA4 /* HSUServerList.m in Sources */,
 				960640E517D085D8000B1032 /* encrypt.c in Sources */,
 				9632A25117DB1EBD0046F930 /* HSUShadowsocksProxy.m in Sources */,
 				96A5076417D31C44002AABEE /* AppProxyCap.m in Sources */,
@@ -2375,7 +2381,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Xu Ke (Q58Y9Y87W8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: 可 徐 (2M45QU6PH2)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2383,7 +2389,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "74046EA2-CF91-4BAA-9BC7-87898FF02DE9";
+				PROVISIONING_PROFILE = "FD632A8E-B826-4D42-BEF3-4DBBDD0A7681";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
