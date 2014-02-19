@@ -142,4 +142,9 @@
     }
 }
 
+- (NSUInteger)requestCount
+{
+    return 0;
+}
+
 @end
