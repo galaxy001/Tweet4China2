@@ -168,7 +168,7 @@
     }
     [self resetImageOrientation];
     if (animation) {
-        if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation)) {
+        if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation) || !self.startPhotoView) {
             self.alpha = 0;
             [UIView animateWithDuration:.3 animations:^{
                 self.alpha = 1;
@@ -235,7 +235,7 @@
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
     
-    if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation)) {
+    if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation) || !self.startPhotoView) {
         [UIView animateWithDuration:.3 animations:^{
             self.alpha = 0;
         } completion:^(BOOL finished) {
