@@ -13,7 +13,7 @@
 // placeholder position
 - (CGRect)textRectForBounds:(CGRect)bounds
 {
-    return CGRectInset(bounds, 24, 4);
+    return CGRectInset(bounds, 8, 4);
 }
 
 // text position

@@ -71,10 +71,12 @@
 {
     [super viewWillAppear:animated];
     
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-                                             initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                             target:self
-                                             action:@selector(backButtonTouched)];
+    if (Sys_Ver >= 7) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+                                                 initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                 target:self
+                                                 action:@selector(backButtonTouched)];
+    }
     
     if (!self.searchTF) {
         UITextField *searchTF;
@@ -104,16 +106,12 @@
             searchTF.leftTop = ccp(40, 10);
             searchTF.backgroundColor = bw(255);
             searchTF.layer.cornerRadius = 3;
-            UIImageView *leftView = [[UIImageView alloc]
-                                     initWithImage:[UIImage imageNamed:@"ic_search"]
-                                     highlightedImage:[UIImage imageNamed:@"ic_search_white"]];
-            leftView.width *= 1.8;
-            leftView.contentMode = UIViewContentModeScaleAspectFit;
-            searchTF.leftView = leftView;
         }
         [self.navigationController.navigationBar addSubview:searchTF];
     }
-    ((HSUNavigationBar *)self.navigationController.navigationBar).highter = YES;
+    if (Sys_Ver >= 7) {
+        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = YES;
+    }
     self.searchTF.hidden = NO;
     self.typeControl.hidden = NO;
 }
