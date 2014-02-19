@@ -19,6 +19,7 @@
 #endif
 #import <HSUWebCache/HSUWebCache.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import "HSUServerList.h"
 
 static HSUShadowsocksProxy *proxy;
 
@@ -130,6 +131,9 @@ static HSUShadowsocksProxy *proxy;
     
     notification_add_observer(SVProgressHUDWillAppearNotification, self, @selector(disableWindowUserinterface));
     notification_add_observer(SVProgressHUDWillDisappearNotification, self, @selector(enbleWindowUserinterface));
+    
+    self.serverList = [[HSUServerList alloc] init];
+    [self.serverList updateServerList];
     
     return YES;
 }
