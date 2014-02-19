@@ -226,7 +226,10 @@ static NSString *defaultUserAgent;
 
 + (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr
 {
-    return S(@"%@:small", originalImageUrlStr);
+    if ([originalImageUrlStr rangeOfString:@"twimg.com"].location != NSNotFound) {
+        return S(@"%@:small", originalImageUrlStr);
+    }
+    return originalImageUrlStr;
 }
 
 @end
