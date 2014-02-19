@@ -990,7 +990,7 @@
         }
     } else {
         for (T4CTableCellData *cellData in self.data) {
-            if ([cellData.dataType isEqualToString:kDataType_Status]) {
+            if ([cellData.dataType isEqualToString:kDataType_Status] || [cellData.dataType isEqualToString:kDataType_MainStatus]) {
                 if ([cellData.rawData[@"id"] isEqual:[notification.object objectForKey:@"id"]]) {
                     cellData.rawData = notification.object;
                     [self.tableView reloadData];
