@@ -40,7 +40,9 @@
         self.nameLabel = nameLabel;
         nameLabel.textColor = kBlackColor;
         nameLabel.font = [UIFont boldSystemFontOfSize:14];
-        nameLabel.highlightedTextColor = kWhiteColor;
+        if (Sys_Ver < 7) {
+            nameLabel.highlightedTextColor = kWhiteColor;
+        }
         nameLabel.backgroundColor = kClearColor;
         nameLabel.frame = ccr(avatarButton.right+9, 10, 180, 18); // todo change 180 to variable
         
@@ -49,7 +51,9 @@
         self.screenNameLabel = screenNameLabel;
         screenNameLabel.textColor = kGrayColor;
         screenNameLabel.font = [UIFont systemFontOfSize:12];
-        screenNameLabel.highlightedTextColor = kWhiteColor;
+        if (Sys_Ver < 7) {
+            screenNameLabel.highlightedTextColor = kWhiteColor;
+        }
         screenNameLabel.backgroundColor = kClearColor;
         screenNameLabel.frame = ccr(nameLabel.left, nameLabel.bottom+2, 180, 18);
         
@@ -69,7 +73,9 @@
         self.ffInfoLabel = ffInfoLabel;
         ffInfoLabel.textColor = kGrayColor;
         ffInfoLabel.font = [UIFont systemFontOfSize:12];
-        ffInfoLabel.highlightedTextColor = kWhiteColor;
+        if (Sys_Ver < 7) {
+            ffInfoLabel.highlightedTextColor = kWhiteColor;
+        }
         ffInfoLabel.backgroundColor = kClearColor;
         ffInfoLabel.frame = ccr(screenNameLabel.left, screenNameLabel.bottom+2, 180, 18);
         
@@ -78,7 +84,9 @@
         self.descLabel = descLabel;
         descLabel.textColor = kBlackColor;
         descLabel.font = [UIFont systemFontOfSize:14];
-        descLabel.highlightedTextColor = kGrayColor;
+        if (Sys_Ver < 7) {
+            descLabel.highlightedTextColor = kWhiteColor;
+        }
         descLabel.backgroundColor = kClearColor;
         descLabel.numberOfLines = 0;
         descLabel.lineBreakMode = NSLineBreakByWordWrapping;
