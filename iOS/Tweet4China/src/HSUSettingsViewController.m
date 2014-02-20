@@ -97,6 +97,16 @@
                      accessoryType:UITableViewCellAccessoryDisclosureIndicator
                   selectionHandler:^(RETableViewItem *item)
      {
+         
+         NSUInteger useBrowserCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"UseBrowserCount"] unsignedIntegerValue];
+         if (useBrowserCount ++ > 10) {
+             if (![[HSUAppDelegate shared] buyProApp]) {
+                 return ;
+             }
+         }
+         [[NSUserDefaults standardUserDefaults] setInteger:useBrowserCount forKey:@"UseBrowserCount"];
+         [[NSUserDefaults standardUserDefaults] synchronize];
+         
          [item deselectRowAnimated:YES];
          static HSUWebBrowserViewController *webVC;
          static dispatch_once_t onceToken;
