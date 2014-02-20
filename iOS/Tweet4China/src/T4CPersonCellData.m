@@ -13,6 +13,17 @@
 
 - (void)follow
 {
+    static int followCount = 0;
+    followCount ++;
+    if (followCount > 10 && followCount % 5 == 0) {
+        [[[UIAlertView alloc] initWithTitle:_("Warning")
+                                    message:_("Twitter may lock your account if you follow more users in a short time!")
+                                   delegate:nil
+                          cancelButtonTitle:_("I got it")
+                          otherButtonTitles:nil, nil]
+         show];
+        return;
+    }
     T4CTableViewController *viewController = self.target;
     NSString *screenName = self.rawData[@"screen_name"];
     self.sendingFollowingRequest = YES;

@@ -268,3 +268,4 @@
 "Confirm Delete" = "确认删除";
 "Warning" = "警告";
 "warn_delete_conversation_message" = "删除后的私信无法找回";
+"Twitter may lock your account if you follow more users in a short time!" = "一下子关注很多人又可能会被推特官方封号哟！";
