@@ -127,7 +127,7 @@
     timeL.backgroundColor = kClearColor;
     
     self.textAL.textColor = rgb(38, 38, 38);
-    self.textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
+    self.textAL.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) integerValue]];
     self.textAL.backgroundColor = kClearColor;
     if (Sys_Ver < 7) {
         self.textAL.highlightedTextColor = kWhiteColor;

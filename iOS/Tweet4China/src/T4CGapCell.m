@@ -64,7 +64,7 @@
 {
     [super layoutSubviews];
     
-    self.titleLabel.center = self.boundsCenter;
+    self.titleLabel.center = self.contentView.boundsCenter;
     self.loadingSpinner.center = self.boundsCenter;
 }
 
