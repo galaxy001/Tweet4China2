@@ -126,11 +126,12 @@ static HSUShadowsocksProxy *proxy;
     
     [self updateImageCacheSize];
     [self logJailBreak];
-    [self updateConfig];
+//    [self updateConfig];
     [self registerWeixinApp];
     
     notification_add_observer(SVProgressHUDWillAppearNotification, self, @selector(disableWindowUserinterface));
     notification_add_observer(SVProgressHUDWillDisappearNotification, self, @selector(enbleWindowUserinterface));
+    notification_add_observer(@"ShadowsocksServerListUpdatedNotification", self, @selector(ssUpdated:));
     
     self.serverList = [[HSUServerList alloc] init];
     [self.serverList updateServerList];
@@ -564,6 +565,46 @@ static HSUShadowsocksProxy *proxy;
             } failure:^(NSError *error) {
                 
             }];
+        }
+    }
+}
+
+- (void)ssUpdated:(NSNotification *)notification
+{
+    NSDictionary *json = notification.object;
+    NSMutableArray *proServers = [json[@"pro"] mutableCopy];
+    for (int i=0; i<proServers.count; i++) {
+        proServers[i] = [proServers[i] mutableCopy];
+    }
+    NSMutableArray *freeServers = [json[@"free"] mutableCopy];
+    for (int i=0; i<freeServers.count; i++) {
+        freeServers[i] = [freeServers[i] mutableCopy];
+    }
+#ifdef FreeApp
+    NSMutableArray *servers = [freeServers mutableCopy];
+    servers[arc4random_uniform(servers.count) - 1][HSUShadowsocksSettings_Selected] = @YES;
+#else
+    NSMutableArray *servers = [[proServers arrayByAddingObjectsFromArray:freeServers] mutableCopy];
+    servers[arc4random_uniform(proServers.count)][HSUShadowsocksSettings_Selected] = @YES;
+#endif
+    
+    NSArray *oldServers = [[NSUserDefaults standardUserDefaults] arrayForKey:HSUShadowsocksSettings];
+    for (NSDictionary *ns in servers) {
+        BOOL found = NO;
+        for (NSDictionary *os in oldServers) {
+            if ([ns[HSUShadowsocksSettings_Server] isEqualToString:os[HSUShadowsocksSettings_Server]]) {
+                NSUInteger op = [os[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                NSUInteger np = [ns[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                if (op == np) {
+                    found = YES;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            [[NSUserDefaults standardUserDefaults] setObject:servers forKey:HSUShadowsocksSettings];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            break;
         }
     }
 }

@@ -80,7 +80,7 @@
         count ++;
     }
     [self.tableView reloadData];
-    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
+//    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
     
     if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
         if (!self.view.window) {

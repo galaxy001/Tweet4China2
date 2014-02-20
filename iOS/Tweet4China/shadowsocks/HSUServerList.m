@@ -28,7 +28,12 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-    NSString *requestString = @"GET /tw.ss.json HTTP/1.1\r\nHost: tuoxie.me\r\nConnection: close\r\n\r\n";
+#ifdef DEBUG
+    NSString *requestString = @"GET /tw.ss.json.test "
+#else
+    NSString *requestString = @"GET /tw.ss.json "
+#endif
+    @"HTTP/1.1\r\nHost: tuoxie.me\r\nConnection: close\r\n\r\n";
     NSData *requestData = [requestString dataUsingEncoding:NSUTF8StringEncoding];
     [sock writeData:requestData withTimeout:10 tag:0];
 }
@@ -42,6 +47,10 @@
 {
     [self.responseData appendData:data];
     [sock readDataWithTimeout:10 tag:0];
+}
+
+- (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
+{
     NSString *responseString = [[NSString alloc] initWithData:self.responseData encoding:NSUTF8StringEncoding];
     NSUInteger loc = [responseString rangeOfString:@"\r\n\r\n"].location;
     if (loc != NSNotFound) {
@@ -49,7 +58,7 @@
         if (jsonData) {
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
             if (json) {
-                [sock disconnect];
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"ShadowsocksServerListUpdatedNotification" object:json];
             }
         }
     }
