@@ -645,7 +645,12 @@
         [self loadGap:gapCellData];
     } else if ([cellData.dataType isEqualToString:kDataType_Status] ||
                [cellData.dataType isEqualToString:kDataType_ChatStatus]) {
-        if ([((T4CStatusCellData *)cellData).mode isEqualToString:@"action"]) {
+        T4CStatusCellData *statusData = (T4CStatusCellData *)cellData;
+        if (statusData.showingMore) {
+            [tableView deselectRowAtIndexPath:indexPath animated:YES];
+            return;
+        }
+        if ([statusData.mode isEqualToString:@"action"]) {
             notification_post_with_object(HSUStatusShowActionsNotification, cellData);
         }
         T4CStatusViewController *statusVC = [[T4CStatusViewController alloc] init];

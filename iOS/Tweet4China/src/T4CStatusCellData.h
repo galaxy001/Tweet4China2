@@ -24,6 +24,7 @@
 @property (nonatomic, copy) NSString *attr;
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, readonly) NSDictionary *mainStatus;
+@property (nonatomic, assign) BOOL showingMore;
 
 - (void)more;
 - (void)photoButtonTouched:(UIView *)photoButton;

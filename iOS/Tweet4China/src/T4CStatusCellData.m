@@ -261,6 +261,7 @@
         RIButtonItem *tweetLinkItem = [RIButtonItem itemWithLabel:_("Tweet Link")];
         __weak typeof(self)weakSelf = self;
         tweetLinkItem.action = ^{
+            weakSelf.showingMore = NO;
             [Flurry logEvent:S(@"tweet link in %@", [weakSelf.tableVC.class description])];
             
             if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
@@ -290,6 +291,7 @@
         
         RIButtonItem *copyLinkItem = [RIButtonItem itemWithLabel:_("Copy Link")];
         copyLinkItem.action = ^{
+            weakSelf.showingMore = NO;
             [Flurry logEvent:S(@"copy link in %@", [weakSelf.tableVC.class description])];
             
             if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
@@ -321,6 +323,7 @@
         
         RIButtonItem *mailLinkItem = [RIButtonItem itemWithLabel:_("Mail Link")];
         mailLinkItem.action = ^{
+            weakSelf.showingMore = NO;
             [Flurry logEvent:S(@"mail link in %@", [weakSelf.tableVC.class description])];
             
             if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
@@ -354,6 +357,7 @@
         
         RIButtonItem *openInSafariItem = [RIButtonItem itemWithLabel:_("Open in Safari")];
         openInSafariItem.action = ^{
+            weakSelf.showingMore = NO;
             [Flurry logEvent:S(@"open in safari in %@", [weakSelf.tableVC.class description])];
             
             if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
@@ -384,6 +388,7 @@
         if ([[OpenInChromeController sharedInstance] isChromeInstalled]) {
             RIButtonItem *openInChromeItem = [RIButtonItem itemWithLabel:_("Open in Chrome")];
             openInChromeItem.action = ^{
+                weakSelf.showingMore = NO;
                 [Flurry logEvent:S(@"open in chrome in %@", [weakSelf.tableVC.class description])];
                 
                 if ([weakSelf.tableVC.presentedViewController isKindOfClass:[SVModalWebViewController class]] || urls.count == 1) {
@@ -419,6 +424,7 @@
     __weak typeof(self)weakSelf = self;
     RIButtonItem *copyLinkToTweetItem = [RIButtonItem itemWithLabel:_("Copy Link of Tweet")];
     copyLinkToTweetItem.action = ^{
+        weakSelf.showingMore = NO;
         [Flurry logEvent:S(@"copy Link of tweet in %@", [self.tableVC.class description])];
         
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
@@ -429,6 +435,7 @@
     
     RIButtonItem *mailTweetItem = [RIButtonItem itemWithLabel:_("Mail Tweet")];
     mailTweetItem.action = ^{
+        weakSelf.showingMore = NO;
         [Flurry logEvent:S(@"mail tweet in %@", [weakSelf.tableVC.class description])];
         
         [twitter oembedStatus:id_str success:^(id responseObj) {
@@ -447,6 +454,7 @@
     
     RIButtonItem *translateItem = [RIButtonItem itemWithLabel:_("Translate by Youdao")];
     translateItem.action = ^{
+        weakSelf.showingMore = NO;
         [SVProgressHUD showWithStatus:_("Translating")];
         dispatch_async(GCDBackgroundThread, ^{
             NSString *text = weakSelf.mainStatus[@"text"];
@@ -493,11 +501,16 @@
     
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     [actionSheet addButtonItem:cancelItem];
+    cancelItem.action = ^{
+        weakSelf.showingMore = NO;
+    };
     
     [actionSheet setCancelButtonIndex:count];
     [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
     
     notification_post(HSUStatusShowActionsNotification);
+    
+    self.showingMore = YES;
     [self.tableVC.tableView reloadData];
 }
 

@@ -542,6 +542,11 @@
     [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
+- (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
+{
+    [self.data more];
+}
+
 #pragma mark -
 #pragma actions
 - (void)imageButtonTouched
