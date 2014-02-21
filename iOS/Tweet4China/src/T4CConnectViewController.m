@@ -65,79 +65,80 @@
     [super requestDidFinishRefreshWithData:dataArr];
     
     NSInteger count = 0;
-    if (newRetweets.count) {
-        T4CTableCellData *rtCellData = [[T4CTableCellData alloc]
-                                        initWithRawData:newRetweets.firstObject
-                                        dataType:kDataType_NewRetweets];
-        [self.data insertObject:rtCellData atIndex:0];
-        count ++;
-    }
-    if (newFollowers.count) {
-        T4CTableCellData *nfCellData = [[T4CTableCellData alloc]
-                                        initWithRawData:@{@"followers": newFollowers}
-                                        dataType:kDataType_NewFollowers];
-        [self.data insertObject:nfCellData atIndex:0];
-        count ++;
-    }
-    [self.tableView reloadData];
-    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
-    
-    if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
-        if (!self.view.window) {
-            [self showUnreadIndicator];
-        }
-    }
-    return;
-    
-    // move to load cache
-    T4CTableCellData *firstCellData = self.data.firstObject;
-    T4CTableCellData *secondCellData = self.data.count >= 2 ? self.data[1] : nil;
-    if (newRetweets.count) {
-        T4CTableCellData *oldCellData = nil;
-        if ([firstCellData.dataType isEqualToString:kDataType_NewRetweets]) {
-            oldCellData = firstCellData;
-        } else if ([firstCellData.dataType isEqualToString:kDataType_NewFollowers] &&
-                   [secondCellData.dataType isEqualToString:kDataType_NewRetweets]) {
-            oldCellData = secondCellData;
-        }
-        if ([oldCellData.rawData[@"id"] isEqual:newRetweets.firstObject[@"id"]]) {
-                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
-                status[@"retweets"] = [newRetweets.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
-                oldCellData.rawData = status;
-        } else {
+    if (self.view.window) {
+        if (newRetweets.count) {
             T4CTableCellData *rtCellData = [[T4CTableCellData alloc]
                                             initWithRawData:newRetweets.firstObject
                                             dataType:kDataType_NewRetweets];
             [self.data insertObject:rtCellData atIndex:0];
             count ++;
         }
-    }
-    if (newFollowers.count) {
-        T4CTableCellData *oldCellData = nil;
-        if ([firstCellData.dataType isEqualToString:kDataType_NewFollowers]) {
-            oldCellData = firstCellData;
-        } else if ([firstCellData.dataType isEqualToString:kDataType_NewRetweets] &&
-                   [secondCellData.dataType isEqualToString:kDataType_NewFollowers]) {
-            oldCellData = secondCellData;
-        }
-        if (oldCellData) {
-                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
-                status[@"retweets"] = [newFollowers.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
-                oldCellData.rawData = status;
-        } else {
+        if (newFollowers.count) {
             T4CTableCellData *nfCellData = [[T4CTableCellData alloc]
                                             initWithRawData:@{@"followers": newFollowers}
                                             dataType:kDataType_NewFollowers];
             [self.data insertObject:nfCellData atIndex:0];
             count ++;
         }
-    }
-    [self.tableView reloadData];
-    [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
-    
-    if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
-        if (!self.view.window) {
-            [self showUnreadIndicator];
+        [self.tableView reloadData];
+        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
+        
+        if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
+            if (!self.view.window) {
+                [self showUnreadIndicator];
+            }
+        }
+    } else {
+        // move to load cache
+        T4CTableCellData *firstCellData = self.data.firstObject;
+        T4CTableCellData *secondCellData = self.data.count >= 2 ? self.data[1] : nil;
+        if (newRetweets.count) {
+            T4CTableCellData *oldCellData = nil;
+            if ([firstCellData.dataType isEqualToString:kDataType_NewRetweets]) {
+                oldCellData = firstCellData;
+            } else if ([firstCellData.dataType isEqualToString:kDataType_NewFollowers] &&
+                       [secondCellData.dataType isEqualToString:kDataType_NewRetweets]) {
+                oldCellData = secondCellData;
+            }
+            if ([oldCellData.rawData[@"id"] isEqual:newRetweets.firstObject[@"id"]]) {
+                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
+                status[@"retweets"] = [newRetweets.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
+                oldCellData.rawData = status;
+            } else {
+                T4CTableCellData *rtCellData = [[T4CTableCellData alloc]
+                                                initWithRawData:newRetweets.firstObject
+                                                dataType:kDataType_NewRetweets];
+                [self.data insertObject:rtCellData atIndex:0];
+                count ++;
+            }
+        }
+        if (newFollowers.count) {
+            T4CTableCellData *oldCellData = nil;
+            if ([firstCellData.dataType isEqualToString:kDataType_NewFollowers]) {
+                oldCellData = firstCellData;
+            } else if ([firstCellData.dataType isEqualToString:kDataType_NewRetweets] &&
+                       [secondCellData.dataType isEqualToString:kDataType_NewFollowers]) {
+                oldCellData = secondCellData;
+            }
+            if (oldCellData) {
+                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
+                status[@"retweets"] = [newFollowers.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
+                oldCellData.rawData = status;
+            } else {
+                T4CTableCellData *nfCellData = [[T4CTableCellData alloc]
+                                                initWithRawData:@{@"followers": newFollowers}
+                                                dataType:kDataType_NewFollowers];
+                [self.data insertObject:nfCellData atIndex:0];
+                count ++;
+            }
+        }
+        [self.tableView reloadData];
+        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
+        
+        if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
+            if (!self.view.window) {
+                [self showUnreadIndicator];
+            }
         }
     }
 }
