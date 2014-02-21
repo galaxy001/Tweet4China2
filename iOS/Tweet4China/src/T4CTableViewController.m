@@ -423,8 +423,10 @@
         
         NSDictionary *curTopData = [self.firstTimelineData rawData];
         long long curTopID = [curTopData[@"id"] longLongValue];
+        
         BOOL gapped = curTopID > 0 && newBotID > curTopID;
         BOOL inserted = self.data.count > 0;
+        
         if (!gapped && curTopID) {
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
@@ -808,8 +810,10 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([cacheArr indexOfObject:cache] < 100) {
-//            continue;
+//        if ([[self.class description] isEqualToString:@"T4CHomeViewController"]) {
+//            if ([cacheArr indexOfObject:cache] < 600) {
+//                continue;
+//            }
 //        }
 #endif
         if (self.data.count >= 200) {

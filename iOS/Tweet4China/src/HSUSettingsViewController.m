@@ -108,6 +108,11 @@
          [[NSUserDefaults standardUserDefaults] synchronize];
          
          [item deselectRowAnimated:YES];
+         
+         if (!shadowsocksStarted) {
+             [[HSUAppDelegate shared] startShadowsocks];
+         }
+         
          static HSUWebBrowserViewController *webVC;
          static dispatch_once_t onceToken;
          dispatch_once(&onceToken, ^{
