@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface HSUInstagramMediaCache : NSObject
+@interface HSUThirdPartyMediaCache : NSObject
 
 + (void)setMedia:(NSDictionary *)media forWebUrl:(NSString *)webUrl;
 + (NSDictionary *)mediaForWebUrl:(NSString *)webUrl;

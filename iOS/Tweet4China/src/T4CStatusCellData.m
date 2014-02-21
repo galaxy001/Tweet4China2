@@ -552,7 +552,7 @@
 
 - (void)openWebURL:(NSURL *)webURL withCellData:(T4CStatusCellData *)cellData
 {
-    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.instagramMediaID]) {
+    if ([HSUInstagramHandler openInInstagramWithMediaID:cellData.thirdPartyMediaID]) {
         return;
     }
     SVModalWebViewController *webViewController = [[SVModalWebViewController alloc] initWithURL:webURL];

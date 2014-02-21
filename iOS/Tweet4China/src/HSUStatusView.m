@@ -11,7 +11,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
 #import "NSDate+Additions.h"
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
+#import "HSUInstagramHandler.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -324,7 +325,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([self.data.attr isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([self.data.attr isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -361,7 +362,7 @@
         return @"video";
         
     } else if (boolSetting(HSUSettingPhotoPreview) &&
-               ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
+               [HSUInstagramHandler isInstagramLink:url]) {
         
         if ([url hasSuffix:@"_v/"]) {
             return @"video";
@@ -373,16 +374,16 @@
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
-        } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
+        } else if ((mediaUrl = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"url"])) {
             self.data.photoUrl = mediaUrl;
-            self.data.instagramMediaID = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
+            self.data.thirdPartyMediaID = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"media_id"];
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
         } else {
-            NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-            self.data.instagramUrl = instagramAPIUrl;
+            NSString *instagramAPIUrl = [HSUInstagramHandler apiUrlStringWithLink:url];
+            self.data.thirdPartyMediaUrl = instagramAPIUrl;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
             __weak typeof(self) weakSelf = self;
             AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
@@ -390,9 +391,9 @@
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.instagramUrl]) {
-                        [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
-                        weakSelf.data.instagramMediaID = JSON[@"media_id"];
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.thirdPartyMediaUrl]) {
+                        [HSUThirdPartyMediaCache setMedia:JSON forWebUrl:url];
+                        weakSelf.data.thirdPartyMediaID = JSON[@"media_id"];
                         NSString *imageUrl = JSON[@"url"];
                         if ([imageUrl hasSuffix:@".mp4"]) {
                             weakSelf.data.videoUrl = imageUrl;
@@ -436,7 +437,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -496,7 +497,7 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if (([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"])
+                if (([HSUInstagramHandler isInstagramLink:expandedUrl])
                     && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;

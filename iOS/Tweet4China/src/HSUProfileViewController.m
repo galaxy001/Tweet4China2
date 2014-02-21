@@ -31,7 +31,6 @@
 #import "HSUSearchPersonViewController.h"
 #import "HSUListsViewController.h"
 #import "HSUPhotosViewController.h"
-#import "HSURecentPhotosDataSource.h"
 #import "HSUSelectListsViewController.h"
 #import "T4CUserTimelineViewController.h"
 #import "T4CFollowersViewController.h"

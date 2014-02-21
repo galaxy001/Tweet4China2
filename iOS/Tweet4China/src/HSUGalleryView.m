@@ -242,6 +242,8 @@
             [self removeFromSuperview];
         }];
     } else {
+        imagePanel.zoomScale = 1; // reset scale
+        
         CGRect frame;
         CGSize size = self.size;
         if (IPHONE) {

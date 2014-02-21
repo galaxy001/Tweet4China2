@@ -101,7 +101,7 @@
                 oldCellData = secondCellData;
             }
             if ([oldCellData.rawData[@"id"] isEqual:newRetweets.firstObject[@"id"]]) {
-                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
+                NSMutableDictionary *status = [oldCellData.rawData mutableCopy];
                 status[@"retweets"] = [newRetweets.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
                 oldCellData.rawData = status;
             } else {
@@ -121,8 +121,8 @@
                 oldCellData = secondCellData;
             }
             if (oldCellData) {
-                NSMutableDictionary *status = oldCellData.rawData.mutableCopy;
-                status[@"retweets"] = [newFollowers.firstObject[@"retweets"] arrayByAddingObjectsFromArray:oldCellData.rawData[@"retweets"]];
+                NSMutableDictionary *status = [oldCellData.rawData mutableCopy];
+                status[@"followers"] = [newFollowers arrayByAddingObjectsFromArray:oldCellData.rawData[@"followers"]];
                 oldCellData.rawData = status;
             } else {
                 T4CTableCellData *nfCellData = [[T4CTableCellData alloc]

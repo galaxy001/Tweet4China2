@@ -27,4 +27,9 @@
             [urlStr hasPrefix:@"http://instagr.am/p/"]);
 }
 
++ (NSString *)apiUrlStringWithLink:(NSString *)link
+{
+    return S(@"http://api.instagram.com/oembed?url=%@", link);
+}
+
 @end

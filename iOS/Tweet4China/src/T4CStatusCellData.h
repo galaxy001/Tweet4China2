@@ -19,8 +19,8 @@
 @property (nonatomic, assign) CGFloat photoWidth;
 @property (nonatomic, assign) CGFloat photoHeight;
 @property (nonatomic, copy) NSString *photoUrl;
-@property (nonatomic, copy) NSString *instagramUrl;
-@property (nonatomic, copy) NSString *instagramMediaID;
+@property (nonatomic, copy) NSString *thirdPartyMediaUrl;
+@property (nonatomic, copy) NSString *thirdPartyMediaID;
 @property (nonatomic, copy) NSString *attr;
 @property (nonatomic, copy) NSString *videoUrl;
 @property (nonatomic, readonly) NSDictionary *mainStatus;

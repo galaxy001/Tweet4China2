@@ -15,7 +15,9 @@
 #import "HSUStatusActionView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
+#import "HSUInstagramHandler.h"
+#import "T4CTwitPicHandler.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -351,7 +353,7 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if (([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"])
+                if ([HSUInstagramHandler isInstagramLink:expandedUrl]
                      && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;
@@ -400,7 +402,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -453,25 +455,25 @@
                 [self _downloadPhotoWithURL:[NSURL URLWithString:[HSUCommonTools smallTwitterImageUrlStr:data.photoUrl]]];
             }
         } else {
-            NSString *instagramUrl = data.instagramUrl;
-            if (instagramUrl) {
+            NSString *thirdPartyMediaUrl = data.thirdPartyMediaUrl;
+            if (thirdPartyMediaUrl) {
                 NSString *mediaUrl = self.data.photoUrl;
                 if (mediaUrl) {
                     [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
-                } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:instagramUrl][@"url"])) {
+                } else if ((mediaUrl = [HSUThirdPartyMediaCache mediaForWebUrl:thirdPartyMediaUrl][@"url"])) {
                     self.data.photoUrl = mediaUrl;
-                    data.instagramMediaID = [HSUInstagramMediaCache mediaForWebUrl:instagramUrl][@"media_id"];
+                    data.thirdPartyMediaID = [HSUThirdPartyMediaCache mediaForWebUrl:thirdPartyMediaUrl][@"media_id"];
                     [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
-                } else {
+                } else if ([HSUInstagramHandler isInstagramLink:thirdPartyMediaUrl]) {
                     __weak typeof(self) weakSelf = self;
-                    NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", instagramUrl);
+                    NSString *instagramAPIUrl = [HSUInstagramHandler apiUrlStringWithLink:thirdPartyMediaUrl];
                     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
                     AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                         if ([JSON isKindOfClass:[NSDictionary class]] && [JSON[@"type"] isEqualToString:@"photo"]) {
-                            [HSUInstagramMediaCache setMedia:JSON forWebUrl:instagramUrl];
+                            [HSUThirdPartyMediaCache setMedia:JSON forWebUrl:thirdPartyMediaUrl];
                             NSString *imageUrl = JSON[@"url"];
                             data.photoUrl = imageUrl;
-                            data.instagramMediaID = JSON[@"media_id"];
+                            data.thirdPartyMediaID = JSON[@"media_id"];
                             [weakSelf _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
                         } else {
                             [weakSelf.imgLoadSpinner stopAnimating];
@@ -546,7 +548,7 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
                     attrName = @"photo";
                     break;
                 }
@@ -565,7 +567,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -724,10 +726,13 @@
             } else if ([expandedUrl hasPrefix:@"http://youtube.com"] ||
                        [expandedUrl hasPrefix:@"http://snpy.tv"]) {
                 attrName = @"video";
-            } else if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
-                data.instagramUrl = expandedUrl;
+            } else if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                data.thirdPartyMediaUrl = expandedUrl;
                 data.photoWidth = 612;
                 data.photoHeight = 612;
+                attrName = @"photo";
+            } else if ([T4CTwitPicHandler isTwitPicLink:expandedUrl]) {
+                data.thirdPartyMediaUrl = expandedUrl;
                 attrName = @"photo";
             }
             if (attrName) {

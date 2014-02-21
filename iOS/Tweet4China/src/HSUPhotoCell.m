@@ -7,8 +7,9 @@
 //
 
 #import "HSUPhotoCell.h"
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
 #import <AFNetworking/AFNetworking.h>
+#import "HSUInstagramHandler.h"
 
 @interface HSUPhotoCell ()
 
@@ -68,21 +69,21 @@
         
         return nil;
         
-    } else if ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"]) {
+    } else if ([HSUInstagramHandler isInstagramLink:url]) {
         
         NSString *mediaUrl = self.data.photoUrl;
         if (mediaUrl) {
             self.data.photoUrl = mediaUrl;
             [self.photoView setImageWithUrlStr:mediaUrl placeHolder:nil];
             return mediaUrl;
-        } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
+        } else if ((mediaUrl = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"url"])) {
             self.data.photoUrl = mediaUrl;
-            self.data.instagramMediaID = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
+            self.data.thirdPartyMediaID = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"media_id"];
             [self.photoView setImageWithUrlStr:mediaUrl placeHolder:nil];
             return mediaUrl;
         } else {
-            NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-            self.data.instagramUrl = instagramAPIUrl;
+            NSString *instagramAPIUrl = [HSUInstagramHandler apiUrlStringWithLink:url];
+            self.data.thirdPartyMediaUrl = instagramAPIUrl;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
             __weak typeof(self) weakSelf = self;
             AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
@@ -91,9 +92,9 @@
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
                     NSString *imageUrl = JSON[@"url"];
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.instagramUrl]) {
-                        [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
-                        weakSelf.data.instagramMediaID = JSON[@"media_id"];
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.thirdPartyMediaUrl]) {
+                        [HSUThirdPartyMediaCache setMedia:JSON forWebUrl:url];
+                        weakSelf.data.thirdPartyMediaID = JSON[@"media_id"];
                         if ([imageUrl hasSuffix:@".mp4"]) {
                             weakSelf.data.videoUrl = imageUrl;
                         } else {

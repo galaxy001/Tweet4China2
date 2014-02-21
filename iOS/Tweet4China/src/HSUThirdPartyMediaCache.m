@@ -6,14 +6,14 @@
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
 
 
 static NSMutableDictionary *instagramCache;
 static NSUInteger instagramCount;
 #define InstagramCacheFileName @"tweet4china.instagram.cache"
 
-@implementation HSUInstagramMediaCache
+@implementation HSUThirdPartyMediaCache
 
 + (void)initialize
 {
