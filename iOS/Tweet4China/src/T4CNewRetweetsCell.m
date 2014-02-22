@@ -49,6 +49,9 @@
 {
     [super setupWithData:data];
     
+    for (UIView *avatar in self.avatars) {
+        [avatar removeFromSuperview];
+    }
     NSArray *retweeters = data.rawData[@"retweeters"];
     NSMutableArray *avatars = [NSMutableArray arrayWithCapacity:retweeters.count];
     for (NSDictionary *follower in [retweeters subarrayWithRange:NSMakeRange(0, MIN(6, retweeters.count))]) {
