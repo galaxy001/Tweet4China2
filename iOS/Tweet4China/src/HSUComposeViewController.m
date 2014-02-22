@@ -727,11 +727,14 @@
 
 #pragma mark - Actions
 - (void)photoButtonTouched {
-    if ([setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
+    if (boolSetting(HSUSettingSelectBeforeStartCamera)) {
         if ([self.contentTV isFirstResponder]) {
             [self.contentTV resignFirstResponder];
         } else {
             [self.contentTV becomeFirstResponder];
+        }
+        if (self.postImage && !self.previewIV.image) {
+            [self photoSelected:self.postImage];
         }
         return;
     }
