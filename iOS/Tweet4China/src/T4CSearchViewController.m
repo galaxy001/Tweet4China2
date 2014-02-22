@@ -91,7 +91,9 @@
             searchTF = [[HSUSearchField alloc] init];
         }
         self.searchTF = searchTF;
-        searchTF.text = @"@tuoxie007";
+        if ([[[NSBundle mainBundle] bundleIdentifier] isEqualToString:@"me.tuoxie.Tweet4ChinaSP"]) {
+            searchTF.text = @"@tuoxie007";
+        }
         searchTF.placeholder = _("Search Tweets");
         searchTF.returnKeyType = UIReturnKeySearch;
         searchTF.autocorrectionType = UITextAutocorrectionTypeNo;

@@ -232,4 +232,15 @@ static NSString *defaultUserAgent;
     return originalImageUrlStr;
 }
 
++ (UIColor *)barTintColor
+{
+//    self.tabBar.barTintColor = bwa(255, 0.9);
+    return kBlackColor;
+}
+
++ (UIColor *)tintColor
+{
+    return kWhiteColor;
+}
+
 @end

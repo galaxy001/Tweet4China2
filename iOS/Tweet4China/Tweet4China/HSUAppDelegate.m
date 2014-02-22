@@ -104,6 +104,15 @@ static HSUShadowsocksProxy *proxy;
     } else {
         tabController = [[HSUTabController alloc] init];
     }
+
+#ifdef __IPHONE_7_0
+    if (Sys_Ver >= 7 && IPHONE) {
+//        [[UITabBar appearance] setTintColor:[HSUCommonTools tintColor]];
+//        [[UITabBar appearance] setBarTintColor:[HSUCommonTools barTintColor]];
+//        [[UINavigationBar appearance] setTintColor:[HSUCommonTools tintColor]];
+//        [[UINavigationBar appearance] setBarTintColor:[HSUCommonTools barTintColor]];
+    }
+#endif
     
     self.window.rootViewController = tabController;
     self.tabController = tabController;
@@ -165,6 +174,12 @@ static HSUShadowsocksProxy *proxy;
 {
     [proxy stop];
     [self.checkUnreadTimer invalidate];
+    
+    UIBackgroundTaskIdentifier bgTask = UIBackgroundTaskInvalid;
+    bgTask = [[UIApplication sharedApplication]
+              beginBackgroundTaskWithExpirationHandler:^{
+                  [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+              }];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url

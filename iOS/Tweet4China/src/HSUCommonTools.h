@@ -36,4 +36,7 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 
 + (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr;
 
++ (UIColor *)barTintColor;
++ (UIColor *)tintColor;
+
 @end

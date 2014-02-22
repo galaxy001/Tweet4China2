@@ -912,6 +912,11 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         return;
     }
     
+    if ([UIApplication sharedApplication].applicationState
+        == UIApplicationStateBackground) { // ignore error in background.
+        return;
+    }
+    
     if ([Reachability reachabilityForInternetConnection].isReachable) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Retry Later")];
         RIButtonItem *changeServerItem = [RIButtonItem itemWithLabel:_("Change Server")];
