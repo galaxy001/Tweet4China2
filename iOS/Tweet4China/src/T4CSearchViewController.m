@@ -192,12 +192,16 @@
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
-    if (Sys_Ver >= 7) {
-        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
-        [self.typeControl removeFromSuperview];
+    if ([self.navigationController.viewControllers indexOfObject:viewController] <
+        [self.navigationController.viewControllers indexOfObject:self]) {
+        
+        if (Sys_Ver >= 7) {
+            ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
+            [self.typeControl removeFromSuperview];
+        }
+        [self.searchTF removeFromSuperview];
+        [self.navigationController popViewControllerAnimated:YES];
     }
-    [self.searchTF removeFromSuperview];
-    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)refresh

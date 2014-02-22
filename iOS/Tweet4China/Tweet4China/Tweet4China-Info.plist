@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Tweet4China</string>
+	<string>T4C 内测3.3</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -30,7 +30,7 @@
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>me.tuoxie.${PRODUCT_NAME:rfc1034identifier}Pro</string>
+	<string>me.tuoxie.${PRODUCT_NAME:rfc1034identifier}30</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
