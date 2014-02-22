@@ -1179,6 +1179,7 @@
 - (void)showUnreadIndicator
 {
     [((HSUTabController *)self.tabBarController) showUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+    [self.tabController showUnreadIndicatorOnViewController:self.navigationController];
 }
 
 - (BOOL)shouldAutorotate

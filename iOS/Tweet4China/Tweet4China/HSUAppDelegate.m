@@ -581,8 +581,8 @@ static HSUShadowsocksProxy *proxy;
         freeServers[i] = [freeServers[i] mutableCopy];
     }
 #ifdef FreeApp
-    NSMutableArray *servers = [freeServers mutableCopy];
-    servers[arc4random_uniform(servers.count) - 1][HSUShadowsocksSettings_Selected] = @YES;
+    NSMutableArray *servers = [NSMutableArray arrayWithArray:freeServers];
+    servers[arc4random_uniform(servers.count-1)][HSUShadowsocksSettings_Selected] = @YES;
 #else
     NSMutableArray *servers = [[proServers arrayByAddingObjectsFromArray:freeServers] mutableCopy];
     servers[arc4random_uniform(proServers.count)][HSUShadowsocksSettings_Selected] = @YES;
