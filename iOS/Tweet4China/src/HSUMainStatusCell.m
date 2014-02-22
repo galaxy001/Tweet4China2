@@ -121,7 +121,7 @@
         [contentArea addSubview:textAL];
         textAL.font = [UIFont fontWithName:@"Georgia" size:MAX(textAL_font_S, [GlobalSettings[HSUSettingTextSize] integerValue])];
         textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
+        textAL.textColor = kBlackColor;
         textAL.highlightedTextColor = kWhiteColor;
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;

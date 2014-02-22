@@ -52,7 +52,7 @@
         [self.contentView addSubview:creatorLabel];
         creatorLabel.backgroundColor = kClearColor;
         creatorLabel.font = [UIFont systemFontOfSize:12];
-        creatorLabel.textColor = kLightBlueColor;
+        creatorLabel.textColor = [UIColor lightGrayColor];
         if (Sys_Ver < 7) {
             creatorLabel.highlightedTextColor = kWhiteColor;
         }
@@ -67,7 +67,7 @@
         [self.contentView addSubview:memberCountLabel];
         memberCountLabel.backgroundColor = kClearColor;
         memberCountLabel.font = [UIFont systemFontOfSize:12];
-        memberCountLabel.textColor = kLightBlueColor;
+        memberCountLabel.textColor = [UIColor lightGrayColor];
         if (Sys_Ver < 7) {
             memberCountLabel.highlightedTextColor = kWhiteColor;
         }

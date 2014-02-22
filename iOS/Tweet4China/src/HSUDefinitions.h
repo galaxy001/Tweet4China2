@@ -112,10 +112,10 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define LR(rect) NSLog(@"%@", NSStringFromCGRect(rect));
 #define LF(f,...) NSLog(f,##__VA_ARGS__);
 #define S(f,...) [NSString stringWithFormat:f,##__VA_ARGS__]
-#define kBlackColor [UIColor blackColor]
-#define kWhiteColor [UIColor whiteColor]
+#define kBlackColor [HSUCommonTools textColor]
+#define kWhiteColor [HSUCommonTools lightTextColor]
 #define kClearColor [UIColor clearColor]
-#define kGrayColor [UIColor grayColor]
+#define kGrayColor [HSUCommonTools grayTextColor]
 #define kLightBlueColor rgb(141, 157, 168)
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]

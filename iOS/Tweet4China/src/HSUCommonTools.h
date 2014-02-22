@@ -38,5 +38,8 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 
 + (UIColor *)barTintColor;
 + (UIColor *)tintColor;
++ (UIColor *)textColor;
++ (UIColor *)grayTextColor;
++ (UIColor *)lightTextColor;
 
 @end

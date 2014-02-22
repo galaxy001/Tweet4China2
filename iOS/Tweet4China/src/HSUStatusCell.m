@@ -38,9 +38,6 @@
     if (self) {
         notification_add_observer(HSUStatusShowActionsNotification, self, @selector(showActions:));
         
-//        UIGestureRecognizer *longTouchGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(longTouched:)];
-//        [self addGestureRecognizer:longTouchGesture];
-//        
         self.backgroundColor = kWhiteColor;
         
         self.statusView = [[HSUStatusView alloc] initWithFrame:ccr(padding_S, padding_S, self.contentView.width-padding_S*4, 0)

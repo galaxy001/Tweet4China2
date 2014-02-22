@@ -44,10 +44,8 @@
         TTTAttributedLabel *contentLabel = [[HSUAttributedLabel alloc] init];
         [self.contentView addSubview:contentLabel];
         self.contentLabel = contentLabel;
-        contentLabel.textColor = rgb(38, 38, 38);
         contentLabel.font = [UIFont systemFontOfSize:14];
         contentLabel.backgroundColor = kClearColor;
-        contentLabel.highlightedTextColor = kWhiteColor;
         contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
         contentLabel.numberOfLines = 0;
         contentLabel.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -96,10 +94,7 @@
 + (CGFloat)heightForData:(T4CTableCellData *)data
 {
     TTTAttributedLabel *testSizeLabel = [[HSUAttributedLabel alloc] init];
-    testSizeLabel.textColor = rgb(38, 38, 38);
     testSizeLabel.font = [UIFont systemFontOfSize:14];
-    testSizeLabel.backgroundColor = kClearColor;
-    testSizeLabel.highlightedTextColor = kWhiteColor;
     testSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     testSizeLabel.numberOfLines = 0;
     testSizeLabel.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),

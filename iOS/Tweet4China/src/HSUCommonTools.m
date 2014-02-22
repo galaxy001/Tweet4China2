@@ -234,13 +234,31 @@ static NSString *defaultUserAgent;
 
 + (UIColor *)barTintColor
 {
-//    self.tabBar.barTintColor = bwa(255, 0.9);
-    return kBlackColor;
+//    return bwa(255, 0.9);
+    return [UIColor blackColor];
 }
 
 + (UIColor *)tintColor
 {
-    return kWhiteColor;
+    return [UIColor whiteColor];
+}
+
++ (UIColor *)textColor
+{
+//    return [UIColor whiteColor];
+    return [UIColor blackColor];
+}
+
++ (UIColor *)grayTextColor
+{
+//    return [UIColor lightGrayColor];
+    return [UIColor grayColor];
+}
+
++ (UIColor *)lightTextColor
+{
+//    return [UIColor blackColor];
+    return [UIColor whiteColor];
 }
 
 @end
