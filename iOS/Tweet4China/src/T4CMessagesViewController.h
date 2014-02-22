@@ -20,6 +20,8 @@
 @property (nonatomic, assign) float keyboardAnimationDuration;
 @property (nonatomic, assign) float defaultKeyboardHeight;
 
+@property (nonatomic, copy) NSString *typingMessage;
+
 - (void)updateConversation:(NSDictionary *)conversation;
 
 @end

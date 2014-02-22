@@ -25,6 +25,7 @@
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
         notification_add_observer(HSUDirectMessageSentNotification, self, @selector(directMessageSent:));
         notification_add_observer(HSUDeleteConversationNotification, self, @selector(conversationDeleted:));
+        notification_add_observer(HSUConversationBackWithIncompletedSendingNotification, self, @selector(_conversationBack:));
     }
     return self;
 }
@@ -253,6 +254,19 @@
             [self saveCache];
             [self.tableView reloadData];
             break;
+        }
+    }
+}
+
+- (void)_conversationBack:(NSNotification *)notification
+{
+    NSArray *obj = notification.object;
+    NSDictionary *conversation = obj[0];
+    NSString *text = obj[1];
+    for (uint i=0; i<self.data.count; i++) {
+        T4CConversationCellData *cd = (T4CConversationCellData *)self.data[i];
+        if (cd.rawData == conversation) {
+            cd.typingMessage = text;
         }
     }
 }

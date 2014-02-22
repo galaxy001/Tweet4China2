@@ -136,16 +136,6 @@
     self.typeControl.hidden = YES;
 }
 
-- (void)backButtonTouched
-{
-    if (Sys_Ver >= 7) {
-        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
-        [self.typeControl removeFromSuperview];
-    }
-    [self.searchTF removeFromSuperview];
-    [self.navigationController popViewControllerAnimated:YES];
-}
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     [super tableView:tableView didSelectRowAtIndexPath:indexPath];
@@ -196,6 +186,16 @@
 {
     [super scrollViewDidScroll:scrollView];
     [self.navigationController.navigationBar endEditing:YES];
+}
+
+- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
+{
+    if (Sys_Ver >= 7) {
+        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
+        [self.typeControl removeFromSuperview];
+    }
+    [self.searchTF removeFromSuperview];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 - (void)refresh

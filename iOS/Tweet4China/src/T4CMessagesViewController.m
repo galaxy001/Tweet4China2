@@ -95,6 +95,12 @@
     UIEdgeInsets inset = self.tableView.contentInset;
     inset.bottom = self.view.height - self.toolbar.top;
     self.tableView.contentInset = inset;
+    
+    if (self.typingMessage) {
+        self.textView.text = self.typingMessage;
+        self.typingMessage = nil;
+    }
+    
     [self _scrollToBottomWithAnimation:NO];
 }
 

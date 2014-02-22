@@ -172,7 +172,6 @@
         [self.tableView.pullToRefreshView startAnimating];
         [self refresh];
     }
-    self.navigationController.delegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -197,6 +196,7 @@
     }
     
     self.viewDidApearCount ++;
+    self.navigationController.delegate = self;
 }
 
 - (void)viewDidLayoutSubviews
@@ -658,10 +658,12 @@
         self.cellDataInNextPage = (T4CStatusCellData *)cellData;
         [self.navigationController pushViewController:statusVC animated:YES];
     } else if ([cellData.dataType isEqualToString:kDataType_Conversation]) {
+        T4CConversationCellData *conversationData = (T4CConversationCellData *)cellData;
         T4CMessagesViewController *messagesVC = [[T4CMessagesViewController alloc] init];
-        ((T4CConversationCellData *)cellData).unreadDM = NO;
+        conversationData.unreadDM = NO;
         NSDictionary *conversation = cellData.rawData;
         messagesVC.conversation = conversation;
+        messagesVC.typingMessage = conversationData.typingMessage;
         NSArray *messages = conversation[@"messages"];
         for (NSDictionary *message in messages) {
             if ([message[@"sender_screen_name"] isEqualToString:MyScreenName]) {

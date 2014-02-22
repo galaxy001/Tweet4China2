@@ -17,7 +17,7 @@
 #define Free_Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 #define Pro_Flurry_API_Key @"MTYFGCVWN5PZ8JD8N9HW"
 
-#define FreeApp
+//////#define FreeApp
 #ifdef FreeApp
 #define AppleID FreeAppleID
 #define Flurry_API_Key Free_Flurry_API_Key
