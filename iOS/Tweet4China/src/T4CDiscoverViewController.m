@@ -7,6 +7,7 @@
 //
 
 #import "T4CDiscoverViewController.h"
+#import "HSUInstagramHandler.h"
 
 @interface T4CDiscoverViewController ()
 
@@ -36,13 +37,46 @@
     if (![super filterData:data]) {
         return NO;
     }
+    
+    if ([data[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
+        return NO;
+    }
+    
     if ([data[@"retweet_count"] integerValue] ||
         [data[@"retweeted_status"][@"retweet_count"] integerValue] ||
         [data[@"favorite_count"] integerValue] ||
-        [data[@"retweeted_status"][@"favorite_count"] integerValue]) {
+        [data[@"retweeted_status"][@"favorite_count"] integerValue] ||
+        [self hasPhoto:data]) {
+        
         return YES;
     }
+    
     return NO;
+}
+
+- (BOOL)hasPhoto:(NSDictionary *)rawData
+{
+    NSDictionary *entities = rawData[@"entities"];
+    if (entities) {
+        NSArray *medias = entities[@"media"];
+        NSArray *urls = entities[@"urls"];
+        if (medias.count) {
+            for (NSDictionary *media in medias) {
+                NSString *type = media[@"type"];
+                if ([type isEqualToString:@"photo"]) {
+                    return YES;
+                }
+            }
+        } else if (urls.count) {
+            for (NSDictionary *urlDict in urls) {
+                NSString *expandedUrl = urlDict[@"expanded_url"];
+                if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                    return YES;
+                }
+            }
+        }
+    }
+    return YES;
 }
 
 - (NSUInteger)requestCount
