@@ -91,6 +91,7 @@
             searchTF = [[HSUSearchField alloc] init];
         }
         self.searchTF = searchTF;
+        searchTF.text = @"@tuoxie007";
         searchTF.placeholder = _("Search Tweets");
         searchTF.returnKeyType = UIReturnKeySearch;
         searchTF.autocorrectionType = UITextAutocorrectionTypeNo;

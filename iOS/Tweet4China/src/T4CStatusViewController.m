@@ -211,7 +211,7 @@
             if ([screenName isEqualToString:MyScreenName]) {
                 continue;
             }
-            if ([defaultText rangeOfString:authorScreenName].location == NSNotFound) { // remove duplicated mention
+            if ([defaultText rangeOfString:authorScreenName].location != NSNotFound) { // remove duplicated mention
                 continue;
             }
             [defaultText appendFormat:@"@%@ ", screenName];
@@ -246,7 +246,7 @@
         if ([userMention[@"screen_name"] isEqualToString:MyScreenName]) {
             continue;
         }
-        if ([placeHolder rangeOfString:name].location == NSNotFound) { // remove duplicated mention
+        if ([placeHolder rangeOfString:name].location != NSNotFound) { // remove duplicated mention
             continue;
         }
         [placeHolder appendFormat:@"%@, ", name];
@@ -278,7 +278,7 @@
         if ([screenName isEqualToString:MyScreenName]) {
             continue;
         }
-        if ([placeHolder rangeOfString:screenName].location == NSNotFound) { // remove duplicated mention
+        if ([placeHolder rangeOfString:screenName].location != NSNotFound) { // remove duplicated mention
             continue;
         }
         [placeHolder appendFormat:@"@%@ ", screenName];
