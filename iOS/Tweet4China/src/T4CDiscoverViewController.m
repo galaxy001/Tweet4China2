@@ -32,6 +32,15 @@
     }
 }
 
+- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+{
+    [super requestDidFinishRefreshWithData:dataArr];
+    
+    if (!self.unreadCount) {
+        [self loadMore];
+    }
+}
+
 - (BOOL)filterData:(NSDictionary *)data
 {
     if (![super filterData:data]) {
@@ -42,11 +51,12 @@
         return NO;
     }
     
-    if ([data[@"retweet_count"] integerValue] ||
-        [data[@"retweeted_status"][@"retweet_count"] integerValue] ||
-        [data[@"favorite_count"] integerValue] ||
-        [data[@"retweeted_status"][@"favorite_count"] integerValue] ||
-        [self hasPhoto:data]) {
+    if ([data[@"retweet_count"] integerValue]
+        || [data[@"retweeted_status"][@"retweet_count"] integerValue]
+        || [data[@"favorite_count"] integerValue]
+        || [data[@"retweeted_status"][@"favorite_count"] integerValue]
+        || [self hasPhoto:data]
+        ) {
         
         return YES;
     }
@@ -81,7 +91,7 @@
 
 - (NSUInteger)requestCount
 {
-    return 200;
+    return 3;
 }
 
 @end

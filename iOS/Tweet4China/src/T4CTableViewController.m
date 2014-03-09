@@ -365,7 +365,7 @@
 
 - (void)loadMore
 {
-    if (!self.data.count) {
+    if (!self.bottomID) {
         [self.tableView.infiniteScrollingView stopAnimating];
         return;
     }
@@ -430,6 +430,10 @@
         if (!gapped && curTopID) {
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
+        
+        NSDictionary *botData = dataArr.lastObject;
+        self.bottomID = [botData[@"id"] longLongValue];
+        
         NSMutableArray *newDataArr = [NSMutableArray array];
         NSUInteger newCount = 0;
         for (NSDictionary *rawData in dataArr) {
@@ -440,6 +444,7 @@
                 newCount ++;
             }
         }
+        
         self.unreadCount += newCount;
         [self unreadCountChanged];
         if (gapped && !scrollToTop) {
@@ -451,8 +456,11 @@
         [self.data removeAllObjects];
         [self.data addObjectsFromArray:newDataArr];
         
-        NSDictionary *botData = [self.data.lastObject rawData];
-        self.bottomID = [botData[@"id"] longLongValue];
+        botData = [self.data.lastObject rawData];
+        long long bottomID = [botData[@"id"] longLongValue];
+        if (bottomID && (!self.bottomID || bottomID < self.bottomID)) {
+            self.bottomID = bottomID;
+        }
         
         [self.tableView reloadData];
         if (inserted && !scrollToTop) {
@@ -546,7 +554,6 @@
 {
     self.loadMoreState = T4CLoadingState_Error;
     [self.tableView.infiniteScrollingView stopAnimating];
-//    self.tableView.infiniteScrollingView.enabled = NO;
     [twitter dealWithError:error errTitle:_("Request failed")];
 }
 
@@ -818,7 +825,7 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([[self.class description] isEqualToString:@"T4CHomeViewController"]) {
+//        if ([[self.class description] isEqualToString:@"T4CDiscoverViewController"]) {
 //            if ([cacheArr indexOfObject:cache] < 600) {
 //                continue;
 //            }
