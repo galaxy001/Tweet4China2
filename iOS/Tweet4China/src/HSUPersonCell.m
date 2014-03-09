@@ -8,6 +8,7 @@
 
 #import "HSUPersonCell.h"
 #import "T4CPersonCellData.h"
+#define _NameLabelWidth (kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 2 - kLargeAvatarSize - 50 - kCellPadding * 2)
 
 @interface HSUPersonCell ()
 
@@ -44,6 +45,8 @@
             nameLabel.highlightedTextColor = kWhiteColor;
         }
         nameLabel.backgroundColor = kClearColor;
+        nameLabel.numberOfLines = 0;
+        nameLabel.lineBreakMode = NSLineBreakByWordWrapping;
         nameLabel.frame = ccr(avatarButton.right+9, 10, 180, 18); // todo change 180 to variable
         
         UILabel *screenNameLabel = [[UILabel alloc] init];
@@ -55,7 +58,7 @@
             screenNameLabel.highlightedTextColor = kWhiteColor;
         }
         screenNameLabel.backgroundColor = kClearColor;
-        screenNameLabel.frame = ccr(nameLabel.left, nameLabel.bottom+2, 180, 18);
+        screenNameLabel.size = ccs(180, 18);
         
         UIButton *followButton = [[UIButton alloc] init];
         [self.contentView addSubview:followButton];
@@ -77,7 +80,7 @@
             ffInfoLabel.highlightedTextColor = kWhiteColor;
         }
         ffInfoLabel.backgroundColor = kClearColor;
-        ffInfoLabel.frame = ccr(screenNameLabel.left, screenNameLabel.bottom+2, 180, 18);
+        ffInfoLabel.size = ccs(180, 18);
         
         UILabel *descLabel = [[UILabel alloc] init];
         [self.contentView addSubview:descLabel];
@@ -110,12 +113,11 @@
     NSString *avatarUrl = data.rawData[@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
-//    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
-//    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
     
     self.nameLabel.text = data.rawData[@"name"];
-    [self.nameLabel sizeToFit];
+    self.nameLabel.size = ccs(_NameLabelWidth, data.textHeight);
     self.screenNameLabel.text = S(@"@%@", data.rawData[@"screen_name"]);
+    self.screenNameLabel.leftTop = ccp(self.nameLabel.left, self.nameLabel.bottom+2);
     
     int followersCount = [data.rawData[@"followers_count"] intValue];
     int followingCount = [data.rawData[@"friends_count"] intValue];
@@ -148,6 +150,7 @@
                                      range:NSMakeRange(followersCountStr.length + 1 + _("Followers").length + 3, followingCountStr.length)];
     self.ffInfoLabel.attributedText = ffInfoTextWithAttributes;
     [self.ffInfoLabel sizeToFit];
+    self.ffInfoLabel.leftTop = ccp(self.screenNameLabel.left, self.screenNameLabel.bottom+2);
     
     if ([data.rawData[@"following"] boolValue]) {
         [self.followButton setBackgroundImage:[[UIImage imageNamed:@"btn_following_default"] stretchableImageFromCenter]
@@ -174,27 +177,42 @@
     self.descLabel.text = data.rawData[@"description"];
     CGFloat cellWidth = IPHONE ? 280 : 586;
     self.descLabel.size = [self.descLabel sizeThatFits:ccs(cellWidth, 0)];
-    self.descLabel.top = self.ffInfoLabel.bottom + 5;
-    self.descLabel.left = self.avatarButton.left;
+    self.descLabel.leftTop = ccp(self.avatarButton.left, self.ffInfoLabel.bottom + 5);
     
-//    [self setupControl:self.followButton forKey:@"follow"];
-    [self setupTapEventOnButton:self.followButton name:@"follow"];
+   [self setupTapEventOnButton:self.followButton name:@"follow"];
 }
 
-+ (CGFloat)heightForData:(T4CTableCellData *)data
++ (CGFloat)heightForData:(T4CPersonCellData *)data
 {
+    if (data.textHeight) {
+        return 60 + data.textHeight + data.descHeight;
+    }
+    
+    static UILabel *testNameHeightLabel;
     static UILabel *testHeightLabel;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
+        testNameHeightLabel = [[UILabel alloc] init];
+        testNameHeightLabel.font = [UIFont boldSystemFontOfSize:14];
+        testNameHeightLabel.numberOfLines = 0;
+        testNameHeightLabel.lineBreakMode = NSLineBreakByWordWrapping;
+        
         testHeightLabel = [[UILabel alloc] init];
         testHeightLabel.font = [UIFont systemFontOfSize:14];
         testHeightLabel.numberOfLines = 0;
         testHeightLabel.lineBreakMode = NSLineBreakByWordWrapping;
     });
+    testNameHeightLabel.text = data.rawData[@"name"];
+    CGFloat cellWidth = kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 2 - kLargeAvatarSize - 50 - kCellPadding * 2;
+    CGSize nameLabelSize = [testNameHeightLabel sizeThatFits:ccs(cellWidth, 0)];
+    data.textHeight = nameLabelSize.height;
+    
     testHeightLabel.text = data.rawData[@"description"];
-    CGFloat cellWidth = IPHONE ? 280 : 586;
-    testHeightLabel.size = [testHeightLabel sizeThatFits:ccs(cellWidth, 0)];
-    return 75 + testHeightLabel.height;
+    cellWidth = kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 2;
+    CGSize descLabelSize = [testHeightLabel sizeThatFits:ccs(cellWidth, 0)];
+    data.descHeight = descLabelSize.height;
+    
+    return 60 + data.textHeight + data.descHeight;
 }
 
 

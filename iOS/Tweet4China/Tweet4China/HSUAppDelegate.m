@@ -256,18 +256,18 @@ static HSUShadowsocksProxy *proxy;
 #ifndef FreeApp
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
                          HSUShadowsocksSettings_Desc: @"东京",
-                         HSUShadowsocksSettings_Server: @"106.187.99.175"}.mutableCopy];
+                         HSUShadowsocksSettings_Server: @"a1.tuoxie.me"}.mutableCopy];
         
         sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES; // select from the pro severs
 #endif
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
                          HSUShadowsocksSettings_Desc: @"东京",
-                         HSUShadowsocksSettings_Server: @"106.186.113.201"}.mutableCopy];
+                         HSUShadowsocksSettings_Server: @"a2.tuoxie.me"}.mutableCopy];
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
                          HSUShadowsocksSettings_Desc: @"东京",
-                         HSUShadowsocksSettings_Server: @"106.186.19.228"}.mutableCopy];
+                         HSUShadowsocksSettings_Server: @"a3.tuoxie.me"}.mutableCopy];
         
 #ifdef FreeApp
         sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
@@ -275,7 +275,7 @@ static HSUShadowsocksProxy *proxy;
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
                          HSUShadowsocksSettings_Desc: @"青岛",
-                         HSUShadowsocksSettings_Server: @"115.28.20.25"}.mutableCopy];
+                         HSUShadowsocksSettings_Server: @"b0.tuoxie.me"}.mutableCopy];
         
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];

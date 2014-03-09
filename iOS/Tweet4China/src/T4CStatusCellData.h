@@ -12,7 +12,6 @@
 @interface T4CStatusCellData : T4CTableCellData
 
 @property (nonatomic, copy) NSString *mode;
-@property (nonatomic, assign) CGFloat textHeight;
 @property (nonatomic, assign) BOOL hasPhoto;
 @property (nonatomic, assign) CGFloat photoFitWidth;
 @property (nonatomic, assign) CGFloat photoFitHeight;

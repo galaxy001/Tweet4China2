@@ -107,7 +107,6 @@
 {
     [super viewWillAppear:animated];
     
-    self.navigationController.delegate = self;
     self.addFriendButtonIndicator.hidden = NO;
 }
 
@@ -119,6 +118,7 @@
         [self refreshDataIfNeed];
     }
     self.presenting = NO;
+    self.navigationController.delegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated

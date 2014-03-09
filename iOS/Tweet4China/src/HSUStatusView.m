@@ -275,11 +275,9 @@
                                                     [place isKindOfClass:[NSDictionary class]])) {
             if ([geo isKindOfClass:[NSDictionary class]]) {
                 if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
-                    //                attrName = @"geo";
                     self.data.attr = @"geo";
                 }
             } else if ([place isKindOfClass:[NSDictionary class]]) {
-                //            attrName = @"geo";
                 self.data.attr = @"geo";
             }
         }

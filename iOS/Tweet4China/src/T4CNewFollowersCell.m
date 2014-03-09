@@ -31,6 +31,8 @@
         self.descLabel = descLabel;
         descLabel.font = [UIFont systemFontOfSize:14];
         descLabel.backgroundColor = kClearColor;
+        descLabel.numberOfLines = 0;
+        descLabel.lineBreakMode = NSLineBreakByWordWrapping;
     }
     return self;
 }
@@ -56,23 +58,10 @@
     }
     self.avatars = avatars;
     
-    NSDictionary *firstFollower = followers.firstObject;
-    NSString *firstFollowerName = firstFollower[@"name"];
-    NSString *title;
-    if (followers.count > 1) {
-        title = S(@"%@ %@ %u %@", firstFollowerName,
-                  _("and"),
-                  followers.count - 1,
-                  _("others followed you"));
-    } else {
-        title = S(@"%@ %@", firstFollowerName, _("followed you"));
-    }
-    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:title];
-    [attributedTitle addAttribute:NSFontAttributeName
-                            value:[UIFont boldSystemFontOfSize:14]
-                            range:NSMakeRange(0, firstFollowerName.length)];
+    NSMutableAttributedString *attributedTitle = [self.class titleForData:data];
     self.descLabel.attributedText = attributedTitle;
-    [self.descLabel sizeToFit];
+    CGFloat constraintWidth = IPHONE ? 232 : 538;
+    self.descLabel.size = ccs(constraintWidth, data.textHeight);
 }
 
 - (void)layoutSubviews
@@ -90,7 +79,45 @@
 
 + (CGFloat)heightForData:(T4CTableCellData *)data
 {
-    return 78;
+    if (data.textHeight) {
+        return data.textHeight + 64;
+    }
+    
+    static UILabel *testLabel = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        testLabel = [[UILabel alloc] init];
+        testLabel.font = [UIFont systemFontOfSize:14];
+        testLabel.numberOfLines = 0;
+        testLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    });
+    testLabel.attributedText = [self titleForData:data];
+    CGFloat constraintWidth = IPHONE ? 232 : 538;
+    CGSize size = [testLabel sizeThatFits:ccs(constraintWidth, 0)];
+    data.textHeight = size.height;
+    
+    return data.textHeight + 64;
+}
+
++ (NSMutableAttributedString *)titleForData:(T4CTableCellData *)data
+{
+    NSArray *followers = data.rawData[@"followers"];
+    NSDictionary *firstFollower = followers.firstObject;
+    NSString *firstFollowerName = firstFollower[@"name"];
+    NSString *title;
+    if (followers.count > 1) {
+        title = S(@"%@ %@ %u %@", firstFollowerName,
+                  _("and"),
+                  followers.count - 1,
+                  _("others followed you"));
+    } else {
+        title = S(@"%@ %@", firstFollowerName, _("followed you"));
+    }
+    NSMutableAttributedString *attributedTitle = [[NSMutableAttributedString alloc] initWithString:title];
+    [attributedTitle addAttribute:NSFontAttributeName
+                            value:[UIFont boldSystemFontOfSize:14]
+                            range:NSMakeRange(0, firstFollowerName.length)];
+    return attributedTitle;
 }
 
 @end

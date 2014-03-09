@@ -600,6 +600,7 @@
 {
     if (scrollView.contentOffset.y <= -scrollView.contentInset.top) {
         [((HSUTabController *)self.tabBarController) hideUnreadIndicatorOnTabBarItem:self.navigationController.tabBarItem];
+        [self.tabController hideUnreadIndicatorOnViewController:self.navigationController];
     }
 }
 

@@ -138,15 +138,6 @@
     self.typeControl.hidden = YES;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
-    
-    if (Sys_Ver >= 7) {
-        ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
-    }
-}
-
 - (void)viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
@@ -192,11 +183,15 @@
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
+    if (viewController != self) {
+        if (Sys_Ver >= 7) {
+            ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
+        }
+    }
     if ([self.navigationController.viewControllers indexOfObject:viewController] <
         [self.navigationController.viewControllers indexOfObject:self]) {
         
         if (Sys_Ver >= 7) {
-            ((HSUNavigationBar *)self.navigationController.navigationBar).highter = NO;
             [self.typeControl removeFromSuperview];
         }
         [self.searchTF removeFromSuperview];

@@ -40,7 +40,10 @@
         
         self.backgroundColor = kWhiteColor;
         
-        self.statusView = [[HSUStatusView alloc] initWithFrame:ccr(padding_S, padding_S, self.contentView.width-padding_S*4, 0)
+        self.statusView = [[HSUStatusView alloc] initWithFrame:ccr(padding_S,
+                                                                   padding_S,
+                                                                   self.contentView.width-padding_S*4,
+                                                                   0)
                                                     style:[[self class] statusStyle]];
         
         [self.contentView addSubview:self.statusView];

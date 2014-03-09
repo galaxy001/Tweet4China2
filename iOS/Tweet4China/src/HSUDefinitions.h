@@ -17,7 +17,7 @@
 #define Free_Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 #define Pro_Flurry_API_Key @"MTYFGCVWN5PZ8JD8N9HW"
 
-#define FreeApp
+//#define FreeApp
 #ifdef FreeApp
 #define AppleID FreeAppleID
 #define Flurry_API_Key Free_Flurry_API_Key
@@ -65,6 +65,7 @@ BOOL shadowsocksStarted;
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
+#define kCellPadding 10
 #define HSUiPadBgColor rgb(244, 248, 251)
 #define kLargeAvatarSize 48
 #define kMiddleAvatarSize 32

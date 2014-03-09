@@ -14,6 +14,7 @@
 @property (nonatomic, copy) NSString *dataType;
 @property (nonatomic, strong) NSDictionary *rawData;
 @property (nonatomic) CGFloat cellHeight;
+@property (nonatomic) CGFloat textHeight;
 @property (nonatomic, weak) id target;
 @property (nonatomic, strong) NSMutableDictionary *events;
 @property (nonatomic, assign) BOOL unread;

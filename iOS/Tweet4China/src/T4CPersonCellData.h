@@ -11,5 +11,6 @@
 @interface T4CPersonCellData : T4CTableCellData
 
 @property (nonatomic, assign) BOOL sendingFollowingRequest;
+@property (nonatomic, assign) CGFloat descHeight;
 
 @end

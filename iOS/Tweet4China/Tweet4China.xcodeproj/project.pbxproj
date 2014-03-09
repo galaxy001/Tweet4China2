@@ -2381,7 +2381,7 @@
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: Xu Ke (Q58Y9Y87W8)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: 可 徐 (2M45QU6PH2)";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -2389,7 +2389,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
-				PROVISIONING_PROFILE = "74046EA2-CF91-4BAA-9BC7-87898FF02DE9";
+				PROVISIONING_PROFILE = "03B1F9C6-256D-40C6-AB22-CCE048A087DE";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -2419,6 +2419,7 @@
 					"${PODS_ROOT}/Headers/OpenCam",
 				);
 				INFOPLIST_FILE = "Tweet4China/Tweet4China-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
@@ -2449,6 +2450,7 @@
 					"${PODS_ROOT}/Headers/OpenCam",
 				);
 				INFOPLIST_FILE = "Tweet4China/Tweet4China-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"3th-party/shadowsocks-iOS/OpenSSL-for-iPhone/lib",
