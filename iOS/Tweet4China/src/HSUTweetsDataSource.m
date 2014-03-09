@@ -15,7 +15,7 @@
 {
     self = [super init];
     if (self) {
-        notification_add_observer(HSUStatusDidDelete, self, @selector(statusDidDelete:));
+        notification_add_observer(HSUStatusDidDeleteNotification, self, @selector(statusDidDelete:));
         notification_add_observer(HSUSettingExcludeRepliesChangedNotification, self, @selector(clearCache));
     }
     return self;
@@ -41,16 +41,16 @@
                         continue;
                     }
                 }
-                HSUTableCellData *cellData =
-                [[HSUTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
-                cellData.renderData[@"unread"] = @YES;
+                T4CTableCellData *cellData =
+                [[T4CTableCellData alloc] initWithRawData:tweets[i] dataType:kDataType_DefaultStatus];
+                cellData.unread = YES;
                 [weakSelf.data insertObject:cellData atIndex:0];
             }
             weakSelf.unreadCount = tweets.count;
             
-            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
+            T4CTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
-                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+                T4CTableCellData *loadMoreCellData = [[T4CTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [weakSelf.data addObject:loadMoreCellData];
@@ -88,8 +88,8 @@
                     continue;
                 }
             }
-            HSUTableCellData *cellData =
-            [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
+            T4CTableCellData *cellData =
+            [[T4CTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
             [weakSelf.data addObject:cellData];
         }
         [weakSelf.data addObject:loadMoreCellData];
@@ -128,7 +128,7 @@
 {
     NSString *idStr = notification.object;
     for (int i=0; i<self.count; i++) {
-        HSUTableCellData *cellData = self.data[i];
+        T4CTableCellData *cellData = self.data[i];
         if ([cellData.rawData[@"id_str"] isEqualToString:idStr]) {
             [self removeCellData:cellData];
             [self.delegate reloadData];

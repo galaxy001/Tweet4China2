@@ -14,7 +14,8 @@
 @interface HSUGalleryView() <UIScrollViewDelegate>
 
 @property (nonatomic, weak) UIActivityIndicatorView *spinner;
-@property (nonatomic, weak) UIImageView *imageView;
+@property (nonatomic, weak) UIView *startPhotoView;
+@property (nonatomic, assign) UIDeviceOrientation imageOrientation;
 
 @end
 
@@ -23,7 +24,7 @@
     UIScrollView *imagePanel;
     HSUStatusView *statusView;
     
-    HSUTableCellData *cellData;
+    T4CTableCellData *cellData;
 }
 
 - (void)dealloc
@@ -32,14 +33,13 @@
     imagePanel.delegate = nil;
 }
 
-- (id)_initWithData:(HSUTableCellData *)data
+- (id)_initWithData:(T4CTableCellData *)data
 {
     self = [super initWithFrame:[UIApplication sharedApplication].keyWindow.bounds];
     if (self) {
         cellData = data;
         
         self.backgroundColor = kBlackColor;
-        self.alpha = 0;
         
         // subviews
         imagePanel = [[UIScrollView alloc] initWithFrame:self.bounds];
@@ -73,7 +73,7 @@
     return self;
 }
 
-- (id)initWithData:(HSUTableCellData *)data image:(UIImage *)image
+- (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image
 {
     self = [self _initWithData:data];
     if (self) {
@@ -91,7 +91,7 @@
     return self;
 }
 
-- (id)initWithData:(HSUTableCellData *)data imageURL:(NSURL *)imageURL
+- (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL
 {
     self = [self _initWithData:data];
     if (self) {
@@ -106,6 +106,61 @@
     return self;
 }
 
+- (id)initWithData:(T4CTableCellData *)data previewImage:(UIImage *)previewImage originalImageURL:(NSURL *)originalImageURL
+{
+    self = [self _initWithData:data];
+    if (self) {
+        [self.spinner startAnimating];
+        __weak typeof(&*self)weakSelf = self;
+        [self.imageView setImageWithUrlStr:originalImageURL.absoluteString placeHolder:previewImage success:^{
+            [weakSelf.spinner stopAnimating];
+        } failure:^{
+            [weakSelf.spinner stopAnimating];
+        }];
+        
+        float zoomScale = 0;
+        if (self.imageView.width / self.imageView.height > self.width / self.height) {
+            zoomScale = self.width / self.imageView.width;
+        } else {
+            zoomScale = self.height / self.imageView.height;
+        }
+        imagePanel.maximumZoomScale = 2 * zoomScale;
+        imagePanel.minimumZoomScale = zoomScale;
+        imagePanel.zoomScale = zoomScale;
+    }
+    return self;
+}
+
+- (id)initStartPhotoView:(UIView *)startPhotoView originalImageURL:(NSURL *)originalImageURL
+{
+    self = [self _initWithData:nil];
+    if (self) {
+        self.startPhotoView = startPhotoView;
+        UIImage *previewImage = [startPhotoView isKindOfClass:[UIButton class]] ? [((UIButton *)startPhotoView) imageForState:UIControlStateNormal] : ((UIImageView *)startPhotoView).image;
+        if (originalImageURL) {
+            [self.spinner startAnimating];
+            __weak typeof(&*self)weakSelf = self;
+            [self.imageView setImageWithUrlStr:originalImageURL.absoluteString placeHolder:previewImage success:^{
+                [weakSelf.spinner stopAnimating];
+            } failure:^{
+                [weakSelf.spinner stopAnimating];
+            }];
+        } else {
+            [self.imageView setImage:previewImage];
+        }
+        float zoomScale = 0;
+        if (self.imageView.width / self.imageView.height > self.width / self.height) {
+            zoomScale = self.width / self.imageView.width;
+        } else {
+            zoomScale = self.height / self.imageView.height;
+        }
+        imagePanel.maximumZoomScale = 2 * zoomScale;
+        imagePanel.minimumZoomScale = zoomScale;
+        imagePanel.zoomScale = zoomScale;
+    }
+    return self;
+}
+
 - (void)showWithAnimation:(BOOL)animation
 {
     if (Sys_Ver < 7) {
@@ -113,15 +168,52 @@
     }
     [self resetImageOrientation];
     if (animation) {
-        [UIView animateWithDuration:.3 animations:^{
-            self.alpha = 1;
-        } completion:^(BOOL finished) {
-            if (Sys_Ver >= 7) {
-                notification_post(HSUGalleryViewDidAppear);
-            }
-        }];
+        if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation) || !self.startPhotoView) {
+            self.alpha = 0;
+            [UIView animateWithDuration:.3 animations:^{
+                self.alpha = 1;
+            } completion:^(BOOL finished) {
+                if (Sys_Ver >= 7) {
+                    notification_post(HSUGalleryViewDidAppear);
+                }
+            }];
+        } else {
+            CGRect photoButtonFrameInGallery =
+            [self.startPhotoView.superview convertRect:self.startPhotoView.frame
+                                                toView:self];
+            self.imageView.frame = photoButtonFrameInGallery;
+            self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+            self.imageView.clipsToBounds = YES;
+            self.backgroundColor = kClearColor;
+            
+            __weak typeof(self)weakSelf = self;
+            [UIView animateWithDuration:.1 animations:^{
+                weakSelf.backgroundColor = kBlackColor;
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:.3 animations:^{
+                    CGRect frame;
+                    CGSize size = weakSelf.size;
+                    if (weakSelf.imageView.image) {
+                        if (IPHONE) {
+                            size.height = size.width * weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width;
+                        } else {
+                            size.width = size.height * weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height;
+                        }
+                    }
+                    frame.size = size;
+                    frame.origin = ccp(0, weakSelf.height/2-size.height/2);
+                    weakSelf.imageView.frame = frame;
+                } completion:^(BOOL finished) {
+                    weakSelf.imageView.frame = weakSelf.bounds;
+                    weakSelf.imageView.contentMode = UIViewContentModeScaleAspectFit;
+                    weakSelf.imageView.clipsToBounds = NO;
+                    if (Sys_Ver >= 7) {
+                        notification_post(HSUGalleryViewDidAppear);
+                    }
+                }];
+            }];
+        }
     } else {
-        self.alpha = 1;
         if (Sys_Ver >= 7) {
             notification_post(HSUGalleryViewDidAppear);
         }
@@ -142,11 +234,43 @@
     } else {
         [[UIApplication sharedApplication] setStatusBarHidden:NO];
     }
-    [UIView animateWithDuration:.3 animations:^{
-        self.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
+    
+    if (IPAD || UIDeviceOrientationIsLandscape(self.imageOrientation) || !self.startPhotoView) {
+        [UIView animateWithDuration:.3 animations:^{
+            self.alpha = 0;
+        } completion:^(BOOL finished) {
+            [self removeFromSuperview];
+        }];
+    } else {
+        imagePanel.zoomScale = 1; // reset scale
+        
+        CGRect frame;
+        CGSize size = self.size;
+        if (IPHONE) {
+            size.height = size.width * self.imageView.image.size.height / self.imageView.image.size.width;
+        } else {
+            size.width = size.height * self.imageView.image.size.width / self.imageView.image.size.height;
+        }
+        frame.size = size;
+        frame.origin = ccp(0, self.height/2-size.height/2);
+        self.imageView.frame = frame;
+        self.imageView.contentMode = UIViewContentModeScaleAspectFill;
+        self.imageView.clipsToBounds = YES;
+        
+        CGRect photoButtonFrameInGallery =
+        [self.startPhotoView.superview convertRect:self.startPhotoView.frame
+                                            toView:self];
+        __weak typeof(self)weakSelf = self;
+        [UIView animateWithDuration:.3 animations:^{
+            weakSelf.imageView.frame = photoButtonFrameInGallery;
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:.1 animations:^{
+                weakSelf.backgroundColor = kClearColor;
+            } completion:^(BOOL finished) {
+                [weakSelf removeFromSuperview];
+            }];
+        }];
+    }
 }
 
 - (void)_fireLongPressGesture:(UIGestureRecognizer *)gesture
@@ -184,6 +308,7 @@
 - (void)resetImageOrientation
 {
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
+    self.imageOrientation = orientation;
     if (orientation == UIDeviceOrientationLandscapeLeft) {
         imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
         imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);

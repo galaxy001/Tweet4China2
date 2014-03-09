@@ -19,6 +19,7 @@
 #endif
 #import <HSUWebCache/HSUWebCache.h>
 #import <AFNetworking/AFNetworkActivityIndicatorManager.h>
+#import "HSUServerList.h"
 
 static HSUShadowsocksProxy *proxy;
 
@@ -37,25 +38,55 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.globalSettings = [[NSUserDefaults standardUserDefaults] valueForKey:HSUSettings];
-    if (!self.globalSettings) {
-        NSMutableDictionary *settings = @{}.mutableCopy;
+    self.globalSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:HSUSettings];
+    NSMutableDictionary *settings = (self.globalSettings ?: @{}).mutableCopy;
+    if (!settings[HSUSettingSoundEffect]) {
         settings[HSUSettingSoundEffect] = @YES;
-        settings[HSUSettingPhotoPreview] = @YES;
-        settings[HSUSettingTextSize] = @"14";
-        settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
-        settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
-        settings[HSUSettingCacheSize] = @"16MB";
-#ifdef FreeApp
-        settings[HSUSettingPhotoPreview] = @NO;
-#endif
-        if (IPAD) {
-            settings[HSUSettingTextSize] = @"16";
-        }
-        self.globalSettings = settings;
-        [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
+    if (!settings[HSUSettingPhotoPreview]) {
+        settings[HSUSettingPhotoPreview] = @YES;
+    }
+    if (!settings[HSUSettingTextSize]) {
+        settings[HSUSettingTextSize] = IPAD ? @"16" : @"14";
+    }
+    if (!settings[HSUSettingPageCount]) {
+        settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
+    }
+    if (!settings[HSUSettingPageCountWWAN]) {
+        settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
+    }
+    if (!settings[HSUSettingCacheSize]) {
+        settings[HSUSettingCacheSize] = @"16MB";
+    }
+    if (!settings[HSUSettingShowOriginalImage]) {
+        settings[HSUSettingShowOriginalImage] = @YES;
+    }
+    if (!settings[HSUSettingAutoUpdateConnect]) {
+        settings[HSUSettingAutoUpdateConnect] = @YES;
+    }
+    if (!settings[HSUSettingAutoUpdateConversation]) {
+        settings[HSUSettingAutoUpdateConversation] = @YES;
+    }
+#ifdef Overseas
+    if (!setting(HSUSettingOverseas)) {
+        settings[HSUSettingOverseas] = @YES;
+    }
+#endif
+#ifdef FreeApp
+    settings[HSUSettingSoundEffect] = @YES;
+    settings[HSUSettingTextSize] = IPAD ? @"16" : @"14";
+    settings[HSUSettingPageCount] = S(@"%d", kRequestDataCountViaWifi);
+    settings[HSUSettingPageCountWWAN] = S(@"%d", kRequestDataCountViaWWAN);
+    settings[HSUSettingCacheSize] = @"16MB";
+    settings[HSUSettingPhotoPreview] = @NO;
+    settings[HSUSettingShowOriginalImage] = @NO;
+    settings[HSUSettingAutoUpdateConnect] = @NO;
+    settings[HSUSettingAutoUpdateConversation] = @NO;
+    settings[HSUSettingRefreshThenScrollToTop] = @NO;
+#endif
+    self.globalSettings = settings;
+    [[NSUserDefaults standardUserDefaults] setObject:self.globalSettings forKey:HSUSettings];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     self.hasPro = [[NSUserDefaults standardUserDefaults] boolForKey:@"has_pro"];
     
@@ -73,6 +104,15 @@ static HSUShadowsocksProxy *proxy;
     } else {
         tabController = [[HSUTabController alloc] init];
     }
+
+#ifdef __IPHONE_7_0
+    if (Sys_Ver >= 7 && IPHONE) {
+//        [[UITabBar appearance] setTintColor:[HSUCommonTools tintColor]];
+//        [[UITabBar appearance] setBarTintColor:[HSUCommonTools barTintColor]];
+//        [[UINavigationBar appearance] setTintColor:[HSUCommonTools tintColor]];
+//        [[UINavigationBar appearance] setBarTintColor:[HSUCommonTools barTintColor]];
+    }
+#endif
     
     self.window.rootViewController = tabController;
     self.tabController = tabController;
@@ -87,7 +127,7 @@ static HSUShadowsocksProxy *proxy;
     [Flurry logEvent:@"Launch" timed:YES];
 #endif
     
-    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:60
+    self.checkUnreadTimer = [NSTimer scheduledTimerWithTimeInterval:90
                                                              target:self
                                                            selector:@selector(checkUnread)
                                                            userInfo:nil
@@ -95,11 +135,15 @@ static HSUShadowsocksProxy *proxy;
     
     [self updateImageCacheSize];
     [self logJailBreak];
-    [self updateConfig];
+//    [self updateConfig];
     [self registerWeixinApp];
     
     notification_add_observer(SVProgressHUDWillAppearNotification, self, @selector(disableWindowUserinterface));
     notification_add_observer(SVProgressHUDWillDisappearNotification, self, @selector(enbleWindowUserinterface));
+    notification_add_observer(@"ShadowsocksServerListUpdatedNotification", self, @selector(ssUpdated:));
+    
+    self.serverList = [[HSUServerList alloc] init];
+    [self.serverList updateServerList];
     
     return YES;
 }
@@ -130,6 +174,12 @@ static HSUShadowsocksProxy *proxy;
 {
     [proxy stop];
     [self.checkUnreadTimer invalidate];
+    
+    UIBackgroundTaskIdentifier bgTask = UIBackgroundTaskInvalid;
+    bgTask = [[UIApplication sharedApplication]
+              beginBackgroundTaskWithExpirationHandler:^{
+                  [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+              }];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -157,7 +207,7 @@ static HSUShadowsocksProxy *proxy;
     }
     if ([action isEqualToString:@"post"] && queriesDict[@"message"]) {
         NSString *msg = queriesDict[@"message"];
-        [self postWithMessage:msg image:nil selectedRange:NSMakeRange(0, msg.length)];
+        [HSUCommonTools postTweetWithMessage:msg image:nil selectedRange:NSMakeRange(0, msg.length)];
         return YES;
     }
     
@@ -179,28 +229,7 @@ static HSUShadowsocksProxy *proxy;
 
 - (BOOL)postWithMessage:(NSString *)message image:(UIImage *)image
 {
-    return [self postWithMessage:message image:image selectedRange:NSMakeRange(0, 0)];
-}
-
-- (BOOL)postWithMessage:(NSString *)message image:(UIImage *)image selectedRange:(NSRange)selectedRange
-{
-    UIViewController *baseVC = self.window.rootViewController;
-    if ([self.window.rootViewController.presentedViewController isKindOfClass:[UINavigationController class]]) {
-        UINavigationController *nav = (UINavigationController *)self.window.rootViewController.presentedViewController;
-        if ([nav.viewControllers.lastObject isKindOfClass:[HSUComposeViewController class]]) {
-            [SVProgressHUD showErrorWithStatus:@"A status is being edit"];
-            return NO;
-        }
-        baseVC = nav;
-    }
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
-    composeVC.defaultText = message;
-    composeVC.defaultImage = image;
-    composeVC.defaultSelectedRange = selectedRange;
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [baseVC presentViewController:nav animated:YES completion:nil];
-    return YES;
+    return [HSUCommonTools postTweetWithMessage:message image:image selectedRange:NSMakeRange(0, 0)];
 }
 
 - (void)configureAppirater
@@ -215,42 +244,30 @@ static HSUShadowsocksProxy *proxy;
 - (BOOL)startShadowsocks
 {
     NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
+    for (NSDictionary *s in sss) {
+        if ([s[HSUShadowsocksSettings_Server] isEqualToString:@"162.243.150.109"]) {
+            sss = nil;
+            break;
+        }
+    }
     if (!sss) {
         sss = @[].mutableCopy;
         
 #ifndef FreeApp
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"旧金山",
-                         HSUShadowsocksSettings_Server: @"192.241.197.97",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"阿姆斯特丹",
-                         HSUShadowsocksSettings_Server: @"95.85.33.168",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+                         HSUShadowsocksSettings_Desc: @"东京",
+                         HSUShadowsocksSettings_Server: @"a1.tuoxie.me"}.mutableCopy];
         
         sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES; // select from the pro severs
 #endif
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"旧金山",
-                         HSUShadowsocksSettings_Server: @"162.243.150.109",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+                         HSUShadowsocksSettings_Desc: @"东京",
+                         HSUShadowsocksSettings_Server: @"a2.tuoxie.me"}.mutableCopy];
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"192.241.245.82",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"192.241.205.25",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
-        
-        [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
-                         HSUShadowsocksSettings_Desc: @"纽约",
-                         HSUShadowsocksSettings_Server: @"162.243.233.180",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+                         HSUShadowsocksSettings_Desc: @"东京",
+                         HSUShadowsocksSettings_Server: @"a3.tuoxie.me"}.mutableCopy];
         
 #ifdef FreeApp
         sss[arc4random_uniform(sss.count-1)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
@@ -258,8 +275,7 @@ static HSUShadowsocksProxy *proxy;
         
         [sss addObject:@{HSUShadowsocksSettings_Buildin: @YES,
                          HSUShadowsocksSettings_Desc: @"青岛",
-                         HSUShadowsocksSettings_Server: @"115.28.20.25",
-                         HSUShadowsocksSettings_RemotePort: @"1026"}.mutableCopy];
+                         HSUShadowsocksSettings_Server: @"b0.tuoxie.me"}.mutableCopy];
         
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -278,6 +294,9 @@ static HSUShadowsocksProxy *proxy;
                 }
                 if (!method) {
                     method = @"AES-128-CFB";
+                }
+                if (!remotePort) {
+                    remotePort = @"1026";
                 }
                 char chars3[13];
                 const char *str3 = [passowrd cStringUsingEncoding:NSASCIIStringEncoding];
@@ -348,7 +367,8 @@ static HSUShadowsocksProxy *proxy;
 {
 #ifdef FreeApp // free app is restrict for using time
     NSUInteger timelineLoadCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"timeline_load_count"] unsignedIntegerValue];
-    if (timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) {
+    if ((timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) ||
+        timelineLoadCount > 15) {
         [self buyProApp];
     }
     timelineLoadCount ++;
@@ -424,9 +444,9 @@ static HSUShadowsocksProxy *proxy;
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
     dispatch_after(popTime, GCDBackgroundThread, ^(void){
 #ifdef DEBUG
-        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json.test"]];
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://tuoxie.me/tweet4china/config.json.test"]];
 #else
-        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://162.243.81.212/tweet4china/config.json"]];
+        NSData *configJSON = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://tuoxie.me/tweet4china/config.json"]];
 #endif
         if (configJSON) {
             NSDictionary *config = [NSJSONSerialization JSONObjectWithData:configJSON options:0 error:nil];
@@ -532,6 +552,76 @@ static HSUShadowsocksProxy *proxy;
 - (void)registerWeixinApp
 {
     [WXApi registerApp:WXAppID];
+}
+
+- (void)askFollowAuthor
+{
+    if (![[[NSUserDefaults standardUserDefaults] valueForKey:@"asked_follow_author"] boolValue]) {
+        NSString *authorScreenName = @"tuoxie007";
+        if (![twitter.myScreenName isEqualToString:authorScreenName]) {
+            [twitter showUser:authorScreenName success:^(id responseObj) {
+                NSDictionary *profile = responseObj;
+                if (![profile[@"following"] boolValue]) {
+                    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+                    RIButtonItem *followItem = [RIButtonItem itemWithLabel:_("OK")];
+                    followItem.action = ^{
+                        [twitter followUser:authorScreenName success:^(id responseObj) {
+                        } failure:^(NSError *error) {
+                        }];
+                    };
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:_("Follow Author @tuoxie007")
+                                                                    message:_("Get the latest activities about Tweet4China")
+                                                           cancelButtonItem:cancelItem
+                                                           otherButtonItems:followItem, nil];
+                    [alert show];
+                    [[NSUserDefaults standardUserDefaults] setValue:@YES forKey:@"asked_follow_author"];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
+                }
+            } failure:^(NSError *error) {
+                
+            }];
+        }
+    }
+}
+
+- (void)ssUpdated:(NSNotification *)notification
+{
+    NSDictionary *json = notification.object;
+    NSMutableArray *proServers = [json[@"pro"] mutableCopy];
+    for (int i=0; i<proServers.count; i++) {
+        proServers[i] = [proServers[i] mutableCopy];
+    }
+    NSMutableArray *freeServers = [json[@"free"] mutableCopy];
+    for (int i=0; i<freeServers.count; i++) {
+        freeServers[i] = [freeServers[i] mutableCopy];
+    }
+#ifdef FreeApp
+    NSMutableArray *servers = [NSMutableArray arrayWithArray:freeServers];
+    servers[arc4random_uniform(servers.count-1)][HSUShadowsocksSettings_Selected] = @YES;
+#else
+    NSMutableArray *servers = [[proServers arrayByAddingObjectsFromArray:freeServers] mutableCopy];
+    servers[arc4random_uniform(proServers.count)][HSUShadowsocksSettings_Selected] = @YES;
+#endif
+    
+    NSArray *oldServers = [[NSUserDefaults standardUserDefaults] arrayForKey:HSUShadowsocksSettings];
+    for (NSDictionary *ns in servers) {
+        BOOL found = NO;
+        for (NSDictionary *os in oldServers) {
+            if ([ns[HSUShadowsocksSettings_Server] isEqualToString:os[HSUShadowsocksSettings_Server]]) {
+                NSUInteger op = [os[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                NSUInteger np = [ns[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                if (op == np) {
+                    found = YES;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            [[NSUserDefaults standardUserDefaults] setObject:servers forKey:HSUShadowsocksSettings];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            break;
+        }
+    }
 }
 
 @end

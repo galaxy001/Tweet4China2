@@ -7,6 +7,7 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "HSUUIEvent.h"
 
 @implementation HSUBaseTableCell
 
@@ -59,6 +60,11 @@
     }
 }
 
+- (void)setupTapEventOnButton:(UIButton *)button name:(NSString *)name
+{
+    [button setTapTarget:self.data action:NSSelectorFromString(name)];
+}
+
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key
 {
     [self setupControl:control forKey:key cleanOldEvents:YES];
@@ -66,22 +72,21 @@
 
 - (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean
 {
-    if (!control) {
-        return;
+    HSUUIEvent *event = self.data.events[key];
+    if (event) {
+        if (clean) {
+            [control removeTarget:nil action:NULL forControlEvents:event.events];
+        }
+        [control addTarget:event action:@selector(fire:) forControlEvents:event.events];
     }
-    HSUUIEvent *event = self.data.renderData[key];
-    if (clean) {
-        [control removeTarget:nil action:NULL forControlEvents:event.events];
-    }
-    [control addTarget:event action:@selector(fire:) forControlEvents:event.events];
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CTableCellData *)data
 {
     self.data = data;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     return 0;
 }

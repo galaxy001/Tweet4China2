@@ -15,7 +15,9 @@
 #import "HSUStatusActionView.h"
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
+#import "HSUInstagramHandler.h"
+#import "T4CTwitPicHandler.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -117,9 +119,9 @@
         
         textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [contentArea addSubview:textAL];
-        textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
+        textAL.font = [UIFont fontWithName:@"Georgia" size:MAX(textAL_font_S, [GlobalSettings[HSUSettingTextSize] integerValue])];
         textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
+        textAL.textColor = kBlackColor;
         textAL.highlightedTextColor = kWhiteColor;
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
@@ -223,7 +225,7 @@
     [screenNameL sizeToFit];
     screenNameL.leftTop = ccp(nameL.left, nameL.bottom+3);
     
-    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, contentArea.width, [self.data.renderData[@"text_height"] floatValue]);
+    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, contentArea.width, self.data.textHeight);
     
     [timePlaceL sizeToFit];
     timePlaceL.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);
@@ -252,21 +254,20 @@
     viaLabel.left -= 3;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CStatusCellData *)data
 {
     [super setupWithData:data];
     
-    actionV = [[HSUStatusActionView alloc] initWithStatus:data.rawData style:HSUStatusActionViewStyle_Default];
+    actionV = [[HSUStatusActionView alloc] initWithStatus:data.mainStatus
+                                                    style:HSUStatusActionViewStyle_Default];
     [self.contentView addSubview:actionV];
-    
-    NSDictionary *rawData = data.rawData;
     
     // ambient
     ambientI.hidden = NO;
-    NSDictionary *retweetedStatus = rawData[@"retweeted_status"];
+    NSDictionary *retweetedStatus = self.data.rawData[@"retweeted_status"];
     if (retweetedStatus) {
         ambientI.imageName = retweeted_R;
-        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", rawData[@"user"][@"name"]];
+        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", self.data.rawData[@"user"][@"name"]];
         ambientL.text = ambientText;
         ambientArea.hidden = NO;
     } else {
@@ -276,28 +277,22 @@
         ambientArea.bounds = CGRectZero;
     }
     
-    NSDictionary *entities = rawData[@"entities"];
+    NSDictionary *entities = self.data.mainStatus[@"entities"];
     
     // info
     NSString *avatarUrl = nil;
-    if (retweetedStatus) {
-        avatarUrl = rawData[@"retweeted_status"][@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"retweeted_status"][@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"retweeted_status"][@"user"][@"screen_name"]];
-    } else {
-        avatarUrl = rawData[@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
-    }
+    avatarUrl = self.data.mainStatus[@"user"][@"profile_image_url_https"];
+    nameL.text = self.data.mainStatus[@"user"][@"name"];
+    screenNameL.text = S(@"@%@", self.data.mainStatus[@"user"][@"screen_name"]);
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [avatarB setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     
     // time
-    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]];
     timePlaceL.text = createdDate.standardTwitterDisplay;
     
-    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
-    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
+    NSInteger retweetCount = [self.data.mainStatus[@"retweet_count"] integerValue];
+    NSInteger favoriteCount = [self.data.mainStatus[@"favorite_count"] integerValue];
     if ((retweetCount && favoriteCount) || (!retweetCount && !favoriteCount)) {
         [contentArea addSubview:viaLabel];
         [contentArea addSubview:sourceButton];
@@ -307,12 +302,12 @@
     sourceButton.hidden = NO;
     
     // place
-    NSDictionary *placeInfo = rawData[@"place"];
-    NSDictionary *geoInfo = rawData[@"geo"];
+    NSDictionary *placeInfo = self.data.mainStatus[@"place"];
+    NSDictionary *geoInfo = self.data.mainStatus[@"geo"];
     
     if ([placeInfo isKindOfClass:[NSDictionary class]]) {
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
-        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
         [timePlaceL sizeToFit];
         viaLabel.hidden = YES;
@@ -323,15 +318,16 @@
             if (coordinates.count == 2) {
                 CLLocationDirection latitude = [coordinates[0] doubleValue];
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
-                NSString *place = S(@"%@, %@", geoInfo[@"coordinates"][0], geoInfo[@"coordinates"][1]);
-                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
-                timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
+                NSString *place = S(@"%.3f, %.3f", [geoInfo[@"coordinates"][0] doubleValue], [geoInfo[@"coordinates"][1] doubleValue]);
+                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
+                timePlaceL.text = [NSString stringWithFormat:@"%@ %@: %@", timeText, _("Coordinate"), place];
                 
                 CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                 CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
+                __weak typeof(self)weakSelf = self;
                 [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
                     for (CLPlacemark * placemark in placemarks) {
-                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]] standardTwitterDisplay];
+                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:weakSelf.data.mainStatus[@"created_at"]] standardTwitterDisplay];
                         timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, placemark.name];
                         [timePlaceL sizeToFit];
                         viaLabel.hidden = YES;
@@ -357,7 +353,8 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if ([HSUInstagramHandler isInstagramLink:expandedUrl]
+                     && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;
                 }
@@ -366,7 +363,7 @@
     }
     
     // source
-    NSString *sourceHTML = rawData[@"source"];
+    NSString *sourceHTML = self.data.mainStatus[@"source"];
     if (sourceHTML) {
         if ([sourceHTML rangeOfString:@"<a"].location != NSNotFound) {
             NSRange r1 = [sourceHTML rangeOfString:@"\">"];
@@ -387,7 +384,7 @@
     }
     
     // text
-    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
+    NSString *text = [self.data.mainStatus[@"text"] gtm_stringByUnescapingFromHTML];
     textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
@@ -405,7 +402,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -446,33 +443,37 @@
     }
     textAL.delegate = self;
     
-    if ([data.renderData[@"attr"] isEqualToString:@"photo"]) {
-        imageView.width = [data.renderData[@"photo_fit_width"] floatValue];
-        imageView.height = [data.renderData[@"photo_fit_height"] floatValue];
+    if ([data.attr isEqualToString:@"photo"]) {
+        imageView.width = data.photoFitWidth;
+        imageView.height = data.photoFitHeight;
         self.imgLoadSpinner.center = imageView.boundsCenter;
-        NSString *photoUrl = data.renderData[@"photo_url"];
+        NSString *photoUrl = data.photoUrl;
         if (photoUrl) {
-            [self _downloadPhotoWithURL:[NSURL URLWithString:data.renderData[@"photo_url"]]];
+            if (boolSetting(HSUSettingShowOriginalImage)) {
+                [self _downloadPhotoWithURL:[NSURL URLWithString:data.photoUrl]];
+            } else {
+                [self _downloadPhotoWithURL:[NSURL URLWithString:[HSUCommonTools smallTwitterImageUrlStr:data.photoUrl]]];
+            }
         } else {
-            NSString *instagramUrl = data.renderData[@"instagram_url"];
-            if (instagramUrl) {
-                NSString *mediaUrl = self.data.renderData[@"photo_url"];
+            NSString *thirdPartyMediaUrl = data.thirdPartyMediaUrl;
+            if (thirdPartyMediaUrl) {
+                NSString *mediaUrl = self.data.photoUrl;
                 if (mediaUrl) {
                     [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
-                } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:instagramUrl][@"url"])) {
-                    self.data.renderData[@"photo_url"] = mediaUrl;
-                    data.renderData[@"instagram_media_id"] = [HSUInstagramMediaCache mediaForWebUrl:instagramUrl][@"media_id"];
+                } else if ((mediaUrl = [HSUThirdPartyMediaCache mediaForWebUrl:thirdPartyMediaUrl][@"url"])) {
+                    self.data.photoUrl = mediaUrl;
+                    data.thirdPartyMediaID = [HSUThirdPartyMediaCache mediaForWebUrl:thirdPartyMediaUrl][@"media_id"];
                     [self _downloadPhotoWithURL:[NSURL URLWithString:mediaUrl]];
-                } else {
+                } else if ([HSUInstagramHandler isInstagramLink:thirdPartyMediaUrl]) {
                     __weak typeof(self) weakSelf = self;
-                    NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", instagramUrl);
+                    NSString *instagramAPIUrl = [HSUInstagramHandler apiUrlStringWithLink:thirdPartyMediaUrl];
                     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
                     AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
                         if ([JSON isKindOfClass:[NSDictionary class]] && [JSON[@"type"] isEqualToString:@"photo"]) {
-                            [HSUInstagramMediaCache setMedia:JSON forWebUrl:instagramUrl];
+                            [HSUThirdPartyMediaCache setMedia:JSON forWebUrl:thirdPartyMediaUrl];
                             NSString *imageUrl = JSON[@"url"];
-                            data.renderData[@"photo_url"] = imageUrl;
-                            data.renderData[@"instagram_media_id"] = JSON[@"media_id"];
+                            data.photoUrl = imageUrl;
+                            data.thirdPartyMediaID = JSON[@"media_id"];
                             [weakSelf _downloadPhotoWithURL:[NSURL URLWithString:imageUrl]];
                         } else {
                             [weakSelf.imgLoadSpinner stopAnimating];
@@ -518,19 +519,20 @@
     }
     
     // set action events
-    [self setupControl:actionV.replayB forKey:@"reply"];
-    [self setupControl:actionV.retweetB forKey:@"retweet"];
-    [self setupControl:actionV.favoriteB forKey:@"favorite"];
-    [self setupControl:actionV.moreB forKey:@"more"];
-    [self setupControl:actionV.deleteB forKey:@"delete"];
-    [self setupControl:retweetsButton forKey:@"retweets"];
-    [self setupControl:favoritesButton forKey:@"favorites"];
-    [self setupControl:avatarB forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:actionV.replayB name:@"reply"];
+    [self setupTapEventOnButton:actionV.rtB name:@"rt"];
+    [self setupTapEventOnButton:actionV.retweetB name:@"retweet"];
+    [self setupTapEventOnButton:actionV.favoriteB name:@"favorite"];
+    [self setupTapEventOnButton:actionV.moreB name:@"more"];
+    [self setupTapEventOnButton:actionV.deleteB name:@"delete"];
+    [self setupTapEventOnButton:retweetsButton name:@"retweets"];
+    [self setupTapEventOnButton:favoritesButton name:@"favorites"];
+    [self setupTapEventOnButton:avatarB name:@"touchAvatar"];
 }
 
-+ (CGFloat)_textHeightWithCellData:(HSUTableCellData *)data
++ (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data
 {
-    NSDictionary *status = data.rawData;
+    NSDictionary *status = data.mainStatus;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
     NSDictionary *entities = status[@"entities"];
     NSString *attrName = nil;
@@ -546,7 +548,7 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
                     attrName = @"photo";
                     break;
                 }
@@ -565,7 +567,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -576,13 +578,10 @@
     }
     
     static TTTAttributedLabel *testSizeLabel = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
+    if (!mainStatusViewTestLabelInited || testSizeLabel) {
+        mainStatusViewTestLabelInited = YES;
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
-        textAL.font = [UIFont fontWithName:@"Georgia" size:textAL_font_S];
-        textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
-        textAL.highlightedTextColor = kWhiteColor;
+        textAL.font = [UIFont fontWithName:@"Georgia" size:MAX(textAL_font_S, [GlobalSettings[HSUSettingTextSize] integerValue])];
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
         textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -593,30 +592,26 @@
         textAL.lineHeightMultiple = textAL_LHM;
         
         testSizeLabel = textAL;
-    });
+    }
     testSizeLabel.text = text;
     
-    CGFloat cellWidth = [HSUCommonTools winWidth] - padding_S * 2 - kIPADMainViewPadding * 2;
+    CGFloat cellWidth = IPHONE ? 280 : 586;
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(cellWidth, 0)].height + 3;
-    data.renderData[@"text_height"] = @(textHeight);
+    data.textHeight = textHeight;
     return textHeight;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CStatusCellData *)data
 {
-    NSDictionary *rawData = data.rawData;
-    NSMutableDictionary *renderData = data.renderData;
-    if (renderData) {
-        if (renderData[@"height"]) {
-            return [renderData[@"height"] floatValue];
-        }
+    if (data.cellHeight) {
+        return data.cellHeight;
     }
     
     CGFloat height = 0;
     
     height += padding_S; // add padding top
     
-    if (rawData[@"retweeted_status"]) {
+    if (data.rawData[@"retweeted_status"]) {
         height += ambient_H; // add ambient
     }
     
@@ -634,8 +629,8 @@
     
     // photo height
     [self _parseSummary:data];
-    CGFloat summaryWidth = [data.renderData[@"photo_width"] floatValue];
-    CGFloat summaryHeight = [data.renderData[@"photo_height"] floatValue];
+    CGFloat summaryWidth = data.photoWidth;
+    CGFloat summaryHeight = data.photoHeight;
     if (summaryHeight) {
         height += time_summary_Distance;
         CGFloat contentWidth = [HSUCommonTools winWidth] - padding_S * 2 - kIPADMainViewPadding * 2;
@@ -647,12 +642,12 @@
             summaryHeight /= 2;
         }
         height += summaryHeight;
-        data.renderData[@"photo_fit_width"] = @(summaryWidth);
-        data.renderData[@"photo_fit_height"] = @(summaryHeight);
+        data.photoFitWidth = summaryWidth;
+        data.photoFitHeight = summaryHeight;
     }
     
-    NSInteger retweetCount = [data.rawData[@"retweet_count"] integerValue];
-    NSInteger favoriteCount = [data.rawData[@"favorite_count"] integerValue];
+    NSInteger retweetCount = [data.mainStatus[@"retweet_count"] integerValue];
+    NSInteger favoriteCount = [data.mainStatus[@"favorite_count"] integerValue];
     if (retweetCount + favoriteCount) {
         height += retweet_favorite_pannel_H;
     }
@@ -663,7 +658,7 @@
     // as integer
     height = floorf(height);
     
-    renderData[@"height"] = @(height);
+    data.cellHeight = height;
     
     return height;
 }
@@ -676,7 +671,7 @@
 #pragma mark - attributtedLabel delegate
 - (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
 {
-    id delegate = self.data.delegate;
+    id delegate = self.data.target;
     [delegate performSelector:@selector(attributedLabelDidLongPressed:) withObject:label];
 }
 
@@ -685,8 +680,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.delegate;
-    [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    [self.data attributedLabel:label didSelectLinkWithArguments:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)attributedLabel:(TTTAttributedLabel *)label didReleaseLinkWithURL:(NSURL *)url
@@ -694,8 +688,7 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.delegate;
-    [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+    [self.data attributedLabel:label didReleaseLinkWithArguments:@{@"url": url, @"cell_data": self.data}];
 }
 
 - (void)_downloadPhotoWithURL:(NSURL *)photoURL
@@ -709,9 +702,9 @@
     }];
 }
 
-+ (void)_parseSummary:(HSUTableCellData *)data
++ (void)_parseSummary:(T4CStatusCellData *)data
 {
-    NSDictionary *entities = data.rawData[@"entities"];
+    NSDictionary *entities = data.mainStatus[@"entities"];
     NSArray *urls = entities[@"urls"];
     NSArray *medias = entities[@"media"];
     NSString *attrName = nil;
@@ -720,9 +713,9 @@
         NSString *type = media[@"type"];
         if ([type isEqualToString:@"photo"]) {
             attrName = @"photo";
-            data.renderData[@"photo_url"] = media[@"media_url_https"];
-            data.renderData[@"photo_width"] = media[@"sizes"][@"large"][@"w"];
-            data.renderData[@"photo_height"] = media[@"sizes"][@"large"][@"h"];
+            data.photoUrl = media[@"media_url_https"];
+            data.photoWidth = [media[@"sizes"][@"large"][@"w"] floatValue];
+            data.photoHeight = [media[@"sizes"][@"large"][@"h"] floatValue];
         }
     } else if (urls && urls.count) {
         for (NSDictionary *urlDict in urls) {
@@ -733,10 +726,13 @@
             } else if ([expandedUrl hasPrefix:@"http://youtube.com"] ||
                        [expandedUrl hasPrefix:@"http://snpy.tv"]) {
                 attrName = @"video";
-            } else if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
-                data.renderData[@"instagram_url"] = expandedUrl;
-                data.renderData[@"photo_width"] = @(612);
-                data.renderData[@"photo_height"] = @(612);
+            } else if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                data.thirdPartyMediaUrl = expandedUrl;
+                data.photoWidth = 612;
+                data.photoHeight = 612;
+                attrName = @"photo";
+            } else if ([T4CTwitPicHandler isTwitPicLink:expandedUrl]) {
+                data.thirdPartyMediaUrl = expandedUrl;
                 attrName = @"photo";
             }
             if (attrName) {
@@ -746,23 +742,20 @@
     }
     
     if (attrName) {
-        data.renderData[@"attr"] = attrName;
+        data.attr = attrName;
     }
 }
 
 - (void)_firePhotoTap:(UITapGestureRecognizer *)tap
 {
     if (tap.state == UIGestureRecognizerStateEnded && imageView.image) {
-        id delegate = self.data.delegate;
-        if ([delegate respondsToSelector:@selector(tappedPhoto:withCellData:)]) {
-            [delegate performSelector:@selector(tappedPhoto:withCellData:) withObject:self.data.renderData[@"photo_url"] withObject:self.data];
-        }
+        [self.data photoButtonTouched:imageView];
     }
 }
 
 - (void)_sourceButtonTouched
 {
-    NSString *sourceHTML = self.data.rawData[@"source"];
+    NSString *sourceHTML = self.data.mainStatus[@"source"];
     if (sourceHTML) {
         NSRange r1 = [sourceHTML rangeOfString:@"href=\"http"];
         NSRange r2 = [sourceHTML rangeOfString:@"\" rel="];

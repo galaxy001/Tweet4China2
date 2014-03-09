@@ -38,34 +38,22 @@
     self.sectionsData = [NSMutableArray arrayWithCapacity:2];
     NSMutableArray *referencesData = [NSMutableArray arrayWithCapacity:4];
     NSDictionary *rawData;
-//    rawData = @{@"title": _("Following"),
-//                              @"action": kAction_Following,
-//                              @"user_screen_name": self.screenName};
-//    HSUTableCellData *followingCellData = [[HSUTableCellData alloc] initWithRawData:rawData
-//                                                                           dataType:kDataType_NormalTitle];
-//    rawData = @{@"title": _("Followers"),
-//                @"action": kAction_Followers,
-//                @"user_screen_name": self.screenName};
-//    HSUTableCellData *followersCellData = [[HSUTableCellData alloc] initWithRawData:rawData
-//                                                                           dataType:kDataType_NormalTitle];
     rawData = @{@"title": _("Favorites"),
                 @"action": kAction_Favorites,
                 @"user_screen_name": self.screenName};
-    HSUTableCellData *favoritesCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+    T4CTableCellData *favoritesCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                            dataType:kDataType_NormalTitle];
     rawData = @{@"title": _("Lists"),
                 @"action": kAction_Lists,
                 @"user_screen_name": self.screenName};
-    HSUTableCellData *listsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+    T4CTableCellData *listsCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                        dataType:kDataType_NormalTitle];
     rawData = @{@"title": _("Photos"),
                 @"action": kAction_Photos,
                 @"user_screen_name": self.screenName};
-    HSUTableCellData *photosCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+    T4CTableCellData *photosCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                         dataType:kDataType_NormalTitle];
     
-//    [referencesData addObject:followingCellData];
-//    [referencesData addObject:followersCellData];
     [referencesData addObject:photosCellData];
     [referencesData addObject:favoritesCellData];
     [referencesData addObject:listsCellData];
@@ -78,7 +66,7 @@
         rawData = @{@"title": _("Drafts"),
                     @"count": @(drafts.count),
                     @"action": kAction_Drafts};
-        HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+        T4CTableCellData *draftsCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                             dataType:kDataType_Drafts];
         [draftData addObject:draftsCellData];
         [self.sectionsData addObject:draftData];
@@ -96,7 +84,7 @@
     [twitter getUserTimelineWithScreenName:self.screenName sinceID:nil count:3 success:^(id responseObj) {
         NSArray *tweets = responseObj;
         for (NSDictionary *tweet in tweets) {
-            HSUTableCellData *statusCellData = [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
+            T4CTableCellData *statusCellData = [[T4CTableCellData alloc] initWithRawData:tweet dataType:kDataType_DefaultStatus];
             [weakSelf.data addObject:statusCellData];
         }
         [weakSelf.delegate preprocessDataSourceForRender:weakSelf];
@@ -104,8 +92,8 @@
             NSDictionary *rawData = @{@"title": _("View More Tweets"),
                                       @"action": kAction_UserTimeline,
                                       @"user_screen_name": weakSelf.screenName ?: @""};
-            HSUTableCellData *viewMoreCellData =
-            [[HSUTableCellData alloc] initWithRawData:rawData
+            T4CTableCellData *viewMoreCellData =
+            [[T4CTableCellData alloc] initWithRawData:rawData
                                              dataType:kDataType_NormalTitle];
             [weakSelf.data addObject:viewMoreCellData];
             [weakSelf.delegate dataSource:weakSelf didFinishRefreshWithError:nil];
@@ -132,9 +120,9 @@
     return cell;
 }
 
-- (HSUTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath
+- (T4CTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [super dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [super dataAtIndexPath:indexPath];
     if (data == nil) {
         data = self.sectionsData[indexPath.section-1][indexPath.row];
     }
@@ -159,7 +147,7 @@
     NSDictionary *rawData = @{@"title": _("Drafts"),
                               @"count": @([[HSUDraftManager shared] draftsSortedByUpdateTime].count),
                               @"action": kAction_Drafts};
-    HSUTableCellData *draftsCellData = [[HSUTableCellData alloc] initWithRawData:rawData
+    T4CTableCellData *draftsCellData = [[T4CTableCellData alloc] initWithRawData:rawData
                                                                         dataType:kDataType_Drafts];
     [self.sectionsData.lastObject removeAllObjects];
     [self.sectionsData.lastObject addObject:draftsCellData];

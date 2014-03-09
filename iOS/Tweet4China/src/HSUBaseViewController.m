@@ -31,7 +31,7 @@
 #import "HSUSearchPersonDataSource.h"
 #import "HSUPhotoCell.h"
 #import "HSUSearchTweetsDataSource.h"
-#import "HSUSearchViewController.h"
+#import "T4CSearchViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 
 @interface HSUBaseViewController ()
@@ -80,15 +80,14 @@
     notification_add_observer(UIKeyboardWillHideNotification, self, @selector(keyboardWillHide:));
     notification_add_observer(UIKeyboardWillShowNotification, self, @selector(keyboardWillShow:));
     notification_add_observer(HSUActionBarTouchedNotification, self, @selector(_actionBarButtonTouchedFirstTime));
-    notification_add_observer(HSUPostTweetProgressChangedNotification, self, @selector(updateProgress:));
     
     if (!self.dataSource) {
         self.dataSource = [self.dataSourceClass dataSourceWithDelegate:self useCache:YES];
     }
     self.dataSource.delegate = self;
     
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.delegate = self;
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
+        cellData.target = self;
     }
     
     UITableView *tableView;
@@ -228,16 +227,16 @@
 #pragma mark - TableView
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     Class cellClass = [self cellClassForDataType:data.dataType];
     return [cellClass heightForData:data];
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
-    if ([cellData.renderData[@"unread"] boolValue]) {
-        cellData.renderData[@"unread"] = @NO;
+    T4CTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+    if (cellData.unread) {
+        cellData.unread = NO;
         if (indexPath.row < self.dataSource.unreadCount) {
             self.dataSource.unreadCount = indexPath.row;
             [self unreadCountChanged];
@@ -247,9 +246,9 @@
 
 - (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndex:indexPath.row];
+    T4CTableCellData *data = [self.dataSource dataAtIndex:indexPath.row];
     if ([data.dataType isEqualToString:kDataType_DefaultStatus]) {
-        if ([data.renderData[@"mode"] isEqualToString:@"action"]) {
+        if ([((T4CStatusCellData *)data).mode isEqualToString:@"action"]) {
             return NO;
         }
     } else if ([data.dataType isEqualToString:kDataType_LoadMore]) {
@@ -276,7 +275,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_LoadMore]) {
         [self.dataSource loadMore];
     }
@@ -289,8 +288,8 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.delegate = self;
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
+        cellData.target = self;
     }
     
     [self.tableView reloadData];
@@ -314,8 +313,8 @@
     if (error) {
         NSLog(@"%@", error);
     } else {
-        for (HSUTableCellData *cellData in self.dataSource.allData) {
-            cellData.delegate = self;
+        for (T4CTableCellData *cellData in self.dataSource.allData) {
+            cellData.target = self;
         }
         
         [self.tableView reloadData];
@@ -362,13 +361,6 @@
             [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
         }
         [actionButton sizeToFit];
-        
-        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
-            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-            [actionButton addSubview:indicator];
-            indicator.leftTop = ccp(actionButton.width-10, 0);
-        }
         
         _actionBarButton = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
     }
@@ -434,7 +426,7 @@
 
 - (void)_searchButtonTouched
 {
-    HSUSearchViewController *searchVC = [[HSUSearchViewController alloc] init];
+    T4CSearchViewController *searchVC = [[T4CSearchViewController alloc] init];
     [self.navigationController pushViewController:searchVC animated:YES];
 }
 
@@ -461,7 +453,7 @@
 
 - (void)presentModelClass:(Class)modelClass
 {
-    UINavigationController *nav = DEF_NavitationController_Light;
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     UIViewController *vc = [[modelClass alloc] init];
     nav.viewControllers = @[vc];
     [self presentViewController:nav animated:YES completion:nil];
@@ -475,12 +467,6 @@
 - (void)reloadData
 {
     [self.tableView reloadData];
-}
-
-- (void)updateProgress:(NSNotification *)notification
-{
-    double progress = [notification.object doubleValue];
-    [((HSUNavigationController *)self.navigationController) updateProgress:progress];
 }
 
 - (void)dataSourceWillStartRefresh:(HSUBaseDataSource *)dataSource

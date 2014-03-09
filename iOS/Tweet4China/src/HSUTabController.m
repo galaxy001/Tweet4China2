@@ -14,11 +14,16 @@
 #import "HSUConversationsViewController.h"
 #import "HSUNavigationBar.h"
 #import "HSUGalleryView.h"
+#import "T4CHomeViewController.h"
+#import "T4CConnectViewController.h"
+#import "T4CConversationsViewController.h"
+#import "T4CDiscoverViewController.h"
 
 @interface HSUTabController () <UITabBarControllerDelegate>
 
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
 @property (nonatomic, strong) NSArray *unreadIndicators;
+@property (nonatomic, weak) UIProgressView *progressBar;
 
 @end
 
@@ -34,62 +39,74 @@
     self = [super init];
     if (self) {
         // Home
-        UINavigationController *homeNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
-                                                                                         toolbarClass:nil];
-        UIViewController *homeVC = [[HSUHomeViewController alloc] init];
+        UINavigationController *homeNav =
+        [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                       toolbarClass:nil];
+        UIViewController *homeVC = [[T4CHomeViewController alloc] init];
         homeNav.viewControllers = @[homeVC];
-        homeNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Home")
-                                                           image:[UIImage imageNamed:@"icn_tab_home_default"]
-                                                             tag:1];
+        homeNav.tabBarItem =
+        [[UITabBarItem alloc] initWithTitle:_("Home")
+                                      image:[UIImage imageNamed:@"icn_tab_home_default"]
+                                        tag:1];
         [homeNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
         // Connect
-        UINavigationController *connectNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
-                                                                                            toolbarClass:nil];
-        UIViewController *connectVC = [[HSUConnectViewController alloc] init];
+        UINavigationController *connectNav =
+        [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                       toolbarClass:nil];
+        UIViewController *connectVC = [[T4CConnectViewController alloc] init];
         connectNav.viewControllers = @[connectVC];
-        connectNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Connect")
-                                                              image:[UIImage imageNamed:@"icn_tab_connect_default"]
-                                                                tag:2];
+        connectNav.tabBarItem =
+        [[UITabBarItem alloc] initWithTitle:_("Connect")
+                                      image:[UIImage imageNamed:@"icn_tab_connect_default"]
+                                        tag:2];
         [connectNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        // Message
-        UINavigationController *messageNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
-                                                                                            toolbarClass:nil];
-        UIViewController *messageVC = [[HSUConversationsViewController alloc] init];
-        messageNav.viewControllers = @[messageVC];
-        messageNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Message")
-                                                              image:[UIImage imageNamed:@"icn_tab_message_default"]
-                                                                tag:2];
-        [messageNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
-        
         // Discover
-        UINavigationController *discoverNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
-                                                                                             toolbarClass:nil];
-        UIViewController *discoverVC = [[HSUWebBrowserViewController alloc] init];
+        UINavigationController *discoverNav =
+        [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                       toolbarClass:nil];
+        UIViewController *discoverVC = [[T4CDiscoverViewController alloc] init];
         discoverNav.viewControllers = @[discoverVC];
-        discoverNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Discover")
-                                                               image:[UIImage imageNamed:@"icn_tab_discover_default"]
-                                                                 tag:3];
+        discoverNav.tabBarItem =
+        [[UITabBarItem alloc] initWithTitle:_("Discover")
+                                      image:[UIImage imageNamed:@"icn_tab_discover_default"]
+                                        tag:3];
         [discoverNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
+        // Message
+        UINavigationController *messageNav =
+        [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                       toolbarClass:nil];
+        UIViewController *messageVC = [[T4CConversationsViewController alloc] init];
+        [messageNav view];
+        messageNav.viewControllers = @[messageVC];
+        messageNav.tabBarItem =
+        [[UITabBarItem alloc] initWithTitle:_("Message")
+                                      image:[UIImage imageNamed:@"icn_tab_message_default"]
+                                        tag:2];
+        [messageNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
+        
         // Me
-        UINavigationController *meNav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
-                                                                                       toolbarClass:nil];
+        UINavigationController *meNav =
+        [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBar class]
+                                                       toolbarClass:nil];
         UIViewController *meVC = [[HSUProfileViewController alloc] init];
         meNav.viewControllers = @[meVC];
-        meNav.tabBarItem = [[UITabBarItem alloc] initWithTitle:_("Me")
-                                                         image:[UIImage imageNamed:@"icn_tab_me_default"]
-                                                           tag:4];
+        meNav.tabBarItem =
+        [[UITabBarItem alloc] initWithTitle:_("Me")
+                                      image:[UIImage imageNamed:@"icn_tab_me_default"]
+                                        tag:4];
         [meNav.tabBarItem setTitlePositionAdjustment:UIOffsetMake(0, -1)];
         
-        self.viewControllers = @[homeNav, connectNav, messageNav, discoverNav, meNav];
+        self.viewControllers = @[homeNav, connectNav, discoverNav, messageNav, meNav];
         
         self.delegate = self;
         self.lastSelectedTabBarItem = homeNav.tabBarItem;
         
         notification_add_observer(HSUTwiterLoginSuccess, self, @selector(hideUnreadIndicators));
         notification_add_observer(HSUTwiterLogout, self, @selector(hideUnreadIndicators));
+        notification_add_observer(HSUPostTweetProgressChangedNotification, self, @selector(updateProgress:));
     }
     return self;
 }
@@ -103,9 +120,18 @@
     
 #ifdef __IPHONE_7_0
     if (Sys_Ver >= 7 && IPHONE) {
-        self.tabBarController.tabBar.barTintColor = bwa(255, 0.9);
+        self.tabBar.barTintColor = bwa(255, 0.9);
     }
 #endif
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    for (UINavigationController *nav in self.viewControllers) {
+        [nav.viewControllers.firstObject view];
+    }
 }
 
 - (void)viewDidLayoutSubviews
@@ -127,12 +153,13 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     if (self.lastSelectedTabBarItem == item) {
-        HSUBaseViewController *currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
-        if ([currentVC respondsToSelector:@selector(tableView)]) {
-            [currentVC.tableView setContentOffset:ccp(0, 0) animated:YES];
+        id currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
+        if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
+            [((T4CTableViewController *)currentVC) tabItemTapped];
         }
     }
     self.lastSelectedTabBarItem = item;
+    [self hideUnreadIndicatorOnTabBarItem:item];
 }
 
 - (void)showUnreadIndicatorOnTabBarItem:(UITabBarItem *)tabBarItem
@@ -185,6 +212,33 @@
     }
 }
 
+- (void)updateProgress:(NSNotification *)notification
+{
+    double progress = [notification.object doubleValue];
+    if (!self.progressBar) {
+        UIProgressView *progressBar = [[UIProgressView alloc] init];
+        [self.tabBar addSubview:progressBar];
+        progressBar.trackTintColor = kWhiteColor;
+        progressBar.width = self.tabBar.width;
+        self.progressBar = progressBar;
+    }
+    __weak typeof(self)weakSelf = self;
+    [self.progressBar setProgress:progress animated:NO];
+    if (progress == 0) {
+        [UIView animateWithDuration:0.5 animations:^{
+            weakSelf.progressBar.alpha = 1.0;
+        }];
+    } else if (progress == 1) {
+        double delayInSeconds = 1.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [UIView animateWithDuration:0.5 delay:progress - self.progressBar.progress options:0 animations:^{
+                weakSelf.progressBar.alpha = 0.0;
+            } completion:nil];
+        });
+    }
+}
+
 - (BOOL)shouldAutorotate
 {
     return self.selectedViewController.shouldAutorotate;
@@ -193,6 +247,27 @@
 - (BOOL)prefersStatusBarHidden
 {
     return self.selectedViewController.prefersStatusBarHidden;
+}
+
+
+-(UIImage *)getImageWithTintedColor:(UIImage *)image withTint:(UIColor *)color withIntensity:(float)alpha {
+    CGSize size = image.size;
+    
+    UIGraphicsBeginImageContextWithOptions(size, FALSE, 2);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    [image drawAtPoint:CGPointZero blendMode:kCGBlendModeNormal alpha:1.0];
+    
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextSetBlendMode(context, kCGBlendModeOverlay);
+    CGContextSetAlpha(context, alpha);
+    
+    CGContextFillRect(UIGraphicsGetCurrentContext(), CGRectMake(CGPointZero.x, CGPointZero.y, image.size.width, image.size.height));
+    
+    UIImage * tintedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return tintedImage;
 }
 
 @end

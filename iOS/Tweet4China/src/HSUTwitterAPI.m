@@ -393,7 +393,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
               parameters:params
                  success:success
                  failure:^(NSError *error) {
-                     if (error.code != 204) {
+                     if (error && error.code != 204) {
                          failure(error);
                      } else {
                          success(@[]);
@@ -409,7 +409,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
               parameters:params
                  success:success
                  failure:^(NSError *error) {
-                     if (error.code != 204) {
+                     if (error && error.code != 204) {
                          failure(error);
                      } else {
                          success(@[]);
@@ -568,8 +568,9 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
     FHSTwitterEngine *engine = self.engine;
     NSData *imageData = UIImageJPEGRepresentation([UIImage imageWithContentsOfFile:imageFilePath], 0.92);
     
+    notification_post_with_object(HSUPostTweetProgressChangedNotification, @(0));
     [engine postTweet:status withImageData:imageData inReplyTo:inReplyToID location:location placeId:placeId success:^(id responseObj) {
-        notification_post_with_object(HSUPostTweetProgressChangedNotification, @(1));
+//        notification_post_with_object(HSUPostTweetProgressChangedNotification, @(1));
     } failure:failure progress:^(double progress) {
         notification_post_with_object(HSUPostTweetProgressChangedNotification, @(progress));
     }];
@@ -741,7 +742,7 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
                   success:success
                   failure:failure];
 }
-- (void)destroyStatus:(NSString *)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
+- (void)destroyStatus:(id)statusID success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
     [self sendPOSTWithUrl:S(url_statuses_destroy, statusID)
                parameters:nil
@@ -821,7 +822,10 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 - (void)sendByFHSTwitterEngineWithUrl:(NSString *)url method:(NSString *)method parameters:(NSDictionary *)parameters success:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
 #ifdef DEBUG
-    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
+    if (!url) {
+        
+    }
+//    NSLog(@"api request - %@\n%@", [url substringFromIndex:@"https://api.twitter.com/1.1/".length], parameters);
 #endif
     FHSTwitterEngine *engine = self.engine;
     NSURL *baseURL = [NSURL URLWithString:url];
@@ -905,6 +909,11 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
         return;
     }
     if (error.code == 204) { // error like "no more data"
+        return;
+    }
+    
+    if ([UIApplication sharedApplication].applicationState
+        == UIApplicationStateBackground) { // ignore error in background.
         return;
     }
     

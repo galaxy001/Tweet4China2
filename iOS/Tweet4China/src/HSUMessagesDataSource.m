@@ -16,7 +16,7 @@
     if (self) {
         self.conversation = conversation;
         for (NSDictionary *message in conversation[@"messages"]) {
-            HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:message dataType:kDataType_Message];
+            T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:message dataType:kDataType_Message];
             [self.data addObject:cellData];
         }
     }

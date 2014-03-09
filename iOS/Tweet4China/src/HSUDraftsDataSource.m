@@ -25,7 +25,7 @@
     [self.data removeAllObjects];
     NSArray *drafts = [[HSUDraftManager shared] draftsSortedByUpdateTime];
     for (NSDictionary *draft in drafts) {
-        HSUTableCellData *cellData = [[HSUTableCellData alloc] initWithRawData:draft dataType:kDataType_Draft];
+        T4CTableCellData *cellData = [[T4CTableCellData alloc] initWithRawData:draft dataType:kDataType_Draft];
         [self.data addObject:cellData];
     }
 }
@@ -33,7 +33,7 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        HSUTableCellData *cellData = [self dataAtIndexPath:indexPath];
+        T4CTableCellData *cellData = [self dataAtIndexPath:indexPath];
         if ([[HSUDraftManager shared] removeDraft:cellData.rawData]) {
             [self removeCellData:cellData];
             [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];

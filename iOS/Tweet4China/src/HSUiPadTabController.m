@@ -7,11 +7,11 @@
 //
 
 #import "HSUiPadTabController.h"
-#import "HSUHomeViewController.h"
-#import "HSUConnectViewController.h"
+#import "T4CHomeViewController.h"
+#import "T4CConnectViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUNavigationBar.h"
-#import "HSUConversationsViewController.h"
+#import "T4CConversationsViewController.h"
 #import "HSUWebBrowserViewController.h"
 
 @interface HSUiPadTabController ()
@@ -35,21 +35,21 @@
         UINavigationController *homeNav = [[HSUNavigationController alloc]
                                            initWithNavigationBarClass:[HSUNavigationBar class]
                                            toolbarClass:nil];
-        HSUHomeViewController *homeVC = [[HSUHomeViewController alloc] init];
+        T4CHomeViewController *homeVC = [[T4CHomeViewController alloc] init];
         homeVC.tabController = self;
         homeNav.viewControllers = @[homeVC];
         
         UINavigationController *connectNav = [[HSUNavigationController alloc]
                                               initWithNavigationBarClass:[HSUNavigationBar class]
                                               toolbarClass:nil];
-        HSUConnectViewController *connectVC = [[HSUConnectViewController alloc] init];
+        T4CConnectViewController *connectVC = [[T4CConnectViewController alloc] init];
         connectVC.tabController = self;
         connectNav.viewControllers = @[connectVC];
         
         UINavigationController *messageNav = [[HSUNavigationController alloc]
                                               initWithNavigationBarClass:[HSUNavigationBar class]
                                               toolbarClass:nil];
-        HSUConversationsViewController *messageVC = [[HSUConversationsViewController alloc] init];
+        T4CConversationsViewController *messageVC = [[T4CConversationsViewController alloc] init];
         messageVC.tabController = self;
         messageNav.viewControllers = @[messageVC];
         
@@ -170,9 +170,15 @@
         if (UIInterfaceOrientationIsPortrait(self.interfaceOrientation)) { // portrait
             childVC.width = 768 - childVC.left;
             childVC.height = 1024;
+            if (Sys_Ver < 7) {
+                childVC.height -= 20;
+            }
         } else { // landscap
             childVC.width = 1024 - childVC.left;
             childVC.height = 768;
+            if (Sys_Ver < 7) {
+                childVC.height -= 20;
+            }
         }
         [self addChildViewController:childVC];
     }

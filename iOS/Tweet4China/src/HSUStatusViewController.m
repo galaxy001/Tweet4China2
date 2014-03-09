@@ -65,26 +65,9 @@
     
     [self.tableView registerClass:[HSUMainStatusCell class] forCellReuseIdentifier:kDataType_MainStatus];
     
-//    UIView *replyBar = [[UIView alloc] init];
-//    self.replyBar = replyBar;
-//    [self.view addSubview:replyBar];
-//    
-//    UITextField *replyTextField = [[UITextField alloc] init];
-//    self.replyTextField = replyTextField;
-//    [replyBar addSubview:replyTextField];
-//    
-//    UILabel *replayCountLabel = [[UILabel alloc] init];
-//    self.replyCountLabel = replayCountLabel;
-//    [replyBar addSubview:replayCountLabel];
-//    
-//    UIButton *replyButton = [[UIButton alloc] init];
-//    self.replyButton = replyButton;
-//    [replyBar addSubview:replyButton];
-    
     notification_add_observer(HSUGalleryViewDidAppear, self, @selector(galleryViewDidAppear));
     notification_add_observer(HSUGalleryViewDidDisappear, self, @selector(galleryViewDidDisappear));
     
-//    [self.dataSource refresh];
     [self.dataSource loadMore];
 }
 
@@ -129,8 +112,8 @@
 
 - (void)dataSource:(HSUBaseDataSource *)dataSource insertRowsFromIndex:(NSUInteger)fromIndex length:(NSUInteger)length
 {
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
-        cellData.delegate = self;
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
+        cellData.target = self;
     }
     
     [self.tableView reloadData];
@@ -165,11 +148,11 @@
 - (void)resetTableViewHeight
 {
     CGFloat height = 0;
-    for (HSUTableCellData *cellData in self.dataSource.data) {
+    for (T4CTableCellData *cellData in self.dataSource.data) {
         if (cellData.rawData != self.mainStatus && height == 0) {
             continue;
         }
-        height += [cellData.renderData[@"height"] floatValue];
+        height += cellData.cellHeight;
     }
     height = MIN(height + self.tableView.contentInset.top + tabbar_height, self.view.height);
     self.tableView.contentInset = edi(self.tableView.contentInset.top, 0, self.view.height-height+tabbar_height, 0);
@@ -177,7 +160,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_ChatStatus]) {
         HSUStatusViewController *statusVC = [[HSUStatusViewController alloc] initWithStatus:data.rawData];
         [self.navigationController pushViewController:statusVC animated:YES];
@@ -190,7 +173,7 @@
 {
     HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     NSMutableString *defaultText = [[NSMutableString alloc] init];
-    HSUTableCellData *mainStatus = [self.dataSource dataAtIndex:0];
+    T4CTableCellData *mainStatus = [self.dataSource dataAtIndex:0];
     NSString *authorScreenName = mainStatus.rawData[@"user"][@"screen_name"];
     composeVC.defaultTitle = S(@"Reply @%@", authorScreenName);
     NSString *statusId = mainStatus.rawData[@"id_str"];
@@ -218,6 +201,7 @@
     composeVC.defaultText = defaultText;
     UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
     nav.viewControllers = @[composeVC];
+    nav.modalPresentationStyle = UIModalPresentationPageSheet;
     [self presentViewController:nav animated:YES completion:nil];
 }
 
@@ -238,12 +222,12 @@
     [linkActionSheet showInView:self.view.window];
 }
 
-- (void)tappedPhoto:(NSString *)imageUrl withCellData:(HSUTableCellData *)cellData
+- (void)tappedPhoto:(NSString *)imageUrl withCellData:(T4CTableCellData *)cellData
 {
     [self openPhotoURL:[NSURL URLWithString:imageUrl] withCellData:cellData];
 }
 
-- (void)delete:(HSUTableCellData *)cellData
+- (void)delete:(T4CTableCellData *)cellData
 {
     RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
     cancelItem.action = ^{
@@ -257,7 +241,7 @@
         __weak typeof(self)weakSelf = self;
         [twitter destroyStatus:id_str success:^(id responseObj) {
             [weakSelf.navigationController popViewControllerAnimated:YES];
-            notification_post_with_object(HSUStatusDidDelete, id_str);
+            notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Delete Tweet failed")];
         }];
@@ -266,7 +250,7 @@
     [actionSheet showInView:self.view.window];
 }
 
-- (void)retweets:(HSUTableCellData *)cellData
+- (void)retweets:(T4CTableCellData *)cellData
 {
     HSURetweetersDataSource *dataSource = [[HSURetweetersDataSource alloc] init];
     dataSource.statusID = cellData.rawData[@"id_str"];
@@ -275,7 +259,7 @@
     [dataSource refresh];
 }
 
-- (void)favorites:(HSUTableCellData *)cellData
+- (void)favorites:(T4CTableCellData *)cellData
 {
     NSString *statusID = cellData.rawData[@"id_str"];
     SVModalWebViewController *webVC = [[SVModalWebViewController alloc] initWithAddress:S(@"http://favstar.fm/t/%@", statusID)];

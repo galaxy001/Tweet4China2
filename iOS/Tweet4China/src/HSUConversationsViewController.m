@@ -13,6 +13,7 @@
 #import "HSUCreateDirectMessageViewController.h"
 #import "HSUDirectMessagePersonsDataSource.h"
 #import "HSUTabController.h"
+#import "T4CConversationCellData.h"
 
 @implementation HSUConversationsViewController
 
@@ -51,9 +52,9 @@
 - (void)checkUnread
 {
     if (self.dataSource) {
-        [self.dataSource refresh];
+//        [self.dataSource refresh];
     } else {
-        [HSUConversationsDataSource checkUnreadForViewController:self];
+//        [HSUConversationsDataSource checkUnreadForViewController:self];
     }
 }
 
@@ -71,8 +72,8 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
-    cellData.renderData[@"unread_dm"] = @NO;
+    T4CConversationCellData *cellData = (T4CConversationCellData *)[self.dataSource dataAtIndexPath:indexPath];
+    cellData.unreadDM = NO;
     
     HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:cellData.rawData];
     HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
@@ -96,7 +97,7 @@
 - (void)_conversationDeleted:(NSNotification *)notification
 {
     for (uint i=0; i<self.dataSource.count; i++) {
-        HSUTableCellData *cd = [self.dataSource dataAtIndex:i];
+        T4CTableCellData *cd = [self.dataSource dataAtIndex:i];
         if (cd.rawData == notification.object) {
             [self.dataSource.data removeObject:cd];
             [self.tableView reloadData];
@@ -114,7 +115,7 @@
             UIViewController *nextVC = self.navigationController.viewControllers[1];
             if ([nextVC isKindOfClass:[HSUMessagesViewController class]]) {
                 HSUMessagesViewController *messagesVC = (HSUMessagesViewController *)nextVC;
-                for (HSUTableCellData *cellData in self.dataSource.data) {
+                for (T4CTableCellData *cellData in self.dataSource.data) {
                     NSDictionary *conversation = cellData.rawData;
                     if ([conversation[@"user"][@"screen_name"] isEqualToString:messagesVC.herProfile[@"screen_name"]]) {
                         [messagesVC updateConversation:conversation];

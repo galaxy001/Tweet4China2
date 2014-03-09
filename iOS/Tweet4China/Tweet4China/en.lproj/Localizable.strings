@@ -7,3 +7,5 @@
 "pro_message_title" = "Faster network, More features!";
 "pro_alert_cancel_item" = "Later";
 "pro_alert_buy_item" = "Buy Pro now";
+"web_browser_moved_notification_message" = "The nested web browser module has been moved to other place. You can touch up the button on the left-top corner to find it.";
+"warn_delete_conversation_message" = "You can NOT get back the deleted messages";

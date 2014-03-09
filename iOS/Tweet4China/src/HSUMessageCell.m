@@ -8,6 +8,7 @@
 
 #import "HSUMessageCell.h"
 #import "HSUAttributedLabel.h"
+#import "GTMNSString+HTML.h"
 
 @interface HSUMessageCell ()
 
@@ -43,10 +44,8 @@
         TTTAttributedLabel *contentLabel = [[HSUAttributedLabel alloc] init];
         [self.contentView addSubview:contentLabel];
         self.contentLabel = contentLabel;
-        contentLabel.textColor = rgb(38, 38, 38);
         contentLabel.font = [UIFont systemFontOfSize:14];
         contentLabel.backgroundColor = kClearColor;
-        contentLabel.highlightedTextColor = kWhiteColor;
         contentLabel.lineBreakMode = NSLineBreakByWordWrapping;
         contentLabel.numberOfLines = 0;
         contentLabel.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -92,13 +91,10 @@
     }
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     TTTAttributedLabel *testSizeLabel = [[HSUAttributedLabel alloc] init];
-    testSizeLabel.textColor = rgb(38, 38, 38);
     testSizeLabel.font = [UIFont systemFontOfSize:14];
-    testSizeLabel.backgroundColor = kClearColor;
-    testSizeLabel.highlightedTextColor = kWhiteColor;
     testSizeLabel.lineBreakMode = NSLineBreakByWordWrapping;
     testSizeLabel.numberOfLines = 0;
     testSizeLabel.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -113,11 +109,12 @@
     return MAX(6+10+5+7+textHeight+7+6, 6+50+6);
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CTableCellData *)data
 {
     [super setupWithData:data];
     
-    [self setupControl:self.retryButton forKey:@"retry"];
+//    [self setupControl:self.retryButton forKey:@"retry"];
+    [self setupTapEventOnButton:self.retryButton name:@"retry"];
     
     self.retryButton.hidden = YES;
     if ([data.rawData[@"sending"] boolValue]) {
@@ -143,13 +140,14 @@
         self.contentBackground.image = [[UIImage imageNamed:@"sms-left"] stretchableImageFromCenter];
         self.contentLabel.textAlignment = NSTextAlignmentLeft;
     }
-    self.contentLabel.text = data.rawData[@"text"];
+    self.contentLabel.text = [data.rawData[@"text"] gtm_stringByUnescapingFromHTML];
     NSString *avatarUrl = data.rawData[@"sender"][@"profile_image_url_https"];
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [self.avatarButton setImageWithUrlStr:avatarUrl forState:UIControlStateNormal placeHolder:nil];
     CGSize size = [self.contentLabel sizeThatFits:ccs(225, 0)];
     self.contentLabel.size = ccs(MAX(size.width, 30), size.height);
-    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+//    [self setupControl:self.avatarButton forKey:@"touchAvatar"];
+    [self setupTapEventOnButton:self.avatarButton name:@"touchAvatar"];
 }
 
 @end

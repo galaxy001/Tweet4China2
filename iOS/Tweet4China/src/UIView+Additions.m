@@ -155,7 +155,7 @@
 
 - (void)makeCornerRadius
 {
-    self.layer.cornerRadius = ([[HSUAppDelegate shared].globalSettings[HSUSettingRoundAvatar] boolValue] ? self.width/2 : ceilf(5/self.width*48));
+    self.layer.cornerRadius = ([setting(HSUSettingRoundAvatar) boolValue] ? self.width/2 : ceilf(5.0/48*self.width));
 }
 
 @end

@@ -21,6 +21,8 @@
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
         self.backgroundColor = bw(245);
+        
+        self.showActionsButton.hidden = YES;
     }
     return self;
 }

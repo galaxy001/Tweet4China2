@@ -36,12 +36,12 @@
     return self;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     return 44;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CTableCellData *)data
 {
     [super setupWithData:data];
     

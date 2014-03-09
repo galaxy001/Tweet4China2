@@ -29,14 +29,14 @@
         NSArray *lists = responseObj;
         if (lists.count) {
             for (int i=lists.count-1; i>=0; i--) {
-                HSUTableCellData *cellData =
-                [[HSUTableCellData alloc] initWithRawData:lists[i] dataType:kDataType_List];
+                T4CTableCellData *cellData =
+                [[T4CTableCellData alloc] initWithRawData:lists[i] dataType:kDataType_List];
                 [weakSelf.data addObject:cellData];
             }
             
-            HSUTableCellData *lastCellData = weakSelf.data.lastObject;
+            T4CTableCellData *lastCellData = weakSelf.data.lastObject;
             if (![lastCellData.dataType isEqualToString:kDataType_LoadMore]) {
-                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+                T4CTableCellData *loadMoreCellData = [[T4CTableCellData alloc] init];
                 if (lists.count < weakSelf.requestCount) {
                     loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_NoMore)};
                 } else {

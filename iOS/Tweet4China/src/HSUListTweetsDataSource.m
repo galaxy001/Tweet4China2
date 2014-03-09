@@ -27,7 +27,7 @@
 
 - (void)fetchMoreDataWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure
 {
-    HSUTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
+    T4CTableCellData *lastStatusData = [self dataAtIndex:self.count-2];
     NSString *lastStatusId = lastStatusData.rawData[@"id_str"];
     [twitter getListTimelineWithListID:self.list[@"id_str"] maxID:lastStatusId count:self.requestCount success:success failure:failure];
 }

@@ -84,4 +84,14 @@
     return self;
 }
 
+- (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
+{
+    if (item == self.lastSelectedTabBarItem) {
+        FBCViewController *viewController = ((UINavigationController *)self.selectedViewController).viewControllers.lastObject;
+        [viewController reloadStartPage];
+    }
+    
+    self.lastSelectedTabBarItem = item;
+}
+
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <MessageUI/MessageUI.h>
-
+#import "HSUComposeViewController.h"
 #import "HSUCommonTools.h"
 
 void notification_add_observer(NSString *name, id observer, SEL selector)
@@ -154,6 +154,111 @@ static NSString *defaultUserAgent;
         return YES;
     }
     return NO;
+}
+
++ (id)readJSONObjectFromFile:(NSString *)filename
+{
+    if (![filename hasSuffix:@"json"]) {
+        filename = [NSString stringWithFormat:@"%@.json", filename];
+    }
+    NSData *data = [NSData dataWithContentsOfFile:dp(filename)];
+    if (data) {
+        return [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+    }
+    return nil;
+}
+
++ (void)writeJSONObject:(id)object toFile:(NSString *)filename
+{
+    if (![filename hasSuffix:@"json"]) {
+        filename = [NSString stringWithFormat:@"%@.json", filename];
+    }
+    if (object) {
+        NSData *data = [NSJSONSerialization dataWithJSONObject:object options:0 error:nil];
+        [data writeToFile:dp(filename) atomically:NO];
+    } else {
+        [[NSFileManager defaultManager] removeItemAtPath:dp(filename) error:nil];
+    }
+}
+
++ (BOOL)postTweet
+{
+    return [self postTweetWithMessage:nil image:nil];
+}
+
++ (BOOL)postTweetWithMessage:(NSString *)message
+{
+    return [self postTweetWithMessage:message image:nil];
+}
+
++ (BOOL)postTweetWithMessage:(NSString *)message image:(UIImage *)image
+{
+    return [self postTweetWithMessage:message image:image selectedRange:NSMakeRange(0, 0)];
+}
+
++ (BOOL)postTweetWithMessage:(NSString *)message image:(UIImage *)image selectedRange:(NSRange)selectedRange
+{
+    return [self postTweetWithMessage:message image:image selectedRange:selectedRange inReplyToStatusId:nil];
+}
+
++ (BOOL)postTweetWithMessage:(NSString *)message image:(UIImage *)image selectedRange:(NSRange)selectedRange inReplyToStatusId:(NSString *)inReplyToStatusId
+{
+    UIViewController *baseVC = [UIApplication sharedApplication].keyWindow.rootViewController;
+    if ([[UIApplication sharedApplication].keyWindow.rootViewController.presentedViewController isKindOfClass:[UINavigationController class]]) {
+        UINavigationController *nav = (UINavigationController *)[UIApplication sharedApplication].keyWindow.rootViewController.presentedViewController;
+        if ([nav.viewControllers.lastObject isKindOfClass:[HSUComposeViewController class]]) {
+            [SVProgressHUD showErrorWithStatus:@"A status is being edit"];
+            return NO;
+        }
+        baseVC = nav;
+    }
+    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
+    composeVC.defaultText = message;
+    composeVC.defaultImage = image;
+    composeVC.defaultSelectedRange = selectedRange;
+    composeVC.inReplyToStatusId = inReplyToStatusId;
+    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+    nav.viewControllers = @[composeVC];
+    nav.modalPresentationStyle = UIModalPresentationPageSheet;
+    [baseVC presentViewController:nav animated:YES completion:nil];
+    return YES;
+}
+
++ (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr
+{
+    if ([originalImageUrlStr rangeOfString:@"twimg.com"].location != NSNotFound) {
+        return S(@"%@:small", originalImageUrlStr);
+    }
+    return originalImageUrlStr;
+}
+
++ (UIColor *)barTintColor
+{
+//    return bwa(255, 0.9);
+    return [UIColor blackColor];
+}
+
++ (UIColor *)tintColor
+{
+    return [UIColor whiteColor];
+}
+
++ (UIColor *)textColor
+{
+//    return [UIColor whiteColor];
+    return [UIColor blackColor];
+}
+
++ (UIColor *)grayTextColor
+{
+//    return [UIColor lightGrayColor];
+    return [UIColor grayColor];
+}
+
++ (UIColor *)lightTextColor
+{
+//    return [UIColor blackColor];
+    return [UIColor whiteColor];
 }
 
 @end

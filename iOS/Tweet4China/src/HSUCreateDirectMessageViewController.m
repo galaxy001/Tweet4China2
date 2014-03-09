@@ -26,7 +26,7 @@
     [self.dataSource loadMore];
 }
 
-- (void)touchAvatar:(HSUTableCellData *)cellData
+- (void)touchAvatar:(T4CTableCellData *)cellData
 {
     [self sendMessageTo:cellData.rawData];
 }

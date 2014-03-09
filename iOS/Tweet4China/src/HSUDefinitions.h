@@ -26,6 +26,8 @@
 #define Flurry_API_Key Pro_Flurry_API_Key
 #endif
 
+//#define Overseas
+
 #define WXAppID @"wxf12b4ac0a3c0c4d8"
 #define WXAppKey @"8adda3d2bca193381a5fae61812bb37d"
 
@@ -42,7 +44,6 @@
 #import "HSUTwitterAPI.h"
 #import "HSUAppDelegate.h"
 #import "NSString+Additions.h"
-#import "HSUTableCellData.h"
 #import "HSUUIEvent.h"
 #import "HSUCommonTools.h"
 #import "HSULoadMoreCell.h"
@@ -54,6 +55,7 @@
 #import "HSUNavigationController.h"
 #import "Flurry.h"
 #import "NSArray+Additions.h"
+#import "T4CTableCellData.h"
 
 #import <SystemConfiguration/SystemConfiguration.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -63,7 +65,10 @@ BOOL shadowsocksStarted;
 #define kTabBarHeight 44
 #define kIPadTabBarWidth 84
 #define kIPADMainViewPadding (IPAD ? 29 : 0)
+#define kCellPadding 10
 #define HSUiPadBgColor rgb(244, 248, 251)
+#define kLargeAvatarSize 48
+#define kMiddleAvatarSize 32
 
 #define kRequestDataCountViaWifi 50
 #define kRequestDataCountViaWWAN 20
@@ -77,6 +82,15 @@ _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
 Stuff; \
 _Pragma("clang diagnostic pop") \
 } while (0)
+
+
+
+typedef NS_ENUM(NSInteger, T4CLoadingState) {
+    T4CLoadingState_Done,
+    T4CLoadingState_Loading,
+    T4CLoadingState_Error,
+    T4CLoadingState_NoMore,
+};
 
 
 #define _(s) NSLocalizedString(@s, nil)
@@ -99,10 +113,10 @@ _Pragma("clang diagnostic pop") \
 #define LR(rect) NSLog(@"%@", NSStringFromCGRect(rect));
 #define LF(f,...) NSLog(f,##__VA_ARGS__);
 #define S(f,...) [NSString stringWithFormat:f,##__VA_ARGS__]
-#define kBlackColor [UIColor blackColor]
-#define kWhiteColor [UIColor whiteColor]
+#define kBlackColor [HSUCommonTools textColor]
+#define kWhiteColor [HSUCommonTools lightTextColor]
 #define kClearColor [UIColor clearColor]
-#define kGrayColor [UIColor grayColor]
+#define kGrayColor [HSUCommonTools grayTextColor]
 #define kLightBlueColor rgb(141, 157, 168)
 #define kWinWidth [HSUCommonTools winWidth]
 #define kWinHeight [HSUCommonTools winHeight]
@@ -115,7 +129,6 @@ _Pragma("clang diagnostic pop") \
 #define kNamedImageView(s) [[UIImageView alloc] initWithImage:[UIImage imageNamed:s]]
 #define GRAY_INDICATOR [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray]
 #define MyScreenName [twitter myScreenName]
-#define DEF_NavitationController_Light [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil]
 #define kScreenHeight [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth [UIScreen mainScreen].bounds.size.width
 
@@ -127,11 +140,18 @@ _Pragma("clang diagnostic pop") \
 #define HSUTwiterLogout @"HSUTwiterLogout"
 #define HSUGalleryViewDidAppear @"HSUGalleryViewDidAppear"
 #define HSUGalleryViewDidDisappear @"HSUGalleryViewDidDisappear"
-#define HSUStatusDidDelete @"HSUStatusDidDelete"
+#define HSUStatusDidDeleteNotification @"HSUStatusDidDeleteNotification"
+#define HSUStatusShowActionsNotification @"HSUStatusShowActionsNotification"
+#define HSUUserUnfollowedNotification @"HSUUserUnfollowedNotification"
+#define HSUNewDirectMessagesReceivedNotification @"HSUNewDirectMessagesReceivedNotification"
+#define HSUDirectMessageSentNotification @"HSUDirectMessageSentNotification"
 
 #define kDataType_MainStatus @"MainStatus"
+#define kDataType_LoadingReply @"LoadingReply"
+#define kDataType_Status @"Status"
 #define kDataType_DefaultStatus @"DefaultStatus"
 #define kDataType_ChatStatus @"ChatStatus"
+#define kDataType_Gap @"Gap"
 #define kDataType_Person @"Person"
 #define kDataType_LoadMore @"LoadMore"
 #define kDataType_NormalTitle @"NormalTitle"
@@ -141,6 +161,8 @@ _Pragma("clang diagnostic pop") \
 #define kDataType_Conversation @"Conversation"
 #define kDataType_List @"List"
 #define kDataType_Photo @"Photo"
+#define kDataType_NewFollowers @"NewFollowers"
+#define kDataType_NewRetweets @"NewRetweets"
 
 #define kTwitterReplyID_ParameterKey @"in_reply_to_status_id"
 #define HSUUserSettings @"HSUUserSettings"
@@ -148,7 +170,8 @@ _Pragma("clang diagnostic pop") \
 #define HSUUserProfiles @"HSUUserProfiles"
 #define kDiscoverHomePage @"HSUDiscoverHomePage"
 
-#define setting(key) [[[NSUserDefaults standardUserDefaults] objectForKey:HSUSettings] objectForKey:key]
+#define setting(key) GlobalSettings[key]
+#define boolSetting(key) [GlobalSettings[key] boolValue]
 #define HSUShadowsocksSettings_Desc @"desc"
 #define HSUShadowsocksSettings_Server @"server"
 #define HSUShadowsocksSettings_RemotePort @"remote_port"
@@ -174,6 +197,12 @@ _Pragma("clang diagnostic pop") \
 #define HSUSettingPageCountWWAN @"page_count_wwan"
 #define HSUSettingDesktopUserAgent @"desktop_useragent"
 #define HSUSettingExcludeReplies @"exclude_replies"
+#define HSUSettingSelectBeforeStartCamera @"select_before_start_camera"
+#define HSUSettingShowOriginalImage @"show_original_image"
+#define HSUSettingAutoUpdateConnect @"HSUSettingAutoUpdateConnect"
+#define HSUSettingAutoUpdateConversation @"HSUSettingAutoUpdateConversation"
+#define HSUSettingRefreshThenScrollToTop @"HSUSettingRefreshThenScrollToTop"
+#define HSUSettingOverseas @"overseas"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"
 #define HSUStatusStyleUpdatedNotification @"HSUStatusStyleUpdatedNotification"
@@ -190,9 +219,10 @@ _Pragma("clang diagnostic pop") \
 #define status_height 20
 //[[UIApplication sharedApplication] statusBarFrame].size.height
 #define navbar_height self.navigationController.navigationBar.height
-#define tabbar_height self.tabBarController.tabBar.height
+#define tabbar_height ((self.tabBarController.tabBar.isHidden || Sys_Ver < 7) ? 0 : self.tabBarController.tabBar.height)
 #define toolbar_height 44
 
 #define NetWorkStatus [twitter networkStatus]
 
 BOOL statusViewTestLabelInited;
+BOOL mainStatusViewTestLabelInited;

@@ -155,7 +155,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_Person]) {
         NSString *screenName = data.rawData[@"screen_name"];
         HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];

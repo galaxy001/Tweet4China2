@@ -10,7 +10,7 @@
 #import "HSUTwitterAPI.h"
 
 @protocol HSUBaseDataSourceDelegate;
-@class HSUTableCellData;
+@class T4CTableCellData;
 @class HSUUIEvent;
 @protocol TTTAttributedLabelDelegate;
 @class HSUBaseViewController;
@@ -32,11 +32,9 @@
 @property (nonatomic, assign) BOOL useCache;
 
 - (NSDictionary *)rawDataAtIndex:(NSInteger)index;
-- (NSMutableDictionary *)renderDataAtIndex:(NSInteger)index;
-- (HSUTableCellData *)dataAtIndex:(NSInteger)index;
+- (T4CTableCellData *)dataAtIndex:(NSInteger)index;
 - (NSDictionary *)rawDataAtIndexPath:(NSIndexPath *)indexPath;
-- (NSMutableDictionary *)renderDataAtIndexPath:(NSIndexPath *)indexPath;
-- (HSUTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath;
+- (T4CTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath;
 - (void)addEventWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events;
 
 - (void)clearCache;
@@ -46,7 +44,7 @@
 - (void)saveCache;
 + (id)dataSourceWithDelegate:(id<HSUBaseDataSourceDelegate>)delegate useCache:(BOOL)useCahce;
 + (NSString *)cacheKey;
-- (void)removeCellData:(HSUTableCellData *)cellData;
+- (void)removeCellData:(T4CTableCellData *)cellData;
 + (void)checkUnreadForViewController:(HSUBaseViewController *)viewController;
 - (void)twitterLoginSuccess:(NSNotification *)notification;
 

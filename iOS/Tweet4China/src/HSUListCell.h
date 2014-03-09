@@ -7,7 +7,10 @@
 //
 
 #import "HSUBaseTableCell.h"
+#import "T4CListCellData.h"
 
 @interface HSUListCell : HSUBaseTableCell
+
+@property (nonatomic, strong) T4CListCellData *data;
 
 @end

@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class HSUTableCellData;
+@class T4CTableCellData;
 @interface HSUUIEvent : NSObject
 
 - (id)initWithName:(NSString *)name target:(id)target action:(SEL)action events:(UIControlEvents)events;
@@ -17,7 +17,7 @@
 @property (nonatomic, weak) id target;
 @property (nonatomic, assign) SEL action;
 @property (nonatomic, assign) UIControlEvents events;
-@property (nonatomic, weak) HSUTableCellData *cellData;
+@property (nonatomic, weak) T4CTableCellData *cellData;
 
 - (void)fire:(id)sender;
 

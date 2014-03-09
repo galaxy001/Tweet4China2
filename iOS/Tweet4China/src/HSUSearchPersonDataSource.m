@@ -37,8 +37,8 @@
     [self fetchDataWithSuccess:^(id responseObj) {
         NSArray *users = responseObj;
         for (NSDictionary *user in users) {
-            HSUTableCellData *cellData =
-            [[HSUTableCellData alloc] initWithRawData:user dataType:kDataType_Person];
+            T4CTableCellData *cellData =
+            [[T4CTableCellData alloc] initWithRawData:user dataType:kDataType_Person];
             [self.data addObject:cellData];
         }
         

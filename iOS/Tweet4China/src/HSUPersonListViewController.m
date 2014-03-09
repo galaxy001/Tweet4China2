@@ -9,6 +9,7 @@
 #import "HSUPersonListViewController.h"
 #import "HSUPersonListDataSource.h"
 #import "HSUProfileViewController.h"
+#import "T4CPersonCellData.h"
 
 @implementation HSUPersonListViewController
 
@@ -32,7 +33,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     if ([data.dataType isEqualToString:kDataType_Person]) {
         [self touchAvatar:data];
         return;
@@ -46,7 +47,7 @@
     [dataSource addEventWithName:@"touchAvatar" target:self action:@selector(touchAvatar:) events:UIControlEventTouchUpInside];
 }
 
-- (void)touchAvatar:(HSUTableCellData *)cellData
+- (void)touchAvatar:(T4CTableCellData *)cellData
 {
     NSString *screenName = cellData.rawData[@"screen_name"];
     HSUProfileViewController *profileVC = [[HSUProfileViewController alloc] initWithScreenName:screenName];
@@ -54,16 +55,16 @@
     [self.navigationController pushViewController:profileVC animated:YES];
 }
 
-- (void)follow:(HSUTableCellData *)cellData
+- (void)follow:(T4CPersonCellData *)cellData
 {
     NSString *screenName = cellData.rawData[@"screen_name"];
-    cellData.renderData[@"sending_following_request"] = @(YES);
+    cellData.sendingFollowingRequest = YES;
     [self.tableView reloadData];
     
     if ([cellData.rawData[@"following"] boolValue]) {
         __weak typeof(self)weakSelf = self;
         [twitter unFollowUser:screenName success:^(id responseObj) {
-            cellData.renderData[@"sending_following_request"] = @(NO);
+            cellData.sendingFollowingRequest = NO;
             NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
             rawData[@"following"] = @(NO);
             cellData.rawData = rawData;
@@ -74,7 +75,7 @@
     } else {
         __weak typeof(self)weakSelf = self;
         [twitter followUser:screenName success:^(id responseObj) {
-            cellData.renderData[@"sending_following_request"] = @(NO);
+            cellData.sendingFollowingRequest = NO;
             NSMutableDictionary *rawData = cellData.rawData.mutableCopy;
             rawData[@"following"] = @(YES);
             cellData.rawData = rawData;

@@ -12,5 +12,6 @@
 
 + (BOOL)openInInstagramWithMediaID:(NSString *)mediaID;
 + (BOOL)isInstagramLink:(NSString *)urlStr;
++ (NSString *)apiUrlStringWithLink:(NSString *)link;
 
 @end

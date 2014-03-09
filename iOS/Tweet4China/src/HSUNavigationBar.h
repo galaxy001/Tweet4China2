@@ -10,5 +10,6 @@
 
 @interface HSUNavigationBar : UINavigationBar
 
+@property (nonatomic, assign) BOOL highter;
 
 @end

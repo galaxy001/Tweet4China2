@@ -18,4 +18,6 @@
 @property (nonatomic, readonly) NSString *currentAddress;
 @property (nonatomic, copy) NSString *rootAddress;
 
+- (void)reloadStartPage;
+
 @end

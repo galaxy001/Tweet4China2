@@ -7,7 +7,8 @@
 //
 
 #import "HSUBaseDataSource.h"
-#import "HSUBaseTableCell.h"
+#import "T4CTableCellData.h"
+#import "T4CStatusCellData.h"
 
 @implementation HSUBaseDataSource
 
@@ -34,7 +35,7 @@
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (!self.loadingCount && self.count > 1) {
-        HSUTableCellData *cellData = [self dataAtIndex:indexPath.row];
+        T4CTableCellData *cellData = [self dataAtIndex:indexPath.row];
         if ([cellData.dataType isEqualToString:kDataType_LoadMore] &&
             [cellData.rawData[@"status"] integerValue] == kLoadMoreCellStatus_Done) {
             
@@ -43,7 +44,7 @@
         }
     }
     
-    HSUTableCellData *cellData = [self dataAtIndexPath:indexPath];
+    T4CTableCellData *cellData = [self dataAtIndexPath:indexPath];
     HSUBaseTableCell *cell = (HSUBaseTableCell *)[tableView dequeueReusableCellWithIdentifier:cellData.dataType];
     [cell setupWithData:cellData];
     
@@ -60,8 +61,8 @@
             CGFloat padding = cell.width/2-cell.contentView.width/2;
             cell.separatorInset = edi(0, padding, 0, padding);
         }
-#endif
     }
+#endif
     return cell;
 }
 
@@ -87,7 +88,7 @@
     return self.data;
 }
 
-- (HSUTableCellData *)dataAtIndex:(NSInteger)index
+- (T4CTableCellData *)dataAtIndex:(NSInteger)index
 {
     if (self.data.count > index) {
         return self.data[index];
@@ -96,22 +97,12 @@
     return nil;
 }
 
-- (HSUTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath
+- (T4CTableCellData *)dataAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section) {
         return nil;
     }
     return [self dataAtIndex:indexPath.row];
-}
-
-- (NSMutableDictionary *)renderDataAtIndex:(NSInteger)index;
-{
-    return [self dataAtIndex:index].renderData;
-}
-
-- (NSMutableDictionary *)renderDataAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [self dataAtIndexPath:indexPath].renderData;
 }
 
 - (NSInteger)count
@@ -134,7 +125,8 @@
     for (uint i=0; i<self.count; i++) {
         HSUUIEvent *cellEvent = [[HSUUIEvent alloc] initWithName:name target:target action:action events:events];
         cellEvent.cellData = [self dataAtIndex:i];
-        [self renderDataAtIndex:i][name] = cellEvent;
+        // TODO
+//        [self renderDataAtIndex:i][name] = cellEvent;
     }
 }
 
@@ -167,7 +159,7 @@
     }
     uint cacheSize = kRequestDataCountViaWifi;
     NSMutableArray *cacheDataArr = [NSMutableArray arrayWithCapacity:cacheSize];
-    for (HSUTableCellData *cellData in self.data) {
+    for (T4CTableCellData *cellData in self.data) {
         if (cacheDataArr.count < cacheSize) {
             if (![cellData.dataType isEqualToString:kDataType_LoadMore]) {
                 [cacheDataArr addObject:cellData.cacheData];
@@ -216,10 +208,10 @@
 //                if ([cacheDataArr indexOfObject:cacheData] < 100) {
 //                    continue;
 //                }
-                [mData addObject:[[HSUTableCellData alloc] initWithCacheData:cacheData]];
+                [mData addObject:[[T4CTableCellData alloc] initWithCacheData:cacheData]];
             }
-            if (![((HSUTableCellData *)mData.lastObject).dataType isEqualToString:kDataType_LoadMore]) {
-                HSUTableCellData *loadMoreCellData = [[HSUTableCellData alloc] init];
+            if (![((T4CTableCellData *)mData.lastObject).dataType isEqualToString:kDataType_LoadMore]) {
+                T4CTableCellData *loadMoreCellData = [[T4CTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
                 [mData addObject:loadMoreCellData];
@@ -231,7 +223,7 @@
     return dataSource;
 }
 
-- (void)removeCellData:(HSUTableCellData *)cellData
+- (void)removeCellData:(T4CTableCellData *)cellData
 {
     [self.data removeObject:cellData];
 }
@@ -239,9 +231,11 @@
 - (void)settingsUpdated:(NSNotification *)notification
 {
     statusViewTestLabelInited = NO;
-    for (HSUTableCellData *data in self.data) {
-        [data.renderData removeObjectForKey:@"text_height"];
-        [data.renderData removeObjectForKey:@"height"];
+    for (T4CTableCellData *data in self.data) {
+        if ([data isKindOfClass:[T4CStatusCellData class]]) {
+            ((T4CStatusCellData *)data).cellHeight = 0;
+            ((T4CStatusCellData *)data).textHeight = 0;
+        }
     }
     [self.delegate reloadData];
 }

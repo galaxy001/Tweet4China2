@@ -112,7 +112,7 @@
 
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
-    NSLog(@"should start %d %@", navigationType, request.URL);
+//    NSLog(@"should start %d %@", navigationType, request.URL);
     if ([webView.request.URL.absoluteString isEqualToString:@"about:blank"]) {
         [self.spinner startAnimating];
     }
@@ -188,6 +188,11 @@
     }
     
     return YES;
+}
+
+- (void)reloadStartPage
+{
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.address]]];
 }
 
 @end

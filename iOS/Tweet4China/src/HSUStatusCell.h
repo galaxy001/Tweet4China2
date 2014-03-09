@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "HSUBaseTableCell.h"
 #import "HSUStatusView.h"
+#import "T4CStatusCellData.h"
 
 #define padding_S 10
 
@@ -17,7 +18,9 @@
 @class HSUStatusView;
 @interface HSUStatusCell : HSUBaseTableCell
 
+@property (nonatomic, strong) T4CStatusCellData *data;
 @property (nonatomic, strong) HSUStatusView *statusView;
+@property (nonatomic, weak) UIButton *showActionsButton;
 
 + (HSUStatusViewStyle)statusStyle;
 

@@ -8,19 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-@class HSUTableCellData;
+@class T4CTableCellData;
 @interface HSUBaseTableCell : UITableViewCell
 
-@property (nonatomic, strong) HSUTableCellData *data;
+@property (nonatomic, strong) T4CTableCellData *data;
 
 @property (nonatomic, weak) UIImageView *cornerLeftTop;
 @property (nonatomic, weak) UIImageView *cornerRightTop;
 @property (nonatomic, weak) UIImageView *cornerLeftBottom;
 @property (nonatomic, weak) UIImageView *cornerRightBottom;
 
-- (void)setupWithData:(HSUTableCellData *)data;
-+ (CGFloat)heightForData:(HSUTableCellData *)data;
-- (void)setupControl:(UIControl *)control forKey:(NSString *)key;
-- (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean;
+- (void)setupWithData:(T4CTableCellData *)data;
++ (CGFloat)heightForData:(T4CTableCellData *)data;
+//- (void)setupControl:(UIControl *)control forKey:(NSString *)key;
+//- (void)setupControl:(UIControl *)control forKey:(NSString *)key cleanOldEvents:(BOOL)clean;
+- (void)setupTapEventOnButton:(UIButton *)button name:(NSString *)name;
 
 @end

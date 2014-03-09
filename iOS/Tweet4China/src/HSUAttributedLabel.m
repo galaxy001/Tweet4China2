@@ -15,6 +15,8 @@
 - (void)touchesBegan:(NSSet *)touches
            withEvent:(UIEvent *)event
 {
+//    [super touchesBegan:touches withEvent:event];
+//    
     UITouch *touch = [touches anyObject];
     
     self.activeLink = [self linkAtPoint:[touch locationInView:self]];
@@ -37,12 +39,17 @@
             __weak __typeof(&*self)weakSelf = self;
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.3 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 if (weakSelf.longPressed) {
-                    [weakSelf.delegate attributedLabel:weakSelf didSelectLinkWithURL:self.activeLink.URL];
                     weakSelf.longPressed = NO;
+                    [weakSelf.delegate attributedLabel:weakSelf didSelectLinkWithURL:self.activeLink.URL];
                 }
             });
         }
     }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self touchesEnded:touches withEvent:event];
 }
 
 - (void)touchesEnded:(NSSet *)touches
@@ -54,10 +61,12 @@
         
         switch (result.resultType) {
             case NSTextCheckingTypeLink:
-                self.longPressed = NO;
-                if ([self.delegate respondsToSelector:@selector(attributedLabel:didReleaseLinkWithURL:)]) {
-                    [self.delegate attributedLabel:self didReleaseLinkWithURL:result.URL];
-                    return;
+                if (self.longPressed) {
+                    self.longPressed = NO;
+                    if ([self.delegate respondsToSelector:@selector(attributedLabel:didReleaseLinkWithURL:)]) {
+                        [self.delegate attributedLabel:self didReleaseLinkWithURL:result.URL];
+                        return;
+                    }
                 }
                 break;
             case NSTextCheckingTypeAddress:

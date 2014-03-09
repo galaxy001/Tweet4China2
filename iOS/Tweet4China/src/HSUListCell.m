@@ -52,7 +52,7 @@
         [self.contentView addSubview:creatorLabel];
         creatorLabel.backgroundColor = kClearColor;
         creatorLabel.font = [UIFont systemFontOfSize:12];
-        creatorLabel.textColor = kLightBlueColor;
+        creatorLabel.textColor = [UIColor lightGrayColor];
         if (Sys_Ver < 7) {
             creatorLabel.highlightedTextColor = kWhiteColor;
         }
@@ -67,7 +67,7 @@
         [self.contentView addSubview:memberCountLabel];
         memberCountLabel.backgroundColor = kClearColor;
         memberCountLabel.font = [UIFont systemFontOfSize:12];
-        memberCountLabel.textColor = kLightBlueColor;
+        memberCountLabel.textColor = [UIColor lightGrayColor];
         if (Sys_Ver < 7) {
             memberCountLabel.highlightedTextColor = kWhiteColor;
         }
@@ -81,7 +81,7 @@
     return self;
 }
 
-- (void)setupWithData:(HSUTableCellData *)data
+- (void)setupWithData:(T4CListCellData *)data
 {
     NSString *name = data.rawData[@"name"];
     NSString *creatorName = [NSString stringWithFormat:@"by %@", data.rawData[@"user"][@"name"]];
@@ -97,18 +97,18 @@
     self.modeIcon.hidden = [mode isEqualToString:@"public"];
     [self.creatorAvatar setImageWithUrlStr:creatorAvatarUrl placeHolder:nil];
     
-    if ([data.renderData[@"hide_creator"] boolValue]) {
+    if (data.hideCreator) {
         self.creatorAvatar.hidden = YES;
     }
     
-    if ([data.renderData[@"listed"] boolValue]) {
+    if (data.listed) {
         self.accessoryType = UITableViewCellAccessoryCheckmark;
     } else {
         self.accessoryType = UITableViewCellAccessoryNone;
     }
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data
++ (CGFloat)heightForData:(T4CTableCellData *)data
 {
     NSString *description = data.rawData[@"description"];
     CGSize descSize = [description

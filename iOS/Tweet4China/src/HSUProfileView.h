@@ -11,6 +11,7 @@
 @protocol HSUProfileViewDelegate;
 @interface HSUProfileView : UIView <UIScrollViewDelegate>
 
+@property (nonatomic, strong) UIButton *avatarButton;
 @property (nonatomic, readonly) UIImage *avatarImage;
 @property (nonatomic, readonly) UIImage *bannerImage;
 @property (nonatomic, weak) UIImageView *dmIndicator;

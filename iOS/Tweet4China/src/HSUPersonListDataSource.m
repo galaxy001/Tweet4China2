@@ -39,15 +39,15 @@
             users = dict[@"users"];
         }
         if (users.count) {
-            HSUTableCellData *loadMoreCellData = self.data.lastObject;
+            T4CTableCellData *loadMoreCellData = self.data.lastObject;
             [self.data removeLastObject];
             for (NSDictionary *tweet in users) {
-                HSUTableCellData *cellData =
-                [[HSUTableCellData alloc] initWithRawData:tweet dataType:kDataType_Person];
+                T4CTableCellData *cellData =
+                [[T4CTableCellData alloc] initWithRawData:tweet dataType:kDataType_Person];
                 [self.data addObject:cellData];
             }
             if (!loadMoreCellData) {
-                loadMoreCellData = [[HSUTableCellData alloc] init];
+                loadMoreCellData = [[T4CTableCellData alloc] init];
                 loadMoreCellData.rawData = @{@"status": @(kLoadMoreCellStatus_Done)};
                 loadMoreCellData.dataType = kDataType_LoadMore;
             }

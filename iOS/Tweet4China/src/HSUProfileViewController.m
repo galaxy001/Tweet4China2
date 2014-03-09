@@ -31,9 +31,16 @@
 #import "HSUSearchPersonViewController.h"
 #import "HSUListsViewController.h"
 #import "HSUPhotosViewController.h"
-#import "HSURecentPhotosDataSource.h"
 #import "HSUSelectListsViewController.h"
-
+#import "T4CUserTimelineViewController.h"
+#import "T4CFollowersViewController.h"
+#import "T4CFollowingViewController.h"
+#import "T4CPhotosViewController.h"
+#import "T4CListsViewController.h"
+#import "T4CFavoritesViewController.h"
+#import "T4CMessagesViewController.h"
+#import "T4CConversationsViewController.h"
+#import "HSUGalleryView.h"
 
 @interface HSUProfileViewController () <HSUProfileViewDelegate, OCMCameraViewControllerDelegate, UINavigationControllerDelegate>
 
@@ -111,6 +118,7 @@
         [self refreshDataIfNeed];
     }
     self.presenting = NO;
+    self.navigationController.delegate = self;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -133,9 +141,6 @@
         if (self.view.window) {
             if (self.tableView.contentOffset.y <= 0) {
                 [self refreshData];
-            }
-            if (Sys_Ver >= 7) {
-                [self.tableView setContentOffset:ccp(0, -120)];
             }
         }
     }
@@ -174,7 +179,7 @@
                     }
                 }
             }
-            weakSelf.followedMe = followedMe;
+            self.followedMe = followedMe;
             if (followedMe) {
                 [weakSelf.profileView showFollowed];
             }
@@ -222,7 +227,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
     NSDictionary *rawData = data.rawData;
     if ([data.dataType isEqualToString:kDataType_NormalTitle]) {
         if ([rawData[@"action"] isEqualToString:kAction_UserTimeline]) {
@@ -258,39 +263,37 @@
 
 - (void)tweetsButtonTouched
 {
-    HSUUserHomeDataSource *dataSource = [[HSUUserHomeDataSource alloc] init];
-    dataSource.screenName = self.screenName;
-    HSUTweetsViewController *detailVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
-    [dataSource refresh];
+    T4CUserTimelineViewController *tweetsVC = [[T4CUserTimelineViewController alloc] init];
+    tweetsVC.screenName = self.screenName;
+    [self.navigationController pushViewController:tweetsVC animated:YES];
 }
 
 - (void)followingsButtonTouched
 {
-    HSUPersonListDataSource *dataSource = [[HSUFollowingDataSource alloc] initWithScreenName:self.screenName];
-    HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
+    T4CFollowingViewController *followersVC = [[T4CFollowingViewController alloc] init];
+    followersVC.screenName = self.screenName;
+    [self.navigationController pushViewController:followersVC animated:YES];
 }
 
 - (void)followersButtonTouched
 {
-    HSUPersonListDataSource *dataSource = [[HSUFollowersDataSource alloc] initWithScreenName:self.screenName];
-    HSUPersonListViewController *detailVC = [[HSUPersonListViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
+    T4CFollowersViewController *followersVC = [[T4CFollowersViewController alloc] init];
+    followersVC.screenName = self.screenName;
+    [self.navigationController pushViewController:followersVC animated:YES];
 }
 
 - (void)favoritesButtonTouched
 {
-    HSUTweetsDataSource *dataSource = [[HSUFavoritesDataSource alloc] initWithScreenName:self.screenName];
-    HSUTweetsViewController *detailVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    [self.navigationController pushViewController:detailVC animated:YES];
-    [dataSource refresh];
+    T4CFavoritesViewController *favoritesVC = [[T4CFavoritesViewController alloc] init];
+    favoritesVC.screenName = self.screenName;
+    [self.navigationController pushViewController:favoritesVC animated:YES];
 }
 
 - (void)listsButtonTouched
 {
-    HSUListsViewController *listVC = [[HSUListsViewController alloc] initWithScreenName:self.screenName];
-    [self.navigationController pushViewController:listVC animated:YES];
+    T4CListsViewController *listsVC = [[T4CListsViewController alloc] init];
+    listsVC.screenName = self.screenName;
+    [self.navigationController pushViewController:listsVC animated:YES];
 }
 
 - (void)draftsButtonTouched
@@ -300,12 +303,9 @@
 
 - (void)photosButtonTouched
 {
-    HSURecentPhotosDataSource *dataSource = [[HSURecentPhotosDataSource alloc] init];
-    dataSource.screenName = self.screenName;
-    HSUTweetsViewController *tweetsVC = [[HSUTweetsViewController alloc] initWithDataSource:dataSource];
-    tweetsVC.useRefreshControl = NO;
-    [self.navigationController pushViewController:tweetsVC animated:YES];
-    [dataSource refresh];
+    T4CPhotosViewController *photosVC = [[T4CPhotosViewController alloc] init];
+    photosVC.screenName = self.screenName;
+    [self.navigationController pushViewController:photosVC animated:YES];
 }
 
 - (void)followButtonTouched:(UIButton *)followButton
@@ -335,6 +335,7 @@
             profile[@"following"] = @(NO);
             weakSelf.profile = profile;
             [weakSelf.profileView setupWithProfile:profile];
+            notification_post_with_object(HSUUserUnfollowedNotification, weakSelf.screenName);
             followButton.enabled = YES;
         } failure:^(NSError *error) {
             [twitter dealWithError:error errTitle:_("Unfollow failed")];
@@ -392,7 +393,7 @@
                         }
                     }
                 }
-                weakSelf.followedMe = followedMe;
+                self.followedMe = followedMe;
                 if (followedMe) {
                     [weakSelf startDirectMessage];
                 } else {
@@ -408,20 +409,33 @@
     }
 }
 
+
+- (NSDictionary *)_findConversationWithScreeName:(NSString *)screeName
+{
+    NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:[[T4CConversationsViewController class] description]];
+    for (NSDictionary *cache in cacheArr) {
+        NSDictionary *rawData = cache[@"raw_data"];
+        if ([rawData[@"user"][@"screen_name"] isEqualToString:screeName]) {
+            return rawData;
+        }
+    }
+    return nil;
+}
+
+
 - (void)startDirectMessage
 {
-    __weak typeof(self)weakSelf = self;
-    HSUMessagesDataSource *dataSource = [[HSUMessagesDataSource alloc] initWithConversation:nil];
-    __block HSUMessagesViewController *messagesVC = [[HSUMessagesViewController alloc] initWithDataSource:dataSource];
-    HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
+    T4CMessagesViewController *messagesVC = [[T4CMessagesViewController alloc] init];
+    messagesVC.conversation = [self _findConversationWithScreeName:self.profile[@"screen_name"]];
     messagesVC.herProfile = self.profile;
-    messagesVC.myProfile = nil;
+    HSUNavigationController *nav = [[HSUNavigationController alloc] initWithRootViewController:messagesVC];
     NSDictionary *userProfiles = [[NSUserDefaults standardUserDefaults] valueForKey:HSUUserProfiles];
     if (userProfiles[MyScreenName]) {
         messagesVC.myProfile = userProfiles[MyScreenName];
         [SVProgressHUD dismiss];
         [self presentViewController:nav animated:YES completion:nil];
     } else {
+        __weak typeof(self)weakSelf = self;
         [twitter showUser:MyScreenName success:^(id responseObj) {
             [SVProgressHUD dismiss];
             messagesVC.myProfile = responseObj;
@@ -532,7 +546,10 @@
         NSString *url = self.profile[@"profile_image_url_https"];
         if (url) {
             url = [url stringByReplacingOccurrencesOfString:@"_normal" withString:@""];
-            [self openPhotoURL:[NSURL URLWithString:url] withCellData:nil];
+            HSUGalleryView *galleryView = [[HSUGalleryView alloc] initStartPhotoView:self.profileView.avatarButton
+                                                                    originalImageURL:[NSURL URLWithString:url]];
+            [self.view.window addSubview:galleryView];
+            [galleryView showWithAnimation:YES];
         }
     }
 }
@@ -549,14 +566,13 @@
 
 - (void)_composeButtonTouched
 {
-    HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
     if (![self.screenName isEqualToString:[twitter myScreenName]]) {
-        composeVC.defaultText = [NSString stringWithFormat:@"@%@ ", self.screenName];
-        composeVC.defaultSelectedRange = NSMakeRange(0, composeVC.defaultText.length);
+        NSString *text = [NSString stringWithFormat:@"@%@ ", self.screenName];
+        NSRange range = NSMakeRange(0, text.length);
+        [HSUCommonTools postTweetWithMessage:text image:nil selectedRange:range];
+    } else {
+        [HSUCommonTools postTweet];
     }
-    UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-    nav.viewControllers = @[composeVC];
-    [self presentViewController:nav animated:YES completion:nil];
 }
 
 - (void)cameraViewControllerDidFinish:(OCMCameraViewController *)cameraViewController
@@ -622,14 +638,6 @@
             [addFriendButton sizeToFit];
             addFriendButton.width *= 1.4;
             _addFriendBarButton = [[UIBarButtonItem alloc] initWithCustomView:addFriendButton];
-        }
-        
-        if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUAddFriendBarTouched] boolValue]) {
-            UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-            UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-            [self.navigationController.navigationBar addSubview:indicator];
-            _addFriendButtonIndicator = indicator;
-            indicator.leftTop = ccp(self.navigationController.navigationBar.width-23, 0);
         }
     }
     return _addFriendBarButton;

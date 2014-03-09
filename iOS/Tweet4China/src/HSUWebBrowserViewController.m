@@ -32,24 +32,6 @@
 {
     [super viewDidLoad];
     
-    UIButton *actionButton = [[UIButton alloc] init];
-    [actionButton addTarget:self action:@selector(_actionButtonTouched) forControlEvents:UIControlEventTouchUpInside];
-    if (Sys_Ver >= 7) {
-        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action_ios7"] forState:UIControlStateNormal];
-    } else {
-        [actionButton setImage:[UIImage imageNamed:@"icn_nav_action"] forState:UIControlStateNormal];
-    }
-    [actionButton sizeToFit];
-    
-    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
-        UIImage *indicatorImage = [UIImage imageNamed:@"unread_indicator"];
-        UIImageView *indicator = [[UIImageView alloc] initWithImage:indicatorImage];
-        [actionButton addSubview:indicator];
-        indicator.leftTop = ccp(actionButton.width-10, 0);
-    }
-    
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:actionButton];
-    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
                                               initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                               target:self
@@ -172,10 +154,6 @@
     nav.modalPresentationStyle = UIModalPresentationFormSheet;
     nav.viewControllers = @[settingsVC];
     [self presentViewController:nav animated:YES completion:nil];
-    
-    if (![[[NSUserDefaults standardUserDefaults] objectForKey:HSUActionBarTouched] boolValue]) {
-        notification_post(HSUActionBarTouchedNotification);
-    }
 }
 
 - (void)userAgentChanged

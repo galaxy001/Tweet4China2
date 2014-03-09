@@ -36,7 +36,7 @@
         swipeGesture.direction = UISwipeGestureRecognizerDirectionLeft | UISwipeGestureRecognizerDirectionRight;
         [self addGestureRecognizer:swipeGesture];
         
-        notification_add_observer(HSUStatusCellOtherCellSwipedNotification, self, @selector(otherCellSwiped:));
+        notification_add_observer(HSUStatusShowActionsNotification, self, @selector(showActions:));
     }
     return self;
 }

@@ -74,7 +74,12 @@
     
     CGFloat width = CGImageGetWidth(imgRef);
     CGFloat height = CGImageGetHeight(imgRef);
-    
+    if (maxWidth == 0) {
+        maxWidth = width;
+    }
+    if (maxHeight == 0) {
+        maxHeight = height;
+    }
     
     CGAffineTransform transform = CGAffineTransformIdentity;
     CGRect bounds = CGRectMake(0, 0, width, height);

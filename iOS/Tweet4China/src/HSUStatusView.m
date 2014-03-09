@@ -11,7 +11,8 @@
 #import <AFNetworking/AFNetworking.h>
 #import "HSUAttributedLabel.h"
 #import "NSDate+Additions.h"
-#import "HSUInstagramMediaCache.h"
+#import "HSUThirdPartyMediaCache.h"
+#import "HSUInstagramHandler.h"
 
 #define ambient_H 14
 #define info_H 16
@@ -35,7 +36,6 @@
     UILabel *screenNameL;
     UIImageView *attrI; // photo/video/geo/summary/audio/convo
     UILabel *timeL;
-    TTTAttributedLabel *textAL;
 }
 
 @synthesize avatarB;
@@ -51,7 +51,7 @@
     if (self) {
         notification_add_observer(HSUSettingsUpdatedNotification, self, @selector(settingsUpdated:));
         
-        self.style = style;
+        _style = style;
         
         ambientArea = [[UIView alloc] init];
         [self addSubview:ambientArea];
@@ -80,8 +80,9 @@
         timeL = [[UILabel alloc] init];
         [infoArea addSubview:timeL];
         
-        textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
+        HSUAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [self addSubview:textAL];
+        self.textAL = textAL;
         
         UIButton *imagePreviewButton = [[UIButton alloc] init];
         [self addSubview:imagePreviewButton];
@@ -126,20 +127,20 @@
     }
     timeL.backgroundColor = kClearColor;
     
-    textAL.textColor = rgb(38, 38, 38);
-    textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
-    textAL.backgroundColor = kClearColor;
+    self.textAL.font = [UIFont systemFontOfSize:[setting(HSUSettingTextSize) integerValue]];
+    self.textAL.backgroundColor = kClearColor;
+    self.textAL.textColor = kBlackColor;
     if (Sys_Ver < 7) {
-        textAL.highlightedTextColor = kWhiteColor;
+        self.textAL.highlightedTextColor = kWhiteColor;
     }
-    textAL.lineBreakMode = NSLineBreakByWordWrapping;
-    textAL.numberOfLines = 0;
-    textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
+    self.textAL.lineBreakMode = NSLineBreakByWordWrapping;
+    self.textAL.numberOfLines = 0;
+    self.textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
                               (NSString *)kCTForegroundColorAttributeName: (id)cgrgb(30, 98, 164)};
-    textAL.activeLinkAttributes = @{(NSString *)kTTTBackgroundFillColorAttributeName: (id)cgrgb(215, 230, 242),
+    self.textAL.activeLinkAttributes = @{(NSString *)kTTTBackgroundFillColorAttributeName: (id)cgrgb(215, 230, 242),
                                     (NSString *)kTTTBackgroundCornerRadiusAttributeName: @(2)};
-    textAL.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
-    textAL.lineHeightMultiple = textAL_LHM;
+    self.textAL.verticalAlignment = TTTAttributedLabelVerticalAlignmentTop;
+    self.textAL.lineHeightMultiple = textAL_LHM;
     
     if (self.style == HSUStatusViewStyle_Default) {
         avatarB.frame = ccr(0, 0, avatar_S, avatar_S);
@@ -149,7 +150,7 @@
         nameL.textColor = kWhiteColor;
         screenNameL.textColor = kWhiteColor;
         timeL.textColor = kWhiteColor;
-        textAL.textColor = kWhiteColor;
+        self.textAL.textColor = kWhiteColor;
         avatarB.frame = ccr(0, 0, avatar_S, avatar_S);
     } else if (self.style == HSUStatusViewStyle_Light) {
         attrI.hidden = YES;
@@ -182,7 +183,7 @@
     [avatarB makeCornerRadius];
     
     infoArea.frame = ccr(ambientL.left, avatarB.top, cw-ambientL.left, info_H);
-    textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, [self.data.renderData[@"text_height"] floatValue] + 3);
+    self.textAL.frame = ccr(ambientL.left, infoArea.bottom, infoArea.width, self.data.textHeight + 3);
     
     [timeL sizeToFit];
     timeL.frame = ccr(infoArea.width-timeL.width, -1, timeL.width, timeL.height);
@@ -191,26 +192,24 @@
     attrI.frame = ccr(timeL.left-attrI.width-3, -1, attrI.width, attrI.height);
     
     [nameL sizeToFit];
-    nameL.frame = ccr(0, -3, MIN(attrI.left-3, nameL.width), nameL.height);
+    nameL.frame = ccr(0, -3, MIN(attrI.left-12, nameL.width), nameL.height);
     
     [screenNameL sizeToFit];
-    screenNameL.frame = ccr(nameL.right+3, -1, attrI.left-nameL.right, screenNameL.height);
+    screenNameL.frame = ccr(nameL.right+3, -1, attrI.left-nameL.right-2, screenNameL.height);
     
-    self.imagePreviewButton.frame = ccr(textAL.left, textAL.bottom+5, MIN(textAL.width, PhotoPreviewMaxWidth), MIN(textAL.width, PhotoPreviewMaxWidth)/2);
+    self.imagePreviewButton.frame = ccr(self.textAL.left, self.textAL.bottom+5, MIN(self.textAL.width, PhotoPreviewMaxWidth), MIN(self.textAL.width, PhotoPreviewMaxWidth)/2);
 }
 
-- (void)setupWithData:(HSUTableCellData *)cellData
+- (void)setupWithData:(T4CStatusCellData *)cellData
 {
     self.data = cellData;
     
-    NSDictionary *rawData = cellData.rawData;
-    
     // ambient
-    NSDictionary *retweetedStatus = rawData[@"retweeted_status"];
+    NSDictionary *retweetedStatus = cellData.rawData[@"retweeted_status"];
     ambientI.hidden = NO;
     if (retweetedStatus) {
         ambientI.imageName = retweeted_R;
-        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", rawData[@"user"][@"name"]];
+        NSString *ambientText = S(@"%@ retweeted", cellData.rawData[@"user"][@"name"]);
         ambientL.text = ambientText;
         ambientArea.hidden = NO;
     } else {
@@ -220,32 +219,26 @@
         ambientArea.bounds = CGRectZero;
     }
     
-    NSDictionary *entities = rawData[@"entities"];
+    NSDictionary *entities = cellData.mainStatus[@"entities"];
     
     // info
     NSString *avatarUrl = nil;
-    if (retweetedStatus) {
-        avatarUrl = rawData[@"retweeted_status"][@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"retweeted_status"][@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"retweeted_status"][@"user"][@"screen_name"]];
-    } else {
-        avatarUrl = rawData[@"user"][@"profile_image_url_https"];
-        nameL.text = rawData[@"user"][@"name"];
-        screenNameL.text = [NSString stringWithFormat:@"@%@", rawData[@"user"][@"screen_name"]];
-    }
+    avatarUrl = cellData.mainStatus[@"user"][@"profile_image_url_https"];
+    nameL.text = cellData.mainStatus[@"user"][@"name"];
+    screenNameL.text = S(@"@%@", cellData.mainStatus[@"user"][@"screen_name"]);
     avatarUrl = [avatarUrl stringByReplacingOccurrencesOfString:@"normal" withString:@"bigger"];
     [avatarB setImageWithUrlStr:avatarUrl
                        forState:UIControlStateNormal
                     placeHolder:nil];
     
-    NSDictionary *geo = rawData[@"geo"];
-    NSDictionary *place = rawData[@"place"];
+    NSDictionary *geo = cellData.mainStatus[@"geo"];
+    NSDictionary *place = cellData.mainStatus[@"place"];
     
     // attr
     attrI.imageName = nil;
-    if (!self.data.renderData[@"attr_name"] || ([self.data.renderData[@"has_photo"] boolValue] && !self.data.renderData[@"photo_url"])) {
-        if ([rawData[@"in_reply_to_status_id_str"] length]) {
-            self.data.renderData[@"attr_name"] = @"convo";
+    if (!self.data.attr || (self.data.hasPhoto && !self.data.photoUrl)) {
+        if ([cellData.mainStatus[@"in_reply_to_status_id_str"] length]) {
+            self.data.attr = @"convo";
         }
         if (entities) {
             NSArray *medias = entities[@"media"];
@@ -254,23 +247,23 @@
                 NSDictionary *media = medias[0];
                 NSString *type = media[@"type"];
                 if ([type isEqualToString:@"photo"]) {
-                    if (!self.data.renderData[@"attr_name"]) {
-                        self.data.renderData[@"attr_name"] = @"photo";
+                    if (!self.data.attr) {
+                        self.data.attr = @"photo";
                     }
-                    self.data.renderData[@"has_photo"] = @YES;
-                    self.data.renderData[@"photo_url"] = media[@"media_url_https"];
+                    self.data.hasPhoto = YES;
+                    self.data.photoUrl = media[@"media_url_https"];
                 }
             } else if (urls.count) {
                 for (NSDictionary *urlDict in urls) {
                     NSString *expandedUrl = urlDict[@"expanded_url"];
                     NSString *aName = [self _attrForUrl:expandedUrl];
-                    if (!self.data.renderData[@"attr_name"]) {
+                    if (!self.data.attr) {
                         if (aName) {
-                            self.data.renderData[@"attr_name"] = aName;
+                            self.data.attr = aName;
                         }
                     }
                     if ([aName isEqualToString:@"photo"]) {
-                        self.data.renderData[@"has_photo"] = @YES;
+                        self.data.hasPhoto = YES;
                     }
                     if (aName) {
                         break;
@@ -278,44 +271,42 @@
                 }
             }
         }
-        if (!self.data.renderData[@"attr_name"] && ([geo isKindOfClass:[NSDictionary class]] ||
+        if (!self.data.attr && ([geo isKindOfClass:[NSDictionary class]] ||
                                                     [place isKindOfClass:[NSDictionary class]])) {
             if ([geo isKindOfClass:[NSDictionary class]]) {
                 if (![geo[@"coordinates"] isEqualToArray:@[@0, @0]]) {
-                    //                attrName = @"geo";
-                    self.data.renderData[@"attr_name"] = @"geo";
+                    self.data.attr = @"geo";
                 }
             } else if ([place isKindOfClass:[NSDictionary class]]) {
-                //            attrName = @"geo";
-                self.data.renderData[@"attr_name"] = @"geo";
+                self.data.attr = @"geo";
             }
         }
         
-        if (!self.data.renderData[@"attr_name"]) {
-            self.data.renderData[@"attr_name"] = @"";
+        if (!self.data.attr) {
+            self.data.attr = @"";
         }
     }
     
-    if ([self.data.renderData[@"attr_name"] length]) {
-        attrI.imageName = S(@"ic_tweet_attr_%@_default", self.data.renderData[@"attr_name"]);
+    if ([self.data.attr length]) {
+        attrI.imageName = S(@"ic_tweet_attr_%@_default", self.data.attr);
     } else {
         attrI.imageName = nil;
     }
     self.imagePreviewButton.hidden = YES;
-    if ([self.data.renderData[@"has_photo"] boolValue] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if (self.data.hasPhoto && boolSetting(HSUSettingPhotoPreview)) {
         self.imagePreviewButton.hidden = NO;
-        [self.imagePreviewButton setImageWithUrlStr:self.data.renderData[@"photo_url"]
+        [self.imagePreviewButton setImageWithUrlStr:[HSUCommonTools smallTwitterImageUrlStr:self.data.photoUrl]
                                            forState:UIControlStateNormal
                                         placeHolder:nil];
     }
     
     // time
-    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:rawData[@"created_at"]];
+    NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:cellData.mainStatus[@"created_at"]];
     timeL.text = createdDate.twitterDisplay;
     
     // text
-    NSString *text = [(retweetedStatus ?: rawData)[@"text"] gtm_stringByUnescapingFromHTML];
-    textAL.text = text;
+    NSString *text = [cellData.mainStatus[@"text"] gtm_stringByUnescapingFromHTML];
+    self.textAL.text = text;
     if (entities) {
         NSMutableArray *urlDicts = [NSMutableArray array];
         NSArray *urls = entities[@"urls"];
@@ -332,14 +323,14 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([self.data.renderData[@"attr_name"] isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([self.data.attr isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
                     }
                 }
             }
-            textAL.text = text;
+            self.textAL.text = text;
             if (self.style == HSUStatusViewStyle_Default) {
                 for (NSDictionary *urlDict in urlDicts) {
                     NSString *url = urlDict[@"url"];
@@ -347,13 +338,13 @@
                     NSString *expanedUrl = urlDict[@"expanded_url"];
                     if (url && url.length && displayUrl && displayUrl.length && expanedUrl && expanedUrl.length) {
                         NSRange range = [text rangeOfString:displayUrl];
-                        [textAL addLinkToURL:[NSURL URLWithString:expanedUrl] withRange:range];
+                        [self.textAL addLinkToURL:[NSURL URLWithString:expanedUrl] withRange:range];
                     }
                 }
             }
         }
     }
-    textAL.delegate = self;
+    self.textAL.delegate = self;
 }
 
 - (NSString *)_attrForUrl:(NSString *)url
@@ -368,25 +359,29 @@
         
         return @"video";
         
-    } else if ([GlobalSettings[HSUSettingPhotoPreview] boolValue] &&
-               ([url hasPrefix:@"http://instagram.com"] || [url hasPrefix:@"http://instagr.am"])) {
+    } else if (boolSetting(HSUSettingPhotoPreview) &&
+               [HSUInstagramHandler isInstagramLink:url]) {
         
-        NSString *mediaUrl = self.data.renderData[@"photo_url"];
+        if ([url hasSuffix:@"_v/"]) {
+            return @"video";
+        }
+        
+        NSString *mediaUrl = self.data.photoUrl;
         if (mediaUrl) {
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
-        } else if ((mediaUrl = [HSUInstagramMediaCache mediaForWebUrl:url][@"url"])) {
-            self.data.renderData[@"photo_url"] = mediaUrl;
-            self.data.renderData[@"instagram_media_id"] = [HSUInstagramMediaCache mediaForWebUrl:url][@"media_id"];
+        } else if ((mediaUrl = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"url"])) {
+            self.data.photoUrl = mediaUrl;
+            self.data.thirdPartyMediaID = [HSUThirdPartyMediaCache mediaForWebUrl:url][@"media_id"];
             self.imagePreviewButton.hidden = NO;
             [self.imagePreviewButton setImageWithUrlStr:mediaUrl
                                                forState:UIControlStateNormal
                                             placeHolder:nil];
         } else {
-            NSString *instagramAPIUrl = S(@"http://api.instagram.com/oembed?url=%@", url);
-            self.data.renderData[@"instagram_url"] = instagramAPIUrl;
+            NSString *instagramAPIUrl = [HSUInstagramHandler apiUrlStringWithLink:url];
+            self.data.thirdPartyMediaUrl = instagramAPIUrl;
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:instagramAPIUrl]];
             __weak typeof(self) weakSelf = self;
             AFHTTPRequestOperation *instagramer = [AFJSONRequestOperation
@@ -394,14 +389,14 @@
                                                    success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON)
             {
                 if ([JSON isKindOfClass:[NSDictionary class]]) {
-                    if ([instagramAPIUrl isEqualToString:weakSelf.data.renderData[@"instagram_url"]]) {
-                        [HSUInstagramMediaCache setMedia:JSON forWebUrl:url];
-                        weakSelf.data.renderData[@"instagram_media_id"] = JSON[@"media_id"];
+                    if ([instagramAPIUrl isEqualToString:weakSelf.data.thirdPartyMediaUrl]) {
+                        [HSUThirdPartyMediaCache setMedia:JSON forWebUrl:url];
+                        weakSelf.data.thirdPartyMediaID = JSON[@"media_id"];
                         NSString *imageUrl = JSON[@"url"];
                         if ([imageUrl hasSuffix:@".mp4"]) {
-                            weakSelf.data.renderData[@"video_url"] = imageUrl;
+                            weakSelf.data.videoUrl = imageUrl;
                         } else {
-                            weakSelf.data.renderData[@"photo_url"] = imageUrl;
+                            weakSelf.data.photoUrl = imageUrl;
                             weakSelf.imagePreviewButton.hidden = NO;
                             [weakSelf.imagePreviewButton setImageWithUrlStr:imageUrl
                                                                    forState:UIControlStateNormal
@@ -419,7 +414,7 @@
     return nil;
 }
 
-+ (CGFloat)_textHeightWithCellData:(HSUTableCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName
++ (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName
 {
     NSDictionary *status = data.rawData;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
@@ -440,7 +435,7 @@
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue] && ![expandedUrl hasPrefix:@"http://instagram.com"] && ![expandedUrl hasPrefix:@"http://instagr.am"]) {
+                    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -455,8 +450,6 @@
         statusViewTestLabelInited = YES;
         TTTAttributedLabel *textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         textAL.font = [UIFont systemFontOfSize:[GlobalSettings[HSUSettingTextSize] integerValue]];
-        textAL.backgroundColor = kClearColor;
-        textAL.textColor = rgb(38, 38, 38);
         textAL.lineBreakMode = NSLineBreakByWordWrapping;
         textAL.numberOfLines = 0;
         textAL.linkAttributes = @{(NSString *)kCTUnderlineStyleAttributeName: @(NO),
@@ -470,24 +463,24 @@
     }
     testSizeLabel.text = text;
     
+    constraintWidth = IPHONE ? 232 : 538;
     CGFloat textHeight = [testSizeLabel sizeThatFits:ccs(constraintWidth, 0)].height;
-    data.renderData[@"text_height"] = @(textHeight);
+    data.textHeight = textHeight;
     return textHeight;
 }
 
-+ (CGFloat)heightForData:(HSUTableCellData *)data constraintWidth:(CGFloat)constraintWidth
++ (CGFloat)heightForData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth
 {
-    NSDictionary *rawData = data.rawData;
-    
     CGFloat height = 0;
     CGFloat leftHeight = 0;
     
-    if (rawData[@"retweeted_status"]) {
+    if (data.rawData[@"retweeted_status"]) {
         height += ambient_H; // add ambient
         leftHeight += ambient_H;
     }
     height += info_H; // add info
     
+    NSDictionary *rawData = data.mainStatus;
     NSDictionary *entities = rawData[@"entities"];
     NSString *attrName = nil;
     if (entities) {
@@ -502,22 +495,23 @@
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
                 NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([expandedUrl hasPrefix:@"http://instagram.com"] || [expandedUrl hasPrefix:@"http://instagr.am"]) {
+                if (([HSUInstagramHandler isInstagramLink:expandedUrl])
+                    && ![expandedUrl hasSuffix:@"_v/"]) {
                     attrName = @"photo";
                     break;
                 }
             }
         }
     }
-    if ([attrName isEqualToString:@"photo"] && [GlobalSettings[HSUSettingPhotoPreview] boolValue]) {
+    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview)) {
         if (IPHONE) {
-            height += 120 + 10;
+            height += 120 + 20;
         } else {
-            height += PhotoPreviewMaxWidth/2 + 10;
+            height += PhotoPreviewMaxWidth/2 + 20;
         }
     }
     
-    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName] + padding_S;
+    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName] + padding_S + 6;
     
     leftHeight += avatar_S; // add avatar
     
@@ -534,7 +528,7 @@
     if (!url) {
         return ;
     }
-    id delegate = self.data.delegate;
+    id delegate = self.data.target;
     [delegate performSelector:@selector(attributedLabel:didSelectLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
 }
 
@@ -543,24 +537,38 @@
     if (!url) {
         return;
     }
-    id delegate = self.data.delegate;
+    id delegate = self.data.target;
     [delegate performSelector:@selector(attributedLabel:didReleaseLinkWithArguments:) withObject:label withObject:@{@"url": url, @"cell_data": self.data}];
+}
+
+- (void)attributedLabelDidLongPressed:(TTTAttributedLabel *)label
+{
+    [self.data more];
 }
 
 #pragma mark -
 #pragma actions
 - (void)imageButtonTouched
 {
-    if ([self.imagePreviewButton imageForState:UIControlStateNormal]) {
-        id delegate = self.data.delegate;
-        [delegate performSelector:@selector(openPhoto:withCellData:)
-                       withObject:[self.imagePreviewButton imageForState:UIControlStateNormal]
-                       withObject:self.data];
+    UIImage *prevImage = [self.imagePreviewButton imageForState:UIControlStateNormal];
+    if (prevImage) {
+        if ([setting(HSUSettingShowOriginalImage) boolValue]) {
+            [self.data photoButtonTouched:self.imagePreviewButton
+                         originalImageURL:[NSURL URLWithString:self.data.photoUrl]];
+        } else {
+            [self.data photoButtonTouched:self.imagePreviewButton];
+        }
     }
 }
 
 - (void)settingsUpdated:(NSNotification *)notification
 {
+    [self _setupStyle];
+}
+
+- (void)setStyle:(HSUStatusViewStyle)style
+{
+    _style = style;
     [self _setupStyle];
 }
 

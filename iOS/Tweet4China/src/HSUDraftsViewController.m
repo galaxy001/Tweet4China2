@@ -136,7 +136,7 @@
 
 - (void)_sendButtonTouched
 {
-    for (HSUTableCellData *cellData in self.dataSource.allData) {
+    for (T4CTableCellData *cellData in self.dataSource.allData) {
         NSDictionary *draft = cellData.rawData;
         [[HSUDraftManager shared] sendDraft:draft success:^(id responseObj) {
             
@@ -149,12 +149,13 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    HSUTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
+    T4CTableCellData *cellData = [self.dataSource dataAtIndexPath:indexPath];
     if ([cellData.dataType isEqualToString:kDataType_Draft]) {
-        UINavigationController *nav = DEF_NavitationController_Light;
+        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
         HSUComposeViewController *composeVC = [[HSUComposeViewController alloc] init];
         composeVC.draft = cellData.rawData;
         nav.viewControllers = @[composeVC];
+        nav.modalPresentationStyle = UIModalPresentationPageSheet;
         [self dismissViewControllerAnimated:YES completion:^{
             [[HSUAppDelegate shared].tabController presentViewController:nav animated:YES completion:nil];
         }];

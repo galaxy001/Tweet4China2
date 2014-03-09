@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "WXApi.h"
 
+@class HSUServerList;
 @interface HSUAppDelegate : UIResponder <UIApplicationDelegate, WXApiDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
@@ -17,6 +18,7 @@
 @property (nonatomic, copy) NSString *shadwosocksServer;
 @property (nonatomic) BOOL hasPro;
 @property (nonatomic, weak) NSTimer *checkUnreadTimer;
+@property (nonatomic, strong) HSUServerList *serverList;
 
 + (HSUAppDelegate *)shared;
 - (BOOL)startShadowsocks;
@@ -25,5 +27,6 @@
 - (BOOL)isJailBreak;
 - (BOOL)buyProApp;
 - (void)buyProAppIfOverCount;
+- (void)askFollowAuthor;
 
 @end
