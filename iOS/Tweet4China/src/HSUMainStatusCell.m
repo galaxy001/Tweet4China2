@@ -401,8 +401,12 @@
                 NSString *url = urlDict[@"url"];
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
+                NSString *mediaUrlHttps = urlDict[@"media_url_https"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                    if ([attrName isEqualToString:@"photo"]
+                        && ![HSUInstagramHandler isInstagramLink:expandedUrl]
+                        && [self.data.photoUrl isEqualToString:mediaUrlHttps]
+                        ) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];

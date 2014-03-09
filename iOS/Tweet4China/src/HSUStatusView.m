@@ -322,8 +322,13 @@
                 NSString *url = urlDict[@"url"];
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
+                NSString *mediaUrlHttps = urlDict[@"media_url_https"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([self.data.attr isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                    if ([self.data.attr isEqualToString:@"photo"]
+                        && boolSetting(HSUSettingPhotoPreview)
+                        && ![HSUInstagramHandler isInstagramLink:expandedUrl]
+                        && [self.data.photoUrl isEqualToString:mediaUrlHttps]
+                        ) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -414,9 +419,9 @@
     return nil;
 }
 
-+ (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName
++ (CGFloat)_textHeightWithCellData:(T4CStatusCellData *)data constraintWidth:(CGFloat)constraintWidth attrName:(NSString *)attrName photoUrl:(NSString *)photoUrl
 {
-    NSDictionary *status = data.rawData;
+    NSDictionary *status = data.mainStatus;
     NSString *text = [status[@"text"] gtm_stringByUnescapingFromHTML];
     NSDictionary *entities = status[@"entities"];
     if (entities) {
@@ -434,8 +439,13 @@
                 NSString *url = urlDict[@"url"];
                 NSString *displayUrl = urlDict[@"display_url"];
                 NSString *expandedUrl = urlDict[@"expanded_url"];
+                NSString *mediaUrlHttps = urlDict[@"media_url_https"];
                 if (url && url.length && displayUrl && displayUrl.length) {
-                    if ([attrName isEqualToString:@"photo"] && boolSetting(HSUSettingPhotoPreview) && ![HSUInstagramHandler isInstagramLink:expandedUrl]) {
+                    if ([attrName isEqualToString:@"photo"]
+                        && boolSetting(HSUSettingPhotoPreview)
+                        && ![HSUInstagramHandler isInstagramLink:expandedUrl]
+                        && [photoUrl isEqualToString:mediaUrlHttps]
+                        ) {
                         text = [text stringByReplacingOccurrencesOfString:url withString:@""];
                     } else {
                         text = [text stringByReplacingOccurrencesOfString:url withString:displayUrl];
@@ -483,6 +493,7 @@
     NSDictionary *rawData = data.mainStatus;
     NSDictionary *entities = rawData[@"entities"];
     NSString *attrName = nil;
+    NSString *photoUrl = nil;
     if (entities) {
         NSArray *medias = entities[@"media"];
         NSArray *urls = entities[@"urls"];
@@ -491,6 +502,7 @@
             NSString *type = media[@"type"];
             if ([type isEqualToString:@"photo"]) {
                 attrName = @"photo";
+                photoUrl = media[@"media_url_https"];
             }
         } else if (urls.count) {
             for (NSDictionary *urlDict in urls) {
@@ -511,7 +523,7 @@
         }
     }
     
-    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName] + padding_S + 6;
+    height += [self _textHeightWithCellData:data constraintWidth:constraintWidth-avatar_S-padding_S attrName:attrName photoUrl:photoUrl] + padding_S + 6;
     
     leftHeight += avatar_S; // add avatar
     
