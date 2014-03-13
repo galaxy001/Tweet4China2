@@ -86,7 +86,7 @@
     
     HSUProfileView *profileView = [[HSUProfileView alloc]
                                    initWithScreenName:self.screenName
-                                   width:self.tableView.width-kIPADMainViewPadding*2
+                                   width:self.width-kIPADMainViewPadding*2
                                    delegate:self];
     if (self.profile) {
         [profileView setupWithProfile:self.profile];

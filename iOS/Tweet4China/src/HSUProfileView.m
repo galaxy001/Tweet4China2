@@ -164,8 +164,8 @@
         descLabel.numberOfLines = 5;
         descLabel.shadowOffset = ccs(0, 1);
         descLabel.shadowColor = kGrayColor;
-        descLabel.size = ccs(kLabelWidth, 32);
-        descLabel.topCenter = ccp(infoView.width/2*3, 60);
+        descLabel.size = ccs(infoView.width-40, infoView.width / 4);
+        descLabel.left = infoView.width + 20;
         
         UILabel *locationLabel = [[UILabel alloc] init];
         [infoView addSubview:locationLabel];
@@ -384,7 +384,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    self.pager.currentPage = scrollView.contentOffset.x / self.infoView.width;
+    self.pager.currentPage = (NSInteger)(scrollView.contentOffset.x / self.infoView.width);
 }
 
 - (void)setupWithProfile:(NSDictionary *)profile
@@ -396,8 +396,9 @@
     [self.screenNameLabel sizeToFit];
     self.nameLabel.text = profile[@"name"];
     self.descLabel.text = profile[@"description"];
-    [self.descLabel sizeToFit];
-    self.descLabel.bottomCenter = ccp(self.infoView.width/2*3, self.locationLabel.top - 5);
+//    self.descLabel.size = [self.descLabel sizeThatFits:ccs(self.width-40, 0)];
+//    [self.descLabel sizeToFit];
+//    self.descLabel.bottomCenter = ccp(self.infoView.width/2*3, self.locationLabel.top - 5);
     self.locationLabel.text = profile[@"location"];
     self.locationLabel.topCenter = ccp(self.infoView.width/2*3, self.locationLabel.top);
     self.siteLabel.text = [self _websiteForProfile:profile];
@@ -407,16 +408,12 @@
     [self.infoBGView setImageWithUrlStr:bannerUrl placeHolder:[UIImage imageNamed:@"bg_profile_empty"]];
     if ([profile[@"verified"] boolValue]) {
         self.verifyFlag.hidden = NO;
-#ifdef __IPHONE_7_0
         if ([self.nameLabel.text respondsToSelector:@selector(sizeWithAttributes:)]) {
             NSDictionary *attr = @{NSFontAttributeName: self.nameLabel.font};
             self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithAttributes:attr].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
         } else {
             self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithFont:self.nameLabel.font].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
         }
-#else
-        self.verifyFlag.leftCenter = ccp([self.nameLabel.text sizeWithFont:self.nameLabel.font].width/2 + self.nameLabel.center.x + 5, self.nameLabel.center.y);
-#endif
     } else {
         self.verifyFlag.hidden = YES;
     }
