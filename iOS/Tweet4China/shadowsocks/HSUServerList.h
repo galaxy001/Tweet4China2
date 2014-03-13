@@ -13,6 +13,7 @@
 
 @property (nonatomic, strong) GCDAsyncSocket *socket;
 @property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic, copy) NSString *configfile;
 
 - (void)updateServerList;
 

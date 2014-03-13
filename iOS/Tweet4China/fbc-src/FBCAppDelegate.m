@@ -10,6 +10,7 @@
 #import "FBCTabController.h"
 #import "HSUShadowsocksProxy.h"
 #import "Flurry.h"
+#import "HSUServerList.h"
 
 #define setting(key) [[[NSUserDefaults standardUserDefaults] objectForKey:HSUSettings] objectForKey:key]
 #define HSUShadowsocksSettings_Desc @"desc"
@@ -23,6 +24,9 @@
 #define HSUShadowsocksSettings @"HSUShadowsocksSettings"
 #define ShadowSocksPort 71081
 #define Flurry_API_Key @"DFQP9KW7XKRBDVS27YDJ"
+
+#define GCDBackgroundThread dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+#define GCDMainThread dispatch_get_main_queue()
 
 static HSUShadowsocksProxy *proxy;
 
@@ -46,26 +50,30 @@ static HSUShadowsocksProxy *proxy;
     [Flurry startSession:Flurry_API_Key];
 #endif
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(ssUpdated:) name:@"ShadowsocksServerListUpdatedNotification" object:nil];
+    
+    self.serverList = [[HSUServerList alloc] init];
+#if DEBUG
+    self.serverList.configfile = @"fb.ss.json.test";
+#else
+    self.serverList.configfile = @"fb.ss.json";
+#endif
+    [self.serverList updateServerList];
+    
     return YES;
 }
 
 - (void)startShadowsocks
 {
     NSMutableArray *sss = [[[NSUserDefaults standardUserDefaults] objectForKey:HSUShadowsocksSettings] mutableCopy];
-    for (NSDictionary *s in sss) {
-        if ([s[HSUShadowsocksSettings_Server] isEqualToString:@"162.243.150.109"]) {
-            sss = nil;
-            break;
-        }
-    }
     if (!sss) {
         sss = @[].mutableCopy;
         
-        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.187.99.175"}.mutableCopy];
-        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.186.113.201"}.mutableCopy];
-        [sss addObject:@{HSUShadowsocksSettings_Server: @"106.186.19.228"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"a1.tuoxie.me"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"a2.tuoxie.me"}.mutableCopy];
+        [sss addObject:@{HSUShadowsocksSettings_Server: @"a3.tuoxie.me"}.mutableCopy];
         
-        sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES; // select from free servers
+        sss[arc4random_uniform(sss.count)][HSUShadowsocksSettings_Selected] = @YES;
         
         [[NSUserDefaults standardUserDefaults] setObject:sss forKey:HSUShadowsocksSettings];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -121,5 +129,51 @@ static HSUShadowsocksProxy *proxy;
     return ;
 }
 
+
+- (void)ssUpdated:(NSNotification *)notification
+{
+    NSDictionary *json = notification.object;
+    NSMutableArray *proServers = [json[@"pro"] mutableCopy];
+    for (int i=0; i<proServers.count; i++) {
+        proServers[i] = [proServers[i] mutableCopy];
+    }
+    NSMutableArray *freeServers = [json[@"free"] mutableCopy];
+    for (int i=0; i<freeServers.count; i++) {
+        freeServers[i] = [freeServers[i] mutableCopy];
+    }
+#ifdef FreeApp
+    NSMutableArray *servers = [NSMutableArray arrayWithArray:freeServers];
+    servers[arc4random_uniform(servers.count-1)][HSUShadowsocksSettings_Selected] = @YES;
+#else
+    NSMutableArray *servers = [NSMutableArray arrayWithArray:proServers];
+    servers[arc4random_uniform(proServers.count)][HSUShadowsocksSettings_Selected] = @YES;
+#endif
+    
+    NSArray *oldServers = [[NSUserDefaults standardUserDefaults] arrayForKey:HSUShadowsocksSettings];
+    if (oldServers.count != servers.count) {
+        [[NSUserDefaults standardUserDefaults] setObject:servers forKey:HSUShadowsocksSettings];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    } else {
+        for (NSDictionary *ns in servers) {
+            BOOL found = NO;
+            for (NSDictionary *os in oldServers) {
+                if ([ns[HSUShadowsocksSettings_Server] isEqualToString:os[HSUShadowsocksSettings_Server]]) {
+                    NSUInteger op = [os[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                    NSUInteger np = [ns[HSUShadowsocksSettings_RemotePort] unsignedIntegerValue] ?: 1026;
+                    if (op == np) {
+                        found = YES;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                [[NSUserDefaults standardUserDefaults] setObject:servers forKey:HSUShadowsocksSettings];
+                [[NSUserDefaults standardUserDefaults] synchronize];
+                break;
+            }
+        }
+    }
+    self.serverList = nil;
+}
 
 @end

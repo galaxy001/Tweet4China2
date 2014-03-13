@@ -7,6 +7,7 @@
 //
 
 #import "FBCViewController.h"
+#import "FBCTabController.h"
 
 @interface FBCViewController () <UIWebViewDelegate>
 
@@ -22,6 +23,7 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadWebView:) name:@"facebook_login_success" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout) name:@"Logout" object:nil];
     
     self.navigationItem.title = self.title;
     
@@ -54,6 +56,11 @@
     [super viewWillAppear:animated];
     
     self.tabBarController.delegate = self;
+    if ([self.address isEqualToString:@"https://m.facebook.com/profile.php"]) {
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Logout"
+                                                                                 style:UIBarButtonItemStylePlain
+                                                                                target:self action:@selector(logout)];
+    }
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemRefresh
                                                                                            target:self.webView
                                                                                            action:@selector(reload)];
@@ -193,6 +200,20 @@
 - (void)reloadStartPage
 {
     [self.webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.address]]];
+}
+
+- (void)logout
+{
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *each in cookieStorage.cookies) {
+        [cookieStorage deleteCookie:each];
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"Logout" object:nil];
+}
+
+- (void)didLogout
+{
+    [self.webView reload];
 }
 
 @end

@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class HSUServerList;
 @interface FBCAppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (nonatomic, strong) HSUServerList *serverList;
 
 @end

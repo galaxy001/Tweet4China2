@@ -15,6 +15,11 @@
     self = [super init];
     if (self) {
         self.responseData = [NSMutableData data];
+#ifdef DEBUG
+        self.configfile = @"tw.ss.json.test";
+#else
+        self.configfile = @"tw.ss.json";
+#endif
     }
     return self;
 }
@@ -28,12 +33,7 @@
 
 - (void)socket:(GCDAsyncSocket *)sock didConnectToHost:(NSString *)host port:(uint16_t)port
 {
-#ifdef DEBUG
-    NSString *requestString = @"GET /tw.ss.json.test "
-#else
-    NSString *requestString = @"GET /tw.ss.json "
-#endif
-    @"HTTP/1.1\r\nHost: tuoxie.me\r\nConnection: close\r\n\r\n";
+    NSString *requestString = [NSString stringWithFormat:@"GET /%@ HTTP/1.1\r\nHost: tuoxie.me\r\nConnection: close\r\n\r\n", self.configfile];
     NSData *requestData = [requestString dataUsingEncoding:NSUTF8StringEncoding];
     [sock writeData:requestData withTimeout:10 tag:0];
 }

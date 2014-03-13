@@ -26,6 +26,8 @@
 {
     self = [super init];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didLogout) name:@"Logout" object:nil];
+    
     if (self) {
         // Home
         FBCViewController *homeVC = [[FBCViewController alloc] init];
@@ -92,6 +94,11 @@
     }
     
     self.lastSelectedTabBarItem = item;
+}
+
+- (void)didLogout
+{
+    [self setSelectedIndex:0];
 }
 
 @end
