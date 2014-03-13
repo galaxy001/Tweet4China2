@@ -9,7 +9,6 @@
 #import "HSUGalleryView.h"
 #import "HSUStatusActionView.h"
 #import "HSUStatusView.h"
-#import "HSUStatusViewController.h"
 
 @interface HSUGalleryView() <UIScrollViewDelegate>
 

@@ -200,7 +200,6 @@
 		96891F5A1743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96891F561743A6810019D396 /* btn_tool_bar_dark_segment_selected@2x.png */; };
 		9689F5EE187BFC180097E5B9 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */; };
 		968EC06116ECB0830068A6A0 /* HSUPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 968EC06016ECB0830068A6A0 /* HSUPersonCell.m */; };
-		968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 968EC06416ECB62A0068A6A0 /* HSUStatusViewController.m */; };
 		9692466B172BB6BE007720D4 /* HSUStatusView.m in Sources */ = {isa = PBXBuildFile; fileRef = 9692466A172BB6BE007720D4 /* HSUStatusView.m */; };
 		96924673172E6466007720D4 /* bg_nav_bar_light@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96924671172E6466007720D4 /* bg_nav_bar_light@2x.png */; };
 		96924679172E6754007720D4 /* UIViewController+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = 96924678172E6754007720D4 /* UIViewController+Additions.m */; };
@@ -686,8 +685,6 @@
 		9689F5ED187BFC180097E5B9 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		968EC05F16ECB0830068A6A0 /* HSUPersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUPersonCell.h; sourceTree = "<group>"; };
 		968EC06016ECB0830068A6A0 /* HSUPersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUPersonCell.m; sourceTree = "<group>"; };
-		968EC06316ECB62A0068A6A0 /* HSUStatusViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUStatusViewController.h; sourceTree = "<group>"; };
-		968EC06416ECB62A0068A6A0 /* HSUStatusViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUStatusViewController.m; sourceTree = "<group>"; };
 		96924669172BB6BE007720D4 /* HSUStatusView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUStatusView.h; sourceTree = "<group>"; };
 		9692466A172BB6BE007720D4 /* HSUStatusView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUStatusView.m; sourceTree = "<group>"; };
 		96924671172E6466007720D4 /* bg_nav_bar_light@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_nav_bar_light@2x.png"; sourceTree = "<group>"; };
@@ -1561,8 +1558,6 @@
 				969B6FB317204BC800420F01 /* HSUStatusDataSource.m */,
 				96924669172BB6BE007720D4 /* HSUStatusView.h */,
 				9692466A172BB6BE007720D4 /* HSUStatusView.m */,
-				968EC06316ECB62A0068A6A0 /* HSUStatusViewController.h */,
-				968EC06416ECB62A0068A6A0 /* HSUStatusViewController.m */,
 				96BFCAF8188287E300D13F4B /* HSURetweetersDataSource.h */,
 				96BFCAF9188287E300D13F4B /* HSURetweetersDataSource.m */,
 				603908FEEF7C2AAACE69AFF4 /* HSUSuggestMentionCell.h */,
@@ -2079,7 +2074,6 @@
 				9676D2ED189DC7EA00E3AF45 /* T4CGapCell.m in Sources */,
 				9676D34C18A1F0C800E3AF45 /* T4CNewRetweetsViewController.m in Sources */,
 				96DEBF261890FCF900618AD2 /* HSUSearchPersonViewController.m in Sources */,
-				968EC06516ECB62A0068A6A0 /* HSUStatusViewController.m in Sources */,
 				9666CDE1187129100044DB0A /* HSUSettingsViewController.m in Sources */,
 				96B7B6EE1893BE1500B75AE5 /* T4CConversationCellData.m in Sources */,
 				9676D34018A1223A00E3AF45 /* T4CSearchViewController.m in Sources */,

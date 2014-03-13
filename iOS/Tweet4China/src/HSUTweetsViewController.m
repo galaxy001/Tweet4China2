@@ -10,7 +10,6 @@
 #import "HSUComposeViewController.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUGalleryView.h"
-#import "HSUStatusViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUProfileDataSource.h"
 #import <TTTAttributedLabel/TTTAttributedLabel.h>
@@ -61,18 +60,6 @@
     [dataSource addEventWithName:@"more" target:self action:@selector(more:) events:UIControlEventTouchUpInside];
     [dataSource addEventWithName:@"delete" target:self action:@selector(delete:) events:UIControlEventTouchUpInside];
     [dataSource addEventWithName:@"touchAvatar" target:self action:@selector(touchAvatar:) events:UIControlEventTouchUpInside];
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    T4CTableCellData *data = [self.dataSource dataAtIndexPath:indexPath];
-    if ([data.dataType isEqualToString:kDataType_DefaultStatus]) {
-        self.cellDataInNextPage = data;
-        HSUStatusViewController *statusVC = [[HSUStatusViewController alloc] initWithStatus:data.rawData];
-        [self.navigationController pushViewController:statusVC animated:YES];
-        return;
-    }
-    [super tableView:tableView didSelectRowAtIndexPath:indexPath];
 }
 
 #pragma mark - Common actions

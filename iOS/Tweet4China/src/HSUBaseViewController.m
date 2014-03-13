@@ -12,7 +12,6 @@
 #import "HSULoadMoreCell.h"
 #import "HSUTabController.h"
 #import "HSUComposeViewController.h"
-#import "HSUStatusViewController.h"
 #import "HSUNavigationBarLight.h"
 #import "HSUNormalTitleCell.h"
 #import "HSUPersonListViewController.h"

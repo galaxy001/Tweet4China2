@@ -196,9 +196,6 @@
     NSString *statusId = self.mainStatus[@"id_str"];
     composeVC.inReplyToStatusId = statusId;
     NSArray *userMentions = self.mainStatus[@"entities"][@"user_mentions"];
-#ifdef DEBUG
-    [defaultText appendString:@"客服推: "];
-#endif
     if (userMentions && userMentions.count) {
         [defaultText appendFormat:@"@%@ ", authorScreenName];
         uint start = defaultText.length;
@@ -211,7 +208,7 @@
             if ([screenName isEqualToString:MyScreenName]) {
                 continue;
             }
-            if ([defaultText rangeOfString:authorScreenName].location != NSNotFound) { // remove duplicated mention
+            if ([defaultText rangeOfString:screenName].location != NSNotFound) { // remove duplicated mention
                 continue;
             }
             [defaultText appendFormat:@"@%@ ", screenName];
