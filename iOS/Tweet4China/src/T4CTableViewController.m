@@ -834,6 +834,9 @@
         if (self.data.count >= 200) {
             break;
         }
+        if (![self filterData:cache[@"raw_data"]]) {
+            continue;
+        }
         T4CTableCellData *cellData = [[NSClassFromString(cache[@"class_name"]) alloc] init];
         cellData.rawData = cache[@"raw_data"];
         cellData.dataType = cache[@"data_type"];

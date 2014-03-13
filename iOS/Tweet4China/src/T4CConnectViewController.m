@@ -365,4 +365,12 @@
     }
 }
 
+- (BOOL)filterData:(NSDictionary *)data
+{
+    if ([data[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
+        return NO;
+    }
+    return YES;
+}
+
 @end

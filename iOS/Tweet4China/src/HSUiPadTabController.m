@@ -147,12 +147,15 @@
             if (self.delegate && ![self.delegate tabBarController:self shouldSelectViewController:selectedVC]) {
                 return;
             }
-            notification_post_with_object(HSUTabControllerDidSelectViewControllerNotification, selectedVC);
             if (self.mainVC != selectedVC) {
                 [self.mainVC.view removeFromSuperview];
                 self.mainVC = selectedVC;
             }
             [self.view addSubview:self.mainVC.view];
+            id currentVC = ((UINavigationController *)self.mainVC).viewControllers[0];
+            if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
+                [((T4CTableViewController *)currentVC) tabItemTapped];
+            }
         } else {
             UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"icn_tab_%@_default", imageName]];
             [tabBarItem setImage:image forState:UIControlStateNormal];
