@@ -22,7 +22,7 @@ elif [ "$1" == "free" ]; then
     sed "s/\/\/#define FreeApp$/#define FreeApp/g"  src/HSUDefinitions.h > src/HSUDefinitions.h.tmp
     mv src/HSUDefinitions.h.tmp src/HSUDefinitions.h
 elif [ "$1" == "hd" ]; then
-    sed "s/T4C .*<\/string>/Tweet4China<\/string>/g" Tweet4China/Tweet4China-Info.plist > Tweet4China/Tweet4China-Info.plist.tmp
+    sed "s/T4C .*<\/string>/Tweet4China HD<\/string>/g" Tweet4China/Tweet4China-Info.plist > Tweet4China/Tweet4China-Info.plist.tmp
     mv Tweet4China/Tweet4China-Info.plist.tmp Tweet4China/Tweet4China-Info.plist
 
     sed "s/me.tuoxie.*<\/string>/me\.tuoxie\.\$\{PRODUCT_NAME\:rfc1034identifier\}HD<\/string>/g"  Tweet4China/Tweet4China-Info.plist > Tweet4China/Tweet4China-Info.plist.tmp

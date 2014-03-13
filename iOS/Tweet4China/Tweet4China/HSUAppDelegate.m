@@ -180,6 +180,9 @@ static HSUShadowsocksProxy *proxy;
               beginBackgroundTaskWithExpirationHandler:^{
                   [[UIApplication sharedApplication] endBackgroundTask:bgTask];
               }];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [[UIApplication sharedApplication] endBackgroundTask:bgTask];
+    });
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -622,6 +625,7 @@ static HSUShadowsocksProxy *proxy;
             break;
         }
     }
+    self.serverList = nil;
 }
 
 @end
