@@ -25,6 +25,7 @@
 @property (nonatomic, weak) REBoolItem *autoUpdateConnectItem;
 @property (nonatomic, weak) REBoolItem *autoUpdateConversationItem;
 @property (nonatomic, weak) REBoolItem *refreshThenScrollToTopItem;
+@property (nonatomic, weak) REBoolItem *insertMoreToUpperItem;
 @property (nonatomic, weak) RERadioItem *pageCountItem;
 @property (nonatomic, weak) RERadioItem *pageCountWWANItem;
 @property (nonatomic, weak) RERadioItem *cacheSizeItem;
@@ -299,6 +300,19 @@
             return ;
         }
     };
+
+    REBoolItem *insertMoreToUpperItem = [REBoolItem itemWithTitle:_("Insert More to Upper")
+                                                                 value:boolSetting(HSUSettingRefreshThenScrollToTop)];
+    self.insertMoreToUpperItem = insertMoreToUpperItem;
+    [section addItem:insertMoreToUpperItem];
+    insertMoreToUpperItem.switchValueChangeHandler = ^(REBoolItem *item) {
+
+        if (![[HSUAppDelegate shared] buyProApp]) {
+            item.value = NO;
+            [weakSelf.tableView reloadData];
+            return ;
+        }
+    };
     
     RERadioItem *cacheSizeItem =
     [RERadioItem itemWithTitle:_("Cache Size")
@@ -380,6 +394,7 @@
     BOOL autoUpdateConnect = self.autoUpdateConnectItem.value;
     BOOL autoUpdateConversation = self.autoUpdateConversationItem.value;
     BOOL refreshThenScrollToTop = self.refreshThenScrollToTopItem.value;
+    BOOL insertMoreToUpper = self.insertMoreToUpperItem.value;
     NSString *pageCount = self.pageCountItem.value;
     NSString *pageCountWWAN = self.pageCountWWANItem.value;
     NSString *textSize = self.textSizeItem.value;
@@ -399,7 +414,8 @@
                        HSUSettingOverseas: @(connectDirectly),
                        HSUSettingAutoUpdateConnect: @(autoUpdateConnect),
                        HSUSettingAutoUpdateConversation: @(autoUpdateConversation),
-                       HSUSettingRefreshThenScrollToTop: @(refreshThenScrollToTop)};
+                       HSUSettingRefreshThenScrollToTop: @(refreshThenScrollToTop),
+                       HSUSettingInsertMoreToUpper:@(insertMoreToUpper)};
     
     if (![globalSettings isEqualToDictionary:GlobalSettings]) {
         if ([globalSettings[HSUSettingDesktopUserAgent] boolValue] != [GlobalSettings[HSUSettingDesktopUserAgent] boolValue]) {

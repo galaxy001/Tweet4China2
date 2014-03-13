@@ -202,6 +202,7 @@ typedef NS_ENUM(NSInteger, T4CLoadingState) {
 #define HSUSettingAutoUpdateConnect @"HSUSettingAutoUpdateConnect"
 #define HSUSettingAutoUpdateConversation @"HSUSettingAutoUpdateConversation"
 #define HSUSettingRefreshThenScrollToTop @"HSUSettingRefreshThenScrollToTop"
+#define HSUSettingInsertMoreToUpper @"HSUSettingInsertMoreToUpper"
 #define HSUSettingOverseas @"overseas"
 
 #define HSUDataSourceUpdatedNotification @"HSUDataSourceUpdatedNotification"

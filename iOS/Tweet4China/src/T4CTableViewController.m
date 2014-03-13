@@ -424,10 +424,10 @@
         NSDictionary *curTopData = [self.firstTimelineData rawData];
         long long curTopID = [curTopData[@"id"] longLongValue];
         
-        BOOL gapped = curTopID > 0 && newBotID > curTopID;
+        BOOL gaped = curTopID > 0 && newBotID > curTopID;
         BOOL inserted = self.data.count > 0;
         
-        if (!gapped && curTopID) {
+        if (!gaped && curTopID) {
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
         
@@ -447,10 +447,10 @@
         
         self.unreadCount += newCount;
         [self unreadCountChanged];
-        if (gapped && !scrollToTop) {
+        if (gaped && !scrollToTop) {
             [newDataArr addObject:[[T4CGapCellData alloc] initWithRawData:nil dataType:kDataType_Gap]];
         }
-        if (!gapped || !scrollToTop) {
+        if (!gaped || !scrollToTop) {
             [newDataArr addObjectsFromArray:self.data];
         }
         [self.data removeAllObjects];
@@ -464,7 +464,7 @@
         
         [self.tableView reloadData];
         if (inserted && !scrollToTop) {
-            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:newCount+(gapped?1:0)];
+            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:newCount+(gaped?1:0)];
         }
         [self saveCache];
     }
@@ -475,35 +475,42 @@
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr
 {
     if (dataArr.count) {
-        BOOL gapped;
+        BOOL gaped;
         NSDictionary *newBotData = dataArr.lastObject;
         long long newBotID = [newBotData[@"id"] longLongValue];
         long long gapTopID = [self gapBotIDWithGapCellData:self.gapCellData];
-        gapped = gapTopID > 0 && newBotID > gapTopID;
-        if (!gapped) {
+        gaped = gapTopID > 0 && newBotID > gapTopID;
+        if (!gaped) {
             dataArr = [dataArr subarrayWithRange:NSMakeRange(0, dataArr.count - 1)];
         }
         
         NSUInteger gapIndex = [self.data indexOfObject:self.gapCellData];
         NSIndexSet *set = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(gapIndex, dataArr.count)];
         NSMutableArray *newData = [NSMutableArray arrayWithCapacity:dataArr.count];
+        NSUInteger newCount = 0;
         for (NSDictionary *rawData in dataArr) {
             if ([self filterData:rawData]) {
                 T4CTableCellData *cellData = [self createTableCellDataWithRawData:rawData];
                 [newData addObject:cellData];
                 cellData.unread = YES;
-                self.unreadCount ++;
+                newCount ++;
             }
         }
-        [self unreadCountChanged];
+
+        if (boolSetting(HSUSettingInsertMoreToUpper)) {
+            self.unreadCount += newCount;
+            [self unreadCountChanged];
+        }
         [self.data insertObjects:newData atIndexes:set];
-        if (!gapped) {
+        if (!gaped) {
             [self.data removeObject:self.gapCellData];
         }
         self.gapCellData.state = T4CLoadingState_Done;
         
         [self.tableView reloadData];
-//        [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
+        if (boolSetting(HSUSettingInsertMoreToUpper)) {
+            [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:dataArr.count];
+        }
         [self saveCache];
     } else {
         self.gapCellData.state = T4CLoadingState_NoMore;
@@ -816,13 +823,13 @@
                 break;
             }
         }
-        [HSUCommonTools writeJSONObject:cacheDataArr toFile:weakSelf.class.description];
+        [HSUCommonTools writeJSONObject:cacheDataArr toFile:[weakSelf.class description]];
     });
 }
 
 - (void)loadCache
 {
-    NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:self.class.description];
+    NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:[self.class description]];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
 //        if ([[self.class description] isEqualToString:@"T4CDiscoverViewController"]) {
