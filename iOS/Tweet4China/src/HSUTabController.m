@@ -8,7 +8,6 @@
 
 #import "HSUTabController.h"
 #import "HSUHomeViewController.h"
-#import "HSUConnectViewController.h"
 #import "HSUWebBrowserViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUConversationsViewController.h"

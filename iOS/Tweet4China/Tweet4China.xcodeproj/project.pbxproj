@@ -52,7 +52,6 @@
 		9628176016DE5EDC00ABF0AD /* HSUAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628175F16DE5EDC00ABF0AD /* HSUAppDelegate.m */; };
 		962817BB16DE5FF100ABF0AD /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 962817BA16DE5FF100ABF0AD /* SystemConfiguration.framework */; };
 		9628184E16DFAB3D00ABF0AD /* HSUHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628184D16DFAB3D00ABF0AD /* HSUHomeViewController.m */; };
-		9628185116DFAB5000ABF0AD /* HSUConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628185016DFAB5000ABF0AD /* HSUConnectViewController.m */; };
 		9628185716DFABE700ABF0AD /* HSUProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628185616DFABE700ABF0AD /* HSUProfileViewController.m */; };
 		9628185A16DFACEC00ABF0AD /* HSUCommonTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628185916DFACEC00ABF0AD /* HSUCommonTools.m */; };
 		9628185D16DFAE2A00ABF0AD /* HSUNavigationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 9628185C16DFAE2A00ABF0AD /* HSUNavigationBar.m */; };
@@ -463,8 +462,6 @@
 		962817C916DF81C000ABF0AD /* HSUDefinitions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUDefinitions.h; sourceTree = "<group>"; };
 		9628184C16DFAB3D00ABF0AD /* HSUHomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUHomeViewController.h; sourceTree = "<group>"; };
 		9628184D16DFAB3D00ABF0AD /* HSUHomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUHomeViewController.m; sourceTree = "<group>"; };
-		9628184F16DFAB5000ABF0AD /* HSUConnectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConnectViewController.h; sourceTree = "<group>"; };
-		9628185016DFAB5000ABF0AD /* HSUConnectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUConnectViewController.m; sourceTree = "<group>"; };
 		9628185516DFABE700ABF0AD /* HSUProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUProfileViewController.h; sourceTree = "<group>"; };
 		9628185616DFABE700ABF0AD /* HSUProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUProfileViewController.m; sourceTree = "<group>"; };
 		9628185816DFACEB00ABF0AD /* HSUCommonTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUCommonTools.h; sourceTree = "<group>"; };
@@ -1480,8 +1477,6 @@
 				96E34B4317015ECD0066CD5E /* HSUComposeViewController.m */,
 				96D4BC8A172830F700E7BABA /* HSUConnectDataSource.h */,
 				96D4BC8B172830F700E7BABA /* HSUConnectDataSource.m */,
-				9628184F16DFAB5000ABF0AD /* HSUConnectViewController.h */,
-				9628185016DFAB5000ABF0AD /* HSUConnectViewController.m */,
 				96A2126F17204F3200BC1D09 /* HSUContextStatusCell.h */,
 				96A2127017204F3200BC1D09 /* HSUContextStatusCell.m */,
 				969B7436173FB3910072EFC0 /* HSUDefaultStatusCell.h */,
@@ -2053,7 +2048,6 @@
 				9628175C16DE5EDC00ABF0AD /* main.m in Sources */,
 				9628176016DE5EDC00ABF0AD /* HSUAppDelegate.m in Sources */,
 				9628184E16DFAB3D00ABF0AD /* HSUHomeViewController.m in Sources */,
-				9628185116DFAB5000ABF0AD /* HSUConnectViewController.m in Sources */,
 				9666CDE418719AE10044DB0A /* HSUAccountsViewController.m in Sources */,
 				9628185716DFABE700ABF0AD /* HSUProfileViewController.m in Sources */,
 				9628185A16DFACEC00ABF0AD /* HSUCommonTools.m in Sources */,

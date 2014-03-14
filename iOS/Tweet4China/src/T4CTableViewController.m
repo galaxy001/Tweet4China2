@@ -409,8 +409,9 @@
 }
 
 // 数据经过解析之后，拿到数组才送到这里
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
+    NSUInteger newCount = 0;
     if (dataArr.count) {
         BOOL scrollToTop = boolSetting(HSUSettingRefreshThenScrollToTop);
         
@@ -438,7 +439,6 @@
         self.bottomID = [botData[@"id"] longLongValue];
         
         NSMutableArray *newDataArr = [NSMutableArray array];
-        NSUInteger newCount = 0;
         for (NSDictionary *rawData in dataArr) {
             if ([self filterData:rawData]) {
                 T4CTableCellData *cellData = [self createTableCellDataWithRawData:rawData];
@@ -473,6 +473,7 @@
     }
     self.refreshState = T4CLoadingState_Done;
     [self.tableView.pullToRefreshView stopAnimating];
+    return newCount;
 }
 
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr

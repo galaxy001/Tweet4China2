@@ -463,23 +463,23 @@
         
     }];
     
-    NSString *trendsFileName = dp(@"tweet4china.trends");
-    json = [NSData dataWithContentsOfFile:trendsFileName];
-    if (json) {
-        self.trends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
-    }
-    [twitter getTrendsWithSuccess:^(id responseObj) {
-        if (weakSelf) {
-            weakSelf.trends = responseObj[0][@"trends"];
-            NSData *json = [NSJSONSerialization dataWithJSONObject:weakSelf.trends options:0 error:nil];
-            [json writeToFile:trendsFileName atomically:NO];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf filterSuggestions];
-            });
-        }
-    } failure:^(NSError *error) {
-        
-    }];
+//    NSString *trendsFileName = dp(@"tweet4china.trends");
+//    json = [NSData dataWithContentsOfFile:trendsFileName];
+//    if (json) {
+//        self.trends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
+//    }
+//    [twitter getTrendsWithSuccess:^(id responseObj) {
+//        if (weakSelf) {
+//            weakSelf.trends = responseObj[0][@"trends"];
+//            NSData *json = [NSJSONSerialization dataWithJSONObject:weakSelf.trends options:0 error:nil];
+//            [json writeToFile:trendsFileName atomically:NO];
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [weakSelf filterSuggestions];
+//            });
+//        }
+//    } failure:^(NSError *error) {
+//        
+//    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

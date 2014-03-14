@@ -32,13 +32,14 @@
     }
 }
 
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
-    [super requestDidFinishRefreshWithData:dataArr];
+    int r = [super requestDidFinishRefreshWithData:dataArr];
     
     if (!self.unreadCount) {
         [self loadMore];
     }
+    return r;
 }
 
 - (BOOL)filterData:(NSDictionary *)data

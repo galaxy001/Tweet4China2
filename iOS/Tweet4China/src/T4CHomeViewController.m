@@ -47,12 +47,14 @@
 //}
 //#endif
 
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
-    [super requestDidFinishRefreshWithData:dataArr];
+    int r = [super requestDidFinishRefreshWithData:dataArr];
     
     [[HSUAppDelegate shared] askFollowAuthor];
     [[HSUAppDelegate shared] buyProAppIfOverCount];
+    
+    return r;
 }
 
 - (void)requestDidFinishRefreshWithError:(NSError *)error

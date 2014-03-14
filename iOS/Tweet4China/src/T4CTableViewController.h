@@ -55,7 +55,7 @@
 
 - (void)scrollTableViewToCurrentOffsetAfterInsertNewCellCount:(NSUInteger)count;
 
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr;
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadGapWithData:(NSArray *)dataArr;
 - (void)requestDidFinishLoadMoreWithData:(NSArray *)dataArr;
 - (void)requestDidFinishRefreshWithError:(NSError *)error;

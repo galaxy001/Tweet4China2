@@ -35,13 +35,13 @@
     return 100;
 }
 
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
     NSMutableArray *users = [NSMutableArray arrayWithCapacity:dataArr.count];
     for (NSDictionary *tweet in dataArr) {
         [users addObject:tweet[@"user"]];
     }
-    [super requestDidFinishRefreshWithData:users];
+    return [super requestDidFinishRefreshWithData:users];
 }
 
 - (void)requestDidFinishLoadMoreWithData:(NSArray *)dataArr

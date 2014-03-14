@@ -62,7 +62,7 @@
 
 - (void)requestDidFinishRefreshWithData:(NSArray *)dataArr newFollowers:(NSArray *)newFollowers newRetweets:(NSArray *)newRetweets
 {
-    [super requestDidFinishRefreshWithData:dataArr];
+    int newCount = [super requestDidFinishRefreshWithData:dataArr];
     
     NSInteger count = 0;
     if (self.view.window) {
@@ -82,12 +82,6 @@
         }
         [self.tableView reloadData];
         [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
-        
-        if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
-            if (!self.view.window) {
-                [self showUnreadIndicator];
-            }
-        }
     } else {
         // move to load cache
         T4CTableCellData *firstCellData = self.data.firstObject;
@@ -135,7 +129,7 @@
         [self.tableView reloadData];
         [self scrollTableViewToCurrentOffsetAfterInsertNewCellCount:count];
         
-        if (dataArr.count > 1 || newFollowers.count || newRetweets.count) {
+        if (newCount || newFollowers.count || newFollowers.count) {
             if (!self.view.window) {
                 [self showUnreadIndicator];
             }
@@ -227,11 +221,10 @@
     }];
 }
 
-- (void)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
     if (!MyScreenName) {
-        [super requestDidFinishRefreshWithData:dataArr];
-        return;
+        return [super requestDidFinishRefreshWithData:dataArr];
     }
     NSMutableDictionary *params = [@{} mutableCopy];
     params[@"screen_name"] = MyScreenName;
@@ -291,6 +284,7 @@
      {
         [weakSelf requestDidFinishRefreshWithData:dataArr newFollowers:nil];
      }];
+    return 0;
 }
 
 - (long long)gapTopIDWithGapCellData:(T4CGapCellData *)gapCellData
