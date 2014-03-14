@@ -344,6 +344,22 @@
     } else if (orientation == UIDeviceOrientationPortraitUpsideDown) {
         imagePanel.transform = CGAffineTransformMakeRotation(-M_PI);
         imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+    } else if (orientation == UIDeviceOrientationFaceUp
+               || orientation == UIDeviceOrientationFaceDown) {
+        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
+            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI/2);
+            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+        } else if (interfaceOrientation == UIInterfaceOrientationLandscapeRight) {
+            imagePanel.transform = CGAffineTransformMakeRotation(M_PI/2);
+            imagePanel.bounds = ccr(0, 0, kScreenHeight, kScreenWidth);
+        } else if (interfaceOrientation == UIInterfaceOrientationPortrait) {
+            imagePanel.transform = CGAffineTransformMakeRotation(0);
+            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+        } else if (interfaceOrientation == UIInterfaceOrientationPortraitUpsideDown) {
+            imagePanel.transform = CGAffineTransformMakeRotation(-M_PI);
+            imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
+        }
     }
     
     self.imageView.frame = imagePanel.bounds;
