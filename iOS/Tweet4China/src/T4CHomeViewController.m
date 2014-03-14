@@ -8,8 +8,11 @@
 
 #import "T4CHomeViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
+#import "GTMNSString+HTML.h"
 
 @interface T4CHomeViewController ()
+
+@property (nonatomic, strong) NSMutableArray *tags;
 
 @end
 
@@ -49,6 +52,49 @@
 
 - (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
 {
+    NSString *tagsFileName = dp(@"tweet4china.tags");
+    if (!self.tags) {
+        NSData *json = [NSData dataWithContentsOfFile:tagsFileName];
+        if (json) {
+            self.tags = [[NSJSONSerialization JSONObjectWithData:json options:0 error:nil] mutableCopy];
+        }
+    }
+    if (self.tags.count > 100) {
+        [self.tags removeObjectsInRange:NSMakeRange(0, self.tags.count - 1000)];
+    }
+    if (!self.tags.count) {
+        self.tags = [NSMutableArray array];
+    }
+    BOOL hasNew = NO;
+    for (NSDictionary *data in dataArr) {
+        if ([data[@"user"][@"screen_name"] isEqualToString:MyScreenName]) { // is my status
+            if (!data[@"retweeted_status"]) { // not retweeted status
+                NSDictionary *entities = data[@"entities"];
+                NSArray *hashTags = entities[@"hashtags"];
+                if (hashTags && hashTags.count) {
+                    for (NSDictionary *hashTag in hashTags) {
+                        NSString *hasTagText = hashTag[@"text"];
+                        BOOL found = NO;
+                        for (NSString *tag in self.tags) {
+                            if ([tag isEqualToString:hasTagText]) {
+                                found = YES;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            NSLog(@"found new tag #%@", hasTagText);
+                            [self.tags addObject:hasTagText];
+                            hasNew = YES;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (hasNew) {
+        [[NSJSONSerialization dataWithJSONObject:self.tags options:0 error:nil] writeToFile:tagsFileName atomically:NO];
+    }
+    
     int r = [super requestDidFinishRefreshWithData:dataArr];
     
     [[HSUAppDelegate shared] askFollowAuthor];

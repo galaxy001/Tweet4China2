@@ -7,7 +7,6 @@
 //
 
 #import "HSUTabController.h"
-#import "HSUHomeViewController.h"
 #import "HSUWebBrowserViewController.h"
 #import "HSUProfileViewController.h"
 #import "HSUConversationsViewController.h"
@@ -152,9 +151,12 @@
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     if (self.lastSelectedTabBarItem == item) {
-        id currentVC = ((UINavigationController *)self.selectedViewController).viewControllers[0];
-        if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
-            [((T4CTableViewController *)currentVC) tabItemTapped];
+        NSArray *vcs = ((UINavigationController *)self.selectedViewController).viewControllers;
+        if (vcs.count == 1) {
+            id currentVC = vcs.lastObject;
+            if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
+                [((T4CTableViewController *)currentVC) tabItemTapped];
+            }
         }
     }
     self.lastSelectedTabBarItem = item;

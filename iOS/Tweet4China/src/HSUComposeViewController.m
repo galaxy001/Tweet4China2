@@ -81,7 +81,7 @@
 @property (nonatomic, strong) CLLocationManager *locationManager;
 @property (nonatomic, assign) CLLocationCoordinate2D location;
 @property (nonatomic, strong) NSArray *friends;
-@property (nonatomic, strong) NSArray *trends;
+@property (nonatomic, strong) NSArray *tags;
 @property (nonatomic, assign) NSUInteger suggestionType;
 @property (nonatomic, strong) NSMutableArray *filteredSuggestions;
 @property (nonatomic, assign) NSUInteger filterLocation;
@@ -448,28 +448,16 @@
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.pausesLocationUpdatesAutomatically = YES;
     
-    [self loadFriends];
+    [self _loadFriends];
     
-//    NSString *trendsFileName = dp(@"tweet4china.trends");
-//    json = [NSData dataWithContentsOfFile:trendsFileName];
-//    if (json) {
-//        self.trends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
-//    }
-//    [twitter getTrendsWithSuccess:^(id responseObj) {
-//        if (weakSelf) {
-//            weakSelf.trends = responseObj[0][@"trends"];
-//            NSData *json = [NSJSONSerialization dataWithJSONObject:weakSelf.trends options:0 error:nil];
-//            [json writeToFile:trendsFileName atomically:NO];
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [weakSelf filterSuggestions];
-//            });
-//        }
-//    } failure:^(NSError *error) {
-//        
-//    }];
+    NSString *tagsFileName = dp(@"tweet4china.tags");
+    NSData *json = [NSData dataWithContentsOfFile:tagsFileName];
+    if (json) {
+        self.tags = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
+    }
 }
 
-- (void)loadFriends
+- (void)_loadFriends
 {
     if (!self.friends) {
         NSData *json = [NSData dataWithContentsOfFile:FriendsFileName];
@@ -700,21 +688,21 @@
                 } else {
                     self.filteredSuggestions = [self.friends mutableCopy];
                 }
-            } else if (self.suggestionType == kSuggestionType_Tag && self.trends) {
+            } else if (self.suggestionType == kSuggestionType_Tag && self.tags) {
                 if (filterText && filterText.length) {
                     if (self.filteredSuggestions == nil) {
                         self.filteredSuggestions = [NSMutableArray array];
                     } else {
                         [self.filteredSuggestions removeAllObjects];
                     }
-                    for (NSDictionary *trend in self.trends) {
-                        NSString *tag = [[trend[@"name"] substringFromIndex:1] lowercaseString];
-                        if (tag && [tag rangeOfString:filterText].location != NSNotFound) {
-                            [self.filteredSuggestions addObject:trend];
+                    for (NSString *tag in self.tags) {
+                        NSString *tagLow = [tag lowercaseString];
+                        if (tagLow && [tagLow rangeOfString:filterText].location != NSNotFound) {
+                            [self.filteredSuggestions addObject:tagLow];
                         }
                     }
                 } else {
-                    self.filteredSuggestions = [self.trends mutableCopy];
+                    self.filteredSuggestions = [self.tags mutableCopy];
                 }
             }
             [self.suggestionsTV reloadData];
@@ -918,13 +906,15 @@
     if (range.location == NSNotFound)
         range = NSMakeRange(0, 0);
     self.contentTV.text = [self.contentTV.text stringByReplacingCharactersInRange:range withString:@"#"];
-    [self.contentTV becomeFirstResponder];
-    self.contentTV.selectedRange = NSMakeRange(range.location+1, 0);
-    self.suggestionType = kSuggestionType_Tag;
-    self.filterLocation = self.contentTV.selectedRange.location;
-    self.filteredSuggestions = [self.trends mutableCopy];
-    [self.suggestionsTV reloadData];
-    [self.view setNeedsLayout];
+    if (self.tags.count) {
+        [self.contentTV becomeFirstResponder];
+        self.contentTV.selectedRange = NSMakeRange(range.location+1, 0);
+        self.suggestionType = kSuggestionType_Tag;
+        self.filterLocation = self.contentTV.selectedRange.location;
+        self.filteredSuggestions = [self.tags mutableCopy];
+        [self.suggestionsTV reloadData];
+        [self.view setNeedsLayout];
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -949,8 +939,7 @@
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"HSUSuggestTagCell"];
         }
-        NSDictionary *trend = self.filteredSuggestions[indexPath.row];
-        NSString *tag = [trend[@"name"] substringFromIndex:1];
+        NSString *tag = self.filteredSuggestions[indexPath.row];
         cell.textLabel.text = tag;
         return cell;
     }
@@ -964,8 +953,8 @@
         NSDictionary *friend = self.filteredSuggestions[indexPath.row];
         replacement = S(@"%@ ", friend[@"screen_name"]);
     } else if (self.suggestionType == kSuggestionType_Tag) {
-        NSDictionary *trend = self.filteredSuggestions[indexPath.row];
-        replacement = S(@"%@ ", [trend[@"name"] substringFromIndex:1]);
+        NSString *tag = self.filteredSuggestions[indexPath.row];
+        replacement = S(@"%@ ", tag);
     }
     NSRange range = NSMakeRange(self.filterLocation, self.contentTV.selectedRange.location - self.filterLocation);
     if ([self textView:self.contentTV shouldChangeTextInRange:range replacementText:replacement]) {
