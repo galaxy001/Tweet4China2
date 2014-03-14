@@ -24,9 +24,9 @@
             }
             // update
             __weak typeof(self) weakSelf = self;
-            [twitter getFriendsWithCount:100 success:^(id responseObj) {
+            [twitter getFriendsWithSuccess:^(id responseObj) {
                 // update cache
-                weakSelf.friends = responseObj[@"users"];
+                weakSelf.friends = responseObj;
                 [[NSUserDefaults standardUserDefaults] setObject:weakSelf.friends forKey:@"friends"];
                 [[NSUserDefaults standardUserDefaults] synchronize];
                 

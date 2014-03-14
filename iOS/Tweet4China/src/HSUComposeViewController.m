@@ -23,6 +23,8 @@
 #define kSuggestionType_Mention 1
 #define kSuggestionType_Tag 2
 
+#define FriendsFileName dp(@"tweet4china.friends")
+
 @interface HSULocationAnnotation : NSObject <MKAnnotation>
 @end
 
@@ -446,22 +448,7 @@
     locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     locationManager.pausesLocationUpdatesAutomatically = YES;
     
-    NSString *friendsFileName = dp(@"tweet4china.friends");
-    NSData *json = [NSData dataWithContentsOfFile:friendsFileName];
-    if (json) {
-        self.friends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
-    }
-    __weak typeof(self)weakSelf = self;
-    [twitter getFriendsWithCount:100 success:^(id responseObj) {
-        if (weakSelf) {
-            weakSelf.friends = responseObj[@"users"];
-            NSData *json = [NSJSONSerialization dataWithJSONObject:weakSelf.friends options:0 error:nil];
-            [json writeToFile:friendsFileName atomically:NO];
-            [weakSelf filterSuggestions];
-        }
-    } failure:^(NSError *error) {
-        
-    }];
+    [self loadFriends];
     
 //    NSString *trendsFileName = dp(@"tweet4china.trends");
 //    json = [NSData dataWithContentsOfFile:trendsFileName];
@@ -480,6 +467,28 @@
 //    } failure:^(NSError *error) {
 //        
 //    }];
+}
+
+- (void)loadFriends
+{
+    if (!self.friends) {
+        NSData *json = [NSData dataWithContentsOfFile:FriendsFileName];
+        if (json) {
+            NSArray *newFriends = [NSJSONSerialization JSONObjectWithData:json options:0 error:nil];
+            self.friends = newFriends;
+        }
+    }
+    __weak typeof(self)weakSelf = self;
+    [twitter getFriendsWithSuccess:^(id responseObj) {
+        if (weakSelf) {
+            weakSelf.friends = responseObj;
+            NSData *json = [NSJSONSerialization dataWithJSONObject:weakSelf.friends options:0 error:nil];
+            [json writeToFile:FriendsFileName atomically:NO];
+            [weakSelf filterSuggestions];
+        }
+    } failure:^(NSError *error) {
+        
+    }];
 }
 
 - (void)viewWillDisappear:(BOOL)animated

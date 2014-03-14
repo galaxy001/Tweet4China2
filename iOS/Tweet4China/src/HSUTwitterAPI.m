@@ -104,6 +104,8 @@ static NSString * const url_followers_ids = @"https://api.twitter.com/1.1/follow
 
 static NSString * const url_friends_ids = @"https://api.twitter.com/1.1/friends/ids.json";
 
+static NSString * const url_friends_list = @"https://api.twitter.com/1.1/friends/list.json";
+
 static NSString * const url_trends_place = @"https://api.twitter.com/1.1/trends/place.json";
 
 static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/reverse_geocode.json";
@@ -652,7 +654,37 @@ static NSString * const url_reverse_geocode = @"https://api.twitter.com/1.1/geo/
 }
 - (void)getFriendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
-    [self getFriendsWithCount:100 success:success failure:failure];
+    dispatch_async(GCDBackgroundThread, ^{
+        id ret = [self _syncGetFirends];
+        if ([ret isKindOfClass:[NSArray class]]) {
+            success(ret);
+        } else {
+            failure(ret);
+        }
+    });
+    
+}
+- (id)_syncGetFirends
+{
+    NSMutableArray *users = [NSMutableArray array];
+    NSMutableDictionary *params = @{@"screen_name": MyScreenName, @"count": @"100"}.mutableCopy;
+    NSString *cursor = nil;
+    for (int i=0; i<10; i++) {
+        if (cursor) {
+            params[@"cursor"] = cursor;
+        }
+        id response = [self syncSendByFHSTwitterEngineWithUrl:url_friends_list method:@"GET" parameters:params];
+        if ([response isKindOfClass:[NSDictionary class]]) {
+            cursor = [response[@"next_cursor"] description];
+            [users addObjectsFromArray:response[@"users"]];
+            if (![cursor longLongValue]) {
+                break;
+            }
+        } else {
+            return response;
+        }
+    }
+    return users;
 }
 - (void)getTrendsWithSuccess:(HSUTwitterAPISuccessBlock)success failure:(HSUTwitterAPIFailureBlock)failure;
 {
