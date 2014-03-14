@@ -124,7 +124,6 @@
 		966ACE1D174B9A100050F110 /* icn_nav_bar_light_back@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */; };
 		966ACE23174B9A100050F110 /* sms-left@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE15174B9A100050F110 /* sms-left@2x.png */; };
 		966ACE27174B9A100050F110 /* sms-right@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 966ACE19174B9A100050F110 /* sms-right@2x.png */; };
-		966ACE33174B9B180050F110 /* HSUConversationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE32174B9B180050F110 /* HSUConversationsViewController.m */; };
 		966ACE36174B9B210050F110 /* HSUMessagesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE35174B9B210050F110 /* HSUMessagesViewController.m */; };
 		966ACE39174B9B310050F110 /* HSUConversationsDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE38174B9B310050F110 /* HSUConversationsDataSource.m */; };
 		966ACE3C174B9B3E0050F110 /* HSUMessagesDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 966ACE3B174B9B3E0050F110 /* HSUMessagesDataSource.m */; };
@@ -554,8 +553,6 @@
 		966ACE0F174B9A100050F110 /* icn_nav_bar_light_back@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_nav_bar_light_back@2x.png"; sourceTree = "<group>"; };
 		966ACE15174B9A100050F110 /* sms-left@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sms-left@2x.png"; sourceTree = "<group>"; };
 		966ACE19174B9A100050F110 /* sms-right@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "sms-right@2x.png"; sourceTree = "<group>"; };
-		966ACE31174B9B180050F110 /* HSUConversationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConversationsViewController.h; sourceTree = "<group>"; };
-		966ACE32174B9B180050F110 /* HSUConversationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUConversationsViewController.m; sourceTree = "<group>"; };
 		966ACE34174B9B210050F110 /* HSUMessagesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUMessagesViewController.h; sourceTree = "<group>"; };
 		966ACE35174B9B210050F110 /* HSUMessagesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUMessagesViewController.m; sourceTree = "<group>"; };
 		966ACE37174B9B310050F110 /* HSUConversationsDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUConversationsDataSource.h; sourceTree = "<group>"; };
@@ -1508,8 +1505,6 @@
 				9633E5E8174D2258009062B7 /* HSUConversationCell.m */,
 				966ACE37174B9B310050F110 /* HSUConversationsDataSource.h */,
 				966ACE38174B9B310050F110 /* HSUConversationsDataSource.m */,
-				966ACE31174B9B180050F110 /* HSUConversationsViewController.h */,
-				966ACE32174B9B180050F110 /* HSUConversationsViewController.m */,
 				96FAB146174BDBBC00C8C854 /* HSUMessageCell.h */,
 				96FAB147174BDBBC00C8C854 /* HSUMessageCell.m */,
 				966ACE3A174B9B3E0050F110 /* HSUMessagesDataSource.h */,
@@ -2158,7 +2153,6 @@
 				969F2F8818221E9500015765 /* HSUiPadTabController.m in Sources */,
 				96FA81D317450B6A00DB023A /* HSUDraftsCell.m in Sources */,
 				96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */,
-				966ACE33174B9B180050F110 /* HSUConversationsViewController.m in Sources */,
 				966ACE36174B9B210050F110 /* HSUMessagesViewController.m in Sources */,
 				9676D33418A0CA1000E3AF45 /* T4CFollowingViewController.m in Sources */,
 				96BFCAED18813C8300D13F4B /* HSUEditListViewController.m in Sources */,

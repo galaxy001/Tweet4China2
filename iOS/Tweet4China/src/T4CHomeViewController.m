@@ -82,7 +82,6 @@
                             }
                         }
                         if (!found) {
-                            NSLog(@"found new tag #%@", hasTagText);
                             [self.tags addObject:hasTagText];
                             hasNew = YES;
                         }

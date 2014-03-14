@@ -17,7 +17,6 @@
 #import "HSUPersonListViewController.h"
 #import "HSUComposeViewController.h"
 #import "HSUNavigationBarLight.h"
-#import "HSUConversationsViewController.h"
 #import "HSUProxySettingsViewController.h"
 #import "HSUFavoritesDataSource.h"
 #import "HSUSubscribedListsDataSource.h"
@@ -359,11 +358,6 @@
 - (void)messagesButtonTouched
 {
     if (self.isMe) {
-        HSUConversationsViewController *conversationsVC = [[HSUConversationsViewController alloc] init];
-        UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
-        nav.viewControllers = @[conversationsVC];
-        [self.navigationController presentViewController:nav animated:YES completion:nil];
-        [self.profileView hideDMIndicator];
     } else {
         if (![[HSUAppDelegate shared] buyProApp]) {
             return;

@@ -117,7 +117,7 @@
                         found = YES;
                         for (NSDictionary *message in messages) {
                             if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
-                                oldCellData.unreadDM = YES;
+                                oldCellData.unreadDM = sinceId != nil;
                                 break;
                             }
                         }
@@ -132,7 +132,7 @@
                     [weakSelf.data insertObject:cellData atIndex:0];
                     for (NSDictionary *message in messages) {
                         if ([message[@"recipient"][@"screen_name"] isEqualToString:MyScreenName]) {
-                            cellData.unreadDM = YES;
+                            cellData.unreadDM = sinceId != nil;
                             break;
                         }
                     }
@@ -153,7 +153,7 @@
             [weakSelf.tableView.pullToRefreshView stopAnimating];
             weakSelf.refreshState = T4CLoadingState_Done;
             notification_post_with_object(HSUNewDirectMessagesReceivedNotification, messages);
-            if ([rMsgs count]) {
+            if ([rMsgs count] && sinceId != nil) {
                 AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
                 if (!weakSelf.view.window) { // not appear
                     [weakSelf showUnreadIndicator];

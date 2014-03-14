@@ -9,7 +9,6 @@
 #import "HSUTabController.h"
 #import "HSUWebBrowserViewController.h"
 #import "HSUProfileViewController.h"
-#import "HSUConversationsViewController.h"
 #import "HSUNavigationBar.h"
 #import "HSUGalleryView.h"
 #import "T4CHomeViewController.h"
