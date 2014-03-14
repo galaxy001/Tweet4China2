@@ -330,6 +330,7 @@
 
 - (void)resetImageOrientation
 {
+    // TODO 为什么 Device Orientation 和 Status Orientation是反着的
     UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     self.imageOrientation = orientation;
     if (orientation == UIDeviceOrientationLandscapeLeft) {

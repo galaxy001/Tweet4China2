@@ -566,7 +566,7 @@
 - (void)cancelCompose
 {
     if (self.draft) {
-        NSData *imageData = UIImageJPEGRepresentation(self.postImage, 0.92);
+        NSData *imageData = UIImageJPEGRepresentation(self.postImage, 0.99);
         [[HSUDraftManager shared] saveDraftWithDraftID:self.draft[@"id"] title:self.title status:self.contentTV.text imageData:imageData reply:self.inReplyToStatusId locationXY:self.location placeId:self.geoCode];
         [[HSUDraftManager shared] activeDraft:self.draft];
         [self dismiss];
