@@ -414,15 +414,18 @@
     if (dataArr.count) {
         BOOL scrollToTop = boolSetting(HSUSettingRefreshThenScrollToTop);
         
+        long long curTopID = self.topID;
+        if (curTopID == 0) {
+            NSDictionary *curTopData = [self.firstTimelineData rawData];
+            curTopID = [curTopData[@"id"] longLongValue];
+        }
+        
         NSDictionary *topData = dataArr.firstObject;
         long long topID = [topData[@"id"] longLongValue];
         self.topID = topID;
         
         NSDictionary *newBotData = dataArr.lastObject;
         long long newBotID = [newBotData[@"id"] longLongValue];
-        
-        NSDictionary *curTopData = [self.firstTimelineData rawData];
-        long long curTopID = [curTopData[@"id"] longLongValue];
         
         BOOL gaped = curTopID > 0 && newBotID > curTopID;
         BOOL inserted = self.data.count > 0;
