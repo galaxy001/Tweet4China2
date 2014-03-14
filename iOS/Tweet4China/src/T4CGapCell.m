@@ -22,8 +22,6 @@
 {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        self.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_gap"]];
-        
         UIActivityIndicatorView *loadingSpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [self.contentView addSubview:loadingSpinner];
         self.loadingSpinner = loadingSpinner;
@@ -64,6 +62,7 @@
 {
     [super layoutSubviews];
     
+    self.contentView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"bg_gap"]];
     self.titleLabel.center = self.contentView.boundsCenter;
     self.loadingSpinner.center = self.boundsCenter;
 }
