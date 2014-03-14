@@ -32,7 +32,7 @@
     imagePanel.delegate = nil;
 }
 
-- (id)_initWithData:(T4CTableCellData *)data
+- (id)initWithData:(T4CTableCellData *)data
 {
     self = [super initWithFrame:[UIApplication sharedApplication].keyWindow.bounds];
     if (self) {
@@ -74,7 +74,7 @@
 
 - (id)initWithData:(T4CTableCellData *)data image:(UIImage *)image
 {
-    self = [self _initWithData:data];
+    self = [self initWithData:data];
     if (self) {
         [self.imageView setImage:image];
         float zoomScale = 0;
@@ -92,7 +92,7 @@
 
 - (id)initWithData:(T4CTableCellData *)data imageURL:(NSURL *)imageURL
 {
-    self = [self _initWithData:data];
+    self = [self initWithData:data];
     if (self) {
         [self.spinner startAnimating];
         __weak typeof(&*self)weakSelf = self;
@@ -107,7 +107,7 @@
 
 - (id)initWithData:(T4CTableCellData *)data previewImage:(UIImage *)previewImage originalImageURL:(NSURL *)originalImageURL
 {
-    self = [self _initWithData:data];
+    self = [self initWithData:data];
     if (self) {
         [self.spinner startAnimating];
         __weak typeof(&*self)weakSelf = self;
@@ -132,7 +132,7 @@
 
 - (id)initStartPhotoView:(UIView *)startPhotoView originalImageURL:(NSURL *)originalImageURL
 {
-    self = [self _initWithData:nil];
+    self = [self initWithData:nil];
     if (self) {
         self.startPhotoView = startPhotoView;
         UIImage *previewImage = [startPhotoView isKindOfClass:[UIButton class]] ? [((UIButton *)startPhotoView) imageForState:UIControlStateNormal] : ((UIImageView *)startPhotoView).image;
@@ -194,13 +194,25 @@
                     CGSize size = weakSelf.size;
                     if (weakSelf.imageView.image) {
                         if (IPHONE) {
-                            size.height = size.width * weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width;
+                            CGFloat dstHeight = size.width * weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width;
+                            if (dstHeight > [HSUCommonTools winHeight]) {
+                                size.height = [HSUCommonTools winHeight];
+                                size.width = weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height * [HSUCommonTools winHeight];
+                            } else {
+                                size.height = dstHeight;
+                            }
                         } else {
-                            size.width = size.height * weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height;
+                            CGFloat dstWidth = size.height * weakSelf.imageView.image.size.width / weakSelf.imageView.image.size.height;
+                            if (dstWidth > [HSUCommonTools winWidth]) {
+                                size.width = [HSUCommonTools winWidth];
+                                size.height = weakSelf.imageView.image.size.height / weakSelf.imageView.image.size.width * [HSUCommonTools winWidth];
+                            } else {
+                                size.width = dstWidth;
+                            }
                         }
                     }
                     frame.size = size;
-                    frame.origin = ccp(0, weakSelf.height/2-size.height/2);
+                    frame.origin = ccp(weakSelf.width/2-size.width/2, weakSelf.height/2-size.height/2);
                     weakSelf.imageView.frame = frame;
                 } completion:^(BOOL finished) {
                     weakSelf.imageView.frame = weakSelf.bounds;
@@ -246,12 +258,24 @@
         CGRect frame;
         CGSize size = self.size;
         if (IPHONE) {
-            size.height = size.width * self.imageView.image.size.height / self.imageView.image.size.width;
+            CGFloat dstHeight = size.width * self.imageView.image.size.height / self.imageView.image.size.width;
+            if (dstHeight > [HSUCommonTools winHeight]) {
+                size.height = [HSUCommonTools winHeight];
+                size.width = self.imageView.image.size.width / self.imageView.image.size.height * [HSUCommonTools winHeight];
+            } else {
+                size.height = dstHeight;
+            }
         } else {
-            size.width = size.height * self.imageView.image.size.width / self.imageView.image.size.height;
+            CGFloat dstWidth = size.height * self.imageView.image.size.width / self.imageView.image.size.height;
+            if (dstWidth > [HSUCommonTools winWidth]) {
+                size.width = [HSUCommonTools winWidth];
+                size.height = self.imageView.image.size.height / self.imageView.image.size.width * [HSUCommonTools winWidth];
+            } else {
+                size.width = dstWidth;
+            }
         }
         frame.size = size;
-        frame.origin = ccp(0, self.height/2-size.height/2);
+        frame.origin = ccp(self.width/2-size.width/2, self.height/2-size.height/2);
         self.imageView.frame = frame;
         self.imageView.contentMode = UIViewContentModeScaleAspectFill;
         self.imageView.clipsToBounds = YES;
