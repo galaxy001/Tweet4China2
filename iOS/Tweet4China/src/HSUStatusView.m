@@ -295,9 +295,17 @@
     self.imagePreviewButton.hidden = YES;
     if (self.data.hasPhoto && boolSetting(HSUSettingPhotoPreview)) {
         self.imagePreviewButton.hidden = NO;
+        self.imagePreviewButton.backgroundColor = rgb(225, 232, 227);
         [self.imagePreviewButton setImageWithUrlStr:[HSUCommonTools smallTwitterImageUrlStr:self.data.photoUrl]
                                            forState:UIControlStateNormal
-                                        placeHolder:nil];
+                                        placeHolder:nil
+                                            success:^
+        {
+            self.imagePreviewButton.backgroundColor = kClearColor;
+        } failure:^
+        {
+            
+        }];
     }
     
     // time
