@@ -512,6 +512,7 @@
     self.toggleLocationBnt.bottom = self.extraPanelSV.height - 10;
     self.suggestionsTV.top = self.contentTV.top + 45;
     self.contentShadowV.top = self.suggestionsTV.top;
+    self.wordCountL.right = self.toolbar.width - 10;
     
     if (self.suggestionType) {
         self.suggested = YES;
