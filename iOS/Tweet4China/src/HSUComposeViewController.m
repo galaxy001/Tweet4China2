@@ -649,11 +649,10 @@
 
 - (void)textViewDidChange:(UITextView *)textView {
     NSUInteger wordLen = [TwitterText tweetLength:self.contentTV.text];
-    if (wordLen > 0 || self.postImage) {
-        self.navigationItem.rightBarButtonItem.enabled = YES;
-    } else {
-        self.navigationItem.rightBarButtonItem.enabled = NO;
+    if (self.postImage) {
+        wordLen += 15;
     }
+    self.navigationItem.rightBarButtonItem.enabled = wordLen > 0;
     self.wordCountL.text = S(@"%d", kMaxWordLen-wordLen);
     
     [self filterSuggestions];
@@ -763,6 +762,7 @@
     
     self.takePhotoBnt.hidden = YES;
     self.selectPhotoBnt.hidden = YES;
+    [self textViewDidChange:self.contentTV];
 }
 
 - (void)previewCloseButtonTouched {
