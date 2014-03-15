@@ -140,6 +140,7 @@
         unreadCountLabel.height += 2 * unreadCountLabel.layer.cornerRadius;
         unreadCountLabel.text = nil;
         unreadCountLabel.hidden = YES;
+        unreadCountLabel.clipsToBounds = YES;
     }
 }
 
@@ -839,8 +840,8 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:[self.class description]];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([[self.class description] isEqualToString:@"T4CHotViewController"]) {
-//            if ([cacheArr indexOfObject:cache] < 600) {
+//        if ([[self.class description] isEqualToString:@"T4CHomeViewController"]) {
+//            if ([cacheArr indexOfObject:cache] < 10) {
 //                continue;
 //            }
 //        }
