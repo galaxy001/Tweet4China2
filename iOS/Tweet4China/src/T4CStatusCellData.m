@@ -69,82 +69,86 @@
     BOOL retweeted = [status[@"retweeted"] boolValue]; // retweeted by me
     
     if (retweeted) {
-        NSString *id_str = status[@"id_str"];
-        if (isRetweetedStatus) {
-            id_str = self.rawData[@"id_str"];
-            __weak typeof(self)weakSelf = self;
-            [twitter destroyStatus:id_str success:^(id responseObj) {
-                NSMutableDictionary *newStatus = [status mutableCopy];
-                newStatus[@"retweeted"] = @(!retweeted);
-                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
-                notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
-                notification_post(HSUStatusShowActionsNotification);
-                [weakSelf.tableVC.tableView reloadData];
-            } failure:^(NSError *error) {
-                notification_post(HSUStatusShowActionsNotification);
-                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
-            }];
-        } else {
-            if ([status[@"retweeted_count"] integerValue] <= 200) {
-                __weak typeof(self)weakSelf = self;
-                [twitter getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
-                    BOOL found = NO;
-                    NSArray *tweets = responseObj;
-                    for (NSDictionary *tweet in tweets) {
-                        if ([tweet[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
-                            NSString *id_str = tweet[@"id_str"];
-                            [twitter destroyStatus:id_str success:^(id responseObj) {
-                                NSMutableDictionary *newStatus = [status mutableCopy];
-                                newStatus[@"retweeted"] = @(!retweeted);
-                                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
-                                notification_post(HSUStatusShowActionsNotification);
-                                [weakSelf.tableVC.tableView reloadData];
-                            } failure:^(NSError *error) {
-                                notification_post(HSUStatusShowActionsNotification);
-                                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
-                            }];
-                            found = YES;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        notification_post(HSUStatusShowActionsNotification);
-                    }
+        RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+        RIButtonItem *unretweetItem = [RIButtonItem itemWithLabel:_("Unretweet")];
+        UIActionSheet *unretweetActionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:unretweetItem otherButtonItems:nil, nil];
+        [unretweetActionSheet showInView:[UIApplication sharedApplication].keyWindow];
+        __weak typeof(self)weakSelf = self;
+        unretweetItem.action = ^{
+            NSString *id_str = status[@"id_str"];
+            if (isRetweetedStatus) {
+                id_str = weakSelf.rawData[@"id_str"];
+                [twitter destroyStatus:id_str success:^(id responseObj) {
+                    NSMutableDictionary *newStatus = [status mutableCopy];
+                    newStatus[@"retweeted"] = @(!retweeted);
+                    notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
+                    notification_post_with_object(HSUStatusDidDeleteNotification, id_str);
+                    notification_post(HSUStatusShowActionsNotification);
+                    [weakSelf.tableVC.tableView reloadData];
                 } failure:^(NSError *error) {
                     notification_post(HSUStatusShowActionsNotification);
                     [twitter dealWithError:error errTitle:_("Delete retweet failed")];
                 }];
             } else {
-                __weak typeof(self)weakSelf = self;
-                [twitter getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
-                    BOOL found = NO;
-                    NSArray *tweets = responseObj;
-                    for (NSDictionary *tweet in tweets) {
-                        if ([tweet[@"retweeted_status"][@"id_str"] isEqualToString:id_str]) {
-                            NSString *id_str = tweet[@"id_str"];
-                            [twitter destroyStatus:id_str success:^(id responseObj) {
-                                NSMutableDictionary *newStatus = [status mutableCopy];
-                                newStatus[@"retweeted"] = @(!retweeted);
-                                notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
-                                notification_post(HSUStatusShowActionsNotification);
-                                [weakSelf.tableVC.tableView reloadData];
-                            } failure:^(NSError *error) {
-                                notification_post(HSUStatusShowActionsNotification);
-                                [twitter dealWithError:error errTitle:_("Delete retweet failed")];
-                            }];
-                            found = YES;
-                            break;
+                if ([status[@"retweeted_count"] integerValue] <= 200) {
+                    [twitter getRetweetsForStatus:id_str count:200 success:^(id responseObj) {
+                        BOOL found = NO;
+                        NSArray *tweets = responseObj;
+                        for (NSDictionary *tweet in tweets) {
+                            if ([tweet[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
+                                NSString *id_str = tweet[@"id_str"];
+                                [twitter destroyStatus:id_str success:^(id responseObj) {
+                                    NSMutableDictionary *newStatus = [status mutableCopy];
+                                    newStatus[@"retweeted"] = @(!retweeted);
+                                    notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
+                                    notification_post(HSUStatusShowActionsNotification);
+                                    [weakSelf.tableVC.tableView reloadData];
+                                } failure:^(NSError *error) {
+                                    notification_post(HSUStatusShowActionsNotification);
+                                    [twitter dealWithError:error errTitle:_("Delete retweet failed")];
+                                }];
+                                found = YES;
+                                break;
+                            }
                         }
-                    }
-                    if (!found) {
+                        if (!found) {
+                            notification_post(HSUStatusShowActionsNotification);
+                        }
+                    } failure:^(NSError *error) {
                         notification_post(HSUStatusShowActionsNotification);
-                    }
-                } failure:^(NSError *error) {
-                    notification_post(HSUStatusShowActionsNotification);
-                    [twitter dealWithError:error errTitle:_("Delete retweet failed")];
-                }];
+                        [twitter dealWithError:error errTitle:_("Delete retweet failed")];
+                    }];
+                } else {
+                    [twitter getUserTimelineWithScreenName:MyScreenName sinceID:nil count:200 success:^(id responseObj) {
+                        BOOL found = NO;
+                        NSArray *tweets = responseObj;
+                        for (NSDictionary *tweet in tweets) {
+                            if ([tweet[@"retweeted_status"][@"id_str"] isEqualToString:id_str]) {
+                                NSString *id_str = tweet[@"id_str"];
+                                [twitter destroyStatus:id_str success:^(id responseObj) {
+                                    NSMutableDictionary *newStatus = [status mutableCopy];
+                                    newStatus[@"retweeted"] = @(!retweeted);
+                                    notification_post_with_object(HSUStatusUpdatedNotification, newStatus);
+                                    notification_post(HSUStatusShowActionsNotification);
+                                    [weakSelf.tableVC.tableView reloadData];
+                                } failure:^(NSError *error) {
+                                    notification_post(HSUStatusShowActionsNotification);
+                                    [twitter dealWithError:error errTitle:_("Delete retweet failed")];
+                                }];
+                                found = YES;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            notification_post(HSUStatusShowActionsNotification);
+                        }
+                    } failure:^(NSError *error) {
+                        notification_post(HSUStatusShowActionsNotification);
+                        [twitter dealWithError:error errTitle:_("Delete retweet failed")];
+                    }];
+                }
             }
-        }
+        };
     } else {
         NSString *id_str = status[@"id_str"];
         __weak typeof(self)weakSelf = self;
