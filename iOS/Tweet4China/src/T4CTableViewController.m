@@ -105,7 +105,7 @@
 {
     [super loadView];
     
-    UITableView *tableView = [[UITableView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:[UIScreen mainScreen].bounds style:self.tableViewStyle];
     [self.view addSubview:tableView];
     self.tableView = tableView;
     if (IPAD) {
@@ -839,7 +839,7 @@
     NSArray *cacheArr = [HSUCommonTools readJSONObjectFromFile:[self.class description]];
     for (NSDictionary *cache in cacheArr) {
 #ifdef DEBUG
-//        if ([[self.class description] isEqualToString:@"T4CDiscoverViewController"]) {
+//        if ([[self.class description] isEqualToString:@"T4CHotViewController"]) {
 //            if ([cacheArr indexOfObject:cache] < 600) {
 //                continue;
 //            }
@@ -1217,6 +1217,11 @@
 - (BOOL)prefersStatusBarHidden
 {
     return self.statusBarHidden;
+}
+
+- (UITableViewStyle)tableViewStyle
+{
+    return UITableViewStylePlain;
 }
 
 @end

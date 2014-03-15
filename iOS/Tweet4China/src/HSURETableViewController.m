@@ -23,4 +23,9 @@
     self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
 }
 
+- (BOOL)shouldAutorotate
+{
+    return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
+}
+
 @end

@@ -6,8 +6,8 @@
 //  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import "HSUBaseViewController.h"
+#import "HSURETableViewController.h"
 
-@interface HSUShadowsocksViewController : UITableViewController
+@interface HSUShadowsocksViewController : HSURETableViewController
 
 @end

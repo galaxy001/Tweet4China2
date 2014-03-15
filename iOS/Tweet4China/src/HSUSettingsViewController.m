@@ -92,39 +92,6 @@
     
     section = [RETableViewSection section];
     [self.manager addSection:section];
-    RETableViewItem *wbItem =
-    [RETableViewItem itemWithTitle:_("Web Browser")
-                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
-                  selectionHandler:^(RETableViewItem *item)
-     {
-         
-         NSUInteger useBrowserCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"UseBrowserCount"] unsignedIntegerValue];
-         if (useBrowserCount ++ > 10) {
-             if (![[HSUAppDelegate shared] buyProApp]) {
-                 return ;
-             }
-         }
-         [[NSUserDefaults standardUserDefaults] setInteger:useBrowserCount forKey:@"UseBrowserCount"];
-         [[NSUserDefaults standardUserDefaults] synchronize];
-         
-         [item deselectRowAnimated:YES];
-         
-         if (!shadowsocksStarted) {
-             [[HSUAppDelegate shared] startShadowsocks];
-         }
-         
-         static HSUWebBrowserViewController *webVC;
-         static dispatch_once_t onceToken;
-         dispatch_once(&onceToken, ^{
-             webVC = [[HSUWebBrowserViewController alloc] init];
-         });
-         [self.navigationController pushViewController:webVC animated:YES];
-     }];
-    wbItem.image = [UIImage imageNamed:@"icn_web_browser"];
-    [section addItem:wbItem];
-    
-    section = [RETableViewSection section];
-    [self.manager addSection:section];
     [section addItem:
      [RETableViewItem itemWithTitle:_("Rate Tweet4China")
                       accessoryType:UITableViewCellAccessoryNone
@@ -180,7 +147,16 @@
         [[HSUAppDelegate shared] startShadowsocks];
     }
     
-    [self dismissViewControllerAnimated:YES completion:nil];
+    if (self.presentingViewController) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+}
+
+- (BOOL)shouldAutorotate
+{
+    return IPAD || UIInterfaceOrientationIsLandscape(self.interfaceOrientation);
 }
 
 @end

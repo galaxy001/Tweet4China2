@@ -2,97 +2,110 @@
 //  T4CDiscoverViewController.m
 //  Tweet4China
 //
-//  Created by Jason Hsu on 14-2-14.
+//  Created by Jason Hsu on 14-3-16.
 //  Copyright (c) 2014年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
 #import "T4CDiscoverViewController.h"
-#import "HSUInstagramHandler.h"
+#import <RETableViewManager/RETableViewManager.h>
+#import <RETableViewManager/RETableViewOptionsController.h>
+#import "HSUWebBrowserViewController.h"
+#import "T4CHotViewController.h"
+#import "HSUSettingsViewController.h"
 
 @interface T4CDiscoverViewController ()
+
+@property (nonatomic, strong) RETableViewManager *manager;
+
+@property (nonatomic, strong) HSUWebBrowserViewController *webVC;
+@property (nonatomic, strong) T4CHotViewController *hotVC;
 
 @end
 
 @implementation T4CDiscoverViewController
 
-- (void)viewDidAppear:(BOOL)animated
+- (UITableViewStyle)tableViewStyle
 {
-    [super viewDidAppear:animated];
-    
-    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"web_browser_moved_notification"]) {
-        [[[UIAlertView alloc]
-          initWithTitle:_("Notification")
-          message:_("web_browser_moved_notification_message")
-          delegate:self
-          cancelButtonTitle:_("Got it")
-          otherButtonTitles:nil, nil]
-         show];
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"web_browser_moved_notification"];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    return UITableViewStyleGrouped;
 }
 
-- (int)requestDidFinishRefreshWithData:(NSArray *)dataArr
+- (void)viewDidLoad
 {
-    int r = [super requestDidFinishRefreshWithData:dataArr];
+    [super viewDidLoad];
     
-    if (!self.unreadCount) {
-        [self loadMore];
-    }
-    return r;
-}
-
-- (BOOL)filterData:(NSDictionary *)data
-{
-    if (![super filterData:data]) {
-        return NO;
-    }
+    self.pullToRefresh = NO;
+    self.infiniteScrolling = NO;
     
-    if ([data[@"user"][@"screen_name"] isEqualToString:MyScreenName]) {
-        return NO;
-    }
+    self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
     
-    if ([data[@"retweet_count"] integerValue]
-        || [data[@"retweeted_status"][@"retweet_count"] integerValue]
-        || [data[@"favorite_count"] integerValue]
-        || [data[@"retweeted_status"][@"favorite_count"] integerValue]
-        || [self hasPhoto:data]
-        ) {
-        
-        return YES;
-    }
+    self.view.backgroundColor = kWhiteColor;
     
-    return NO;
-}
-
-- (BOOL)hasPhoto:(NSDictionary *)rawData
-{
-    NSDictionary *entities = rawData[@"entities"];
-    if (entities) {
-        NSArray *medias = entities[@"media"];
-        NSArray *urls = entities[@"urls"];
-        if (medias.count) {
-            for (NSDictionary *media in medias) {
-                NSString *type = media[@"type"];
-                if ([type isEqualToString:@"photo"]) {
-                    return YES;
-                }
-            }
-        } else if (urls.count) {
-            for (NSDictionary *urlDict in urls) {
-                NSString *expandedUrl = urlDict[@"expanded_url"];
-                if ([HSUInstagramHandler isInstagramLink:expandedUrl]) {
-                    return YES;
-                }
-            }
-        }
-    }
-    return YES;
-}
-
-- (NSUInteger)requestCount
-{
-    return 3;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+    NSDictionary *attributes = @{UITextAttributeTextColor: bw(50),
+                                 UITextAttributeTextShadowColor: kWhiteColor,
+                                 UITextAttributeTextShadowOffset: [NSValue valueWithCGSize:ccs(0, 1)]};
+    self.navigationController.navigationBar.titleTextAttributes = attributes;
+#endif
+    
+    self.manager = [[RETableViewManager alloc] initWithTableView:self.tableView];
+    
+    __weak typeof(self)weakSelf = self;
+    
+    RETableViewSection *section = [RETableViewSection section];
+    [self.manager addSection:section];
+    RETableViewItem *webItem =
+    [RETableViewItem itemWithTitle:_("Web Browser")
+                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
+                  selectionHandler:^(RETableViewItem *item)
+     {
+         NSUInteger useBrowserCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"UseBrowserCount"] unsignedIntegerValue];
+         if (useBrowserCount ++ > 10) {
+             if (![[HSUAppDelegate shared] buyProApp]) {
+                 return ;
+             }
+         }
+         [[NSUserDefaults standardUserDefaults] setInteger:useBrowserCount forKey:@"UseBrowserCount"];
+         [[NSUserDefaults standardUserDefaults] synchronize];
+         
+         [item deselectRowAnimated:YES];
+         
+         if (!shadowsocksStarted) {
+             [[HSUAppDelegate shared] startShadowsocks];
+         }
+         
+         weakSelf.webVC = [[HSUWebBrowserViewController alloc] init];
+         [weakSelf.navigationController pushViewController:weakSelf.webVC animated:YES];
+     }];
+    webItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    [section addItem:webItem];
+    
+    section = [RETableViewSection section];
+    [self.manager addSection:section];
+    RETableViewItem *hotItem =
+    [RETableViewItem itemWithTitle:_("Hot")
+                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
+                  selectionHandler:^(RETableViewItem *item)
+     {
+         [item deselectRowAnimated:YES];
+         weakSelf.hotVC = [[T4CHotViewController alloc] init];
+         [weakSelf.navigationController pushViewController:weakSelf.hotVC animated:YES];
+     }];
+    hotItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    [section addItem:hotItem];
+    
+    section = [RETableViewSection section];
+    [self.manager addSection:section];
+    RETableViewItem *settingsItem =
+    [RETableViewItem itemWithTitle:_("Settings")
+                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
+                  selectionHandler:^(RETableViewItem *item)
+     {
+         [item deselectRowAnimated:YES];
+         HSUSettingsViewController *settingsVC = [[HSUSettingsViewController alloc] init];
+         [weakSelf.navigationController pushViewController:settingsVC animated:YES];
+     }];
+    settingsItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    [section addItem:settingsItem];
 }
 
 @end

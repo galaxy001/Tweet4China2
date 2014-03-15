@@ -45,6 +45,7 @@
 		9611E6E418B3BA73005CBEA4 /* HSUServerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 9611E6E318B3BA73005CBEA4 /* HSUServerList.m */; };
 		9612AF6717086E320038935C /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF6617086E320038935C /* CFNetwork.framework */; };
 		9612AF6A170899E00038935C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9612AF69170899E00038935C /* AudioToolbox.framework */; };
+		9625A79318D4DBA700EDFBAD /* T4CDiscoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9625A79218D4DBA700EDFBAD /* T4CDiscoverViewController.m */; };
 		9628175016DE5EDC00ABF0AD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628174F16DE5EDC00ABF0AD /* UIKit.framework */; };
 		9628175216DE5EDC00ABF0AD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175116DE5EDC00ABF0AD /* Foundation.framework */; };
 		9628175416DE5EDC00ABF0AD /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9628175316DE5EDC00ABF0AD /* CoreGraphics.framework */; };
@@ -305,7 +306,7 @@
 		96AD8E11188569FF0024698D /* HSUAddBookmarkViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E10188569FF0024698D /* HSUAddBookmarkViewController.m */; };
 		96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AD8E1318856A240024698D /* HSURETableViewController.m */; };
 		96AFD1D218B7D31C004EF541 /* T4CTwitPicHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 96AFD1D118B7D31C004EF541 /* T4CTwitPicHandler.m */; };
-		96B10F5518AD9E8D0016CEDA /* T4CDiscoverViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */; };
+		96B10F5518AD9E8D0016CEDA /* T4CHotViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B10F5418AD9E8D0016CEDA /* T4CHotViewController.m */; };
 		96B10F5918AFA8560016CEDA /* icn_web_browser@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B10F5818AFA8560016CEDA /* icn_web_browser@2x.png */; };
 		96B55E9916F88F540084667B /* HSUNetworkActivityIndicatorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */; };
 		96B55E9C16F9D5230084667B /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96B55E9B16F9D5220084667B /* MessageUI.framework */; };
@@ -446,6 +447,8 @@
 		9611E6E318B3BA73005CBEA4 /* HSUServerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUServerList.m; sourceTree = "<group>"; };
 		9612AF6617086E320038935C /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		9612AF69170899E00038935C /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		9625A79118D4DBA700EDFBAD /* T4CDiscoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CDiscoverViewController.h; sourceTree = "<group>"; };
+		9625A79218D4DBA700EDFBAD /* T4CDiscoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CDiscoverViewController.m; sourceTree = "<group>"; };
 		9628174C16DE5EDC00ABF0AD /* Tweet4China.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tweet4China.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9628174F16DE5EDC00ABF0AD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		9628175116DE5EDC00ABF0AD /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -790,8 +793,8 @@
 		96AD8E1318856A240024698D /* HSURETableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSURETableViewController.m; sourceTree = "<group>"; };
 		96AFD1D018B7D31C004EF541 /* T4CTwitPicHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CTwitPicHandler.h; sourceTree = "<group>"; };
 		96AFD1D118B7D31C004EF541 /* T4CTwitPicHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CTwitPicHandler.m; sourceTree = "<group>"; };
-		96B10F5318AD9E8D0016CEDA /* T4CDiscoverViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CDiscoverViewController.h; sourceTree = "<group>"; };
-		96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CDiscoverViewController.m; sourceTree = "<group>"; };
+		96B10F5318AD9E8D0016CEDA /* T4CHotViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = T4CHotViewController.h; sourceTree = "<group>"; };
+		96B10F5418AD9E8D0016CEDA /* T4CHotViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = T4CHotViewController.m; sourceTree = "<group>"; };
 		96B10F5818AFA8560016CEDA /* icn_web_browser@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icn_web_browser@2x.png"; sourceTree = "<group>"; };
 		96B55E9716F88F540084667B /* HSUNetworkActivityIndicatorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HSUNetworkActivityIndicatorManager.h; sourceTree = "<group>"; };
 		96B55E9816F88F540084667B /* HSUNetworkActivityIndicatorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HSUNetworkActivityIndicatorManager.m; sourceTree = "<group>"; };
@@ -1004,8 +1007,10 @@
 				9676D2F6189E1CCD00E3AF45 /* T4CStatusViewController.m */,
 				9676D2FB189E93BA00E3AF45 /* T4CConnectViewController.h */,
 				9676D2FC189E93BA00E3AF45 /* T4CConnectViewController.m */,
-				96B10F5318AD9E8D0016CEDA /* T4CDiscoverViewController.h */,
-				96B10F5418AD9E8D0016CEDA /* T4CDiscoverViewController.m */,
+				9625A79118D4DBA700EDFBAD /* T4CDiscoverViewController.h */,
+				9625A79218D4DBA700EDFBAD /* T4CDiscoverViewController.m */,
+				96B10F5318AD9E8D0016CEDA /* T4CHotViewController.h */,
+				96B10F5418AD9E8D0016CEDA /* T4CHotViewController.m */,
 				9676D30C189F743A00E3AF45 /* T4CConversationsViewController.h */,
 				9676D30D189F743A00E3AF45 /* T4CConversationsViewController.m */,
 				9676D30F189F78FC00E3AF45 /* T4CMessagesViewController.h */,
@@ -2087,6 +2092,7 @@
 				966E1906184CAB0D00B5482C /* HSUListTweetsDataSource.m in Sources */,
 				9676D33A18A0D8AD00E3AF45 /* T4CListsViewController.m in Sources */,
 				96992C9A188A63C400AADDC2 /* HSUGeneralSettingsViewController.m in Sources */,
+				9625A79318D4DBA700EDFBAD /* T4CDiscoverViewController.m in Sources */,
 				9676D2F4189DCF5C00E3AF45 /* T4CGapCellData.m in Sources */,
 				96B7B6E51893B49E00B75AE5 /* T4CListCellData.m in Sources */,
 				603909459EA4EB003D8703B6 /* UIImage+Additions.m in Sources */,
@@ -2119,7 +2125,7 @@
 				9628E6DF1731325D005A9EC9 /* HSUNormalTitleCell.m in Sources */,
 				9676D2FD189E93BA00E3AF45 /* T4CConnectViewController.m in Sources */,
 				96BFCAF71882799400D13F4B /* OpenInChromeController.m in Sources */,
-				96B10F5518AD9E8D0016CEDA /* T4CDiscoverViewController.m in Sources */,
+				96B10F5518AD9E8D0016CEDA /* T4CHotViewController.m in Sources */,
 				96AD8E1418856A240024698D /* HSURETableViewController.m in Sources */,
 				967272681732C59800B6E30A /* HSUPersonListViewController.m in Sources */,
 				967272781732CF0300B6E30A /* HSUFollowingDataSource.m in Sources */,
@@ -2380,10 +2386,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 07814875B32540D3A6C87982 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv7s,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2408,7 +2411,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s x86_64 i386 arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -2417,10 +2420,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 07814875B32540D3A6C87982 /* Pods.xcconfig */;
 			buildSettings = {
-				ARCHS = (
-					armv7s,
-					armv7,
-				);
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -2444,6 +2444,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s x86_64 i386 arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

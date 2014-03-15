@@ -6,9 +6,9 @@
 //  Copyright (c) 2013年 Jason Hsu <support@tuoxie.me>. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "HSURETableViewController.h"
 
-@interface HSUProxySettingsViewController : UITableViewController
+@interface HSUProxySettingsViewController : HSURETableViewController
 
 @property (nonatomic, strong) NSDictionary *shadowsocks;
 
