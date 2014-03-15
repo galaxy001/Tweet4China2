@@ -733,6 +733,9 @@
             [self unreadCountChanged];
         }
     }
+    if (indexPath.row == 0) {
+        [self.tabController hideUnreadIndicatorOnViewController:self.navigationController];
+    }
 }
 
 - (long long)gapTopIDWithGapCellData:(T4CGapCellData *)gapCellData
