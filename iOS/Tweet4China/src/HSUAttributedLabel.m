@@ -9,6 +9,9 @@
 #import "HSUAttributedLabel.h"
 
 @implementation HSUAttributedLabel
+{
+    NSTimeInterval touchBeganTime;
+}
 
 @dynamic activeLink;
 
@@ -16,7 +19,8 @@
            withEvent:(UIEvent *)event
 {
 //    [super touchesBegan:touches withEvent:event];
-//    
+//
+    touchBeganTime = [NSDate timeIntervalSinceReferenceDate];
     UITouch *touch = [touches anyObject];
     
     self.activeLink = [self linkAtPoint:[touch locationInView:self]];
@@ -55,6 +59,14 @@
 - (void)touchesEnded:(NSSet *)touches
            withEvent:(UIEvent *)event
 {
+    NSTimeInterval touchEndedTime = [NSDate timeIntervalSinceReferenceDate];
+    if (touchEndedTime - touchBeganTime < 0.05) {
+        self.longPressed = NO;
+        self.activeLink = nil;
+        [super touchesEnded:touches withEvent:event];
+        return;
+    }
+    
     if (self.activeLink) {
         NSTextCheckingResult *result = self.activeLink;
         self.activeLink = nil;

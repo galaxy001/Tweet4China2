@@ -150,11 +150,15 @@
             if (self.mainVC != selectedVC) {
                 [self.mainVC.view removeFromSuperview];
                 self.mainVC = selectedVC;
-            }
-            [self.view addSubview:self.mainVC.view];
-            id currentVC = ((UINavigationController *)self.mainVC).viewControllers[0];
-            if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
-                [((T4CTableViewController *)currentVC) tabItemTapped];
+                [self.view addSubview:self.mainVC.view];
+            } else {
+                NSArray *vcs = ((UINavigationController *)self.mainVC).viewControllers;
+                if (vcs.count == 1) {
+                    id currentVC = vcs.lastObject;
+                    if ([currentVC isKindOfClass:[T4CTableViewController class]]) {
+                        [((T4CTableViewController *)currentVC) tabItemTapped];
+                    }
+                }
             }
         } else {
             UIImage *image = [UIImage imageNamed:[NSString stringWithFormat:@"icn_tab_%@_default", imageName]];
