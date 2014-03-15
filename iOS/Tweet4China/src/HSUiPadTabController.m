@@ -23,6 +23,7 @@
 @property (nonatomic, weak) UITabBarItem *lastSelectedTabBarItem;
 @property (nonatomic, weak) UIViewController *mainVC;
 @property (nonatomic, weak) UIView *tabBar;
+@property (nonatomic, weak) UILabel *uploadProgressLabel;
 
 @end
 
@@ -68,6 +69,8 @@
         meNav.viewControllers = @[meVC];
         
         self.viewControllers = @[homeNav, connectNav, messageNav, discoverNav, meNav];
+        
+        notification_add_observer(HSUPostTweetProgressChangedNotification, self, @selector(updateProgress:));
     }
     return self;
 }
@@ -188,6 +191,32 @@
             }
         }
         [self addChildViewController:childVC];
+    }
+}
+
+- (void)updateProgress:(NSNotification *)notification
+{
+    double progress = [notification.object doubleValue];
+    if (!self.uploadProgressLabel) {
+        UILabel *uploadProgressLabel = [[UILabel alloc] init];
+        self.uploadProgressLabel = uploadProgressLabel;
+        [self.view addSubview:uploadProgressLabel];
+        uploadProgressLabel.textColor = kWhiteColor;
+        uploadProgressLabel.frame = ccr(0, 20, self.tabBar.width, 40);
+        uploadProgressLabel.font = [UIFont systemFontOfSize:12];
+        uploadProgressLabel.textAlignment = NSTextAlignmentCenter;
+    }
+    self.uploadProgressLabel.text = S(@"%@ %d%%", _("Sent"), (int)(progress*100));
+    if (progress <= 0 || progress >= 1) {
+        if (progress >= 1) {
+            self.uploadProgressLabel.text = _("Sent");
+        } else {
+            self.uploadProgressLabel.text = _("Sent failed");
+        }
+        __weak typeof(self)weakSelf = self;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [weakSelf.uploadProgressLabel removeFromSuperview];
+        });
     }
 }
 

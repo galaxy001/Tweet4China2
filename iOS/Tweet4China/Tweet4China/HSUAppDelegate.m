@@ -345,7 +345,7 @@ static HSUShadowsocksProxy *proxy;
 
 - (void)updateImageCacheSize
 {
-    NSString *cacheSize = GlobalSettings[HSUSettingCacheSize];
+    NSString *cacheSize = setting(HSUSettingCacheSize);
     if ([cacheSize hasSuffix:@"MB"]) {
         size_t size = [[cacheSize substringToIndex:cacheSize.length-2] longLongValue] * 1000 * 1000;
         [HSUWebCache setImageCacheSize:size];
