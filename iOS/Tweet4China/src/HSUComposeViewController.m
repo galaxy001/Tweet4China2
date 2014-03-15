@@ -639,14 +639,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-    NSString *newText = [self.contentTV.text stringByReplacingCharactersInRange:range withString:text];
-    if (newText.length < textView.text.length) { // return YES for deleting text
-        return YES;
-    }
-    return ([TwitterText tweetLength:newText] <= 140);
-}
-
 - (void)textViewDidChange:(UITextView *)textView {
     NSUInteger wordLen = [TwitterText tweetLength:self.contentTV.text];
     if (self.postImage) {
@@ -654,10 +646,17 @@
     }
     self.navigationItem.rightBarButtonItem.enabled = wordLen > 0;
     self.wordCountL.text = S(@"%d", kMaxWordLen-wordLen);
+    if (wordLen > kMaxWordLen - 10) {
+        self.wordCountL.textColor = [UIColor redColor];
+    } else {
+        self.wordCountL.textColor = bw(140);
+    }
     
     [self filterSuggestions];
     
     self.contentChanged = YES;
+    
+    self.navigationItem.rightBarButtonItem.enabled = wordLen <= kMaxWordLen;
 }
 
 - (void)filterSuggestions {
@@ -781,6 +780,7 @@
         weakSelf.previewIV.transform = CGAffineTransformMakeTranslation(1, 1);
         weakSelf.previewIV.alpha = 1;
         weakSelf.previewIV.center = weakSelf.extraPanelSV.boundsCenter;
+        [weakSelf textViewDidChange:weakSelf.contentTV];
     }];
     
     self.photoBnt.selected = NO;
