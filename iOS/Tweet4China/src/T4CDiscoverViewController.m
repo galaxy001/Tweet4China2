@@ -97,15 +97,18 @@
     [self.manager addSection:section];
     RETableViewItem *settingsItem =
     [RETableViewItem itemWithTitle:_("Settings")
-                     accessoryType:UITableViewCellAccessoryDisclosureIndicator
+                     accessoryType:UITableViewCellAccessoryNone
                   selectionHandler:^(RETableViewItem *item)
      {
          [item deselectRowAnimated:YES];
          HSUSettingsViewController *settingsVC = [[HSUSettingsViewController alloc] init];
-         [weakSelf.navigationController pushViewController:settingsVC animated:YES];
+         UINavigationController *nav = [[HSUNavigationController alloc] initWithNavigationBarClass:[HSUNavigationBarLight class] toolbarClass:nil];
+         nav.modalPresentationStyle = UIModalPresentationFormSheet;
+         nav.viewControllers = @[settingsVC];
+         [weakSelf presentViewController:nav animated:YES completion:nil];
      }];
     settingsItem.image = [UIImage imageNamed:@"icn_web_browser"];
     [section addItem:settingsItem];
-}
+//}
 
 @end
