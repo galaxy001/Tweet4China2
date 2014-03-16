@@ -175,7 +175,7 @@
     self.verifyFlag.hidden = ![data.rawData[@"verified"] boolValue];
     
     self.descLabel.text = data.rawData[@"description"];
-    CGFloat cellWidth = IPHONE ? 280 : 586;
+    CGFloat cellWidth = kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 4;
     self.descLabel.size = [self.descLabel sizeThatFits:ccs(cellWidth, 0)];
     self.descLabel.leftTop = ccp(self.avatarButton.left, self.ffInfoLabel.bottom + 5);
     
@@ -208,7 +208,7 @@
     data.textHeight = nameLabelSize.height;
     
     testHeightLabel.text = data.rawData[@"description"];
-    cellWidth = kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 2;
+    cellWidth = kWinWidth - kIPADMainViewPadding * 2 - kCellPadding * 4;
     CGSize descLabelSize = [testHeightLabel sizeThatFits:ccs(cellWidth, 0)];
     data.descHeight = descLabelSize.height;
     
