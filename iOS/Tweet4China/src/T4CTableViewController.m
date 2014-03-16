@@ -268,10 +268,16 @@
 {
     if (self.tableView.contentOffset.y > 10 - self.tableView.contentInset.top) {
         [self.tableView setContentOffset:ccp(0, - self.tableView.contentInset.top) animated:YES];
-    } else if (self.refreshState == T4CLoadingState_Done) {
-        [self refresh];
-        [self.tableView.pullToRefreshView startAnimating];
-        [self scrollToShowPullToRefreshViewWithAnimation:YES];
+    } else {
+        if (self.refreshState != T4CLoadingState_Done &&
+            self.refreshState != T4CLoadingState_Error) {
+            
+            [self refresh];
+        } else {
+            [self refresh];
+            [self.tableView.pullToRefreshView startAnimating];
+            [self scrollToShowPullToRefreshViewWithAnimation:YES];
+        }
     }
 }
 
