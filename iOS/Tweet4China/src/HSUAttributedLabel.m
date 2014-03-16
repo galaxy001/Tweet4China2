@@ -60,7 +60,7 @@
            withEvent:(UIEvent *)event
 {
     NSTimeInterval touchEndedTime = [NSDate timeIntervalSinceReferenceDate];
-    if (touchEndedTime - touchBeganTime < 0.05) {
+    if (touchEndedTime - touchBeganTime < 0.01) {
         self.longPressed = NO;
         self.activeLink = nil;
         [super touchesEnded:touches withEvent:event];

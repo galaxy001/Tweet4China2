@@ -50,7 +50,8 @@
     UIButton *avatarB;
     UILabel *nameL;
     UILabel *screenNameL;
-    UILabel *timePlaceL;
+    UILabel *timeLabel;
+    UILabel *placeLabel;
     TTTAttributedLabel *textAL;
     UILabel *viaLabel;
     UIButton *sourceButton;
@@ -110,12 +111,19 @@
         screenNameL.highlightedTextColor = kWhiteColor;
         screenNameL.backgroundColor = kClearColor;
         
-        timePlaceL = [[UILabel alloc] init];
-        [contentArea addSubview:timePlaceL];
-        timePlaceL.font = [UIFont systemFontOfSize:12];
-        timePlaceL.textColor = kGrayColor;
-        timePlaceL.highlightedTextColor = kWhiteColor;
-        timePlaceL.backgroundColor = kClearColor;
+        timeLabel = [[UILabel alloc] init];
+        [contentArea addSubview:timeLabel];
+        timeLabel.font = [UIFont systemFontOfSize:12];
+        timeLabel.textColor = kGrayColor;
+        timeLabel.highlightedTextColor = kWhiteColor;
+        timeLabel.backgroundColor = kClearColor;
+        
+        placeLabel = [[UILabel alloc] init];
+        [contentArea addSubview:placeLabel];
+        placeLabel.font = [UIFont systemFontOfSize:12];
+        placeLabel.textColor = kGrayColor;
+        placeLabel.highlightedTextColor = kWhiteColor;
+        placeLabel.backgroundColor = kClearColor;
         
         textAL = [[HSUAttributedLabel alloc] initWithFrame:CGRectZero];
         [contentArea addSubview:textAL];
@@ -178,14 +186,14 @@
         favoritesButton.hidden = YES;
         
         viaLabel = [[UILabel alloc] init];
-        [retweetFavoritePannel addSubview:viaLabel];
+        [contentArea addSubview:viaLabel];
         viaLabel.font = [UIFont systemFontOfSize:12];
         viaLabel.textColor = kBlackColor;
         viaLabel.text = @"via";
         [viaLabel sizeToFit];
         
         sourceButton = [[UIButton alloc] init];
-        [retweetFavoritePannel addSubview:sourceButton];
+        [contentArea addSubview:sourceButton];
         [sourceButton setTitleColor:kGrayColor forState:UIControlStateNormal];
         [sourceButton setTitleColor:kBlackColor forState:UIControlStateHighlighted];
         sourceButton.titleLabel.font = [UIFont systemFontOfSize:12];
@@ -213,7 +221,9 @@
     [super layoutSubviews];
     
     [avatarB makeCornerRadius];
-    contentArea.frame = ccr(padding_S, padding_S, self.contentView.width-padding_S*4, self.contentView.height-padding_S-actionV_H);
+    contentArea.frame = ccr(padding_S, padding_S,
+                            self.contentView.width-padding_S*4,
+                            self.contentView.height-padding_S-actionV_H);
     
     ambientArea.frame = ccr(0, 0, contentArea.width, ambient_S);
     
@@ -225,19 +235,24 @@
     [screenNameL sizeToFit];
     screenNameL.leftTop = ccp(nameL.left, nameL.bottom+3);
     
-    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance, contentArea.width, self.data.textHeight);
+    textAL.frame = ccr(textAL.left, avatarB.bottom+avatar_text_Distance,
+                       contentArea.width, self.data.textHeight);
     
-    [timePlaceL sizeToFit];
-    timePlaceL.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);
+    [timeLabel sizeToFit];
+    timeLabel.leftTop = ccp(textAL.left, textAL.bottom+text_time_Distance);
     
-    imageView.top = timePlaceL.bottom + time_summary_Distance;
+    [placeLabel sizeToFit];
+    placeLabel.leftTop = ccp(timeLabel.left, timeLabel.bottom + 3);
+    
+    imageView.top = timeLabel.bottom + time_summary_Distance;
     
     actionV.frame = ccr(0, 0, self.contentView.width, actionV_H);
     actionV.bottom = self.contentView.height;
     
     actionSeperatorV.frame = ccr(0, contentArea.height-1, contentArea.width, 1);
     
-    retweetFavoritePannel.frame = ccr(0, actionSeperatorV.top-retweet_favorite_pannel_H, contentArea.width, retweet_favorite_pannel_H);
+    retweetFavoritePannel.frame = ccr(0, actionSeperatorV.top-retweet_favorite_pannel_H,
+                                      contentArea.width, retweet_favorite_pannel_H);
     retweetFavoritePannel.backgroundColor = kClearColor;
     retweetFavoriteCountSeperatorV.frame = ccr(0, 0, retweetFavoritePannel.width, 1);
     retweetCountL.leftCenter = ccp(retweetCountL.left, retweetFavoritePannel.height/2);
@@ -245,13 +260,10 @@
     favoriteCountL.leftCenter = ccp(favoriteCountL.left, retweetFavoritePannel.height/2);
     favoritesButton.leftCenter = ccp(favoritesButton.left, retweetFavoritePannel.height/2);
     
-    if (sourceButton.superview == contentArea) {
-        sourceButton.rightCenter = ccp(contentArea.width, timePlaceL.center.y);
-    } else if (sourceButton.superview == retweetFavoritePannel) {
-        sourceButton.rightCenter = ccp(retweetFavoritePannel.width, retweetFavoritePannel.height/2);
-    }
+    sourceButton.rightCenter = ccp(contentArea.width, timeLabel.center.y);
     viaLabel.rightCenter = sourceButton.leftCenter;
     viaLabel.left -= 3;
+    viaLabel.top += 1;
 }
 
 - (void)setupWithData:(T4CStatusCellData *)data
@@ -267,7 +279,8 @@
     NSDictionary *retweetedStatus = self.data.rawData[@"retweeted_status"];
     if (retweetedStatus) {
         ambientI.imageName = retweeted_R;
-        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted", self.data.rawData[@"user"][@"name"]];
+        NSString *ambientText = [NSString stringWithFormat:@"%@ retweeted",
+                                 self.data.rawData[@"user"][@"name"]];
         ambientL.text = ambientText;
         ambientArea.hidden = NO;
     } else {
@@ -289,14 +302,10 @@
     
     // time
     NSDate *createdDate = [twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]];
-    timePlaceL.text = createdDate.standardTwitterDisplay;
+    timeLabel.text = createdDate.standardTwitterDisplay;
     
     NSInteger retweetCount = [self.data.mainStatus[@"retweet_count"] integerValue];
     NSInteger favoriteCount = [self.data.mainStatus[@"favorite_count"] integerValue];
-    if ((retweetCount && favoriteCount) || (!retweetCount && !favoriteCount)) {
-        [contentArea addSubview:viaLabel];
-        [contentArea addSubview:sourceButton];
-    }
     
     viaLabel.hidden = NO;
     sourceButton.hidden = NO;
@@ -307,9 +316,8 @@
     
     if ([placeInfo isKindOfClass:[NSDictionary class]]) {
         NSString *place = [NSString stringWithFormat:@"from %@", placeInfo[@"full_name"]];
-        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
-        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, place];
-        [timePlaceL sizeToFit];
+        placeLabel.text = place;
+        [placeLabel sizeToFit];
         viaLabel.hidden = YES;
         sourceButton.hidden = YES;
     } else if ([geoInfo isKindOfClass:[NSDictionary class]]) {
@@ -318,20 +326,15 @@
             if (coordinates.count == 2) {
                 CLLocationDirection latitude = [coordinates[0] doubleValue];
                 CLLocationDirection longitude = [coordinates[1] doubleValue];
-                NSString *place = S(@"%.3f, %.3f", [geoInfo[@"coordinates"][0] doubleValue], [geoInfo[@"coordinates"][1] doubleValue]);
-                NSString *timeText = [[twitter getDateFromTwitterCreatedAt:self.data.mainStatus[@"created_at"]] standardTwitterDisplay];
-                timePlaceL.text = [NSString stringWithFormat:@"%@ %@: %@", timeText, _("Coordinate"), place];
+                NSString *place = S(@"%@, %@", geoInfo[@"coordinates"][0], geoInfo[@"coordinates"][1]);
+                placeLabel.text = place;
                 
                 CLLocation *location = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
                 CLGeocoder *geoCoder = [[CLGeocoder alloc] init];
-                __weak typeof(self)weakSelf = self;
                 [geoCoder reverseGeocodeLocation:location completionHandler:^(NSArray *placemarks, NSError *error) {
                     for (CLPlacemark * placemark in placemarks) {
-                        NSString *timeText = [[twitter getDateFromTwitterCreatedAt:weakSelf.data.mainStatus[@"created_at"]] standardTwitterDisplay];
-                        timePlaceL.text = [NSString stringWithFormat:@"%@ %@", timeText, placemark.name];
-                        [timePlaceL sizeToFit];
-                        viaLabel.hidden = YES;
-                        sourceButton.hidden = YES;
+                        placeLabel.text = placemark.name;
+                        [placeLabel sizeToFit];
                         break;
                     }
                 }];
@@ -648,6 +651,25 @@
         height += summaryHeight;
         data.photoFitWidth = summaryWidth;
         data.photoFitHeight = summaryHeight;
+    }
+    
+    BOOL hasPlace = NO;
+    
+    NSDictionary *placeInfo = data.mainStatus[@"place"];
+    NSDictionary *geoInfo = data.mainStatus[@"geo"];
+    
+    if ([placeInfo isKindOfClass:[NSDictionary class]]) {
+        hasPlace = YES;
+    } else if ([geoInfo isKindOfClass:[NSDictionary class]]) {
+        if ([geoInfo[@"type"] isEqualToString:@"Point"]) {
+            NSArray *coordinates = geoInfo[@"coordinates"];
+            if (coordinates.count == 2) {
+                hasPlace = YES;
+            }
+        }
+    }
+    if (hasPlace) {
+        height += 15; // add place line height
     }
     
     NSInteger retweetCount = [data.mainStatus[@"retweet_count"] integerValue];
