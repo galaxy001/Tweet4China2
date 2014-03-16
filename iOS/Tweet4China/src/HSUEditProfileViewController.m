@@ -138,6 +138,7 @@
 - (void)selectPhotoForAvatar:(BOOL)forAvatar
 {
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
+    cameraVC.enterCameraRollAtStart = YES;
     if (forAvatar) {
         cameraVC.maxWidth = 640;
     } else {

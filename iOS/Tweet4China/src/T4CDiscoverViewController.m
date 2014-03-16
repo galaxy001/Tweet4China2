@@ -109,6 +109,6 @@
      }];
     settingsItem.image = [UIImage imageNamed:@"icn_web_browser"];
     [section addItem:settingsItem];
-//}
+}
 
 @end

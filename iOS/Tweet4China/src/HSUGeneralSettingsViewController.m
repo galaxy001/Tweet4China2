@@ -206,21 +206,6 @@
     self.pageCountWWANItem = pageCountWWANItem;
     [section addItem:pageCountWWANItem];
     
-    REBoolItem *selectBeforeStartCameraItem =
-    [REBoolItem itemWithTitle:_("Select before start camera")
-                        value:boolSetting(HSUSettingSelectBeforeStartCamera)];
-    self.selectBeforeStartCameraItem = selectBeforeStartCameraItem;
-    [section addItem:selectBeforeStartCameraItem];
-    selectBeforeStartCameraItem.switchValueChangeHandler = ^(REBoolItem *item) {
-        
-        if (![[HSUAppDelegate shared] buyProApp]) {
-            item.value = NO;
-            [weakSelf.tableView reloadData];
-            return ;
-        }
-        
-    };
-    
     REBoolItem *showOriginalImageItem =
     [REBoolItem itemWithTitle:_("Original image quality")
                         value:boolSetting(HSUSettingShowOriginalImage)];
@@ -409,7 +394,6 @@
                        HSUSettingPageCountWWAN: pageCountWWAN,
                        HSUSettingDesktopUserAgent: @(desktopUserAgent),
                        HSUSettingExcludeReplies: @(excludeReplies),
-                       HSUSettingSelectBeforeStartCamera: @(selectBeforeStartCamera),
                        HSUSettingShowOriginalImage: @(showOriginalImage),
                        HSUSettingOverseas: @(connectDirectly),
                        HSUSettingAutoUpdateConnect: @(autoUpdateConnect),

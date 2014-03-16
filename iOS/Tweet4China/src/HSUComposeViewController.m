@@ -281,32 +281,30 @@
     extraPanelSV.backgroundColor = bw(232);
     extraPanelSV.alwaysBounceVertical = NO;
     
-    if ([setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
-        UIButton *takePhotoBnt = [[UIButton alloc] init];
-        [extraPanelSV addSubview:takePhotoBnt];
-        self.takePhotoBnt = takePhotoBnt;
-        [takePhotoBnt setTapTarget:self action:@selector(takePhotoButtonTouched)];
-        [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
-        [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-        [takePhotoBnt setTitle:@"Take photo" forState:UIControlStateNormal];
-        [takePhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
-        takePhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-        [takePhotoBnt sizeToFit];
-        takePhotoBnt.width = extraPanelSV.width - 20;
-        takePhotoBnt.topCenter = ccp(extraPanelSV.center.x, 11);
-        
-        UIButton *selectPhotoBnt = [[UIButton alloc] init];
-        [extraPanelSV addSubview:selectPhotoBnt];
-        self.selectPhotoBnt = selectPhotoBnt;
-        [selectPhotoBnt setTapTarget:self action:@selector(selectPhotoButtonTouched)];
-        [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
-        [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
-        [selectPhotoBnt setTitle:@"Choose from library" forState:UIControlStateNormal];
-        [selectPhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
-        selectPhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
-        selectPhotoBnt.frame = takePhotoBnt.frame;
-        selectPhotoBnt.top = selectPhotoBnt.bottom + 10;
-    }
+    UIButton *takePhotoBnt = [[UIButton alloc] init];
+    [extraPanelSV addSubview:takePhotoBnt];
+    self.takePhotoBnt = takePhotoBnt;
+    [takePhotoBnt setTapTarget:self action:@selector(takePhotoButtonTouched)];
+    [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
+    [takePhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
+    [takePhotoBnt setTitle:@"Take photo" forState:UIControlStateNormal];
+    [takePhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
+    takePhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+    [takePhotoBnt sizeToFit];
+    takePhotoBnt.width = extraPanelSV.width - 20;
+    takePhotoBnt.topCenter = ccp(extraPanelSV.center.x, 11);
+    
+    UIButton *selectPhotoBnt = [[UIButton alloc] init];
+    [extraPanelSV addSubview:selectPhotoBnt];
+    self.selectPhotoBnt = selectPhotoBnt;
+    [selectPhotoBnt setTapTarget:self action:@selector(selectPhotoButtonTouched)];
+    [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button"] stretchableImageFromCenter] forState:UIControlStateNormal];
+    [selectPhotoBnt setBackgroundImage:[[UIImage imageNamed:@"compose-map-toggle-button-pressed"] stretchableImageFromCenter] forState:UIControlStateHighlighted];
+    [selectPhotoBnt setTitle:@"Choose from library" forState:UIControlStateNormal];
+    [selectPhotoBnt setTitleColor:rgb(52, 80, 112) forState:UIControlStateNormal];
+    selectPhotoBnt.titleLabel.font = [UIFont boldSystemFontOfSize:13];
+    selectPhotoBnt.frame = takePhotoBnt.frame;
+    selectPhotoBnt.top = selectPhotoBnt.bottom + 10;
     
     UIImageView *previewIV = [[UIImageView alloc] init];
     [extraPanelSV addSubview:previewIV];
@@ -723,28 +721,13 @@
 
 #pragma mark - Actions
 - (void)photoButtonTouched {
-    if (boolSetting(HSUSettingSelectBeforeStartCamera)) {
-        if ([self.contentTV isFirstResponder]) {
-            [self.contentTV resignFirstResponder];
-        } else {
-            [self.contentTV becomeFirstResponder];
-        }
-        if (self.postImage && !self.previewIV.image) {
-            [self photoSelected:self.postImage];
-        }
-        return;
-    }
-    if (self.postImage && !self.previewIV.image) {
-        [self photoSelected:self.postImage];
-    }
-    if (self.contentTV.isFirstResponder || self.extraPanelSV.contentOffset.x > 0) {
+    if ([self.contentTV isFirstResponder]) {
         [self.contentTV resignFirstResponder];
-        [self.extraPanelSV setContentOffset:ccp(0, 0) animated:YES];
     } else {
         [self.contentTV becomeFirstResponder];
     }
-    if (!self.postImage) {
-        [self selectPhoto];
+    if (self.postImage && !self.previewIV.image) {
+        [self photoSelected:self.postImage];
     }
 }
 
@@ -785,10 +768,6 @@
     }];
     
     self.photoBnt.selected = NO;
-    
-    if (![setting(HSUSettingSelectBeforeStartCamera) boolValue]) {
-        [self selectPhoto];
-    }
 }
 
 - (void)geoButtonTouched {
@@ -958,11 +937,9 @@
         replacement = S(@"%@ ", tag);
     }
     NSRange range = NSMakeRange(self.filterLocation, self.contentTV.selectedRange.location - self.filterLocation);
-    if ([self textView:self.contentTV shouldChangeTextInRange:range replacementText:replacement]) {
-        self.contentTV.text = [self.contentTV.text stringByReplacingCharactersInRange:range withString:replacement];
-        [self textViewDidChange:self.contentTV];
-        self.contentTV.selectedRange = NSMakeRange(range.location+replacement.length, 0);
-    }
+    self.contentTV.text = [self.contentTV.text stringByReplacingCharactersInRange:range withString:replacement];
+    [self textViewDidChange:self.contentTV];
+    self.contentTV.selectedRange = NSMakeRange(range.location+replacement.length, 0);
     self.suggestionType = 0;
     self.filteredSuggestions = nil;
     [self.view setNeedsLayout];

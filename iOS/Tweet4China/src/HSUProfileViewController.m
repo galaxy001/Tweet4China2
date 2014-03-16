@@ -519,6 +519,7 @@
 - (void)selectPhotoForAvatar:(BOOL)forAvatar
 {
     OCMCameraViewController *cameraVC = [OpenCam cameraViewController];
+    cameraVC.enterCameraRollAtStart = YES;
     if (forAvatar) {
         cameraVC.maxWidth = 640;
     } else {
@@ -531,11 +532,14 @@
 
 - (void)avatarButtonTouched
 {
+    __weak typeof(self)weakSelf = self;
     if (self.isMe) {
-        if (![[HSUAppDelegate shared] buyProApp]) {
-            return ;
-        }
-        [self selectPhotoForAvatar:YES];
+        [HSUCommonTools showConfirmWithConfirmTitle:_("Change Avatar") confirmBlock:^{
+            if (![[HSUAppDelegate shared] buyProApp]) {
+                return ;
+            }
+            [weakSelf selectPhotoForAvatar:YES];
+        }];
     } else {
         NSString *url = self.profile[@"profile_image_url_https"];
         if (url) {
@@ -551,10 +555,13 @@
 - (void)bannerButtonTouched
 {
     if (self.isMe) {
-        if (![[HSUAppDelegate shared] buyProApp]) {
-            return ;
-        }
-        [self selectPhotoForAvatar:NO];
+        __weak typeof(self)weakSelf = self;
+        [HSUCommonTools showConfirmWithConfirmTitle:_("Change Banner") confirmBlock:^{
+            if (![[HSUAppDelegate shared] buyProApp]) {
+                return ;
+            }
+            [weakSelf selectPhotoForAvatar:NO];
+        }];
     }
 }
 

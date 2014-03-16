@@ -232,6 +232,15 @@ static NSString *defaultUserAgent;
     return originalImageUrlStr;
 }
 
++ (void)showConfirmWithConfirmTitle:(NSString *)confirmTitle confirmBlock:(void (^)())confirmBlock
+{
+    RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
+    RIButtonItem *confirmItem = [RIButtonItem itemWithLabel:confirmTitle];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil cancelButtonItem:cancelItem destructiveButtonItem:confirmItem otherButtonItems:nil, nil];
+    [actionSheet showInView:[UIApplication sharedApplication].keyWindow];
+    confirmItem.action = confirmBlock;
+}
+
 + (UIColor *)barTintColor
 {
 //    return bwa(255, 0.9);
