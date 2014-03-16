@@ -270,9 +270,11 @@
 {
     [super setupWithData:data];
     
-    actionV = [[HSUStatusActionView alloc] initWithStatus:data.mainStatus
-                                                    style:HSUStatusActionViewStyle_Default];
-    [self.contentView addSubview:actionV];
+    if (!actionV) {
+        actionV = [[HSUStatusActionView alloc] initWithStatus:data.mainStatus
+                                                        style:HSUStatusActionViewStyle_Default];
+        [self.contentView addSubview:actionV];
+    }
     
     // ambient
     ambientI.hidden = NO;
