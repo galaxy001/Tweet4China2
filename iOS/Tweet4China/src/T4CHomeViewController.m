@@ -9,10 +9,13 @@
 #import "T4CHomeViewController.h"
 #import <SVPullToRefresh/SVPullToRefresh.h>
 #import "GTMNSString+HTML.h"
+#import "GADBannerView.h"
 
-@interface T4CHomeViewController ()
+@interface T4CHomeViewController () <GADBannerViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *tags;
+@property (nonatomic, weak) GADBannerView *adBanner;
+@property (nonatomic, assign) BOOL adReceived;
 
 @end
 
@@ -117,6 +120,30 @@
     
 //    self.navigationItem.leftBarButtonItem = self.actionBarButton;
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
+    
+#ifdef FreeApp
+    GADBannerView *adBanner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    [self.view addSubview:adBanner];
+    self.adBanner = adBanner;
+    adBanner.adUnitID = GAD_UNIT_ID;
+    adBanner.rootViewController = self;
+    GADRequest *request = [GADRequest request];
+#ifdef DEBUG
+    request.testDevices = @[GAD_SIMULATOR_ID];
+#endif
+    [adBanner loadRequest:request];
+    adBanner.delegate = self;
+#endif
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)view
+{
+    if (!self.adReceived) {
+        self.adReceived = YES;
+        self.adBanner.top = self.tableView.top + self.tableView.contentInset.top;
+        self.tableView.top += self.adBanner.height;
+        self.tableView.height -= self.adBanner.height;
+    }
 }
 
 - (void)unfowllowedUser:(NSNotification *)notification

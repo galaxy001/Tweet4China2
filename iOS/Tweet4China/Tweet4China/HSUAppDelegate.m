@@ -370,8 +370,7 @@ static HSUShadowsocksProxy *proxy;
 {
 #ifdef FreeApp // free app is restrict for using time
     NSUInteger timelineLoadCount = [[[NSUserDefaults standardUserDefaults] objectForKey:@"timeline_load_count"] unsignedIntegerValue];
-    if ((timelineLoadCount > 10 && (timelineLoadCount - 10) % 3 == 0) ||
-        timelineLoadCount > 15) {
+    if (timelineLoadCount > 0 && timelineLoadCount % 10 == 0) {
         [self buyProApp];
     }
     timelineLoadCount ++;

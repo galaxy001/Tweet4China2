@@ -90,7 +90,7 @@
          weakSelf.hotVC = [[T4CHotViewController alloc] init];
          [weakSelf.navigationController pushViewController:weakSelf.hotVC animated:YES];
      }];
-    hotItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    hotItem.image = [UIImage imageNamed:@"icn_hot"];
     [section addItem:hotItem];
     
     section = [RETableViewSection section];
@@ -107,7 +107,7 @@
          nav.viewControllers = @[settingsVC];
          [weakSelf presentViewController:nav animated:YES completion:nil];
      }];
-    settingsItem.image = [UIImage imageNamed:@"icn_web_browser"];
+    settingsItem.image = [UIImage imageNamed:@"icn_settings"];
     [section addItem:settingsItem];
 }
 

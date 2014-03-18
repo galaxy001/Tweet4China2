@@ -78,8 +78,8 @@
 
 - (void)viewDidLoad
 {
+//    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
     self.navigationItem.rightBarButtonItems = @[self.composeBarButton, self.searchBarButton];
-    self.navigationItem.leftBarButtonItems = @[self.actionBarButton];
     
     [super viewDidLoad];
     

@@ -19,7 +19,6 @@
 @property (nonatomic, weak) REBoolItem *roundAvatarItem;
 @property (nonatomic, weak) REBoolItem *desktopUserAgentItem;
 @property (nonatomic, weak) REBoolItem *excludeRepliesItem;
-@property (nonatomic, weak) REBoolItem *selectBeforeStartCameraItem;
 @property (nonatomic, weak) REBoolItem *showOriginalImageItem;
 @property (nonatomic, weak) REBoolItem *overseasItem;
 @property (nonatomic, weak) REBoolItem *autoUpdateConnectItem;
@@ -373,7 +372,6 @@
     BOOL roundAvatar = self.roundAvatarItem.value;
     BOOL desktopUserAgent = self.desktopUserAgentItem.value;
     BOOL excludeReplies = self.excludeRepliesItem.value;
-    BOOL selectBeforeStartCamera = self.selectBeforeStartCameraItem.value;
     BOOL showOriginalImage = self.showOriginalImageItem.value;
     BOOL connectDirectly = self.overseasItem.value;
     BOOL autoUpdateConnect = self.autoUpdateConnectItem.value;

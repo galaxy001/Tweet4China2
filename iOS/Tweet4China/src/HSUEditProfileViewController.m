@@ -116,19 +116,21 @@
     };
     
     // todo: always failed
-//    section = [RETableViewSection section];
-//    [self.manager addSection:section];
-//    
-//    RELongTextItem *descItem = [RELongTextItem item];
-//    self.descItem = descItem;
-//    [section addItem:descItem];
-//    descItem.value = self.profile[@"description"];
-//    descItem.placeholder = _("Introduce yourself");
-//    descItem.cellHeight = 88;
-//    descItem.charactersLimit = 160;
-//    descItem.onChange = ^(RETextItem *item) {
-//        self.navigationItem.rightBarButtonItem.enabled = YES;
-//    };
+    section = [RETableViewSection section];
+    [self.manager addSection:section];
+    
+    RELongTextItem *descItem = [RELongTextItem item];
+    self.descItem = descItem;
+    [section addItem:descItem];
+    descItem.value = self.profile[@"description"];
+    descItem.placeholder = _("Introduce yourself");
+    descItem.cellHeight = 88;
+    descItem.charactersLimit = 160;
+    descItem.onChange = ^(RETextItem *item) {
+        BOOL changed = ![item.value isEqualToString:weakSelf.profile[@"description"]];
+        self.navigationItem.rightBarButtonItem.enabled = YES;
+        weakSelf.updated = changed;
+    };
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Cancel") style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Save") style:UIBarButtonItemStyleDone target:self action:@selector(save)];

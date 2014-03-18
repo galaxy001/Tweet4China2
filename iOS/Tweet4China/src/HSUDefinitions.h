@@ -17,6 +17,8 @@
 #define Free_Flurry_API_Key @"4R9B8GXYZGZ23WPW8HJW"
 #define Pro_Flurry_API_Key @"MTYFGCVWN5PZ8JD8N9HW"
 
+#define GAD_UNIT_ID @"a14df32520d525a"
+
 //#define FreeApp
 #ifdef FreeApp
 #define AppleID FreeAppleID

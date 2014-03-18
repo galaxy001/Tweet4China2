@@ -164,7 +164,7 @@
         descLabel.numberOfLines = 5;
         descLabel.shadowOffset = ccs(0, 1);
         descLabel.shadowColor = kGrayColor;
-        descLabel.size = ccs(infoView.width-40, infoView.width / 4);
+        descLabel.size = ccs(infoView.width-40, infoView.width / 3.5);
         descLabel.left = infoView.width + 20;
         
         UILabel *locationLabel = [[UILabel alloc] init];
@@ -395,7 +395,10 @@
     self.screenNameLabel.text = [profile[@"screen_name"] twitterScreenName];
     [self.screenNameLabel sizeToFit];
     self.nameLabel.text = profile[@"name"];
-    self.descLabel.text = profile[@"description"];
+    NSString *desc = profile[@"description"];
+    desc = [desc stringByReplacingOccurrencesOfString:@"\r\n" withString:@" "];
+    desc = [desc stringByReplacingOccurrencesOfString:@"\n" withString:@" "];
+    self.descLabel.text = desc;
 //    self.descLabel.size = [self.descLabel sizeThatFits:ccs(self.width-40, 0)];
 //    [self.descLabel sizeToFit];
 //    self.descLabel.bottomCenter = ccp(self.infoView.width/2*3, self.locationLabel.top - 5);
