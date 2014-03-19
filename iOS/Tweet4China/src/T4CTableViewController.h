@@ -33,6 +33,7 @@
 @property (nonatomic, assign) NSUInteger unreadCount;
 @property (nonatomic, assign) BOOL showUnreadCount;
 @property (nonatomic, assign) NSUInteger viewDidApearCount;
+@property (nonatomic, assign) BOOL showAd;
 
 - (void)refresh;
 - (void)loadGap:(T4CGapCellData *)gapCellData;

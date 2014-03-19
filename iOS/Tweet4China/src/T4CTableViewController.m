@@ -40,13 +40,17 @@
 #import "T4CSearchViewController.h"
 #import "T4CTagTimelineViewController.h"
 #import "HSUTabController.h"
+#import "GADBannerView.h"
 
-@interface T4CTableViewController ()
+static GADBannerView *adBanner;
+
+@interface T4CTableViewController () <GADBannerViewDelegate>
 
 @property (nonatomic, strong) NSDictionary *cellTypes;
 @property (nonatomic, strong) NSDictionary *cellDataTypes;
 @property (nonatomic, weak) UILabel *unreadCountLabel;
 @property (nonatomic, assign) BOOL statusBarHidden;
+@property (nonatomic, assign) BOOL adReceived;
 
 @end
 
@@ -142,11 +146,51 @@
         unreadCountLabel.hidden = YES;
         unreadCountLabel.clipsToBounds = YES;
     }
+    
+#ifdef FreeApp
+    if (self.showAd) {
+        notification_add_observer(@"ad", self, @selector(receivedAd));
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            adBanner = [[GADBannerView alloc] initWithAdSize:kGADAdSizeSmartBannerPortrait];
+            [self.view addSubview:adBanner];
+            adBanner.adUnitID = GAD_UNIT_ID;
+            adBanner.rootViewController = self;
+            GADRequest *request = [GADRequest request];
+#ifdef DEBUG
+            request.testDevices = @[GAD_SIMULATOR_ID];
+#endif
+            [adBanner loadRequest:request];
+        });
+        adBanner.delegate = self;
+    }
+#endif
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)view
+{
+    notification_post(@"ad");
+}
+
+- (void)receivedAd
+{
+    if (!self.adReceived) {
+        self.adReceived = YES;
+        if (self.tableView.top + self.tableView.contentInset.top) {
+            adBanner.top = self.tableView.top + self.tableView.contentInset.top;
+        }
+        self.tableView.top += adBanner.height;
+        self.tableView.height -= adBanner.height;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    if (self.showAd) {
+        [self.view addSubview:adBanner];
+    }
     
     if (Sys_Ver < 7) {
         if (self.navigationController.viewControllers.count > 1) {

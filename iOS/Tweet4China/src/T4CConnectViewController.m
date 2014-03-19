@@ -21,6 +21,7 @@
 {
     self = [super init];
     if (self) {
+        self.showAd = YES;
         notification_add_observer(HSUCheckUnreadTimeNotification, self, @selector(checkUnread));
     }
     return self;
