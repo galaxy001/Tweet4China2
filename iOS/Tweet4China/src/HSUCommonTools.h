@@ -37,6 +37,7 @@ void notification_post_with_objct_and_userinfo(NSString *name, id object, NSDict
 + (NSString *)smallTwitterImageUrlStr:(NSString *)originalImageUrlStr;
 
 + (void)showConfirmWithConfirmTitle:(NSString *)confirmTitle confirmBlock:(void (^)())confirmBlock;
++ (void)showAlertWithTitle:(NSString *)title message:(NSString *)message;
 
 + (UIColor *)barTintColor;
 + (UIColor *)tintColor;

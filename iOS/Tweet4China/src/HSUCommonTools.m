@@ -270,4 +270,10 @@ static NSString *defaultUserAgent;
     return [UIColor whiteColor];
 }
 
++ (void)showAlertWithTitle:(NSString *)title message:(NSString *)message
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:nil otherButtonTitles:_("OK"), nil];
+    [alert show];
+}
+
 @end

@@ -273,3 +273,5 @@
 "Sent" = "已发送";
 "Sent failed" = "发送失败";
 "Hot" = "热点";
+"Protected Account" = "这是隐私账户";
+"Need approved by the user" = "需要等待用户确认才能关注成功";

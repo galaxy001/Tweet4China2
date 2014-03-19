@@ -273,3 +273,5 @@
 "Sent" = "已送出";
 "Sent failed" = "送出失败";
 "Hot" = "熱點";
+"Protected Account" = "這是隱私賬戶";
+"Need approved by the user" = "需要等待用戶確認才能關註成功";
