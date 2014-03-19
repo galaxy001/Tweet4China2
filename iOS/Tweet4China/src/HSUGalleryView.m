@@ -15,6 +15,7 @@
 @property (nonatomic, weak) UIActivityIndicatorView *spinner;
 @property (nonatomic, weak) UIView *startPhotoView;
 @property (nonatomic, assign) UIDeviceOrientation imageOrientation;
+@property (nonatomic, assign) BOOL detectedOrientation;
 
 @end
 
@@ -347,6 +348,12 @@
         imagePanel.bounds = ccr(0, 0, kScreenWidth, kScreenHeight);
     } else if (orientation == UIDeviceOrientationFaceUp
                || orientation == UIDeviceOrientationFaceDown) {
+        
+        if (self.detectedOrientation) {
+            return;
+        }
+        
+        self.detectedOrientation = YES;
         UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
         if (interfaceOrientation == UIInterfaceOrientationLandscapeLeft) {
             imagePanel.transform = CGAffineTransformMakeRotation(-M_PI/2);

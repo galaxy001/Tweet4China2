@@ -262,6 +262,10 @@
 
 - (void)tweetsButtonTouched
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:nil message:_("Protected Account")];
+        return;
+    }
     T4CUserTimelineViewController *tweetsVC = [[T4CUserTimelineViewController alloc] init];
     tweetsVC.screenName = self.screenName;
     [self.navigationController pushViewController:tweetsVC animated:YES];
@@ -269,6 +273,10 @@
 
 - (void)followingsButtonTouched
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:nil message:_("Protected Account")];
+        return;
+    }
     T4CFollowingViewController *followersVC = [[T4CFollowingViewController alloc] init];
     followersVC.screenName = self.screenName;
     [self.navigationController pushViewController:followersVC animated:YES];
@@ -276,6 +284,10 @@
 
 - (void)followersButtonTouched
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:nil message:_("Protected Account")];
+        return;
+    }
     T4CFollowersViewController *followersVC = [[T4CFollowersViewController alloc] init];
     followersVC.screenName = self.screenName;
     [self.navigationController pushViewController:followersVC animated:YES];
@@ -283,6 +295,10 @@
 
 - (void)favoritesButtonTouched
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:nil message:_("Protected Account")];
+        return;
+    }
     T4CFavoritesViewController *favoritesVC = [[T4CFavoritesViewController alloc] init];
     favoritesVC.screenName = self.screenName;
     [self.navigationController pushViewController:favoritesVC animated:YES];
@@ -302,6 +318,10 @@
 
 - (void)photosButtonTouched
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:nil message:_("Protected Account")];
+        return;
+    }
     T4CPhotosViewController *photosVC = [[T4CPhotosViewController alloc] init];
     photosVC.screenName = self.screenName;
     [self.navigationController pushViewController:photosVC animated:YES];
@@ -309,6 +329,9 @@
 
 - (void)followButtonTouched:(UIButton *)followButton
 {
+    if ([self.profile[@"protected"] boolValue] && ![self.profile[@"following"] boolValue]) {
+        [HSUCommonTools showAlertWithTitle:_("Protected Account") message:_("Need approved by the user")];
+    }
     followButton.enabled = NO;
     if ([self.profile[@"blocked"] boolValue]) {
         RIButtonItem *cancelItem = [RIButtonItem itemWithLabel:_("Cancel")];
@@ -359,10 +382,10 @@
 {
     if (self.isMe) {
     } else {
-        if (![[HSUAppDelegate shared] buyProApp]) {
-            return;
-        }
-        
+//        if (![[HSUAppDelegate shared] buyProApp]) {
+//            return;
+//        }
+//        
         __weak typeof(self)weakSelf = self;
         if (self.relationshipLoaded) {
             if (self.followedMe) {
